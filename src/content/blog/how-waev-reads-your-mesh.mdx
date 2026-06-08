@@ -4,6 +4,15 @@ description: "The pipeline from a radio broadcast to a verified edge on Waev's L
 date: 2026-06-08
 tags: ["deep-dive", "how-it-works"]
 author: "Waev"
+faq:
+  - q: "Does my MQTT broker need to be reachable from the public internet?"
+    a: "Yes. Waev subscribes from our infrastructure, so your broker needs a public address or hostname that resolves externally. Many operators run Mosquitto on a small VPS. You control the credentials and TLS configuration; Waev just subscribes."
+  - q: "What happens if my observer goes offline?"
+    a: "Waev stops receiving packets from that observer. The map shows the last-known topology; edges age but are not immediately removed, and nothing is inferred to fill the gap. When the observer reconnects, the data stream resumes."
+  - q: "My node shows up in Live Packets but not on the Live Map. Why?"
+    a: "Live Packets shows everything that clears the privacy gate. The Live Map draws topology edges, which require a verified observation through an enrolled observer with a traceable hop record. Common causes: the hop record was incomplete, the node is a companion device (scrubbed from the map by design), or the observation arrived through a path Waev could not verify."
+  - q: "Can I run more than one observer?"
+    a: "Yes, and in most networks you should. Each observer adds an independent vantage point, increasing the verified hops Waev can see and reducing blind spots. Two observers hearing the same packet from different positions produce independent evidence for each edge."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -72,26 +81,6 @@ Once packets clear the ingest edge, they're stored and routed to the relevant su
 **Packet Search** gives you a queryable history of non-private activity. Useful for after-action review, debugging a node that went quiet, or understanding traffic patterns over a specific time window.
 
 **Outpost** is a per-node view: one node's activity timeline, heard-by list, and SNR history.
-
----
-
-## Common questions
-
-### Does my MQTT broker need to be reachable from the public internet?
-
-Yes. <span class="waev-brand">Waev</span> subscribes from our infrastructure, so your broker needs a public address or hostname that resolves externally. Many operators run Mosquitto on a small VPS. You control the credentials and TLS configuration — Waev just subscribes.
-
-### What happens if my observer goes offline?
-
-<span class="waev-brand">Waev</span> stops receiving packets from that observer. The map shows the last-known topology; edges age but aren't immediately removed. Nothing is inferred to fill the gap. When the observer reconnects, the data stream resumes.
-
-### My node shows up in Live Packets but not on the Live Map. Why?
-
-Live Packets shows everything that clears the privacy gate. The Live Map draws topology edges, which require a verified observation — the packet must arrive through an enrolled observer and include a traceable hop record. If the packet appears in Live Packets but no edge appears on the map, the most common causes are: the hop record was incomplete, the node is a companion device (scrubbed from the map by design), or the observation arrived through a path Waev couldn't verify.
-
-### Can I run more than one observer?
-
-Yes — and in most networks you should. Each additional observer adds an independent vantage point, which increases the number of verified hops <span class="waev-brand">Waev</span> can see and reduces coverage blind spots. Two observers hearing the same packet from different positions produce independent evidence for each edge, which makes the topology picture more reliable.
 
 ---
 

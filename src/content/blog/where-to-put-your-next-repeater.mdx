@@ -4,6 +4,15 @@ description: "A practical playbook for using Waev's Live Map, Network Stats, and
 date: 2026-06-08
 tags: ["playbook", "operations"]
 author: "Waev"
+faq:
+  - q: "Do I need an observer inside the gap area to detect the gap?"
+    a: "Not to confirm the gap exists; a node at the edge of coverage shows its degraded metrics in Network Stats regardless of where your observers sit. But to map the gap you need observer coverage in the area, because the Live Map draws topology from what observers recorded. An observer placed in or near the suspect area improves map fidelity there and makes post-placement validation easier to read."
+  - q: "The map shows silence, but members in that area say the mesh is working. Who is right?"
+    a: "Both. Short messages at low traffic pass through marginal links that would fail under sustained load. Trust members for operational reports; use the Stats data for infrastructure decisions. A link at +1 dB SNR with 2 packets per hour is working today, but it is not the foundation you want when it counts."
+  - q: "Can I do a manual field survey using Live Packets?"
+    a: "Yes. If you carry a MeshCore device connected to your MQTT observer network, and the node does not carry a privacy opt-out marker, its transmissions appear in Live Packets. Drive or walk the edge of the suspect zone and watch whether packets reach the network, and over how many hops. Pair it with the Stats view afterward to correlate field observations with the data over time."
+  - q: "What does the before and after look like in Network Stats?"
+    a: "The clearest signal is SNR improvement on the links that were degraded, followed by hop-count reduction for nodes that were routing around the gap. In the time series, the repeater's commissioning time appears as an inflection where both metrics step up together. If neither moves after 48 hours, the candidate site may not be close enough to the gap, or the anchor node's own path quality needs attention first."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -82,26 +91,6 @@ Once the new repeater is running and connected to your MQTT observer network, wa
 Network Stats shows this as an inflection point in the time series — link quality and packet rate both step up at the moment the new repeater comes online. That inflection is your validation. Not just "the node is up," but "the path quality demonstrably changed."
 
 If the improvement is smaller than expected, the gap may be wider than one repeater covers. Or the anchor node you're bridging from was more stressed than it appeared — check its Stats for the same period. Either finding gives you a clear next step.
-
----
-
-## Questions operators ask
-
-### Do I need an observer inside the gap area to detect the gap?
-
-Not to confirm the gap exists — a node at the edge of coverage will show its degraded metrics in Network Stats regardless of where your observers are positioned. But to *map* the gap, you do need observer coverage in the area. The Live Map draws topology from what observers recorded. If all your observers sit on the backbone, the backbone will appear clear and edge nodes will appear intermittently or not at all. An observer placed in or near the suspect area dramatically improves map fidelity for that region — and makes the post-placement validation much easier to read.
-
-### The map shows silence, but members in that area say the mesh is working. Who's right?
-
-Both. Short messages at low traffic pass through marginal links that would fail under sustained load. Trust the members for operational reports; use the Stats data for infrastructure decisions. A link at +1 dB SNR with 2 packets per hour is working *today* — but it's not the foundation you want when it counts. The data tells you the margin. The margin tells you the risk.
-
-### Can I do a manual field survey using Live Packets?
-
-Yes. If you're carrying a MeshCore device that connects to your MQTT observer network — and the node doesn't carry a privacy opt-out marker — transmissions will appear in Live Packets. Drive or walk the edge of the suspect zone and watch whether packets are reaching the network, and over how many hops. It's a manual survey and it works. Pair it with the Stats view afterward to correlate what you saw in the field with what the data shows over time.
-
-### What does the before/after look like in Network Stats?
-
-The clearest signal is SNR improvement on the links that were degraded, followed by hop-count reduction for the nodes that were routing around the gap. In the time series, the repeater's commissioning time appears as an inflection — both metrics step up together. If neither moves after 48 hours, the candidate site may not be close enough to the actual gap, or the anchor node's own path quality needs attention first.
 
 ---
 
