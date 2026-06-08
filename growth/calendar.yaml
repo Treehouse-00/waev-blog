@@ -1,0 +1,2257 @@
+# Waev Growth OS — Editorial & SEO Calendar (the WHEN layer)
+#
+# Purpose: the single structured backlog the scheduled run-system reads to
+# decide what content/SEO work to propose next. An autonomous agent picks the
+# next entry whose slot_date is due, opens the referenced brief, executes it,
+# and PROPOSES the result via PR/report. Agents NEVER deploy and NEVER post to
+# external communities autonomously (see ../AGENT.md Invariants and ./CADENCE.md).
+#
+# This file is the source of truth for *dated* slots. Cron-driven recurring
+# loops (weekly link/competitor sweeps, daily publish rebuild, etc.) are
+# governed by ./CADENCE.md and are intentionally NOT enumerated per-week here
+# to avoid drift — only their monthly/quarterly checkpoints are seeded below.
+#
+# ───────────────────────────────────────────────────────────────────────────
+# ENTRY SCHEMA (verbatim keys). Every entry carries the core keys below; every
+# `type: post` entry ALSO carries `bucket` + `theme` — the editorial rails (see
+# ./EDITORIAL.md). Non-post entries (audit | seo-task) omit bucket/theme.
+#   slot_date        YYYY-MM-DD          when the agent should act on this slot
+#   type             post | seo-task | audit
+#   segment          tinkerer | ham | cert-emcomm | off-grid
+#   funnel_stage     awareness | evaluation | adoption
+#   bucket           [post only] primer | signal | field-manual | under-the-hood | position | dispatch
+#   theme            [post only] knowing-over-guessing | power-of-refusal | own-your-ground | ready-before-it-matters | earned-competence | networks-of-people
+#   series           [post only, optional] the series slug this slot belongs to (see ./EDITORIAL.md), e.g. measure-your-mesh
+#   primary_keyword  the single target query (for non-post types: the work focus)
+#   secondary_keyword one supporting query/term
+#   status           proposed | scheduled | drafted | published
+#   brief            relative path to a growth/briefs/*.md file
+#
+# STATUS SEMANTICS (machine rules):
+#   scheduled  = a real post already committed to src/content/blog (date-gated).
+#   proposed   = a planned slot the content-writer agent should draft into a PR.
+#   drafted    = a draft PR is open and awaiting human merge (the publish gate).
+#   published  = merged to main and past its date gate (live on blog.waev.app).
+#
+# SEGMENT / FUNNEL derivation for the seeded real posts is recorded inline.
+# ───────────────────────────────────────────────────────────────────────────
+
+# ===========================================================================
+# SEEDED REAL POSTS — already committed in src/content/blog (status: scheduled)
+# slot_date == the post's real frontmatter `date`; segment/funnel derived from
+# title + tags. brief is the writer brief that would (re)generate/update them.
+# ===========================================================================
+posts:
+  - slot_date: 2026-06-08            # the-opinionated-mesh-analyzer.mdx
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: position
+    theme: power-of-refusal
+    primary_keyword: "MeshCore analytics platform"
+    secondary_keyword: "mesh network intelligence"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-06-08            # how-waev-reads-your-mesh.mdx ("From Radio to Map")
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "MeshCore network mapping"
+    secondary_keyword: "MQTT observer ingest pipeline"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-06-08            # where-to-put-your-next-repeater.mdx ("Where Your Network Ends")
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "mesh repeater placement"
+    secondary_keyword: "LoRa coverage gap analysis"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-06-18            # your-mesh-on-field-day.mdx
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: networks-of-people
+    primary_keyword: "ARRL Field Day mesh network"
+    secondary_keyword: "Field Day MeshCore setup"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-07-02            # what-we-choose-not-to-know.mdx
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: position
+    theme: power-of-refusal
+    primary_keyword: "MeshCore privacy data minimization"
+    secondary_keyword: "mesh network opt-out marker"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-07-16            # bring-your-own-broker.mdx
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: own-your-ground
+    primary_keyword: "bring your own MQTT broker"
+    secondary_keyword: "mesh network data ownership"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-07-30            # reading-the-signal.mdx
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    primary_keyword: "LoRa SNR hop count"
+    secondary_keyword: "mesh link path quality"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-08-27            # when-the-grid-goes-down.mdx
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "emergency mesh network resilience"
+    secondary_keyword: "single point of failure mesh"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  # =========================================================================
+  # 156-SLOT ANNUAL GRID (status: proposed) — 3×/week (Tue/Thu/Sun), generated
+  # against ./EDITORIAL.md (day-of-week psychographics + series). Sorted by date.
+  # =========================================================================
+
+  - slot_date: 2026-09-01
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: signal-glossary
+    primary_keyword: "what is MeshCore"
+    secondary_keyword: "MeshCore mesh radio explained"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-03
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "hurricane season mesh network prep"
+    secondary_keyword: "comms plan before the storm makes landfall"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-06
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: ready-before-it-matters
+    series: from-the-field
+    primary_keyword: "CERT mesh network activation"
+    secondary_keyword: "storm response mesh communications"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-08
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: first-light
+    primary_keyword: "LoRa mesh network setup tutorial"
+    secondary_keyword: "your first three MeshCore nodes"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-10
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "how MeshCore repeaters are authenticated"
+    secondary_keyword: "verified mesh edges vs claimed connections"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-13
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: position
+    theme: knowing-over-guessing
+    series: why-we
+    primary_keyword: "evidence based mesh network map"
+    secondary_keyword: "why a mesh map should show only what it can prove"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-15
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "how to measure SNR on a LoRa mesh"
+    secondary_keyword: "reading SNR per link MeshCore"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-17
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "wildfire evacuation mesh communication plan"
+    secondary_keyword: "off-grid comms when the cell towers are gone"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-20
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: knowing-over-guessing
+    primary_keyword: "mesh map missing nodes"
+    secondary_keyword: "why my mesh shows fewer nodes than I have"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-22
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    series: bench-notes
+    primary_keyword: "LoRa dev board comparison for MeshCore"
+    secondary_keyword: "Heltec vs RAK mesh node"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-24
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: knowing-over-guessing
+    series: the-honest-comparison
+    primary_keyword: "MeshCore vs Meshtastic"
+    secondary_keyword: "MeshCore vs Meshtastic for emergency use"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-27
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    series: readiness
+    primary_keyword: "ham radio CERT EMCOMM mesh"
+    secondary_keyword: "mesh radio for ARES RACES readiness"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-29
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: mesh-pollution
+    primary_keyword: "diagnosing a chatty node on a LoRa mesh"
+    secondary_keyword: "node sending too many adverts"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-01
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: under-the-hood
+    theme: power-of-refusal
+    primary_keyword: "what data a mesh analytics tool stores"
+    secondary_keyword: "anonymous signal metadata SNR hops timing"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-04
+    type: post
+    segment: ham
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: networks-of-people
+    series: from-the-field
+    primary_keyword: "mesh networking at a hamfest"
+    secondary_keyword: "MeshCore hamfest demo"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-06
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    primary_keyword: "why mesh packets disappear"
+    secondary_keyword: "silent packet loss LoRa mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-08
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    series: under-the-hood
+    primary_keyword: "how MeshCore packets become a live map"
+    secondary_keyword: "MQTT ingest pipeline for a mesh network"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-11
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: position
+    theme: own-your-ground
+    primary_keyword: "keeping control of your mesh network"
+    secondary_keyword: "mesh data sovereignty"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-13
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: signal-glossary
+    primary_keyword: "what is SNR in LoRa"
+    secondary_keyword: "signal to noise ratio explained radio"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-15
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: knowing-over-guessing
+    primary_keyword: "dedicated MeshCore gateway node or shared"
+    secondary_keyword: "where to run your mesh MQTT gateway"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-18
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    series: readiness
+    primary_keyword: "running a mesh network tabletop exercise"
+    secondary_keyword: "comms failure tabletop scenario"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-20
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "measuring LoRa link margin"
+    secondary_keyword: "how much link margin is enough"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-22
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "spoofed node prefix on a mesh map"
+    secondary_keyword: "why inferred mesh edges are rejected"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-25
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: primer
+    theme: networks-of-people
+    series: neighborhood-watch
+    primary_keyword: "block by block neighborhood mesh buildout"
+    secondary_keyword: "growing a neighborhood mesh street by street"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-27
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    series: bench-notes
+    primary_keyword: "tuning a LoRa antenna SWR"
+    secondary_keyword: "measuring antenna SWR with a NanoVNA"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-29
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: earned-competence
+    series: gear-up
+    primary_keyword: "Heltec vs RAK for MeshCore"
+    secondary_keyword: "which LoRa board to buy first"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-01
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: own-your-ground
+    series: from-the-field
+    primary_keyword: "off-grid mesh network buildout"
+    secondary_keyword: "homestead mesh communications"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-03
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    primary_keyword: "how LoRa mesh routing works"
+    secondary_keyword: "flood routing vs managed flood MeshCore"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-05
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: own-your-ground
+    primary_keyword: "Mosquitto MQTT broker setup for MeshCore"
+    secondary_keyword: "self-hosted MQTT broker with TLS"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-08
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: position
+    theme: power-of-refusal
+    series: why-we
+    primary_keyword: "privacy first mesh monitoring"
+    secondary_keyword: "why a mesh tool should collect less data"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-10
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: first-light
+    primary_keyword: "see your first MeshCore packet"
+    secondary_keyword: "first packet on the live packets view"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-12
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: own-your-ground
+    primary_keyword: "can a mesh analytics service write to my broker"
+    secondary_keyword: "read-only MQTT subscriber model"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-15
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: position
+    theme: networks-of-people
+    primary_keyword: "community mesh network group"
+    secondary_keyword: "building a local mesh network group"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-17
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: mesh-pollution
+    primary_keyword: "duplicate packet floods in a LoRa mesh"
+    secondary_keyword: "duplicate flooding wastes airtime"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-19
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: power-of-refusal
+    primary_keyword: "MeshCore node naming privacy marker"
+    secondary_keyword: "how to opt a node out of mesh mapping"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-22
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: knowing-over-guessing
+    primary_keyword: "do I need an observer on every node"
+    secondary_keyword: "how many mesh observers to enroll"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-24
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: signal-glossary
+    primary_keyword: "what is dBm"
+    secondary_keyword: "dBm vs dB radio power explained"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-26
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    series: under-the-hood
+    primary_keyword: "what is a mesh network observer"
+    secondary_keyword: "enrolled observer vs repeater data"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-29
+    type: post
+    segment: cert-emcomm
+    funnel_stage: awareness
+    bucket: position
+    theme: ready-before-it-matters
+    primary_keyword: "grid-down communications planning"
+    secondary_keyword: "preparing comms for grid failure"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-01
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "measuring hop count in a MeshCore mesh"
+    secondary_keyword: "how many hops is too many"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-03
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: knowing-over-guessing
+    series: the-honest-comparison
+    primary_keyword: "MeshCore vs APRS for emergency messaging"
+    secondary_keyword: "packet radio vs LoRa mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-06
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: ready-before-it-matters
+    series: from-the-field
+    primary_keyword: "winter storm mesh communications"
+    secondary_keyword: "grid-down winter comms report"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-08
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    primary_keyword: "reading MeshCore gateway logs"
+    secondary_keyword: "what your MQTT gateway log tells you"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-10
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: earned-competence
+    primary_keyword: "MeshCore live packet viewer"
+    secondary_keyword: "watch mesh packets in real time"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-13
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    series: readiness
+    primary_keyword: "adding mesh radio to your emergency comms plan"
+    secondary_keyword: "ICS communications plan mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-15
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    series: bench-notes
+    primary_keyword: "building a MeshCore home lab bench"
+    secondary_keyword: "holiday LoRa mesh build"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-17
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: earned-competence
+    series: gear-up
+    primary_keyword: "build a LoRa mesh for under $100"
+    secondary_keyword: "cheapest MeshCore starter kit"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-20
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: position
+    theme: own-your-ground
+    primary_keyword: "self-reliant communication network"
+    secondary_keyword: "owning your communications infrastructure"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-22
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    primary_keyword: "MeshCore channels and frequencies explained"
+    secondary_keyword: "US 915 MHz LoRa mesh channel"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-24
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: earned-competence
+    primary_keyword: "how a mesh map draws a connection"
+    secondary_keyword: "from a LoRa packet to a map edge"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-27
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: position
+    theme: earned-competence
+    primary_keyword: "lessons running a mesh network"
+    secondary_keyword: "what a year of LoRa mesh taught me"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-29
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "measuring LoRa airtime and duty cycle"
+    secondary_keyword: "time on air per packet"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-31
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "winter storm communications readiness"
+    secondary_keyword: "grid-down comms in cold weather"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-03
+    type: post
+    segment: ham
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: networks-of-people
+    series: from-the-field
+    primary_keyword: "growing a club mesh network"
+    secondary_keyword: "amateur radio club MeshCore onboarding"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-05
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: signal-glossary
+    primary_keyword: "RSSI vs SNR explained"
+    secondary_keyword: "which one tells you link quality"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-07
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: ready-before-it-matters
+    primary_keyword: "what happens when your MQTT broker goes down"
+    secondary_keyword: "mesh data gaps during a broker outage"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-10
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    bucket: position
+    theme: own-your-ground
+    series: why-we
+    primary_keyword: "self-hosting mesh network data"
+    secondary_keyword: "why you should host your own mesh broker"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-12
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: networks-of-people
+    series: first-light
+    primary_keyword: "adding your first mesh repeater"
+    secondary_keyword: "extend MeshCore coverage with a repeater"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-14
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: knowing-over-guessing
+    primary_keyword: "MeshCore channel and frequency plan"
+    secondary_keyword: "avoiding mesh channel congestion"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-17
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: primer
+    theme: networks-of-people
+    series: neighborhood-watch
+    primary_keyword: "how to start a neighborhood mesh network"
+    secondary_keyword: "first nodes for a community mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-19
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: mesh-pollution
+    primary_keyword: "measuring the RF noise floor"
+    secondary_keyword: "noise floor on a LoRa band"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-21
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: power-of-refusal
+    series: under-the-hood
+    primary_keyword: "how mesh companion devices are identity-scrubbed"
+    secondary_keyword: "privacy scrub at the ingest edge"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-24
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: power-of-refusal
+    primary_keyword: "can people see my location on a mesh network"
+    secondary_keyword: "mesh network location privacy"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-26
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: signal
+    theme: ready-before-it-matters
+    series: bench-notes
+    primary_keyword: "solar power budget for a LoRa node"
+    secondary_keyword: "sizing a battery for an off-grid repeater"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-28
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: networks-of-people
+    primary_keyword: "onboard a new member to your mesh network"
+    secondary_keyword: "first node setup for a club member"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-31
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: position
+    theme: networks-of-people
+    primary_keyword: "neighborhood communication network"
+    secondary_keyword: "mutual aid mesh network"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-02
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "measuring packet loss on a mesh network"
+    secondary_keyword: "delivery rate per link MeshCore"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-04
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: earned-competence
+    series: gear-up
+    primary_keyword: "LoRa mesh antenna buying guide"
+    secondary_keyword: "antennas to avoid for a 915 MHz mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-07
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: ready-before-it-matters
+    series: from-the-field
+    primary_keyword: "search and rescue mesh network"
+    secondary_keyword: "SAR communications exercise report"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-09
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    primary_keyword: "why two strong nodes can't hear each other"
+    secondary_keyword: "high RSSI but no packets"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-11
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: own-your-ground
+    primary_keyword: "MeshCore MQTT topic structure"
+    secondary_keyword: "what topics a mesh observer subscribes to"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-14
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: own-your-ground
+    series: neighborhood-watch
+    primary_keyword: "who owns a community mesh network"
+    secondary_keyword: "governance for a shared neighborhood mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-16
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: signal-glossary
+    primary_keyword: "LoRa spreading factor explained"
+    secondary_keyword: "SF7 vs SF12 range and speed"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-18
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: knowing-over-guessing
+    primary_keyword: "which mesh nodes to make observers"
+    secondary_keyword: "observer placement strategy"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-21
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    series: readiness
+    primary_keyword: "reporting mesh network reliability to a served agency"
+    secondary_keyword: "served agency communications report"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-23
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    series: bench-notes
+    primary_keyword: "MeshCore serial console debugging"
+    secondary_keyword: "reading USB serial output from a node"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-25
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: knowing-over-guessing
+    series: the-honest-comparison
+    primary_keyword: "MeshCore vs GMRS for neighborhood comms"
+    secondary_keyword: "GMRS voice vs mesh data messaging"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-28
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: position
+    theme: knowing-over-guessing
+    primary_keyword: "trusting your mesh map in an emergency"
+    secondary_keyword: "verifying mesh topology you didn't draw"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-02
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: knowing-over-guessing
+    series: mesh-pollution
+    primary_keyword: "fixing misconfigured advert intervals"
+    secondary_keyword: "advertise interval flooding the net"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-04
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "how mesh network stats are calculated"
+    secondary_keyword: "reading MeshCore network statistics"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-07
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: networks-of-people
+    series: from-the-field
+    primary_keyword: "community mesh network case study"
+    secondary_keyword: "a neighborhood mesh goes live"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-09
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "measuring mesh network latency"
+    secondary_keyword: "end to end delay across hops"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-11
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    series: under-the-hood
+    primary_keyword: "how a mesh topology map is built"
+    secondary_keyword: "evidence-based mesh topology engine"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-14
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: position
+    theme: networks-of-people
+    series: why-we
+    primary_keyword: "locally owned mesh network"
+    secondary_keyword: "why community mesh should stay local"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-16
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    bucket: primer
+    theme: own-your-ground
+    series: first-light
+    primary_keyword: "enrolling your first MeshCore observer"
+    secondary_keyword: "connect an observer over MQTT"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-18
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: earned-competence
+    primary_keyword: "LoRa duty cycle and airtime budget"
+    secondary_keyword: "how much airtime your mesh can use"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-21
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: knowing-over-guessing
+    primary_keyword: "how many repeaters does a mesh need"
+    secondary_keyword: "too many repeaters mesh network"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-23
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: primer
+    theme: power-of-refusal
+    primary_keyword: "what a mesh observer actually does"
+    secondary_keyword: "observer vs node vs repeater"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-25
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "duplicate packet flooding on a mesh"
+    secondary_keyword: "deduplicating LoRa mesh traffic"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-28
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: power-of-refusal
+    series: neighborhood-watch
+    primary_keyword: "privacy on a shared community mesh"
+    secondary_keyword: "keeping neighbors anonymous on a mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-30
+    type: post
+    segment: ham
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: signal-glossary
+    primary_keyword: "what is LoRa airtime"
+    secondary_keyword: "airtime per message calculation"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-01
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: ready-before-it-matters
+    series: gear-up
+    primary_keyword: "solar power for an off-grid mesh node"
+    secondary_keyword: "battery sizing for a LoRa repeater"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-04
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: ready-before-it-matters
+    series: from-the-field
+    primary_keyword: "ARES mesh network drill"
+    secondary_keyword: "county EMCOMM exercise report"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-06
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    series: bench-notes
+    primary_keyword: "weatherproof enclosure for a LoRa repeater"
+    secondary_keyword: "IP65 enclosure venting condensation"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-08
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: own-your-ground
+    primary_keyword: "host an MQTT broker on a Raspberry Pi or a VPS"
+    secondary_keyword: "where to run your mesh broker"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-11
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: position
+    theme: earned-competence
+    primary_keyword: "understanding how your mesh works"
+    secondary_keyword: "no black box mesh monitoring"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-13
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "LoRa mesh throughput measurement"
+    secondary_keyword: "real bytes per minute on a mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-15
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: earned-competence
+    primary_keyword: "monitor a growing community mesh network"
+    secondary_keyword: "community mesh analytics at scale"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-18
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    series: readiness
+    primary_keyword: "mesh network activation checklist"
+    secondary_keyword: "incident mesh net activation playbook"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-20
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    primary_keyword: "MeshCore settings that change your range"
+    secondary_keyword: "spreading factor and bandwidth tradeoffs"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-22
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: knowing-over-guessing
+    series: the-honest-comparison
+    primary_keyword: "MeshCore vs commercial LoRa telemetry"
+    secondary_keyword: "open mesh vs proprietary telemetry"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-25
+    type: post
+    segment: cert-emcomm
+    funnel_stage: awareness
+    bucket: position
+    theme: ready-before-it-matters
+    primary_keyword: "redundancy in emergency communications"
+    secondary_keyword: "the weak link fails first comms"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-27
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: mesh-pollution
+    primary_keyword: "spoofed node prefixes in a mesh"
+    secondary_keyword: "why a prefix is rejected not drawn"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-29
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "redundant MQTT broker for an emergency mesh"
+    secondary_keyword: "broker failover setup"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-02
+    type: post
+    segment: ham
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: networks-of-people
+    series: from-the-field
+    primary_keyword: "MeshCore at Hamvention"
+    secondary_keyword: "ham radio convention mesh demo"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-04
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: primer
+    theme: earned-competence
+    primary_keyword: "reading your Network Stats page"
+    secondary_keyword: "what mesh health numbers mean"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-06
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: own-your-ground
+    series: under-the-hood
+    primary_keyword: "bring your own broker architecture"
+    secondary_keyword: "how a read-only mesh ingest works"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-09
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: position
+    theme: knowing-over-guessing
+    series: why-we
+    primary_keyword: "honest mesh network map"
+    secondary_keyword: "when a mesh map should say unknown"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-11
+    type: post
+    segment: ham
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: signal-glossary
+    primary_keyword: "LoRa duty cycle explained"
+    secondary_keyword: "duty cycle limits and regulations"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-13
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "what makes a mesh observer trusted"
+    secondary_keyword: "trusted observer vs unverified node"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-16
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: own-your-ground
+    primary_keyword: "what happens to my mesh data if the service shuts down"
+    secondary_keyword: "mesh analytics vendor shutdown data"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-18
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: first-light
+    primary_keyword: "your first mesh coverage check"
+    secondary_keyword: "verify where your nodes reach"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-20
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "mesh packet timestamps and clock skew"
+    secondary_keyword: "timing accuracy in mesh logs"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-23
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: position
+    theme: power-of-refusal
+    primary_keyword: "minimizing data on a mesh network"
+    secondary_keyword: "privacy by default mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-25
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "measuring mesh network congestion"
+    secondary_keyword: "channel busy ratio LoRa"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-27
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "mesh go-kit checklist for an activation"
+    secondary_keyword: "EMCOMM deployment comms checklist"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-30
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: position
+    theme: own-your-ground
+    primary_keyword: "mesh network data ownership"
+    secondary_keyword: "owning your mesh data"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-01
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    series: bench-notes
+    primary_keyword: "LoRa range testing methodology"
+    secondary_keyword: "repeatable drive test for mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-03
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: dispatch
+    theme: earned-competence
+    series: gear-up
+    primary_keyword: "best hardware for a MeshCore MQTT gateway"
+    secondary_keyword: "Raspberry Pi vs mini PC mesh gateway"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-06
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: ready-before-it-matters
+    series: from-the-field
+    primary_keyword: "Field Day mesh network preparation"
+    secondary_keyword: "preparing MeshCore for Field Day"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-08
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: signal
+    theme: ready-before-it-matters
+    primary_keyword: "find the link that fails under load"
+    secondary_keyword: "a link that drops during an incident"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-10
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: knowing-over-guessing
+    primary_keyword: "add a repeater or upgrade the antenna"
+    secondary_keyword: "fixing a mesh coverage gap"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-13
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: networks-of-people
+    series: neighborhood-watch
+    primary_keyword: "scaling a neighborhood mesh network"
+    secondary_keyword: "growing a community mesh beyond a few blocks"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-15
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: knowing-over-guessing
+    series: mesh-pollution
+    primary_keyword: "a badly sited repeater is polluting your mesh"
+    secondary_keyword: "repeater hears everything reradiates everything"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-17
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "when a mesh map shows what it cannot verify"
+    secondary_keyword: "honest coverage unknowns on a mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-20
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: position
+    theme: networks-of-people
+    primary_keyword: "mesh network community building"
+    secondary_keyword: "the people behind the packets"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-22
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: signal
+    theme: ready-before-it-matters
+    primary_keyword: "load testing your mesh before Field Day"
+    secondary_keyword: "Field Day mesh traffic spike"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-24
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "verify your mesh before Field Day"
+    secondary_keyword: "Field Day mesh pre-flight check"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-27
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: position
+    theme: ready-before-it-matters
+    primary_keyword: "emergency communications drill"
+    secondary_keyword: "rehearsing comms failure before it matters"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-29
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    series: signal-glossary
+    primary_keyword: "what is a link budget"
+    secondary_keyword: "LoRa link budget calculation"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-01
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: knowing-over-guessing
+    series: the-honest-comparison
+    primary_keyword: "do I need mesh analytics or just a repeater"
+    secondary_keyword: "a plain repeater vs a monitored mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-04
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: networks-of-people
+    series: from-the-field
+    primary_keyword: "Field Day mesh network results"
+    secondary_keyword: "Field Day MeshCore after-action"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-06
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: knowing-over-guessing
+    series: measure-your-mesh
+    primary_keyword: "measuring real mesh coverage"
+    secondary_keyword: "coverage map from observed packets"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-08
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: networks-of-people
+    primary_keyword: "who hosts the broker in a community mesh"
+    secondary_keyword: "shared data ownership in a neighborhood mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-11
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: position
+    theme: own-your-ground
+    series: why-we
+    primary_keyword: "trustworthy mesh analytics"
+    secondary_keyword: "choosing a mesh tool you can trust"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-13
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    series: bench-notes
+    primary_keyword: "LoRa node battery runtime testing"
+    secondary_keyword: "measuring real node power draw"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-15
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: under-the-hood
+    theme: earned-competence
+    series: under-the-hood
+    primary_keyword: "how a real-time mesh map works"
+    secondary_keyword: "rendering live mesh topology"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-18
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: ready-before-it-matters
+    primary_keyword: "how to know your mesh is ready for an emergency"
+    secondary_keyword: "mesh network readiness check"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-20
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: knowing-over-guessing
+    series: first-light
+    primary_keyword: "see your mesh on a live map for the first time"
+    secondary_keyword: "first time on the Waev Live Map"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-22
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: field-manual
+    theme: own-your-ground
+    primary_keyword: "should you enable TLS on your MQTT broker"
+    secondary_keyword: "securing a MeshCore broker connection"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-25
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: position
+    theme: own-your-ground
+    primary_keyword: "avoiding vendor lock-in mesh network"
+    secondary_keyword: "portable mesh network data"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-27
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    primary_keyword: "calculating LoRa time on air"
+    secondary_keyword: "time on air calculator explained"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-07-29
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: dispatch
+    theme: ready-before-it-matters
+    series: gear-up
+    primary_keyword: "handheld vs fixed node for a mesh go-kit"
+    secondary_keyword: "portable MeshCore go-kit gear"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-01
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: dispatch
+    theme: ready-before-it-matters
+    series: from-the-field
+    primary_keyword: "wildfire mesh communications"
+    secondary_keyword: "wildfire evacuation comms mesh"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-03
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: knowing-over-guessing
+    series: mesh-pollution
+    primary_keyword: "hunting the node flooding your mesh"
+    secondary_keyword: "track down a polluting node by direction"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-05
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: power-of-refusal
+    primary_keyword: "how long a mesh analytics tool keeps your data"
+    secondary_keyword: "mesh metadata retention period"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-08
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: position
+    theme: knowing-over-guessing
+    primary_keyword: "a mesh map you can trust in an incident"
+    secondary_keyword: "false confidence mesh map"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-10
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: signal
+    theme: ready-before-it-matters
+    series: measure-your-mesh
+    primary_keyword: "measuring mesh node uptime"
+    secondary_keyword: "uptime you can show a served agency"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-12
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    primary_keyword: "test your emergency mesh before hurricane season"
+    secondary_keyword: "annual comms readiness check"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-15
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
+    series: readiness
+    primary_keyword: "communications after-action report mesh"
+    secondary_keyword: "mesh network after-action review"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-17
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
+    series: bench-notes
+    primary_keyword: "reducing RF noise on a LoRa node"
+    secondary_keyword: "USB and switching supply interference"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-19
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: own-your-ground
+    primary_keyword: "where Waev runs and what it means for your data"
+    secondary_keyword: "Cloudflare-hosted mesh analytics data residency"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-22
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    bucket: position
+    theme: earned-competence
+    primary_keyword: "trusting your own mesh network"
+    secondary_keyword: "verifying a mesh you built yourself"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-24
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
+    primary_keyword: "MeshCore vs a single long-range link"
+    secondary_keyword: "when a mesh beats point to point"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-26
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
+    primary_keyword: "evidence-based mesh topology explained"
+    secondary_keyword: "why a mesh map needs proof to draw a line"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-08-29
+    type: post
+    segment: cert-emcomm
+    funnel_stage: awareness
+    bucket: position
+    theme: ready-before-it-matters
+    primary_keyword: "lessons from emergency communications season"
+    secondary_keyword: "after the storm comms review"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+# ===========================================================================
+# RECURRING CHECKPOINTS — monthly + quarterly. These are the dated checkpoints
+# of the cron loops defined in ./CADENCE.md. The full weekly cadence (link
+# sweeps, competitor diffing, analytics pulls) is cron-driven there, not seeded
+# per-week here. For audit/seo-task entries, segment = the content cluster
+# under review that period (rotated so each segment is reviewed ~quarterly),
+# funnel_stage = the priority lens, and primary/secondary_keyword = work focus.
+# ===========================================================================
+recurring:
+  # ── Monthly site SEO audit (1st of month) → ./briefs/seo-auditor.md ───────
+  - slot_date: 2026-06-01
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "technical SEO crawl health"
+    secondary_keyword: "core web vitals static build"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-07-01
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "JSON-LD schema validation"
+    secondary_keyword: "FAQPage BlogPosting markup"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-08-01
+    type: audit
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "internal link coverage audit"
+    secondary_keyword: "orphan post detection"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-09-01
+    type: audit
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "meta description coverage"
+    secondary_keyword: "title tag length audit"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-10-01
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "sitemap and rss integrity"
+    secondary_keyword: "canonical url audit"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-11-01
+    type: audit
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "llms.txt canon consistency"
+    secondary_keyword: "answer-engine fact coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-12-01
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "technical SEO crawl health"
+    secondary_keyword: "broken link sweep"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-01-01
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "content freshness audit"
+    secondary_keyword: "stale post refresh candidates"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-02-01
+    type: audit
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "internal link coverage audit"
+    secondary_keyword: "cluster interlink density"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-03-01
+    type: audit
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "core web vitals static build"
+    secondary_keyword: "image weight og audit"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-04-01
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "JSON-LD schema validation"
+    secondary_keyword: "structured data coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-05-01
+    type: audit
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "llms.txt canon consistency"
+    secondary_keyword: "answer-engine fact coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-06-01
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "technical SEO crawl health"
+    secondary_keyword: "annual sitewide audit"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  # ── Monthly internal-linking + metadata hygiene (14th) → seo-auditor ──────
+  - slot_date: 2026-06-14
+    type: seo-task
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "anchor text diversity"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-07-14
+    type: seo-task
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "topic cluster linking"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-08-14
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: adoption
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "og image alt coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-09-14
+    type: seo-task
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "pillar page consolidation"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-10-14
+    type: seo-task
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "description rewrite candidates"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-11-14
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "cross-segment bridge links"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-12-14
+    type: seo-task
+    segment: ham
+    funnel_stage: adoption
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "faq schema coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-01-14
+    type: seo-task
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "topic cluster linking"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-02-14
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: awareness
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "title tag rewrite candidates"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-03-14
+    type: seo-task
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "anchor text diversity"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-04-14
+    type: seo-task
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "og image alt coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-05-14
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "cross-segment bridge links"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-06-14
+    type: seo-task
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "faq schema coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  # ── Quarterly keyword-roadmap refresh (21st) → ./briefs/keyword-research.md
+  - slot_date: 2026-07-21
+    type: seo-task
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "keyword roadmap refresh"
+    secondary_keyword: "search demand gap analysis"
+    status: proposed
+    brief: ./briefs/keyword-research.md
+
+  - slot_date: 2026-10-21
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "keyword roadmap refresh"
+    secondary_keyword: "long-tail opportunity mining"
+    status: proposed
+    brief: ./briefs/keyword-research.md
+
+  - slot_date: 2027-01-21
+    type: seo-task
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "keyword roadmap refresh"
+    secondary_keyword: "search demand gap analysis"
+    status: proposed
+    brief: ./briefs/keyword-research.md
+
+  - slot_date: 2027-04-21
+    type: seo-task
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "keyword roadmap refresh"
+    secondary_keyword: "long-tail opportunity mining"
+    status: proposed
+    brief: ./briefs/keyword-research.md
+
+  # ── Quarterly competitive landscape audit (28th) → ./briefs/competitive-monitor.md
+  - slot_date: 2026-08-28
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "competitive landscape audit"
+    secondary_keyword: "Meshtastic ecosystem monitoring"
+    status: proposed
+    brief: ./briefs/competitive-monitor.md
+
+  - slot_date: 2026-11-28
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "competitive landscape audit"
+    secondary_keyword: "EMCOMM tooling comparison"
+    status: proposed
+    brief: ./briefs/competitive-monitor.md
+
+  - slot_date: 2027-02-28
+    type: audit
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "competitive landscape audit"
+    secondary_keyword: "mesh analytics SERP movement"
+    status: proposed
+    brief: ./briefs/competitive-monitor.md
+
+  - slot_date: 2027-05-28
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "competitive landscape audit"
+    secondary_keyword: "Meshtastic ecosystem monitoring"
+    status: proposed
+    brief: ./briefs/competitive-monitor.md

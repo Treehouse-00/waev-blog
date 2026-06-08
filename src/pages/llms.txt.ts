@@ -16,7 +16,7 @@ export const GET: APIRoute = async ({ site }) => {
     "",
     "> News, updates, and the thinking behind Waev — a real-time analytics platform for MeshCore mesh radio networks. Privacy by default, evidence-based topology, and a bring-your-own-broker data-ownership model that keeps a community's data with its operator.",
     "",
-    "This blog covers what Waev builds, how it works, and the values behind it, for the people who run MeshCore networks: CERT teams, ham clubs, off-grid neighborhoods, and emergency-response groups.",
+    "This blog covers what Waev builds, how it works, and the values behind it, for everyone in the MeshCore world — from mesh-curious tinkerers, makers, and students experimenting with LoRa to the people who run MeshCore networks: ham clubs, CERT teams, off-grid neighborhoods, and emergency-response groups.",
     "",
     "## Posts",
     ...posts.map(
