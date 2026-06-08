@@ -4,6 +4,17 @@ description: "Waev is a real-time analytics platform for MeshCore mesh radio net
 date: 2026-06-08
 tags: ["philosophy", "privacy"]
 author: "Waev"
+faq:
+  - q: "What is Waev?"
+    a: "Waev is a real-time analytics platform for MeshCore mesh radio networks. It shows operators live packets, per-hop signal, coverage, and overall network health."
+  - q: "Does Waev track personal devices or companion apps?"
+    a: "No. Companion and personal devices are identity-scrubbed at the ingest edge — name and device type are dropped before anything is stored, and only anonymous signal metadata (SNR, hops, timing) is kept for aggregate counts."
+  - q: "How do I opt out of Waev?"
+    a: "Add a privacy marker (⛔, 🛑, or 🚫) to your node name. A node marked that way is never stored, mapped, or counted."
+  - q: "Who owns the data Waev uses?"
+    a: "You do. With the bring-your-own-broker model, you host your own MQTT broker and own the data; Waev subscribes and keeps a read-only copy."
+  - q: "Does Waev accept feature requests?"
+    a: "Yes, and we read every one. We build in an order that serves the whole tool, so we may not build a given request — and we will be honest when we won't. Bug reports are always taken seriously."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -14,6 +25,12 @@ import BrokerCopy from "../../components/viz/BrokerCopy.astro";
 If you're running a mesh network for a community that depends on it, you already know what it actually takes. Quiet work, unglamorous, and genuinely important.
 
 <span class="waev-brand">Waev</span> is a real-time analytics platform for MeshCore networks. It exists because people like you needed a way to understand what those networks are actually doing — live packets, signal per hop, coverage, the health of the infrastructure you keep running, often alone, often without much tooling. And it’s built around a simple idea: your community’s data belongs to you, not us.
+
+<aside class="callout">
+
+**In short.** Waev is a real-time analytics platform for MeshCore mesh radio networks. It keeps privacy on by default, draws its maps only from verified evidence, and leaves your community's data in your hands. What follows is the six values behind those choices — and what each one means in practice.
+
+</aside>
 
 {/* TODO social proof: add one real number here before major distribution — e.g. “Currently monitoring X active networks across Y communities.” Even a single sentence changes the credibility read for first-time visitors. */}
 

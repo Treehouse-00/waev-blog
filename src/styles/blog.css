@@ -560,3 +560,66 @@
   color: var(--text-accent);
   margin-bottom: var(--sp-5);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FAQ (rendered from post frontmatter; mirrored as FAQPage JSON-LD)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.faq {
+  margin-top: var(--sp-12);
+  padding-top: var(--sp-8);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.faq-title {
+  font-size: var(--fs-label-lg);
+  line-height: var(--lh-label-lg);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  color: var(--text-accent);
+  margin-bottom: var(--sp-6);
+}
+
+.faq-list {
+  margin: 0;
+  display: grid;
+  gap: var(--sp-6);
+}
+
+.faq-item {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.faq-q {
+  font-size: var(--fs-title-md);
+  line-height: var(--lh-title-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.faq-a {
+  margin: 0;
+  font-size: var(--fs-body-md);
+  line-height: var(--lh-body-md);
+  letter-spacing: var(--ls-body-md);
+  color: var(--text-muted);
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+/* ── Hero illustration (optional, top of post) ── */
+.post-hero {
+  margin: 0 0 var(--sp-10);
+  border-radius: var(--shape-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-sunken);
+}
+
+.post-hero img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
