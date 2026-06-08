@@ -17,6 +17,14 @@ const blog = defineCollection({
     author: z.string().default("Waev"),
     /** Optional per-post OG image (root-relative). */
     ogImage: z.string().optional(),
+    /** Optional FAQ — rendered as a visible section AND emitted as FAQPage
+     *  JSON-LD for answer-engine (AEO) extraction. Single source of truth. */
+    faq: z
+      .array(z.object({ q: z.string(), a: z.string() }))
+      .optional(),
+    /** Optional whimsical hero illustration (root-relative src + alt).
+     *  Rendered at the top of the post and used as the OG/social image. */
+    hero: z.object({ src: z.string(), alt: z.string() }).optional(),
   }),
 });
 

@@ -19,6 +19,8 @@ interface Props {
   type?: "website" | "article";
   /** ISO date for articles. */
   publishedTime?: string;
+  /** Extra JSON-LD graphs (e.g. BlogPosting, FAQPage) injected by a page. */
+  jsonLd?: Record<string, unknown>[];
 }
 
 const {
@@ -27,11 +29,39 @@ const {
   image = "/og-default.png",
   type = "website",
   publishedTime,
+  jsonLd = [],
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image, Astro.site).href;
 const siteName = "Waev Blog";
+
+// ── Structured data (post-SEO / answer-engine optimization) ──
+// A stable Organization + WebSite graph on every page gives AI answer
+// engines clean, machine-legible facts to cite. Pages add their own graphs
+// (BlogPosting, FAQPage) via the `jsonLd` prop.
+const orgId = new URL("/#org", Astro.site).href;
+const org = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": orgId,
+  name: "Waev",
+  url: "https://waev.app",
+  description:
+    "Real-time analytics platform for MeshCore mesh radio networks.",
+  email: "admin@waev.app",
+  sameAs: ["https://github.com/Treehouse-00/waev-blog"],
+};
+const website = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": new URL("/#website", Astro.site).href,
+  name: siteName,
+  url: new URL("/", Astro.site).href,
+  inLanguage: "en",
+  publisher: { "@id": orgId },
+};
+const graphs = [org, website, ...jsonLd];
 ---
 
 <!doctype html>
@@ -45,6 +75,7 @@ const siteName = "Waev Blog";
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Waev Blog" href="/rss.xml" />
 
     <!-- Open Graph -->
     <meta property="og:type" content={type} />
@@ -83,6 +114,11 @@ const siteName = "Waev Blog";
         }
       })();
     </script>
+
+    <!-- JSON-LD structured data -->
+    {graphs.map((g) => (
+      <script type="application/ld+json" set:html={JSON.stringify(g)} />
+    ))}
   </head>
   <body>
     <div class="page">
