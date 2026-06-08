@@ -130,7 +130,7 @@ posts:
     segment: ham
     funnel_stage: evaluation
     primary_keyword: "MeshCore vs Meshtastic"      # [ROADMAP]
-    secondary_keyword: "mesh radio firmware comparison"
+    secondary_keyword: "MeshCore vs Meshtastic routing"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -138,8 +138,8 @@ posts:
     type: post
     segment: tinkerer
     funnel_stage: awareness
-    primary_keyword: "getting started with MeshCore"
-    secondary_keyword: "MeshCore beginner setup guide"
+    primary_keyword: "MeshCore node not showing up"
+    secondary_keyword: "first MeshCore node troubleshooting"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -149,7 +149,7 @@ posts:
     segment: off-grid
     funnel_stage: adoption
     primary_keyword: "LoRa mesh network setup tutorial"   # [ROADMAP]
-    secondary_keyword: "build a LoRa mesh network"
+    secondary_keyword: "your first three mesh nodes"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -158,7 +158,7 @@ posts:
     segment: cert-emcomm
     funnel_stage: evaluation
     primary_keyword: "ham radio CERT EMCOMM mesh"  # [ROADMAP]
-    secondary_keyword: "emergency communications mesh network"
+    secondary_keyword: "mesh radio for ARES RACES"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -185,8 +185,8 @@ posts:
     type: post
     segment: cert-emcomm
     funnel_stage: awareness
-    primary_keyword: "disaster response mesh network"
-    secondary_keyword: "off-grid emergency communications"
+    primary_keyword: "why emergency mesh networks fail"
+    secondary_keyword: "untested emergency communications"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -195,8 +195,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: evaluation
-    primary_keyword: "LoRa antenna selection mesh"
-    secondary_keyword: "mesh network antenna placement"
+    primary_keyword: "best antenna for LoRa mesh range"
+    secondary_keyword: "antenna gain vs height tradeoff"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -204,8 +204,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: adoption
-    primary_keyword: "MeshCore repeater setup"
-    secondary_keyword: "mesh network repeater configuration"
+    primary_keyword: "MeshCore repeater configuration mistakes"
+    secondary_keyword: "when a repeater hurts your mesh"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -215,16 +215,16 @@ posts:
     segment: off-grid
     funnel_stage: awareness
     primary_keyword: "off-grid neighborhood communication"
-    secondary_keyword: "neighborhood mesh network"
+    secondary_keyword: "neighborhood comms when cell is down"
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-21
+  - slot_date: 2027-01-28            # moved off 01-21 to avoid colliding with the quarterly keyword-research checkpoint
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
-    primary_keyword: "EMCOMM communications plan mesh"
-    secondary_keyword: "ARES mesh network integration"
+    primary_keyword: "writing mesh into an EMCOMM plan"
+    secondary_keyword: "ARES RACES mesh integration"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -234,7 +234,7 @@ posts:
     segment: off-grid
     funnel_stage: adoption
     primary_keyword: "MeshCore observer setup"
-    secondary_keyword: "mesh network monitoring"
+    secondary_keyword: "enroll your first observer"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -242,18 +242,18 @@ posts:
     type: post
     segment: ham
     funnel_stage: evaluation
-    primary_keyword: "mesh network topology map"
-    secondary_keyword: "MeshCore live map reading"
+    primary_keyword: "spot a failing mesh backbone"
+    secondary_keyword: "mesh topology early warning signs"
     status: proposed
     brief: ./briefs/content-writer.md
 
   # ── 2027-03 ──────────────────────────────────────────────────────────────
   - slot_date: 2027-03-04
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: awareness
-    primary_keyword: "MeshCore getting started"
-    secondary_keyword: "cheap LoRa mesh hardware"
+    primary_keyword: "best LoRa boards for MeshCore"
+    secondary_keyword: "cheap mesh radio hardware to avoid"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -271,8 +271,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: evaluation
-    primary_keyword: "community mesh network privacy"
-    secondary_keyword: "private mesh communications"
+    primary_keyword: "what a mesh network reveals about you"
+    secondary_keyword: "mesh metadata privacy"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -280,8 +280,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: adoption
-    primary_keyword: "mesh network coverage map"
-    secondary_keyword: "LoRa coverage analysis"
+    primary_keyword: "prove your mesh network coverage"
+    secondary_keyword: "coverage report for a served agency"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -290,8 +290,8 @@ posts:
     type: post
     segment: cert-emcomm
     funnel_stage: awareness
-    primary_keyword: "CERT communications readiness"
-    secondary_keyword: "emergency mesh network monitoring"
+    primary_keyword: "is your CERT mesh actually ready"
+    secondary_keyword: "measuring communications readiness"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -309,8 +309,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: adoption
-    primary_keyword: "scaling a mesh network"
-    secondary_keyword: "large LoRa mesh network"
+    primary_keyword: "what breaks when a mesh network grows"
+    secondary_keyword: "LoRa mesh congestion at scale"
     status: proposed
     brief: ./briefs/content-writer.md
 
