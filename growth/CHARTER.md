@@ -67,11 +67,18 @@ listed here is fully delegated to agents.
    production only when a human merges the PR. Merge = publish. The existing
    date-gate (`src/lib/posts.ts`) + deploy Action then ships it. No agent merges
    or deploys. (Charter-bound by Invariant 1 below.)
-   The final pre-publish checkpoint lives here: the content-writer delivers a
-   hero **image prompt**, never the image. A human generates the image and adds
-   `public/hero-<slug>.jpg` before merging; the `Hero asset check` stays red
-   until the asset is present, so a post cannot publish without its human-made
-   hero.
+   Editorial review and revision are NOT part of this human gate — they are
+   agent-owned. The content-writer drafts, then the editor loop
+   (`./briefs/editor.md`, CADENCE §3.10) independently reviews, fact-checks,
+   revises, and only then flips the PR from draft to ready-for-review. By the time
+   a post reaches the human it has already been through the internal review cycle.
+   The human's role at this gate is therefore minimal and exhaustive: (a) a
+   cursory gut-check of an already-reviewed, already-revised post, and (b) the
+   hero-image pass — the content-writer delivers a hero **image prompt**, never
+   the image; a human generates the image and adds `public/hero-<slug>.jpg`
+   before merging. The `Hero asset check` stays red until the asset is present,
+   so a post cannot publish without its human-made hero. No other editorial work
+   is expected of the human.
 3. **Approve outbound distribution.** Any post to an external community (forums,
    Discord/Matrix, mailing lists, social, Reddit, ham/CERT channels) is a
    human-approval gate. Agents may draft distribution copy and a target list as

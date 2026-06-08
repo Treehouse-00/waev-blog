@@ -39,10 +39,15 @@ Read alongside: `./calendar.yaml` (the dated backlog this rhythm draws from),
 
 ## 2. Status machine (how a loop advances a `calendar.yaml` entry)
 A `type: post` entry moves through `status`:
-`proposed → drafted → scheduled → published`.
+`proposed → drafted → scheduled → published`. Between `drafted` and the human
+merge sits an internal, agent-owned editorial review (§3.10) — it is a PR-state
+transition (draft → ready-for-review), not a new `calendar.yaml` status.
 - content-writer picks a `proposed` slot whose `slot_date` is within the lead
-  window, drafts the post, opens a PR, and flips the entry to `drafted` in the
-  same PR.
+  window, drafts the post, and opens a **draft** PR, flipping the entry to
+  `drafted` in the same PR. It does NOT mark the PR ready.
+- The editor loop (§3.10) independently reviews and revises that draft PR, then
+  flips it to ready-for-review. Only a ready, editor-approved PR should reach the
+  human. This is the internal review cycle — no human is involved in it.
 - On human merge, the post file exists in `src/content/blog`; the entry becomes
   `scheduled` (date-gated). The daily publish rebuild makes it `published` once
   `slot_date` arrives.
@@ -75,6 +80,23 @@ The orchestrating run-system reads this section to register jobs.
   `content.config.ts` frontmatter, plus the `status: proposed → drafted` flip in
   `calendar.yaml`, opened as one draft PR.
 - gate: `human-merge` (this is the publish gate).
+
+### 3.10 Thrice-weekly — Editorial review (the internal review cycle)
+- brief: `./briefs/editor.md`
+- cron: `0 18 * * 0,2,4`  (Sun/Tue/Thu 18:00 UTC — ~4h after content drafting)
+- trigger: each run, find the oldest OPEN draft PR on a `growth/post-*` branch
+  whose body lacks the `<!-- editor-approved -->` marker. If none, no-op. One PR
+  per run.
+- output: `pr` — independent review against `./VOICE.md` (incl. source discipline
+  + cultural safety), `./SEO-PLAYBOOK.md`, the two-axis resonance, and the hero
+  concept/`./image-concepts.md`. The editor REVISES the branch in place to fix
+  what it can, appends an "Editorial review" section + the `<!-- editor-approved
+  -->` marker to the PR body, and flips the PR to ready-for-review (`gh pr
+  ready`). If a draft is unsalvageable within scope, it leaves the PR a draft
+  with a clear "needs human" note instead.
+- gate: `human-merge` (the human still merges; the editor never merges/deploys).
+  This loop makes the human gate a cursory gut-check of an already-reviewed,
+  already-revised post — not an editing pass.
 
 ### 3.3 Weekly — Link & crawl sweep
 - brief: `./briefs/seo-auditor.md`
@@ -162,8 +184,14 @@ Human-only (require a gate above):
 - Resolving a flagged canon conflict (§0.3).
 
 ## 5. Review rhythm (the human side of the loop)
-- **Weekly triage (human, ~15 min):** review open draft PRs (§3.2) and the
-  week's reports (§3.3, §3.5). Merge or request changes. Merging = scheduling.
+- **Per-post (human, cursory):** content PRs reach the human only after the
+  editor loop (§3.10) has reviewed and revised them and flipped them to
+  ready-for-review. The human's job is a quick gut-check of a vetted post plus
+  the hero-image creation pass (CHARTER gate 2) — not an editing pass. All
+  editorial review and revision cycles are internal to the Growth OS.
+- **Weekly triage (human, ~15 min):** skim the ready, editor-approved post PRs
+  (§3.2/§3.10) and the week's reports (§3.3, §3.5). Merge or, rarely, send back.
+  Merging = scheduling.
 - **Monthly review (human):** read the monthly analytics report (§3.4), the
   monthly audit (§3.6), and distribution prep (§3.7); approve distribution
   actions; merge the fix and calendar PRs.
