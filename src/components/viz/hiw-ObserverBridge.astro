@@ -1,0 +1,100 @@
+---
+/**
+ * hiw-ObserverBridge — the observer as the bridge between two worlds:
+ *   Left: radio mesh (nodes + RF edges, dashed)
+ *   Center: the observer device (both radio and internet-facing)
+ *   Right: your MQTT broker (solid line — TCP/IP)
+ * Teaches that Waev has no antenna — it reads only what an enrolled
+ * observer relays over MQTT. Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 230" role="img" aria-label="The observer bridges two worlds: on the left it hears radio packets from mesh nodes over RF; on the right it publishes them to your MQTT broker over the internet." style="width:100%;height:auto;">
+  <defs>
+    <marker id="hiw-ob-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
+    </marker>
+    <marker id="hiw-ob-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+
+  <!-- ─── LEFT: Radio Mesh ─── -->
+  <text x="106" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;">Radio Mesh</text>
+
+  <!-- Three mesh nodes -->
+  <!-- Node 1 (top-left) -->
+  <circle cx="42" cy="80" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.5" />
+  <circle cx="42" cy="80" r="3" style="fill: var(--text-tertiary);" />
+  <text x="42" y="102" text-anchor="middle" class="viz-label">Node A</text>
+
+  <!-- Node 2 (bottom-left) -->
+  <circle cx="54" cy="148" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.5" />
+  <circle cx="54" cy="148" r="3" style="fill: var(--text-tertiary);" />
+  <text x="54" y="170" text-anchor="middle" class="viz-label">Node B</text>
+
+  <!-- Node 3 (top-right of cluster) -->
+  <circle cx="148" cy="62" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.5" />
+  <circle cx="148" cy="62" r="3" style="fill: var(--text-tertiary);" />
+  <text x="148" y="84" text-anchor="middle" class="viz-label">Node C</text>
+
+  <!-- RF edges (dashed) between mesh nodes -->
+  <line x1="52" y1="85" x2="138" y2="67" style="stroke: var(--border-hover);" stroke-width="1.25" stroke-dasharray="4 3" />
+  <line x1="52" y1="142" x2="52" y2="90" style="stroke: var(--border-hover);" stroke-width="1.25" stroke-dasharray="4 3" />
+  <line x1="62" y1="144" x2="142" y2="72" style="stroke: var(--border-hover);" stroke-width="1.25" stroke-dasharray="4 3" />
+
+  <!-- RF → Observer arrow (into observer's radio port) -->
+  <path d="M162 90 C 190 100 200 110 216 114" fill="none" style="stroke: var(--border-hover);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#hiw-ob-arrow)" />
+  <text x="186" y="100" text-anchor="middle" class="viz-label" style="font-size: 9px;">RF</text>
+
+  <!-- ─── CENTER: Observer ─── -->
+  <text x="280" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.06em; text-transform: uppercase;">Observer</text>
+
+  <rect x="218" y="90" width="124" height="60" rx="14" style="fill: var(--surface-1); stroke: var(--text-accent);" stroke-width="1.75" />
+  <!-- radio icon on left half of observer -->
+  <path d="M247 118 Q242 112 247 106" fill="none" style="stroke: var(--text-accent); opacity: 0.5;" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M247 118 Q240 110 247 102" fill="none" style="stroke: var(--text-accent); opacity: 0.3;" stroke-width="1" stroke-linecap="round" />
+  <circle cx="250" cy="120" r="3" style="fill: var(--text-accent);" />
+  <!-- divider -->
+  <line x1="280" y1="96" x2="280" y2="144" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <!-- ethernet icon on right half -->
+  <rect x="290" y="112" width="14" height="14" rx="2" style="fill: none; stroke: var(--text-accent); opacity: 0.7;" stroke-width="1.5" />
+  <line x1="293" y1="112" x2="293" y2="108" style="stroke: var(--text-accent); opacity: 0.7;" stroke-width="1.25" />
+  <line x1="297" y1="112" x2="297" y2="108" style="stroke: var(--text-accent); opacity: 0.7;" stroke-width="1.25" />
+  <line x1="301" y1="112" x2="301" y2="108" style="stroke: var(--text-accent); opacity: 0.7;" stroke-width="1.25" />
+
+  <!-- "enrolled" badge below -->
+  <rect x="240" y="160" width="80" height="20" rx="10" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="1" />
+  <text x="280" y="174" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em;">enrolled</text>
+
+  <!-- Observer → Broker arrow (solid — internet) -->
+  <path d="M344 120 C 370 120 390 120 406 120" fill="none" style="stroke: var(--accent-light);" stroke-width="1.75" marker-end="url(#hiw-ob-arrow-acc)" />
+  <text x="375" y="115" text-anchor="middle" class="viz-label" style="font-size: 9px; fill: var(--text-accent);">MQTT/TLS</text>
+
+  <!-- ─── RIGHT: Your Broker ─── -->
+  <text x="556" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;">Your Broker</text>
+
+  <rect x="414" y="78" width="164" height="86" rx="16" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1.25" />
+  <!-- server glyph (matching BrokerCopy) -->
+  <g transform="translate(448, 94)" style="stroke: var(--text-muted); fill: none;" stroke-width="1.5">
+    <rect x="0" y="0" width="36" height="12" rx="3" />
+    <rect x="0" y="18" width="36" height="12" rx="3" />
+    <circle cx="6" cy="6" r="2" style="fill: var(--text-muted); stroke: none;" />
+    <circle cx="6" cy="24" r="2" style="fill: var(--text-muted); stroke: none;" />
+  </g>
+  <text x="510" y="100" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">Your Broker</text>
+  <text x="510" y="118" text-anchor="middle" class="viz-label">MQTT</text>
+  <line x1="434" y1="138" x2="562" y2="138" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="434" y="156" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11px;">you own the data ✓</text>
+
+  <!-- Waev subscribe arrow (accent, right side of broker) -->
+  <line x1="580" y1="120" x2="640" y2="120" style="stroke: var(--accent-light);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#hiw-ob-arrow-acc)" />
+  <text x="610" y="115" text-anchor="middle" class="viz-label" style="font-size: 9px; fill: var(--text-accent);">Waev</text>
+  <text x="610" y="136" text-anchor="middle" class="viz-label" style="font-size: 9px; fill: var(--text-accent);">subscribes</text>
+
+  <!-- bottom legend: RF=dashed, Internet=solid -->
+  <line x1="218" y1="210" x2="260" y2="210" style="stroke: var(--border-hover);" stroke-width="1.5" stroke-dasharray="4 3" />
+  <text x="268" y="214" class="viz-label" style="font-size: 10px; fill: var(--text-muted);">RF (radio)</text>
+  <line x1="370" y1="210" x2="412" y2="210" style="stroke: var(--accent-light);" stroke-width="1.5" />
+  <text x="420" y="214" class="viz-label" style="font-size: 10px; fill: var(--text-muted);">TCP/IP</text>
+</svg>

@@ -1,0 +1,77 @@
+---
+/**
+ * PlaybookRepeaterImpact — before/after side-by-side showing the effect of
+ * a well-placed repeater on a degraded path.
+ *   BEFORE: two end nodes connected at 4 hops, –3 dB — barely holding.
+ *   AFTER:  new repeater inserted at the midpoint, two clean 2-hop links.
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 220" role="img" aria-label="Before and after comparison. Before: relay-anchor connects to relay-ridge at 4 hops and –3 dB — a degraded intermittent link. After: a new repeater inserted at the midpoint creates two healthy links of 2 hops each at +7 and +8 dB." style="width:100%;height:auto;">
+  <defs>
+    <marker id="pb-ri-arrow-dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+    </marker>
+    <marker id="pb-ri-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+
+  <!-- ── BEFORE ── -->
+  <text x="148" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); letter-spacing:0.06em;">BEFORE</text>
+
+  <!-- relay-anchor (left) -->
+  <circle cx="44" cy="110" r="12" style="fill: var(--accent);" />
+  <text x="44" y="136" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-anchor</text>
+
+  <!-- Weak link -->
+  <line x1="56" y1="110" x2="228" y2="110"
+    style="stroke: var(--sys-red-400); opacity: 0.7;" stroke-width="1.5" stroke-dasharray="5 4"
+    marker-end="url(#pb-ri-arrow-dim)" />
+
+  <!-- Link label -->
+  <text x="142" y="98" text-anchor="middle" class="viz-label" style="fill: var(--sys-red-400);">4 hops · –3 dB</text>
+  <text x="142" y="130" text-anchor="middle" style="font-family: var(--mono); font-size: 10px; fill: var(--text-tertiary);">intermittent</text>
+
+  <!-- relay-ridge (right, degraded) — dashed border -->
+  <circle cx="252" cy="110" r="11" fill="none" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="3 3" />
+  <text x="252" y="136" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">relay-ridge</text>
+
+  <!-- Divider -->
+  <line x1="350" y1="30" x2="350" y2="190" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── AFTER ── -->
+  <text x="536" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">AFTER</text>
+
+  <!-- relay-anchor (left) -->
+  <circle cx="390" cy="110" r="12" style="fill: var(--accent);" />
+  <text x="390" y="136" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-anchor</text>
+
+  <!-- Link: anchor → new repeater -->
+  <line x1="402" y1="110" x2="516" y2="110"
+    style="stroke: var(--accent-light);" stroke-width="1.75"
+    marker-end="url(#pb-ri-arrow-acc)" />
+  <text x="460" y="96" text-anchor="middle" class="viz-label" style="fill: var(--accent-light);">2 hops · +8 dB</text>
+
+  <!-- NEW repeater node (square, accent fill) -->
+  <rect x="520" y="98" width="22" height="22" rx="5" style="fill: var(--accent);" />
+  <!-- NEW label badge -->
+  <rect x="524" y="76" width="28" height="16" rx="8"
+    style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="1" />
+  <text x="538" y="88" text-anchor="middle" style="font-family: var(--mono); font-size: 9px; fill: var(--accent-light); font-weight: 700;">NEW</text>
+  <text x="531" y="136" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-new</text>
+
+  <!-- Link: new repeater → relay-ridge -->
+  <line x1="542" y1="110" x2="658" y2="110"
+    style="stroke: var(--accent-light);" stroke-width="1.75"
+    marker-end="url(#pb-ri-arrow-acc)" />
+  <text x="601" y="96" text-anchor="middle" class="viz-label" style="fill: var(--accent-light);">2 hops · +7 dB</text>
+
+  <!-- relay-ridge (right, now healthy) — solid border -->
+  <circle cx="670" cy="110" r="11" style="fill: var(--text-accent);" />
+  <text x="670" y="136" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-ridge</text>
+
+  <!-- Improvement summary at bottom -->
+  <text x="536" y="170" text-anchor="middle" class="viz-label" style="fill: var(--accent-light);">path restored · SNR +11 dB improvement</text>
+</svg>
