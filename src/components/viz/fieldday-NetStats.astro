@@ -1,0 +1,113 @@
+---
+/**
+ * fieldday-NetStats — abstracted Network Stats panel for the Field Day weekend.
+ * Shows a 72-hour activity bar chart with a clear surge at Field Day start (18:00 Sat)
+ * peaking over the 27-hour operating period, then dropping back Sunday evening.
+ * Theme-aware via CSS custom properties.
+ */
+
+// 18 bars = every ~4 hrs over 72 hr window, Thu-Sat-Sun
+// Heights (0–80) represent relative node counts
+const bars = [
+  { h: 18,  label: "Thu",  fd: false },
+  { h: 14,  label: "",     fd: false },
+  { h: 16,  label: "",     fd: false },
+  { h: 19,  label: "Fri",  fd: false },
+  { h: 17,  label: "",     fd: false },
+  { h: 18,  label: "",     fd: false },
+  { h: 22,  label: "Sat",  fd: false }, // Field Day setup begins
+  { h: 42,  label: "",     fd: true  }, // 18:00 start
+  { h: 72,  label: "",     fd: true  },
+  { h: 80,  label: "Peak", fd: true  },
+  { h: 76,  label: "",     fd: true  },
+  { h: 68,  label: "",     fd: true  },
+  { h: 71,  label: "Sun",  fd: true  },
+  { h: 65,  label: "",     fd: true  }, // end 18:00 Sun
+  { h: 32,  label: "",     fd: false },
+  { h: 21,  label: "",     fd: false },
+  { h: 16,  label: "Mon",  fd: false },
+  { h: 15,  label: "",     fd: false },
+];
+
+const BAR_W = 28;
+const GAP = 11;
+const CHART_H = 100;
+const CHART_Y = 30;
+const CHART_X = 30;
+const totalWidth = bars.length * (BAR_W + GAP) - GAP;
+---
+
+<svg viewBox={`0 0 ${totalWidth + CHART_X * 2} 180`} role="img" aria-label="Network Stats bar chart showing node activity over a 72-hour window. A dramatic surge marks the Field Day operating period from Saturday 18:00 through Sunday 18:00." style="width:100%;height:auto;">
+
+  <!-- Column: chart title / labels -->
+  <text x={CHART_X} y="18" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">UNIQUE NODES — 72 h WINDOW</text>
+
+  <!-- Bars -->
+  {bars.map((bar, i) => {
+    const x = CHART_X + i * (BAR_W + GAP);
+    const barH = (bar.h / 80) * CHART_H;
+    const y = CHART_Y + CHART_H - barH;
+    return (
+      <g>
+        <rect
+          x={x}
+          y={y}
+          width={BAR_W}
+          height={barH}
+          rx="3"
+          style={`fill: ${bar.fd ? "var(--accent-light)" : "var(--text-tertiary)"}; opacity: ${bar.fd ? "0.85" : "0.35"};`}
+        />
+        {bar.label && (
+          <text x={x + BAR_W / 2} y={CHART_Y + CHART_H + 20} text-anchor="middle" class="viz-label">
+            {bar.label}
+          </text>
+        )}
+      </g>
+    );
+  })}
+
+  <!-- Baseline -->
+  <line
+    x1={CHART_X}
+    y1={CHART_Y + CHART_H + 1}
+    x2={CHART_X + totalWidth}
+    y2={CHART_Y + CHART_H + 1}
+    style="stroke: var(--border-subtle);"
+    stroke-width="1"
+  />
+
+  <!-- Field Day bracket annotation -->
+  <line
+    x1={CHART_X + 6 * (BAR_W + GAP) + BAR_W / 2}
+    y1={CHART_Y + CHART_H + 35}
+    x2={CHART_X + 13 * (BAR_W + GAP) + BAR_W / 2}
+    y2={CHART_Y + CHART_H + 35}
+    style="stroke: var(--accent-light);"
+    stroke-width="1.5"
+  />
+  <line
+    x1={CHART_X + 6 * (BAR_W + GAP) + BAR_W / 2}
+    y1={CHART_Y + CHART_H + 31}
+    x2={CHART_X + 6 * (BAR_W + GAP) + BAR_W / 2}
+    y2={CHART_Y + CHART_H + 39}
+    style="stroke: var(--accent-light);"
+    stroke-width="1.5"
+  />
+  <line
+    x1={CHART_X + 13 * (BAR_W + GAP) + BAR_W / 2}
+    y1={CHART_Y + CHART_H + 31}
+    x2={CHART_X + 13 * (BAR_W + GAP) + BAR_W / 2}
+    y2={CHART_Y + CHART_H + 39}
+    style="stroke: var(--accent-light);"
+    stroke-width="1.5"
+  />
+  <text
+    x={(CHART_X + 6 * (BAR_W + GAP) + CHART_X + 13 * (BAR_W + GAP)) / 2 + BAR_W / 2}
+    y={CHART_Y + CHART_H + 56}
+    text-anchor="middle"
+    class="viz-label"
+    style="fill: var(--accent-light);"
+  >
+    Field Day operating window
+  </text>
+</svg>
