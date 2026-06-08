@@ -116,6 +116,34 @@ Network Ends," "When the Grid Goes Down" — concrete, plain, about a real task 
 decision. Never "The Ultimate Guide to MeshCore Network Monitoring." Fold the
 keyword into a human title; never let the keyword *be* the title.
 
+## Community & cultural awareness (we are guests in this ecosystem)
+Waev is a commercial layer on top of volunteer-built, open-source projects and
+long-standing radio communities. The fastest way to lose this audience is to act
+like an outsider vendor who does not respect that. Hold these as law:
+- **Never disparage MeshCore, Meshtastic, or any project — or its maintainers.**
+  They are volunteers shipping real work. MeshCore is the network Waev depends
+  on; Meshtastic is a sibling project many readers love. Punching down at either
+  reads as vendor insecurity and is off-brand on sight.
+- **Comparisons are fair, sourced, and generous, never FUD.** The
+  `the-honest-comparison` series wins by being *honest*: state real tradeoffs,
+  credit what the other tool does better, cite primary sources, and let the
+  reader decide. If a comparison only flatters Waev, it is propaganda — rewrite
+  it. Never imply a competitor is unsafe/broken without verifiable proof.
+- **Respect the open-source and volunteer ethos.** Credit upstream work; link to
+  it; do not present community-built features as if Waev invented them. We add a
+  layer; we did not build the mesh.
+- **Meet the culture, don't caricature it.** Ham radio has deep norms and
+  history; CERT/EmComm carry real accountability; off-grid/preparedness is about
+  resilience, not doom. Avoid prepper-apocalypse theatrics, gatekeeping ("real
+  operators know…"), and credential-flexing. Write to a peer, not down to a
+  novice or up to a gatekeeper.
+- **No appropriating tragedy or urgency.** Do not invoke specific disasters,
+  outages, or emergencies as marketing leverage. Preparedness content is about
+  readiness, soberly framed.
+When a topic is culturally sensitive (a competitor comparison, an emergency
+scenario, a community debate), the bar is higher, not lower: more sources, more
+restraint, more credit to others.
+
 ## The AEO hook: the `In short.` callout
 Every post opens, near the top, with the answer-engine hook used across the
 existing corpus:
@@ -158,6 +186,16 @@ Voice & messaging (MUST)
       fact is flagged for the human gate, not asserted.
 - [ ] Targets one `segment` + `funnel_stage` from `./STRATEGY.md`; the
       `primary_keyword` appears in the title or `In short.` and reads naturally.
+
+Source discipline & cultural safety (MUST)
+- [ ] Every external technical claim (firmware/CLI/defaults/versions/RF/hardware/
+      regulation/competitor features) is verified against a primary source, or
+      softened/cut. Load-bearing claims are noted in the PR body with their
+      source. No unverified confident claim ships.
+- [ ] No disparagement of MeshCore, Meshtastic, or any project/maintainer; any
+      comparison is fair, sourced, and credits what the other tool does better.
+- [ ] No prepper-doom, gatekeeping, credential-flexing, or tragedy-as-leverage
+      framing (see "Community & cultural awareness").
 
 Hygiene (SHOULD)
 - [ ] Names real Waev surfaces where relevant (Live Map, Network Stats, etc.).
