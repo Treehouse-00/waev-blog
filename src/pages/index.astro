@@ -6,6 +6,7 @@ import MeshField from "../components/viz/MeshField.astro";
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
+const [featured, ...rest] = posts;
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-US", {
@@ -21,37 +22,56 @@ const fmt = (d: Date) =>
     <header class="masthead">
       <span class="kicker">The Waev Blog</span>
       <h1 class="masthead-title">
-        Field notes from the<br />
-        <span class="masthead-gradient">opinionated mesh analyzer.</span>
+        Field notes on<br />
+        <span class="masthead-gradient">mesh intelligence.</span>
       </h1>
       <p class="masthead-subtitle">
         News, updates, and the thinking behind <span class="waev-brand">Waev</span> —
-        how we read MeshCore networks, what we choose to build, and the values we
-        refuse to compromise.
+        what we're building for MeshCore operators, and why.
       </p>
-      <div class="figure-frame" style="margin-top: var(--sp-4);">
-        <MeshField />
-      </div>
     </header>
 
-    <ul class="post-list">
-      {
-        posts.map((post) => (
-          <li>
-            <a class="card post-card" href={`/blog/${post.id}/`}>
-              <div class="post-card-meta">
-                <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
-                {post.data.tags.slice(0, 2).map((t) => (
-                  <span class="tag">{t}</span>
-                ))}
-              </div>
-              <h2 class="post-card-title">{post.data.title}</h2>
-              <p class="post-card-desc">{post.data.description}</p>
-              <span class="post-card-more">Read →</span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    {featured && (
+      <a class="featured" href={`/blog/${featured.id}/`}>
+        <div class="featured-body">
+          <div class="featured-meta">
+            <span class="featured-eyebrow">Latest</span>
+            <time datetime={featured.data.date.toISOString()}>{fmt(featured.data.date)}</time>
+            {featured.data.tags.slice(0, 2).map((t) => (
+              <span class="tag">{t}</span>
+            ))}
+          </div>
+          <h2 class="featured-title">{featured.data.title}</h2>
+          <p class="featured-desc">{featured.data.description}</p>
+          <span class="featured-cta">Read the post →</span>
+        </div>
+        <div class="featured-visual" aria-hidden="true">
+          <MeshField />
+        </div>
+      </a>
+    )}
+
+    {rest.length > 0 && (
+      <section class="more">
+        <h2 class="more-title">More posts</h2>
+        <ul class="post-list">
+          {rest.map((post) => (
+            <li>
+              <a class="card post-card" href={`/blog/${post.id}/`}>
+                <div class="post-card-meta">
+                  <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+                  {post.data.tags.slice(0, 2).map((t) => (
+                    <span class="tag">{t}</span>
+                  ))}
+                </div>
+                <h3 class="post-card-title">{post.data.title}</h3>
+                <p class="post-card-desc">{post.data.description}</p>
+                <span class="post-card-more">Read →</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </div>
 </Base>

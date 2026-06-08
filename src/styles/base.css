@@ -98,11 +98,13 @@ pre {
   border-radius: var(--shape-xs);
 }
 
-/* ── Inline brand mark — semibold + bright for "Waev" in body copy ──
-   Verbatim from the app's `.waev-brand` rule (hero.css). */
+/* ── Inline brand mark — semibold + high-contrast for "Waev" in body copy.
+   The app hardcodes `--sys-zinc-200` (bright on its dark-default UI), which
+   washes out on the light theme. Use the per-theme `--text` token instead so
+   the mark stays prominent against muted body copy in dim / dark / light. */
 .waev-brand {
   font-weight: var(--fw-semibold);
-  color: var(--sys-zinc-200);
+  color: var(--text);
 }
 
 /* ── Layout container — matches the app's 1200px grid body ── */
