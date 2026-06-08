@@ -1,0 +1,94 @@
+---
+/**
+ * PlaybookLinkTable — abstracted Network Stats panel showing four nodes
+ * with their path-to-backbone metrics: hop count, SNR, packets/hour, status.
+ * Color-coded: healthy (accent) → watchlist (yellow) → degraded (red) → no contact (dim).
+ * Theme-aware via CSS custom properties.
+ */
+
+const rows = [
+  { name: "relay-main",  hops: "1 hop",  snr: "+11 dB", pph: "48 / h",  statusColor: "var(--accent-light)",  statusLabel: "healthy",    dot: "accent" },
+  { name: "relay-north", hops: "2 hops", snr: "+7 dB",  pph: "31 / h",  statusColor: "var(--accent-light)",  statusLabel: "healthy",    dot: "accent" },
+  { name: "relay-east",  hops: "3 hops", snr: "+3 dB",  pph: "8 / h",   statusColor: "var(--sys-yellow-400)", statusLabel: "watchlist ⚠", dot: "yellow" },
+  { name: "relay-ridge", hops: "4 hops", snr: "–3 dB",  pph: "2 / h",   statusColor: "var(--sys-red-400)",   statusLabel: "degraded",   dot: "red" },
+];
+
+const COL = { name: 38, hops: 258, snr: 378, pph: 488, status: 590 };
+const ROW_H = 44;
+const HEADER_Y = 62;
+const FIRST_ROW_Y = 86;
+---
+
+<svg viewBox="0 0 720 260" role="img" aria-label="Network Stats path-quality table. Four nodes listed with hop count, SNR, packets per hour, and status. relay-main and relay-north are healthy. relay-east is on the watchlist at 3 hops and +3 dB SNR. relay-ridge is degraded at 4 hops and –3 dB SNR." style="width:100%;height:auto;">
+
+  <!-- Panel chrome -->
+  <rect x="18" y="32" width="684" height={FIRST_ROW_Y + rows.length * ROW_H - 32 + 14} rx="14"
+    style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Panel title -->
+  <text x="38" y="54" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">NETWORK STATS · PATH QUALITY</text>
+
+  <!-- Header row -->
+  <line x1="18" y1={HEADER_Y + 8} x2="702" y2={HEADER_Y + 8} style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x={COL.name} y={HEADER_Y}  class="viz-label" style="fill: var(--text-tertiary);">NODE</text>
+  <text x={COL.hops} y={HEADER_Y}  class="viz-label" style="fill: var(--text-tertiary);">PATH</text>
+  <text x={COL.snr}  y={HEADER_Y}  class="viz-label" style="fill: var(--text-tertiary);">SNR</text>
+  <text x={COL.pph}  y={HEADER_Y}  class="viz-label" style="fill: var(--text-tertiary);">PKT / H</text>
+  <text x={COL.status} y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">STATUS</text>
+
+  <!-- Data rows -->
+  {rows.map((row, i) => {
+    const y = FIRST_ROW_Y + i * ROW_H;
+    const textY = y + ROW_H / 2 + 4;
+    const isAlt = i % 2 === 1;
+    return (
+      <>
+        {isAlt && (
+          <rect x="19" y={y} width="682" height={ROW_H}
+            style="fill: var(--surface-sunken); opacity: 0.5;"
+            rx="0"
+          />
+        )}
+        {/* Row divider */}
+        {i > 0 && (
+          <line x1="18" y1={y} x2="702" y2={y} style="stroke: var(--border-subtle); opacity: 0.5;" stroke-width="1" />
+        )}
+        {/* Node name */}
+        <text x={COL.name} y={textY}
+          style={`font-family: var(--mono); font-size: 13px; fill: var(--text);`}>
+          {row.name}
+        </text>
+        {/* Hops */}
+        <text x={COL.hops} y={textY}
+          style={`font-family: var(--mono); font-size: 12px; fill: var(--text-muted);`}>
+          {row.hops}
+        </text>
+        {/* SNR — colored by health */}
+        <text x={COL.snr} y={textY}
+          style={`font-family: var(--mono); font-size: 13px; fill: ${row.statusColor}; font-weight: 600;`}>
+          {row.snr}
+        </text>
+        {/* Pkt/h */}
+        <text x={COL.pph} y={textY}
+          style={`font-family: var(--mono); font-size: 12px; fill: var(--text-muted);`}>
+          {row.pph}
+        </text>
+        {/* Status dot + label */}
+        <circle cx={COL.status + 6} cy={textY - 4} r="5"
+          style={`fill: ${row.statusColor};`} />
+        <text x={COL.status + 16} y={textY}
+          style={`font-family: var(--mono); font-size: 11px; fill: ${row.statusColor};`}>
+          {row.statusLabel}
+        </text>
+      </>
+    );
+  })}
+
+  <!-- Bottom rule + footnote -->
+  <line x1="18" y1={FIRST_ROW_Y + rows.length * ROW_H + 2} x2="702" y2={FIRST_ROW_Y + rows.length * ROW_H + 2}
+    style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="38" y={FIRST_ROW_Y + rows.length * ROW_H + 22}
+    class="viz-label" style="fill: var(--text-tertiary);">
+    4-hop path at –3 dB — relay-ridge is the coverage edge
+  </text>
+</svg>
