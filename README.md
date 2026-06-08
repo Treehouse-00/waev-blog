@@ -54,6 +54,8 @@ Body copy in Markdown...
 </Figure>
 ```
 
+**Do not include a byline or signoff.** Posts have no closing signature ("— The Waev team" or equivalent). The post speaks for itself.
+
 Reading time is computed automatically (`remark-reading-time.mjs`). Set
 `draft: true` to keep a post out of the index and build.
 
