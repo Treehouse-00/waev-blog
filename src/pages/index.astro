@@ -1,0 +1,57 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import MeshField from "../components/viz/MeshField.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+---
+
+<Base title="Waev Blog — News, updates & philosophy">
+  <div class="container">
+    <header class="masthead">
+      <span class="kicker">The Waev Blog</span>
+      <h1 class="masthead-title">
+        Field notes from the<br />
+        <span class="masthead-gradient">opinionated mesh analyzer.</span>
+      </h1>
+      <p class="masthead-subtitle">
+        News, updates, and the thinking behind <span class="waev-brand">Waev</span> —
+        how we read MeshCore networks, what we choose to build, and the values we
+        refuse to compromise.
+      </p>
+      <div class="figure-frame" style="margin-top: var(--sp-4);">
+        <MeshField />
+      </div>
+    </header>
+
+    <ul class="post-list">
+      {
+        posts.map((post) => (
+          <li>
+            <a class="card post-card" href={`/blog/${post.id}/`}>
+              <div class="post-card-meta">
+                <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+                {post.data.tags.slice(0, 2).map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
+              </div>
+              <h2 class="post-card-title">{post.data.title}</h2>
+              <p class="post-card-desc">{post.data.description}</p>
+              <span class="post-card-more">Read →</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>

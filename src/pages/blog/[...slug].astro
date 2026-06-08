@@ -1,0 +1,32 @@
+---
+import { getCollection, render } from "astro:content";
+import Post from "../../layouts/Post.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await render(post);
+
+// Reading time estimated by the remark plugin (see astro.config / README),
+// falls back gracefully when absent.
+const readingMinutes = remarkPluginFrontmatter?.minutesRead as number | undefined;
+---
+
+<Post
+  title={post.data.title}
+  description={post.data.description}
+  date={post.data.date}
+  updated={post.data.updated}
+  tags={post.data.tags}
+  author={post.data.author}
+  readingMinutes={readingMinutes}
+  ogImage={post.data.ogImage}
+>
+  <Content />
+</Post>

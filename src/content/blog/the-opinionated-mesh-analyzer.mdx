@@ -1,0 +1,115 @@
+---
+title: "The Opinionated Mesh Analyzer"
+description: "We thought about what we want Waev to be, and wrote it down. Six values that decide what we build, what we store, and what we politely decline."
+date: 2026-06-08
+tags: ["philosophy", "privacy"]
+author: "Waev"
+---
+
+import Figure from "../../components/Figure.astro";
+import PrivacyScrub from "../../components/viz/PrivacyScrub.astro";
+import TrustedSources from "../../components/viz/TrustedSources.astro";
+import BrokerCopy from "../../components/viz/BrokerCopy.astro";
+
+<span class="waev-brand">Waev</span> reads MeshCore networks for a living — live packets, signal per hop, coverage, the health of the infrastructure operators quietly keep running. Tools like this tend to accumulate features by accretion: whoever shouts loudest, soonest, wins.
+
+We'd rather not work that way. So before the roadmap fills up, here's the part that doesn't change.
+
+> We thought about what we want this to be, and wrote it down.
+
+It helps us say yes quickly, say no kindly, and stay honest when the two are in tension. Here are the six values underneath everything else.
+
+<div class="value-grid not-prose">
+  <div class="value-card">
+    <span class="value-card-index">01</span>
+    <h3 class="value-card-title">Privacy is the default</h3>
+    <p class="value-card-body">Opt-out is absolute. Personal devices are scrubbed at the edge before anything is written.</p>
+  </div>
+  <div class="value-card">
+    <span class="value-card-index">02</span>
+    <h3 class="value-card-title">Evidence over inference</h3>
+    <p class="value-card-body">If the map shows it, something verifiable produced it. We don't guess at topology.</p>
+  </div>
+  <div class="value-card">
+    <span class="value-card-index">03</span>
+    <h3 class="value-card-title">Aesthetics are a feature</h3>
+    <p class="value-card-body">If it isn't clear and beautiful, it isn't finished. Legibility is part of correctness.</p>
+  </div>
+  <div class="value-card">
+    <span class="value-card-index">04</span>
+    <h3 class="value-card-title">Performance is the point</h3>
+    <p class="value-card-body">Real-time has to feel real-time. Speed is a promise, not a nice-to-have.</p>
+  </div>
+  <div class="value-card">
+    <span class="value-card-index">05</span>
+    <h3 class="value-card-title">Your data stays yours</h3>
+    <p class="value-card-body">You bring users to a broker you own. We keep a copy — not the keys.</p>
+  </div>
+  <div class="value-card">
+    <span class="value-card-index">06</span>
+    <h3 class="value-card-title">Opinionated, on purpose</h3>
+    <p class="value-card-body">A considered roadmap beats a crowd-sourced one. Bug reports always welcome.</p>
+  </div>
+</div>
+
+## 01 · Privacy is the default, not a dial
+
+Mesh networks carry real conversations between real people. We treat that as a hard constraint, not a setting you have to discover.
+
+Two rules do most of the work. First, **opt-out is absolute**: add a privacy marker — ⛔ 🛑 🚫 — to a node name and it is never stored, never mapped, never counted. No caching, no edge cases. Second, **personal devices are scrubbed before they're written**. MeshCore companion apps broadcast ADVERTs on the same radio mesh as repeaters, so those packets reach our observers. At the ingest edge we strip the identity — name and device type are nullified — and keep only anonymous signal metadata for aggregate counts.
+
+<Figure caption="<b>Left:</b> a node that opts out is dropped entirely. <b>Right:</b> a companion ADVERT keeps its signal numbers, loses its identity.">
+  <PrivacyScrub />
+</Figure>
+
+The result: if you're running a companion app, you won't show up on <span class="waev-brand">Waev</span>. The only personal devices we ever treat as visible are ones an operator explicitly connected — and even then, a privacy symbol in the name overrides everything and turns it private.
+
+## 02 · Evidence over inference
+
+A network map is only as trustworthy as the weakest assumption behind it. Plenty of analyzers will happily draw an edge because two prefixes *looked* related. We don't.
+
+Every edge in the topology traces back to something we can verify: an **enrolled observer** connected over MQTT, or an **authenticated repeater**. A spoofed or merely inferred prefix doesn't get a line on the map — it gets rejected. That's less spectacular and far more honest.
+
+<Figure caption="Verified sources draw an edge. Inference doesn't — <b>no proof, no line.</b>">
+  <TrustedSources />
+</Figure>
+
+If a visualization implies something is true, it's because the evidence is there. That rule is worth more than any feature it costs us.
+
+## 03 · Aesthetics are a feature
+
+We hold a slightly unfashionable opinion: a dashboard that's hard to read is *wrong*, not just ugly. Clarity is part of correctness. Color has to mean something. Motion has to explain, not decorate. Density has to earn its place.
+
+This isn't polish bolted on at the end — it's a constraint we design under from the first sketch. If a screen can't make a complex thing feel simple, it isn't done yet.
+
+## 04 · Performance is the point
+
+"Real-time" is a claim, and we intend to keep it. Packets should land the instant they arrive; a map should pan without thinking about it; a query that scans the whole mesh should return before you wonder if it's broken.
+
+Speed is the difference between a tool you check and a tool you watch. This very blog is built to the same standard — static, near-zero JavaScript, fast on purpose.
+
+## 05 · Your community's data stays yours
+
+Here's the part we care about most, because it's where most platforms get greedy.
+
+We don't want to *be* your network's owner. The old model — everyone requesting access to one central set of MQTT servers — turns into a management nightmare: scoped here, full access there, a half-dozen requests a day, every one a judgment call. We'd rather invert it. **You bring your users to a broker you own. We subscribe, and keep a read-only copy.**
+
+<Figure caption="You host the broker and own the data. <b>We take a copy, not the keys.</b>">
+  <BrokerCopy />
+</Figure>
+
+You keep control of your community and its data. We get the telemetry we need to build good tools. Nobody has to manage an access list. It's a better deal for everyone, and it happens to be the honest one.
+
+## 06 · Opinionated, on purpose
+
+A service like this *should* be responsive to the people who use it — but with time and strategy, not at the whim of whoever asked last. That distinction is the whole job.
+
+So we're saying it plainly: <span class="waev-brand">Waev</span> is opinionated by design. We'll build deliberately, in an order that serves the network as a whole. You're welcome to send us a bug report any time — those we take seriously, always. But please don't be offended if a feature suggestion gets a thoughtful *no*. A considered roadmap is a feature too.
+
+## Talk to us
+
+Found something broken? Tell us — that's exactly the feedback we want. Bug reports and reproducible issues are the fastest way to make <span class="waev-brand">Waev</span> better, and they're genuinely appreciated.
+
+Everything above is the contract. We wrote it down so you'd know where we stand — and so we'd remember, too.
+
+<p class="endnote"><span class="endnote-title">— The Waev team</span></p>

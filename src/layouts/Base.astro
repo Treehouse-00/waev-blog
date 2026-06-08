@@ -1,0 +1,96 @@
+---
+import "../styles/tokens.css";
+import "../styles/themes/dim.css";
+import "../styles/themes/dark.css";
+import "../styles/themes/light.css";
+import "../styles/base.css";
+import "../styles/chrome.css";
+import "../styles/blog.css";
+
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or root-relative OG image path. */
+  image?: string;
+  /** "website" (index) or "article" (post). */
+  type?: "website" | "article";
+  /** ISO date for articles. */
+  publishedTime?: string;
+}
+
+const {
+  title,
+  description = "News, updates, and philosophy from Waev — the opinionated MeshCore analyzer.",
+  image = "/og-default.png",
+  type = "website",
+  publishedTime,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const siteName = "Waev Blog";
+---
+
+<!doctype html>
+<html lang="en" data-theme="dim">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1b1916" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={siteName} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Fonts — DM Sans / DM Mono, matching waev.app -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Theme bootstrap: apply persisted theme before paint to avoid FOUC.
+         Mirrors the main app (default = dim; OS preference NOT honoured). -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem("waev-theme");
+          if (t === "dark" || t === "dim" || t === "light") {
+            document.documentElement.setAttribute("data-theme", t);
+          }
+        } catch (e) {
+          /* private mode — fall through to default */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="page">
+      <Nav />
+      <main>
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

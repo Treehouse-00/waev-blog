@@ -1,0 +1,23 @@
+# Cloudflare Pages headers for blog.waev.app
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+  # Static blog: only self + Google Fonts. No inline event handlers; the small
+  # theme bootstrap/toggle scripts are emitted inline by Astro, so 'unsafe-inline'
+  # is required for script-src on a static host without per-build hashing.
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+# Astro fingerprints hashed assets under /_astro/* — safe to cache forever.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Long-lived static art.
+/og-default.png
+  Cache-Control: public, max-age=86400
+/favicon.svg
+  Cache-Control: public, max-age=86400

@@ -1,0 +1,54 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ * Theme overrides for data-theme="light".
+ */
+
+:root[data-theme="light"] {
+  --bg: var(--sys-zinc-375);
+  --bg-raised: var(--sys-zinc-250);
+  --surface: var(--sys-zinc-350);
+  --surface-hover: transparent;
+  --surface-active: var(--sys-black-8);
+  --text: var(--sys-zinc-800);
+  --text-muted: var(--sys-zinc-700);
+  --text-tertiary: var(--sys-zinc-600);
+  --text-accent: var(--sys-bluepurple-300);
+  --border: transparent;
+  --border-subtle: var(--sys-black-12);
+  --border-hover: var(--sys-black-12);
+  --border-focus: var(--sys-bluepurple-500);
+  --chart-grid: var(--sys-zinc-400);
+  --surface-1: var(--sys-zinc-250);
+  --surface-sunken: var(--sys-zinc-375);
+  --surface-glass: var(--bg-raised);
+  --outline-glass: var(--sys-zinc-400);
+  --surface-tint-1: var(--sys-black-4);
+  --surface-tint-2: var(--sys-black-6);
+  --surface-tint-3: var(--sys-black-8);
+  --surface-tint-4: var(--sys-black-12);
+  --surface-tint-5: var(--sys-black-12);
+  --maplibre-glass-bg: rgba(255, 255, 255, 0.75);
+  --maplibre-glass-border: rgba(0, 0, 0, 0.12);
+  --maplibre-glass-fg: rgba(0, 0, 0, 0.80);
+  --maplibre-glass-fg-dim: rgba(0, 0, 0, 0.65);
+  --maplibre-glass-divider: rgba(0, 0, 0, 0.08);
+  --maplibre-glass-hover: rgba(0, 0, 0, 0.06);
+  --maplibre-attrib-bg: rgba(255, 255, 255, 0.55);
+  --maplibre-attrib-fg: rgba(0, 0, 0, 0.55);
+  --shadow-elev-highlight: rgba(255, 255, 255, 0.40);
+  --shadow-elev-reflect: rgba(255, 255, 255, 0.30);
+  --shadow-elev-inner-glow: rgba(255, 255, 255, 0.06);
+  --shadow-elev-inner-shade: rgba(0, 0, 0, 0.02);
+  --shadow-elev-occlusion: rgba(0, 0, 0, 0.05);
+  --shadow-elev-depth: rgba(0, 0, 0, 0.03);
+  --accent: var(--sys-bluepurple-300);
+  --hover-halo: rgba(28, 66, 149, 0.30);
+  --accent-light: var(--sys-bluepurple-300);
+  --on-primary: var(--sys-zinc-100);
+  --ctl-neutral-bg: var(--sys-zinc-350);
+  --ctl-neutral-bg-hover: var(--sys-zinc-350);
+  --ctl-neutral-bg-on-surface: var(--sys-zinc-300);
+  --ctl-neutral-bg-on-surface-hover: var(--sys-zinc-300);
+  --ctl-neutral-fg: var(--sys-zinc-800);
+  --state-elevated-bg: var(--sys-zinc-300);
+}

@@ -1,0 +1,18 @@
+---
+/**
+ * Figure — frames a visual aid with the sunken panel + a mono caption.
+ * Pass the SVG (or any node) as the default slot; `caption` accepts inline
+ * HTML (e.g. <b> for emphasis).
+ */
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="figure">
+  <div class="figure-frame">
+    <slot />
+  </div>
+  {caption && <figcaption class="figure-caption" set:html={caption} />}
+</figure>

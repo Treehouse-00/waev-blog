@@ -1,0 +1,58 @@
+---
+/**
+ * MeshField — decorative abstracted node-graph, echoing the app's hero
+ * visual. Pure SVG, theme-aware via CSS custom properties. Purely
+ * ornamental, so it's hidden from assistive tech.
+ */
+type N = { x: number; y: number; r: number; kind?: "accent" | "obs" | "dim" };
+const nodes: N[] = [
+  { x: 90, y: 150, r: 5, kind: "dim" },
+  { x: 165, y: 70, r: 6, kind: "obs" },
+  { x: 250, y: 168, r: 5, kind: "dim" },
+  { x: 330, y: 96, r: 7, kind: "accent" },
+  { x: 410, y: 182, r: 5, kind: "dim" },
+  { x: 470, y: 60, r: 6, kind: "obs" },
+  { x: 545, y: 150, r: 9, kind: "accent" },
+  { x: 630, y: 80, r: 5, kind: "dim" },
+  { x: 690, y: 175, r: 6, kind: "obs" },
+  { x: 740, y: 100, r: 5, kind: "dim" },
+  { x: 215, y: 130, r: 4, kind: "dim" },
+  { x: 600, y: 130, r: 4, kind: "dim" },
+];
+const edges: [number, number][] = [
+  [0, 1], [0, 10], [10, 2], [1, 3], [2, 3], [3, 4], [3, 5],
+  [4, 6], [5, 6], [6, 11], [11, 7], [6, 8], [7, 9], [8, 9], [6, 7],
+];
+const fill = (k?: string) =>
+  k === "accent"
+    ? "var(--accent)"
+    : k === "obs"
+      ? "var(--text-accent)"
+      : "var(--text-tertiary)";
+---
+
+<svg viewBox="0 0 800 240" role="presentation" aria-hidden="true" style="width:100%;height:auto;">
+  <!-- signal rings around the hub node -->
+  <g style="stroke: var(--accent); fill: none; opacity: 0.25;">
+    <circle cx="545" cy="150" r="26" stroke-width="1.5" />
+    <circle cx="545" cy="150" r="44" stroke-width="1" style="opacity:0.6" />
+    <circle cx="545" cy="150" r="64" stroke-width="1" style="opacity:0.3" />
+  </g>
+
+  <!-- edges -->
+  <g style="stroke: var(--border-hover);" stroke-width="1.25">
+    {edges.map(([a, b]) => (
+      <line x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y} />
+    ))}
+  </g>
+
+  <!-- nodes -->
+  {nodes.map((n) => (
+    <g>
+      {n.kind === "accent" && (
+        <circle cx={n.x} cy={n.y} r={n.r + 6} style="fill: var(--accent); opacity: 0.16;" />
+      )}
+      <circle cx={n.x} cy={n.y} r={n.r} style={`fill: ${fill(n.kind)};`} />
+    </g>
+  ))}
+</svg>

@@ -1,0 +1,19 @@
+---
+import WaevLogo from "./WaevLogo.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<nav class="nav">
+  <div class="nav-leading">
+    <a class="nav-badge" href="/">Blog</a>
+  </div>
+  <div class="nav-center">
+    <a href="/" aria-label="waev blog — home">
+      <WaevLogo class="nav-logo" uid="nav" />
+    </a>
+  </div>
+  <div class="nav-trailing">
+    <a class="nav-applink" href="https://waev.app" rel="noopener">waev.app ↗</a>
+    <ThemeToggle />
+  </div>
+</nav>

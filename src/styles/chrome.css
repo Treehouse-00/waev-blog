@@ -1,0 +1,197 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   chrome.css — nav + footer
+
+   Ported from the app's `frontend/src/styles/{nav,footer}.css`. The blog is
+   a static content site, so the SPA hamburger/drawer is dropped in favor of
+   plain anchors, but the visual contract (center-aligned top app bar, mono
+   badge pill, hairline footer) is preserved 1:1.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.page {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+/* ── Nav (center-aligned top app bar) ── */
+.nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 64px;
+  width: 100%;
+  max-width: var(--grid-body);
+  margin-inline: auto;
+  padding-block: var(--sp-2);
+  padding-inline: var(--page-px);
+  position: relative;
+  z-index: var(--z-nav);
+}
+
+.nav-leading {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  gap: var(--sp-3);
+}
+
+.nav-center {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+}
+
+.nav-center a {
+  display: block;
+  line-height: 0;
+}
+
+.nav-trailing {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: var(--sp-3);
+}
+
+.nav-logo {
+  width: clamp(120px, 16vw, 168px);
+  height: auto;
+  color: var(--text);
+  overflow: visible;
+  max-height: 28px;
+}
+
+/* Mono badge pill — same chrome as the app's BETA pill, re-anchored onto
+   the accent (bluepurple) family so it reads as a section marker. */
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding-inline: var(--sp-1);
+  border-radius: var(--shape-xs);
+  font-size: 10px;
+  font-weight: var(--fw-medium);
+  font-family: var(--mono);
+  letter-spacing: var(--ls-label-xs);
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: uppercase;
+  background: var(--sys-bluepurple-500-12);
+  color: var(--sys-bluepurple-300);
+  user-select: none;
+  text-decoration: none;
+}
+
+.nav-badge:hover {
+  text-decoration: none;
+  color: var(--sys-bluepurple-300);
+}
+
+/* Trailing text link (→ waev.app) — mono, muted, understated. */
+.nav-applink {
+  font-family: var(--mono);
+  font-size: var(--fs-label-md);
+  letter-spacing: var(--ls-label-md);
+  color: var(--text-muted);
+}
+
+.nav-applink:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* ── Theme toggle (icon button) ── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: var(--shape-full);
+  background: transparent;
+  color: var(--sys-zinc-500);
+  cursor: pointer;
+  transition: background var(--dur-short-2) var(--ease-standard),
+    color var(--dur-short-2) var(--ease-standard);
+}
+
+.theme-toggle:hover {
+  background: var(--surface-tint-2);
+  color: var(--text);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Only one glyph shows per theme — the bootstrap sets `data-theme`. */
+.theme-toggle .icon-dim,
+.theme-toggle .icon-dark,
+.theme-toggle .icon-light {
+  display: none;
+}
+:root[data-theme="dim"] .theme-toggle .icon-dim {
+  display: block;
+}
+:root[data-theme="dark"] .theme-toggle .icon-dark {
+  display: block;
+}
+:root[data-theme="light"] .theme-toggle .icon-light {
+  display: block;
+}
+
+/* ── Footer (hairline) ── */
+.footer {
+  border-top: 1px solid var(--border-subtle);
+  padding-block: var(--sp-7);
+  margin-top: var(--sp-20);
+}
+
+.footer-inner {
+  width: 100%;
+  max-width: var(--grid-body);
+  margin-inline: auto;
+  padding-inline: var(--page-px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--mono);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  letter-spacing: var(--ls-body-sm);
+  color: var(--text-tertiary);
+}
+
+.footer-brand {
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.footer-sep {
+  opacity: 0.3;
+}
+
+.footer-spacer {
+  flex: 1 1 auto;
+}
+
+.footer a {
+  color: var(--text-tertiary);
+}
+
+.footer a:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+@media (max-width: 599px) {
+  .nav-applink {
+    display: none;
+  }
+}

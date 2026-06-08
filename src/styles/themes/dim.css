@@ -1,0 +1,48 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ * Theme overrides for data-theme="dim".
+ */
+
+:root[data-theme="dim"] {
+  --chart-grid: var(--sys-zinc-700);
+  --bg: var(--sys-zinc-850);
+  --bg-raised: #30302F;
+  --surface: #262525;
+  --surface-hover: transparent;
+  --surface-active: var(--sys-white-12);
+  --text: var(--sys-zinc-100);
+  --text-muted: var(--sys-zinc-300);
+  --text-tertiary: var(--sys-zinc-400);
+  --text-accent: var(--sys-bluepurple-400);
+  --border: transparent;
+  --border-subtle: var(--sys-white-12);
+  --border-hover: var(--sys-white-16);
+  --border-focus: var(--sys-bluepurple-400);
+  --surface-1: #30302F;
+  --surface-sunken: #1C1C1B;
+  --surface-glass: color-mix(in srgb, #1C1C1B 75%, transparent);
+  --outline-glass: var(--sys-zinc-500);
+  --surface-tint-1: var(--sys-white-5);
+  --surface-tint-2: var(--sys-white-9);
+  --surface-tint-3: var(--sys-white-10);
+  --surface-tint-4: var(--sys-white-14);
+  --surface-tint-5: var(--sys-white-16);
+  --maplibre-glass-bg: rgba(28, 28, 27, 0.75);
+  --maplibre-glass-border: rgba(255, 255, 255, 0.12);
+  --maplibre-glass-fg: rgba(255, 255, 255, 0.80);
+  --maplibre-glass-fg-dim: rgba(255, 255, 255, 0.70);
+  --maplibre-glass-divider: rgba(255, 255, 255, 0.08);
+  --maplibre-glass-hover: rgba(255, 255, 255, 0.08);
+  --maplibre-attrib-bg: rgba(28, 28, 27, 0.55);
+  --maplibre-attrib-fg: rgba(255, 255, 255, 0.55);
+  --shadow-elev-highlight: rgba(255, 255, 255, 0.15);
+  --shadow-elev-reflect: rgba(255, 255, 255, 0.05);
+  --shadow-elev-inner-glow: rgba(255, 255, 255, 0.025);
+  --shadow-elev-inner-shade: rgba(0, 0, 0, 0.04);
+  --shadow-elev-occlusion: rgba(0, 0, 0, 0.20);
+  --shadow-elev-depth: rgba(0, 0, 0, 0.12);
+  --ctl-neutral-bg: var(--bg-raised);
+  --ctl-neutral-bg-hover: var(--bg-raised);
+  --ctl-neutral-bg-on-surface: #363535;
+  --ctl-neutral-bg-on-surface-hover: #363535;
+}

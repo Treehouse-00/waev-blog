@@ -1,0 +1,42 @@
+---
+/**
+ * Theme toggle — cycles dim → dark → light → dim, persisting to
+ * `localStorage["waev-theme"]` (same key the main app uses). The pre-paint
+ * bootstrap in `Base.astro` reads this key before first paint to avoid FOUC.
+ * Which glyph shows is driven purely by `:root[data-theme]` in chrome.css.
+ */
+---
+
+<button type="button" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+  <!-- dim → crescent moon -->
+  <svg class="icon-dim" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+  </svg>
+  <!-- dark → moon + stars -->
+  <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+    <path d="M19 3v4" /><path d="M21 5h-4" />
+  </svg>
+  <!-- light → sun -->
+  <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+  </svg>
+</button>
+
+<script is:inline>
+  (function () {
+    var ORDER = ["dim", "dark", "light"];
+    var btn = document.currentScript.previousElementSibling;
+    btn.addEventListener("click", function () {
+      var cur = document.documentElement.getAttribute("data-theme") || "dim";
+      var next = ORDER[(ORDER.indexOf(cur) + 1) % ORDER.length];
+      document.documentElement.setAttribute("data-theme", next);
+      try {
+        localStorage.setItem("waev-theme", next);
+      } catch (e) {
+        /* private mode — ignore */
+      }
+    });
+  })();
+</script>
