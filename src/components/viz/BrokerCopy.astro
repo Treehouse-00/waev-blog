@@ -4,9 +4,12 @@
  * broker the operator owns; Waev subscribes and keeps a read-only copy.
  * Ownership stays on the left.
  */
+// Six community dots in a symmetric arc above the broker card, funnelling
+// to its top-center (150, 116) so the "community -> your broker" flow reads
+// as a deliberate connection rather than scattered lines.
 const users = [
-  { x: 40, y: 44 }, { x: 78, y: 30 }, { x: 116, y: 46 },
-  { x: 58, y: 70 }, { x: 100, y: 70 }, { x: 142, y: 36 },
+  { x: 78, y: 58 }, { x: 108, y: 48 }, { x: 138, y: 44 },
+  { x: 162, y: 44 }, { x: 192, y: 48 }, { x: 222, y: 58 },
 ];
 ---
 
@@ -17,15 +20,15 @@ const users = [
     </marker>
   </defs>
 
-  <!-- community dots feeding the broker -->
+  <!-- community funnelling into the broker (label -> dots -> tip on card top) -->
   <g>
+    <text x="150" y="30" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">your community</text>
     {users.map((u) => (
       <>
-        <line x1={u.x} y1={u.y} x2="150" y2="150" style="stroke: var(--border-hover);" stroke-width="1" />
+        <line x1={u.x} y1={u.y} x2="150" y2="116" style="stroke: var(--border-hover);" stroke-width="1" />
         <circle cx={u.x} cy={u.y} r="5" style="fill: var(--text-tertiary);" />
       </>
     ))}
-    <text x="40" y="100" class="viz-label" style="fill: var(--text-muted);">your community</text>
   </g>
 
   <!-- left card — operator's broker -->
