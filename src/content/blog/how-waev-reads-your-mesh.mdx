@@ -26,8 +26,6 @@ import HiwTopologyDraw from "../../components/viz/hiw-TopologyDraw.astro";
 
 Your mesh doesn't know about <span class="waev-brand">Waev</span>. The nodes on your hilltop relays, the repeaters in the valley — they're broadcasting the same LoRa packets they always have, into the air, to whatever's listening. <span class="waev-brand">Waev</span> has no antenna. So the question, for anyone standing up their first observer, is a fair one: how does anything get from the radio to the browser tab?
 
-Here's exactly how.
-
 <div class="callout">
 <p><strong>In short:</strong> an enrolled observer listens on your mesh and publishes packets to an MQTT broker you host. Waev subscribes to that broker, scrubs private and unverifiable data at the ingest edge, and builds the map from what it can prove. The pipeline has five stages; each one does one job.</p>
 </div>
@@ -50,7 +48,7 @@ The word "enrolled" matters. <span class="waev-brand">Waev</span> draws topology
 
 One observer is enough to start. Multiple observers give you overlapping vantage points — more verified hops, better coverage of nodes that sit far from any single connection point, and more independent evidence per edge. The map gets richer with each additional vantage point you add.
 
-## Your broker: the handshake that keeps you in control
+## Your broker: your terms, your credentials
 
 <span class="waev-brand">Waev</span> subscribes to your broker with read-only credentials. You set those credentials. You run the broker — on a VPS, a home server, a managed service, wherever makes sense for your setup. Waev gets a copy of the data as it arrives. You can rotate or revoke credentials without asking anyone.
 
@@ -92,6 +90,6 @@ The five stages work together: the observer bridges RF to the internet, your bro
 
 Questions about a specific setup, or something that doesn't add up? [Talk to us](mailto:admin@waev.app) — concrete questions about real networks are the most useful feedback we get.
 
-Ready to connect? [Start at waev.app.](https://waev.app)
+Ready to connect? [Start at waev.app](https://waev.app).
 
 <p class="endnote"><span class="endnote-title">— The Waev team</span></p>

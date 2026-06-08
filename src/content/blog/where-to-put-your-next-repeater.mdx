@@ -26,10 +26,9 @@ import PlaybookRepeaterImpact from "../../components/viz/PlaybookRepeaterImpact.
 
 The complaint usually arrives the same way: someone on the far edge of the mesh can't reach anyone after they leave the main road, or a field team drops off the network during an exercise and nobody notices for twenty minutes. You already suspect a repeater gap. The question isn't whether to add one — it's whether your instinct about the location is right.
 
-This is a playbook for using <span class="waev-brand">Waev</span> to move from "I think there's a gap" to "here's the evidence, and here's where to place the repeater."
 
 <div class="callout">
-  <p>In short: Waev gives you three independent readings of the same coverage problem — contours on the Live Map, signal trends in Network Stats, and path evidence in the packet log. Read them together before you commit to a site, and you'll have a placement decision backed by data, not a drive on a hunch.</p>
+  <p>In short: Waev gives you three independent readings of the same coverage problem — contours on the Live Map, signal trends in Network Stats, and path evidence in the packet log. Read them together before you commit to a site, and you'll have a placement decision backed by data, not a hunch.</p>
 </div>
 
 ## 01 · Read the map before you move
@@ -58,7 +57,7 @@ Look at the path-quality view for the nodes closest to the silent zone. Three di
 
 **Hop count creep.** A node that was reaching backbone in two hops during initial deployment but now shows three or four is routing around a degraded or failed path. That's not a routing quirk — it's a symptom worth investigating.
 
-**SNR at the edge of acceptable.** A working MeshCore link generally needs at least +5 to +7 dB SNR in typical conditions. Under that threshold, you're in weather-dependent territory. A node holding at +1 or +2 dB is technically alive but not reliably useful. Pull the time series in Stats to see whether the degradation is constant or shows patterns — weather, terrain obstructions, interference at certain hours.
+**SNR at the edge of acceptable.** A working MeshCore link generally needs at least +5 to +7 dB SNR in typical conditions. Below that range, you're in weather-dependent territory. A node holding at +1 or +2 dB is technically alive but not reliably useful. Pull the time series in Stats to see whether the degradation is constant or shows patterns — weather, terrain obstructions, interference at certain hours.
 
 **Zero-packet stretches.** A node that logged 30–40 packets per hour all week and then dropped to zero for a day isn't necessarily down. Compare with neighbor nodes. If neighbors are active and this one isn't, that's a path failure, not a power issue.
 
@@ -98,7 +97,7 @@ If the improvement is smaller than expected, the gap may be wider than one repea
 
 ---
 
-Coverage problems aren't mysterious. They're geometry, terrain, and signal math — and they all leave traces in packet data. <span class="waev-brand">Waev</span> gives you a window into those traces. The judgment call — where exactly to reach, what to power the repeater from, how to get it up the hill — is still yours. That call gets considerably easier when you have evidence underneath it.
+Coverage problems aren't mysterious. They're geometry, terrain, and signal math — and they all leave traces in packet data. <span class="waev-brand">Waev</span> gives you a window into those traces. The judgment call — where exactly to reach, what to power the repeater from, how to get it up the hill — is still yours. That call is clearer when you have evidence underneath it.
 
 Found a signal-quality pattern that doesn't fit this playbook? [Tell us](mailto:admin@waev.app) — edge cases are how the tools get better.
 
