@@ -313,8 +313,8 @@ Rules use the current report vs. the immediately previous report.
   → flag STRATEGY.md (segment/offer mismatch). → **STRATEGY.md flag
   (human-approval).**
 - **T7 — Cadence pressure.** If the count of posts that went `published` in the
-  window is below the weekly drafting cadence (`./CADENCE.md` §3.2 ≈ 4 slots per
-  28-day window) AND impressions `delta < +5%`: open a `calendar.yaml` PR adding
+  window is below the publishing cadence (`./CADENCE.md` §3.2 = 3×/week ≈ 13
+  slots per 28-day window) AND impressions `delta < +5%`: open a `calendar.yaml` PR adding
   `proposed` post slots — publishing throughput is too low to move search.
   Check first that unpublished work isn't already sitting in open draft PRs
   (that's a merge-gate problem for the weekly human triage, not a cadence one).

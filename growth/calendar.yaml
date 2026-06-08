@@ -21,6 +21,7 @@
 #   funnel_stage     awareness | evaluation | adoption
 #   bucket           [post only] primer | signal | field-manual | under-the-hood | position | dispatch
 #   theme            [post only] knowing-over-guessing | power-of-refusal | own-your-ground | ready-before-it-matters | earned-competence | networks-of-people
+#   series           [post only, optional] the series slug this slot belongs to (see ./EDITORIAL.md), e.g. measure-your-mesh
 #   primary_keyword  the single target query (for non-post types: the work focus)
 #   secondary_keyword one supporting query/term
 #   status           proposed | scheduled | drafted | published

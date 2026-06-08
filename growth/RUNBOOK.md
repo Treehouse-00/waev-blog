@@ -100,10 +100,10 @@ Crons below mirror `growth/CADENCE.md` §3 verbatim — CADENCE is the authority
 which loops exist and when; if it changes, update these to match.
 
 ```bash
-# Weekly content drafting — Mondays 14:00 UTC (CADENCE §3.2).
+# Content drafting — Sun/Tue/Thu 14:00 UTC, the 3×/week grid (CADENCE §3.2).
 oz schedule create \
   --name "waev-content-writer" \
-  --cron "0 14 * * 1" \
+  --cron "0 14 * * 0,2,4" \
   --prompt "Read growth/briefs/content-writer.md and execute it." \
   --environment <ENV_ID>
 
