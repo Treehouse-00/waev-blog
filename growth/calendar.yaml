@@ -1,0 +1,625 @@
+# Waev Growth OS — Editorial & SEO Calendar (the WHEN layer)
+#
+# Purpose: the single structured backlog the scheduled run-system reads to
+# decide what content/SEO work to propose next. An autonomous agent picks the
+# next entry whose slot_date is due, opens the referenced brief, executes it,
+# and PROPOSES the result via PR/report. Agents NEVER deploy and NEVER post to
+# external communities autonomously (see ../AGENT.md Invariants and ./CADENCE.md).
+#
+# This file is the source of truth for *dated* slots. Cron-driven recurring
+# loops (weekly link/competitor sweeps, daily publish rebuild, etc.) are
+# governed by ./CADENCE.md and are intentionally NOT enumerated per-week here
+# to avoid drift — only their monthly/quarterly checkpoints are seeded below.
+#
+# ───────────────────────────────────────────────────────────────────────────
+# ENTRY SCHEMA (verbatim keys — every entry MUST carry all eight):
+#   slot_date        YYYY-MM-DD          when the agent should act on this slot
+#   type             post | seo-task | audit
+#   segment          ham | cert-emcomm | off-grid
+#   funnel_stage     awareness | evaluation | adoption
+#   primary_keyword  the single target query (for non-post types: the work focus)
+#   secondary_keyword one supporting query/term
+#   status           proposed | scheduled | drafted | published
+#   brief            relative path to a growth/briefs/*.md file
+#
+# STATUS SEMANTICS (machine rules):
+#   scheduled  = a real post already committed to src/content/blog (date-gated).
+#   proposed   = a planned slot the content-writer agent should draft into a PR.
+#   drafted    = a draft PR is open and awaiting human merge (the publish gate).
+#   published  = merged to main and past its date gate (live on blog.waev.app).
+#
+# SEGMENT / FUNNEL derivation for the seeded real posts is recorded inline.
+# ───────────────────────────────────────────────────────────────────────────
+
+# ===========================================================================
+# SEEDED REAL POSTS — already committed in src/content/blog (status: scheduled)
+# slot_date == the post's real frontmatter `date`; segment/funnel derived from
+# title + tags. brief is the writer brief that would (re)generate/update them.
+# ===========================================================================
+posts:
+  - slot_date: 2026-06-08            # the-opinionated-mesh-analyzer.mdx
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    primary_keyword: "MeshCore analytics platform"
+    secondary_keyword: "mesh network intelligence"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-06-08            # how-waev-reads-your-mesh.mdx ("From Radio to Map")
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "MeshCore network mapping"
+    secondary_keyword: "MQTT observer ingest pipeline"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-06-08            # where-to-put-your-next-repeater.mdx ("Where Your Network Ends")
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    primary_keyword: "mesh repeater placement"
+    secondary_keyword: "LoRa coverage gap analysis"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-06-18            # your-mesh-on-field-day.mdx
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    primary_keyword: "ARRL Field Day mesh network"
+    secondary_keyword: "Field Day MeshCore setup"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-07-02            # what-we-choose-not-to-know.mdx
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "MeshCore privacy data minimization"
+    secondary_keyword: "mesh network opt-out marker"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-07-16            # bring-your-own-broker.mdx
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "bring your own MQTT broker"
+    secondary_keyword: "mesh network data ownership"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-07-30            # reading-the-signal.mdx
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "LoRa SNR hop count"
+    secondary_keyword: "mesh link path quality"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-08-27            # when-the-grid-goes-down.mdx
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    primary_keyword: "emergency mesh network resilience"
+    secondary_keyword: "single point of failure mesh"
+    status: scheduled
+    brief: ./briefs/content-writer.md
+
+  # =========================================================================
+  # NET-NEW KEYWORD-ROADMAP POSTS (status: proposed). ~2 posts/month, balanced
+  # across segment {ham|cert-emcomm|off-grid} and funnel {awareness|evaluation|
+  # adoption}. The five mandated roadmap targets are tagged [ROADMAP] inline.
+  # =========================================================================
+
+  # ── 2026-09 ──────────────────────────────────────────────────────────────
+  - slot_date: 2026-09-10
+    type: post
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "what is MeshCore"            # [ROADMAP]
+    secondary_keyword: "MeshCore mesh radio explained"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-24
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "MeshCore vs Meshtastic"      # [ROADMAP]
+    secondary_keyword: "mesh radio firmware comparison"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2026-10 ──────────────────────────────────────────────────────────────
+  - slot_date: 2026-10-08
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "LoRa mesh network setup tutorial"   # [ROADMAP]
+    secondary_keyword: "build a LoRa mesh network"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-10-22
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "ham radio CERT EMCOMM mesh"  # [ROADMAP]
+    secondary_keyword: "emergency communications mesh network"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2026-11 ──────────────────────────────────────────────────────────────
+  - slot_date: 2026-11-05
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "Mosquitto MQTT broker setup for MeshCore"  # [ROADMAP]
+    secondary_keyword: "self-hosted MQTT broker TLS"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-19
+    type: post
+    segment: cert-emcomm
+    funnel_stage: awareness
+    primary_keyword: "disaster response mesh network"
+    secondary_keyword: "off-grid emergency communications"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2026-12 ──────────────────────────────────────────────────────────────
+  - slot_date: 2026-12-03
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "LoRa antenna selection mesh"
+    secondary_keyword: "mesh network antenna placement"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-12-17
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    primary_keyword: "MeshCore repeater setup"
+    secondary_keyword: "mesh network repeater configuration"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2027-01 ──────────────────────────────────────────────────────────────
+  - slot_date: 2027-01-07
+    type: post
+    segment: off-grid
+    funnel_stage: awareness
+    primary_keyword: "off-grid neighborhood communication"
+    secondary_keyword: "neighborhood mesh network"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-01-21
+    type: post
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "EMCOMM communications plan mesh"
+    secondary_keyword: "ARES mesh network integration"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2027-02 ──────────────────────────────────────────────────────────────
+  - slot_date: 2027-02-04
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "MeshCore observer setup"
+    secondary_keyword: "mesh network monitoring"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-02-18
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "mesh network topology map"
+    secondary_keyword: "MeshCore live map reading"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2027-03 ──────────────────────────────────────────────────────────────
+  - slot_date: 2027-03-04
+    type: post
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "MeshCore getting started"
+    secondary_keyword: "cheap LoRa mesh hardware"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-03-18
+    type: post
+    segment: cert-emcomm
+    funnel_stage: adoption
+    primary_keyword: "mesh communications exercise"
+    secondary_keyword: "EMCOMM tabletop exercise"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2027-04 ──────────────────────────────────────────────────────────────
+  - slot_date: 2027-04-08
+    type: post
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "community mesh network privacy"
+    secondary_keyword: "private mesh communications"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-04-22
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    primary_keyword: "mesh network coverage map"
+    secondary_keyword: "LoRa coverage analysis"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2027-05 ──────────────────────────────────────────────────────────────
+  - slot_date: 2027-05-06
+    type: post
+    segment: cert-emcomm
+    funnel_stage: awareness
+    primary_keyword: "CERT communications readiness"
+    secondary_keyword: "emergency mesh network monitoring"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-05-20
+    type: post
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "MeshCore vs packet radio"
+    secondary_keyword: "APRS vs mesh network"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  # ── 2027-06 ──────────────────────────────────────────────────────────────
+  - slot_date: 2027-06-03
+    type: post
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "scaling a mesh network"
+    secondary_keyword: "large LoRa mesh network"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2027-06-17            # seasonal recurrence of the Field Day angle
+    type: post
+    segment: ham
+    funnel_stage: adoption
+    primary_keyword: "Field Day mesh network playbook"
+    secondary_keyword: "ARRL Field Day 2027 MeshCore"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+# ===========================================================================
+# RECURRING CHECKPOINTS — monthly + quarterly. These are the dated checkpoints
+# of the cron loops defined in ./CADENCE.md. The full weekly cadence (link
+# sweeps, competitor diffing, analytics pulls) is cron-driven there, not seeded
+# per-week here. For audit/seo-task entries, segment = the content cluster
+# under review that period (rotated so each segment is reviewed ~quarterly),
+# funnel_stage = the priority lens, and primary/secondary_keyword = work focus.
+# ===========================================================================
+recurring:
+  # ── Monthly site SEO audit (1st of month) → ./briefs/seo-auditor.md ───────
+  - slot_date: 2026-06-01
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "technical SEO crawl health"
+    secondary_keyword: "core web vitals static build"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-07-01
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "JSON-LD schema validation"
+    secondary_keyword: "FAQPage BlogPosting markup"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-08-01
+    type: audit
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "internal link coverage audit"
+    secondary_keyword: "orphan post detection"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-09-01
+    type: audit
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "meta description coverage"
+    secondary_keyword: "title tag length audit"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-10-01
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "sitemap and rss integrity"
+    secondary_keyword: "canonical url audit"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-11-01
+    type: audit
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "llms.txt canon consistency"
+    secondary_keyword: "answer-engine fact coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-12-01
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "technical SEO crawl health"
+    secondary_keyword: "broken link sweep"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-01-01
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "content freshness audit"
+    secondary_keyword: "stale post refresh candidates"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-02-01
+    type: audit
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "internal link coverage audit"
+    secondary_keyword: "cluster interlink density"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-03-01
+    type: audit
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "core web vitals static build"
+    secondary_keyword: "image weight og audit"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-04-01
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "JSON-LD schema validation"
+    secondary_keyword: "structured data coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-05-01
+    type: audit
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "llms.txt canon consistency"
+    secondary_keyword: "answer-engine fact coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-06-01
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "technical SEO crawl health"
+    secondary_keyword: "annual sitewide audit"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  # ── Monthly internal-linking + metadata hygiene (14th) → seo-auditor ──────
+  - slot_date: 2026-06-14
+    type: seo-task
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "anchor text diversity"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-07-14
+    type: seo-task
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "topic cluster linking"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-08-14
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: adoption
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "og image alt coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-09-14
+    type: seo-task
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "pillar page consolidation"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-10-14
+    type: seo-task
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "description rewrite candidates"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-11-14
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "cross-segment bridge links"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2026-12-14
+    type: seo-task
+    segment: ham
+    funnel_stage: adoption
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "faq schema coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-01-14
+    type: seo-task
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "topic cluster linking"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-02-14
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: awareness
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "title tag rewrite candidates"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-03-14
+    type: seo-task
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "anchor text diversity"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-04-14
+    type: seo-task
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "og image alt coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-05-14
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "internal linking optimization"
+    secondary_keyword: "cross-segment bridge links"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  - slot_date: 2027-06-14
+    type: seo-task
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "metadata hygiene pass"
+    secondary_keyword: "faq schema coverage"
+    status: proposed
+    brief: ./briefs/seo-auditor.md
+
+  # ── Quarterly keyword-roadmap refresh (21st) → ./briefs/keyword-research.md
+  - slot_date: 2026-07-21
+    type: seo-task
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "keyword roadmap refresh"
+    secondary_keyword: "search demand gap analysis"
+    status: proposed
+    brief: ./briefs/keyword-research.md
+
+  - slot_date: 2026-10-21
+    type: seo-task
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "keyword roadmap refresh"
+    secondary_keyword: "long-tail opportunity mining"
+    status: proposed
+    brief: ./briefs/keyword-research.md
+
+  - slot_date: 2027-01-21
+    type: seo-task
+    segment: off-grid
+    funnel_stage: adoption
+    primary_keyword: "keyword roadmap refresh"
+    secondary_keyword: "search demand gap analysis"
+    status: proposed
+    brief: ./briefs/keyword-research.md
+
+  - slot_date: 2027-04-21
+    type: seo-task
+    segment: ham
+    funnel_stage: awareness
+    primary_keyword: "keyword roadmap refresh"
+    secondary_keyword: "long-tail opportunity mining"
+    status: proposed
+    brief: ./briefs/keyword-research.md
+
+  # ── Quarterly competitive landscape audit (28th) → ./briefs/competitive-monitor.md
+  - slot_date: 2026-08-28
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "competitive landscape audit"
+    secondary_keyword: "Meshtastic ecosystem monitoring"
+    status: proposed
+    brief: ./briefs/competitive-monitor.md
+
+  - slot_date: 2026-11-28
+    type: audit
+    segment: cert-emcomm
+    funnel_stage: evaluation
+    primary_keyword: "competitive landscape audit"
+    secondary_keyword: "EMCOMM tooling comparison"
+    status: proposed
+    brief: ./briefs/competitive-monitor.md
+
+  - slot_date: 2027-02-28
+    type: audit
+    segment: off-grid
+    funnel_stage: evaluation
+    primary_keyword: "competitive landscape audit"
+    secondary_keyword: "mesh analytics SERP movement"
+    status: proposed
+    brief: ./briefs/competitive-monitor.md
+
+  - slot_date: 2027-05-28
+    type: audit
+    segment: ham
+    funnel_stage: evaluation
+    primary_keyword: "competitive landscape audit"
+    secondary_keyword: "Meshtastic ecosystem monitoring"
+    status: proposed
+    brief: ./briefs/competitive-monitor.md
