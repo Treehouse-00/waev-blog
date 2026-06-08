@@ -21,8 +21,10 @@ oz schedule list --output-format text
 
 You also need: a Google Cloud service account with the Search Console API
 enabled and granted read access to the `waev.app` property; a Cloudflare API
-token with `Account Analytics:Read`; (optional) a Perplexity API key for the
-AEO metric.
+token with `Zone Analytics:Read` covering the `waev.app` zone (an
+`Account Analytics:Read` token that covers the zone also works); (optional) a
+Perplexity API key for the AEO metric. Referrer-host filtering used by the
+north-star metric requires a **paid** Cloudflare plan (see `MEASUREMENT.md`).
 
 ## 1. Create the environment
 
@@ -32,15 +34,19 @@ ready to build and open PRs. Node 24 matches `.nvmrc`.
 ```bash
 oz environment create \
   --name "waev-growth-os" \
-  --image "warpdotdev/dev-web:latest-agents" \
-  --repo "https://github.com/<ORG>/waev-blog" \
-  --setup-command "nvm use 24 && npm ci" \
+  --docker-image "warpdotdev/dev-web:latest-agents" \
+  --repo "<ORG>/waev-blog" \
+  --setup-command "nvm install 24 && npm ci" \
   --output-format text
 # -> note the returned ENV_ID, e.g. UA17BXYZ. Used below as <ENV_ID>.
 ```
 
-If you prefer to pin Node explicitly instead of `.nvmrc`, use
-`--setup-command "n 24 && npm ci"`. Confirm:
+`--repo` takes `owner/repo` (not a URL) and may be repeated. `--docker-image`
+(`-d`) is the image flag. The setup command runs in a shell after clone;
+`nvm install 24` reads/installs the `.nvmrc` pin (use plain `nvm use 24` only if
+24 is already installed). If the image ships without `nvm`, drop to
+`--setup-command "npm ci"` — `dev-web:latest-agents` already provides Node.
+Confirm:
 
 ```bash
 oz environment get <ENV_ID> --output-format text
@@ -96,36 +102,42 @@ which loops exist and when; if it changes, update these to match.
 ```bash
 # Weekly content drafting — Mondays 14:00 UTC (CADENCE §3.2).
 oz schedule create \
+  --name "waev-content-writer" \
   --cron "0 14 * * 1" \
   --prompt "Read growth/briefs/content-writer.md and execute it." \
   --environment <ENV_ID>
 
 # Weekly SEO link & crawl sweep — Tuesdays 14:00 UTC (CADENCE §3.3).
 oz schedule create \
+  --name "waev-seo-auditor" \
   --cron "0 14 * * 2" \
   --prompt "Read growth/briefs/seo-auditor.md and execute it." \
   --environment <ENV_ID>
 
 # Weekly competitive watch — Wednesdays 14:00 UTC (CADENCE §3.5).
 oz schedule create \
+  --name "waev-competitive-monitor" \
   --cron "0 14 * * 3" \
   --prompt "Read growth/briefs/competitive-monitor.md and execute it." \
   --environment <ENV_ID>
 
 # Monthly analytics report + thresholds — 1st of month 15:00 UTC (CADENCE §3.4).
 oz schedule create \
+  --name "waev-analytics-reporter" \
   --cron "0 15 1 * *" \
   --prompt "Read growth/briefs/analytics-reporter.md and execute it." \
   --environment <ENV_ID>
 
 # Monthly distribution prep — 5th of month 15:00 UTC (CADENCE §3.7).
 oz schedule create \
+  --name "waev-link-distribution" \
   --cron "0 15 5 * *" \
   --prompt "Read growth/briefs/link-distribution.md and execute it." \
   --environment <ENV_ID>
 
 # Quarterly keyword roadmap refresh — 21st Jan/Apr/Jul/Oct 16:00 UTC (CADENCE §3.8).
 oz schedule create \
+  --name "waev-keyword-research" \
   --cron "0 16 21 1,4,7,10 *" \
   --prompt "Read growth/briefs/keyword-research.md and execute it." \
   --environment <ENV_ID>

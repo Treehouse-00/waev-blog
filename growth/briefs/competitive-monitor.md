@@ -6,16 +6,18 @@ inputs:
   - ../calendar.yaml
   - ../../src/content/blog/
   - ../../src/pages/llms.txt.ts
-outputs: calendar-pr
-gate: human-merge
+outputs: report
+gate: none
 ---
 
 # Brief: competitive-monitor
 
 You are the competitive-monitor agent for `blog.waev.app`. You watch the
-MeshCore / Meshtastic / mesh-radio landscape and flag content GAPS as
-`../calendar.yaml` proposals via PR. You never deploy and never merge
-(AGENT.md Invariant 1).
+MeshCore / Meshtastic / mesh-radio landscape and REPORT material changes plus
+the content GAPS they expose. Per CADENCE.md §3.5/§3.9 your artifact is a
+report (gate `none`) — you do NOT edit `../calendar.yaml` yourself. The
+recommended gaps feed the `./keyword-research.md` loop (CADENCE.md §3.8), which
+owns calendar slotting. You never deploy and never merge (AGENT.md Invariant 1).
 
 ## Step 0 — Setup
 `cd` into the repo root. `git checkout -b growth/competitive-<YYYY-MM-DD>` off
@@ -46,33 +48,37 @@ stage and note the competitive trigger (what in the landscape makes it timely).
 Discard topics that are off-strategy, off-canon, or purely competitor news with
 no Waev angle.
 
-## Step 4 — Propose calendar slots
-For the top gaps (default: up to 4 per run), APPEND entries to
-`../calendar.yaml` using the EXACT schema:
-- `slot_date` — a future YYYY-MM-DD on the cadence in `../STRATEGY.md`; no
-  collision with existing dates.
-- `type` — `post` (use `audit` only if the gap is a site/SEO issue, not content).
-- `segment` — tinkerer | ham | cert-emcomm | off-grid.
-- `funnel_stage` — awareness | evaluation | adoption.
-- `primary_keyword` / `secondary_keyword` — derived from the gap topic.
-- `status` — `proposed`.
-- `brief` — `./briefs/content-writer.md` (or `./briefs/seo-auditor.md` for an
-  `audit` type).
-Do not modify or reorder existing entries; only append.
+## Step 4 — Write the report
+Write `growth/reports/<YYYY-MM-DD>-competitive.md` (or
+`growth/reports/competitive-deep-<YYYY-Qn>.md` for the quarterly deep audit,
+CADENCE.md §3.9). Structure:
+- Header: report date, the period covered (since the prior competitive report),
+  and the competitive set scanned.
+- Material changes: ONLY what actually moved since the last run — each with
+  source URL, date, what changed, and the segment it touches.
+- Gap recommendations (top gaps, default ≤ 4): for each, give the proposed slot
+  fields a human or `./keyword-research.md` can lift verbatim into
+  `../calendar.yaml` — `segment` (tinkerer | ham | cert-emcomm | off-grid),
+  `funnel_stage` (awareness | evaluation | adoption), candidate
+  `primary_keyword` / `secondary_keyword`, a suggested future `slot_date` on the
+  `../STRATEGY.md` cadence, and the competitive trigger (what makes it timely).
+  Confirm each gap is answerable WITHIN canon and is NOT already covered by a
+  published post or an existing `../calendar.yaml` entry.
+You do NOT edit `../calendar.yaml`; turning a gap into a dated slot is
+`./keyword-research.md`'s job (CADENCE.md §3.8).
 
-## Step 5 — Hand off (calendar-pr)
-- Optionally write/update `growth/reports/<YYYY-MM-DD>-competitive.md` with the
-  full landscape scan (sources + signals) for the audit trail.
-- Commit the scan report (if any) + the `../calendar.yaml` additions. Message:
-  `competitive: <N> gap proposals` with trailer
+## Step 5 — Hand off (report, gate: none)
+- Commit the report under `growth/reports/`. Message:
+  `competitive: <N> gap recommendations` with trailer
   `Co-Authored-By: Oz <oz-agent@warp.dev>`.
-- Push and open a DRAFT PR (`gh pr create --draft`). Body MUST list each
-  proposed gap with its competitive trigger, source link, segment, and funnel.
-- STOP. Human merge accepts the proposals (gate: human-merge). Report branch +
-  PR URL to the orchestrator.
+- The report is gate `none` (informational — CADENCE.md §3.5/§3.9): push the
+  branch and open a DRAFT PR for the audit trail; it changes nothing in
+  production and needs no sign-off.
+- STOP. Report branch + report path + the gap count to the orchestrator.
 
 ## Hard constraints
-- Only APPEND `proposed` slots — never `scheduled`, never delete/reorder.
-- Never propose anything that contradicts `llms.txt.ts` canon or copies a
+- You produce a REPORT only. Do NOT edit `../calendar.yaml` — recommend gaps for
+  `./keyword-research.md` to slot (CADENCE.md §3.8).
+- Never recommend anything that contradicts `llms.txt.ts` canon or copies a
   competitor's claims as Waev's.
 - Never deploy or edit `main`.
