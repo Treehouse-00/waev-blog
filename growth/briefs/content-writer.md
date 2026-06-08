@@ -5,6 +5,7 @@ inputs:
   - ../STRATEGY.md
   - ../VOICE.md
   - ../EDITORIAL.md
+  - ../image-concepts.md
   - ../SEO-PLAYBOOK.md
   - ../calendar.yaml
   - ../../AGENT.md
@@ -77,10 +78,9 @@ schema in `../../src/content.config.ts`:
   page (SEO-PLAYBOOK §4) so only add one when it is a real topic cluster.
 - `author` — omit (defaults to `"Waev"`).
 - `hero` — provide `src: "/hero-<slug>.jpg"` and a real, descriptive `alt`
-  (AGENT.md Invariant 7). Leave a trailing
-  `{/* ILLUSTRATION PROMPT: … */}` comment describing the wanted illustration;
-  do NOT fabricate a binary image — note in the PR body that the hero asset is
-  pending.
+  (AGENT.md Invariant 7) matching the concept you write in Step 4. Put the prompt
+  in a trailing `{/* ILLUSTRATION PROMPT: … */}` comment. Do NOT fabricate or
+  commit a binary image — the hero is a human deliverable (Step 4).
 - `faq` — 2–5 entries. This array is the SINGLE source of the FAQPage JSON-LD
   (AGENT.md Invariant 8; SEO-PLAYBOOK SD-03/SD-04). Each answer is self-contained,
   ≥ 40 chars, no inline links, ends in terminal punctuation. Do NOT repeat the
@@ -113,7 +113,39 @@ Body requirements (AGENT.md "Authoring a post" + `../VOICE.md`):
   keyword. A draft that nails the keyword but lands no theme is tactical SEO —
   not shippable.
 
-## Step 4 — Self-check against the playbook and the voice law
+## Step 4 — Hero image prompt (the final human handoff)
+This is the engine's LAST automated act before a post can publish (CHARTER
+gate 2). You do not make the image — you write ONE excellent prompt concept, and
+a human generates and provides it. Hold the prompt to the same bar as the prose.
+All four criteria are non-negotiable:
+- **Creative:** one fresh idea with a point of view — not a literal screenshot of
+  the topic.
+- **Simple:** a single clear subject or metaphor that reads at thumbnail size; no
+  busy collages, no UI.
+- **Concept-aligned:** it expresses the post's ONE core idea and its `theme`, in
+  the house style defined in `../image-concepts.md` (hand-painted, warm,
+  painterly, calm). Mood over motif — do NOT prescribe "glowing mesh accents" or
+  other tech-neon.
+- **Non-derivative:** it must NOT rehash any prior concept or execution. FIRST
+  read `../image-concepts.md` (the concept ledger) and the `hero.alt` of existing
+  posts in `../../src/content/blog/`. Reuse no prior subject, metaphor,
+  composition, palette, or motif, and avoid the saturated cluster the ledger
+  names (hilltop + handheld radio + starry sky + mesh overlay). When in doubt, go
+  where the corpus has not.
+
+Produce three things:
+1. The `{/* ILLUSTRATION PROMPT: <one tight paragraph> */}` comment in the
+   `.mdx` — a single concept, specific enough to generate from, in the house
+   style, with no second option.
+2. `hero.src: "/hero-<slug>.jpg"` and a real, descriptive `alt` matching it.
+3. One appended row in `../image-concepts.md` under the registry:
+   `- <slug> | <bucket>/<theme> | concept: <one line> | motifs: <2–4 motifs>` —
+   so the next writer can avoid rehashing you.
+
+NEVER create, fabricate, or commit a binary image. Your job ends at the prompt
+and the ledger row; the human makes the image.
+
+## Step 5 — Self-check against the playbook and the voice law
 Run `npm run build` (must pass — it enforces TS strict + the content schema).
 Then verify the per-post `blocker`/`major` rules in `../SEO-PLAYBOOK.md` for
 your new `dist/blog/<slug>/index.html`: SD-01, SD-03, SD-04, MT-01, MT-02,
@@ -121,26 +153,36 @@ MT-05, MT-06, IL-02, HP-04. Fix any FAIL before opening the PR.
 Then run the `../VOICE.md` "Pre-PR self-verify checklist" against your draft:
 EVERY `MUST` item has to PASS — a draft that fails any `MUST` is not shippable.
 Record the PASS/FAIL results in the PR body (VOICE.md requires it).
+Finally run `node scripts/check-hero-assets.mjs`. It WILL report your new post's
+hero as missing — that is expected and correct: it is the signal that the human
+hero handoff is pending, not a failure for you to fix. Never make the image.
 
-## Step 5 — Update calendar status
+## Step 6 — Update calendar status + concept ledger
 In `../calendar.yaml`, set the chosen slot's `status` to `drafted` and ensure
 its `brief` points at this file (`./briefs/content-writer.md`) if unset. Do not
-change any other entry.
+change any other entry. Keep your appended `../image-concepts.md` row.
 
-## Step 6 — Open the PR (no deploy)
-- Commit: `git add` the new `.mdx`, any new viz component, and the calendar
-  edit. Commit message: `post: <title>` with trailer
-  `Co-Authored-By: Oz <oz-agent@warp.dev>`.
+## Step 7 — Open the PR (no deploy)
+- Commit: `git add` the new `.mdx`, any new viz component, the `../calendar.yaml`
+  edit, AND the `../image-concepts.md` row. Commit message: `post: <title>` with
+  trailer `Co-Authored-By: Oz <oz-agent@warp.dev>`.
 - Push `growth/post-<slug>` and open a DRAFT PR with `gh pr create --draft`.
-  Body must list: the slot (date/segment/funnel/`bucket`/`theme`/keywords), one
-  sentence on how the piece ladders its niche up to the `theme`, the
-  SEO-PLAYBOOK rules you verified, whether the hero image asset is still
-  pending, and the internal posts you linked.
+- The PR body MUST open with this block, so the human handoff is unmissable:
+  `## 🎨 HERO IMAGE — HUMAN ACTION REQUIRED BEFORE MERGE`
+  followed by the illustration prompt (verbatim), the target path
+  `public/hero-<slug>.jpg`, and the alt text. State that the `Hero asset check`
+  stays RED until a human generates the image and adds that file, and the PR must
+  not be merged until it is green.
+- Below that, list: the slot (date/segment/funnel/`bucket`/`theme`/keywords), one
+  sentence on how the piece ladders its niche up to the `theme`, the SEO-PLAYBOOK
+  rules you verified, and the internal posts you linked.
 - STOP. Human merge publishes (gate: human-merge). Report the branch + PR URL
   to the orchestrator.
 
 ## Hard constraints
 - Never set `draft: true` to hide a finished post; use the `date` gate.
+- Never generate, fabricate, or commit a binary hero image — the human makes it
+  from your prompt (CHARTER gate 2). Your job ends at the prompt + ledger row.
 - Never edit `main`, never deploy, never run `./manage.sh blog:deploy`.
 - Never contradict `llms.txt.ts` canon; if a fact must change, that file is the
   canonical source and the change is a separate `human-approval` decision —
