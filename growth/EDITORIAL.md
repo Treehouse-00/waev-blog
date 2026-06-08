@@ -86,10 +86,14 @@ mind. A Western reader arrives at each day differently, so each day owns a
 default intent and bucket lean. Match the post to the day's headspace.
 
 - **Tuesday — The Workbench.** Midweek, heads-down, problem-solving. The reader
-  is at the bench or desk wanting to *do* something. Intent: instruction. Bucket
-  lean: `signal`, `primer`, `field-manual`. Home of the teaching series
-  (measure-your-mesh, mesh-pollution, bench-notes). Theme lean:
-  `earned-competence`, `knowing-over-guessing`.
+  is at the bench or desk wanting to *do* something — and at the bench that
+  reader is a **maker first**. Intent: instruction. Segment lean:
+  **tinkerer-first** — signal/primer aimed at makers and LoRa experimenters
+  (measurement and bench work is maker work); `ham` is secondary here, not the
+  default. Bucket lean: `signal`, `primer`, `field-manual`. Home of the teaching
+  series (measure-your-mesh and bench-notes — maker measurement; signal-glossary
+  primers; mesh-pollution diagnostics). Theme lean: `earned-competence`,
+  `knowing-over-guessing`.
 - **Thursday — The Planning Table.** Pre-weekend; evaluating, comparing,
   deciding what to build or buy this weekend. Bucket lean: `dispatch`
   (comparisons, buying guides), `under-the-hood`, `field-manual`. Home of
@@ -112,7 +116,7 @@ field (the slug). Parts are numbered by air date. A series ends when it has said
 what it has to say — never padded to hit a number.
 
 Workbench (Tuesday):
-- **measure-your-mesh** (`signal`, ham/tinkerer) — quantify your network, one
+- **measure-your-mesh** (`signal`, tinkerer/ham) — quantify your network, one
   vital sign per part: SNR, link margin, hop count, airtime/duty cycle, packet
   loss, latency, throughput, congestion, coverage, uptime. ~10 parts.
 - **mesh-pollution** (`signal`/`field-manual`, ham) — diagnose what degrades a
@@ -201,6 +205,16 @@ hold, not a quota to hit to the decimal.
 - **Mix target (share of posts):** `signal` 20% · `field-manual` 20% · `primer`
   15% · `under-the-hood` 15% · `position` 15% · `dispatch` 15%. Tolerance ±3
   posts per bucket per rolling quarter.
+- **Segment weighting (the audience rail):** target grid shares of roughly
+  `tinkerer` ~30% · `off-grid` ~28% · `cert-emcomm` ~21% · `ham` ~21%. The broad
+  maker (`tinkerer`) and `off-grid` overlaps **lead** the mix and feed the
+  funnel; `cert-emcomm` is the mission-critical core; `ham` is a real but
+  narrower niche and is **capped so it never exceeds ~22% of any rolling
+  quarter**. The planner and `keyword-research` obey this as a hard rail: if a
+  proposed slate would push `ham` past the cap — or starve `tinkerer`/`off-grid`
+  below their lead — rebalance toward the broader segments before proposing
+  (reassign measurement/bench/comparison work to `tinkerer`, and
+  coverage/community/resilience work to `off-grid` or `cert-emcomm`).
 - **Day-of-week:** write to the day's lean (Tuesday Workbench · Thursday Planning
   Table · Sunday Long Read). `position` posts almost always land on Sunday;
   comparisons and `under-the-hood` on Thursday; teaching series on Tuesday.
