@@ -1,0 +1,453 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   blog.css — index masthead, post cards, long-form prose, value cards,
+   and figure/visual-aid framing.
+
+   Card chrome reuses the app's canonical container recipe (`--container-bg`
+   gradient + `--shadow-container` bevel + `--shape-xl` radius) so a post
+   card on the blog is visually the same object as a card on waev.app.
+   Section kickers + feature cards mirror About's `.about-section-title`
+   and `.about-feature`.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Shared card chrome ── */
+.card {
+  background: var(--container-bg);
+  border: var(--container-border);
+  border-radius: var(--shape-xl);
+  box-shadow: var(--shadow-container);
+}
+
+/* ── Uppercase accent kicker (≡ About's section title) ── */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-label-lg);
+  line-height: var(--lh-label-lg);
+  letter-spacing: 0.06em;
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  color: var(--text-accent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Index masthead + post list
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.masthead {
+  padding-block: var(--sp-15) var(--sp-12);
+  display: grid;
+  gap: var(--sp-5);
+}
+
+.masthead-title {
+  font-size: clamp(var(--fs-display-sm), 5vw, var(--fs-display-lg));
+  line-height: 1.05;
+  letter-spacing: var(--ls-display-lg);
+  margin-top: var(--sp-3);
+}
+
+.masthead-gradient {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.masthead-subtitle {
+  font-size: var(--fs-title-lg);
+  line-height: var(--lh-title-lg);
+  letter-spacing: var(--ls-title-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+  max-width: 54ch;
+  text-wrap: pretty;
+}
+
+/* Post list */
+.post-list {
+  display: grid;
+  gap: var(--sp-6);
+  padding-bottom: var(--sp-10);
+  list-style: none;
+  margin: 0;
+  padding-inline: 0;
+}
+
+.post-card {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--card-pad-hero);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--dur-short-3) var(--ease-standard),
+    box-shadow var(--dur-short-3) var(--ease-standard),
+    border-color var(--dur-short-3) var(--ease-standard);
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  box-shadow: var(--shadow-container), 0 8px 30px rgba(62, 62, 150, 0.18);
+}
+
+.post-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--mono);
+  font-size: var(--fs-label-md);
+  letter-spacing: var(--ls-label-md);
+  color: var(--text-tertiary);
+}
+
+.post-card-title {
+  font-size: var(--fs-headline-sm);
+  line-height: var(--lh-headline-sm);
+  color: var(--text);
+}
+
+.post-card:hover .post-card-title {
+  color: var(--text);
+}
+
+.post-card-desc {
+  font-size: var(--fs-body-md);
+  line-height: var(--lh-body-md);
+  color: var(--text-muted);
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+
+.post-card-more {
+  font-size: var(--fs-label-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-accent);
+}
+
+/* Tag chips */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding-inline: var(--sp-2);
+  border-radius: var(--shape-full);
+  font-family: var(--mono);
+  font-size: var(--fs-label-sm);
+  letter-spacing: var(--ls-label-sm);
+  background: var(--accent-subtle);
+  color: var(--accent-light);
+  border: 1px solid var(--border-accent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Post page
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.post {
+  padding-block: var(--sp-10) 0;
+}
+
+.post-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--mono);
+  font-size: var(--fs-label-md);
+  color: var(--text-muted);
+  margin-bottom: var(--sp-8);
+}
+
+.post-back:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.post-header {
+  margin-bottom: var(--sp-10);
+  display: grid;
+  gap: var(--sp-5);
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--mono);
+  font-size: var(--fs-label-md);
+  letter-spacing: var(--ls-label-md);
+  color: var(--text-tertiary);
+}
+
+.post-title {
+  font-size: clamp(var(--fs-headline-lg), 4.5vw, var(--fs-display-md));
+  line-height: 1.08;
+  letter-spacing: var(--ls-display-md);
+}
+
+.post-lead {
+  font-size: var(--fs-title-lg);
+  line-height: var(--lh-title-lg);
+  letter-spacing: var(--ls-title-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+/* ── Long-form prose ── */
+.prose {
+  font-size: var(--fs-body-lg);
+  line-height: 1.7;
+  letter-spacing: var(--ls-body-lg);
+  color: var(--text-muted);
+}
+
+.prose > * + * {
+  margin-top: var(--sp-5);
+}
+
+.prose p {
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+}
+
+.prose em {
+  color: var(--text);
+}
+
+.prose h2 {
+  font-size: var(--fs-headline-sm);
+  line-height: var(--lh-headline-sm);
+  color: var(--text);
+  margin-top: var(--sp-12);
+  scroll-margin-top: var(--sp-10);
+}
+
+.prose h3 {
+  font-size: var(--fs-title-lg);
+  line-height: var(--lh-title-lg);
+  color: var(--text);
+  margin-top: var(--sp-8);
+}
+
+.prose a {
+  color: var(--text-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--border-accent);
+}
+
+.prose a:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.prose ul,
+.prose ol {
+  max-width: 68ch;
+  padding-left: var(--sp-6);
+}
+
+.prose li + li {
+  margin-top: var(--sp-2);
+}
+
+.prose li::marker {
+  color: var(--text-accent);
+}
+
+.prose code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  padding: 2px 6px;
+  border-radius: var(--shape-xs);
+  background: var(--surface-tint-2);
+  color: var(--text);
+}
+
+.prose pre {
+  padding: var(--sp-4);
+  border-radius: var(--shape-md);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin-block: var(--sp-10);
+}
+
+/* ── Pull-quote / callout (≡ About's `.about-card--highlight`) ── */
+.prose blockquote,
+.callout {
+  border-left: 3px solid var(--sys-bluepurple-500);
+  padding: 0 0 0 var(--sp-6);
+  margin: var(--sp-8) 0;
+  max-width: 64ch;
+}
+
+.prose blockquote p,
+.callout p {
+  font-size: var(--fs-title-lg);
+  line-height: var(--lh-title-lg);
+  letter-spacing: var(--ls-title-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Value cards (core-values grid — ≡ About's feature grid)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-6);
+  margin-block: var(--sp-8);
+  max-width: none;
+}
+
+.value-card {
+  padding: var(--card-pad-hero);
+  border-radius: var(--shape-xl);
+  background: var(--container-bg);
+  border: var(--container-border);
+  box-shadow: var(--shadow-container);
+  display: grid;
+  gap: var(--sp-3);
+  align-content: start;
+}
+
+.value-card-index {
+  font-family: var(--mono);
+  font-size: var(--fs-label-md);
+  letter-spacing: 0.1em;
+  color: var(--text-accent);
+}
+
+.value-card-title {
+  font-size: var(--fs-title-lg);
+  line-height: var(--lh-title-lg);
+  letter-spacing: var(--ls-title-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.value-card-body {
+  font-size: var(--fs-body-md);
+  line-height: var(--lh-body-md);
+  letter-spacing: var(--ls-body-md);
+  color: var(--text-muted);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* When the grid lives inside `.prose` (the MDX post), neutralize the
+   inherited heading/paragraph rhythm so cards stay tight. */
+.value-grid .value-card-title {
+  margin-top: 0;
+}
+.value-grid .value-card-body {
+  max-width: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Figures / visual aids
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.figure {
+  margin-block: var(--sp-10);
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.figure-frame {
+  padding: var(--sp-8);
+  border-radius: var(--shape-xl);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.figure-caption {
+  font-family: var(--mono);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  letter-spacing: var(--ls-body-sm);
+  color: var(--text-tertiary);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.figure-caption b {
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+}
+
+/* Reusable abstracted-UI atoms shared by the SVG figures */
+.viz-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  fill: var(--text-tertiary);
+}
+
+.viz-strong {
+  fill: var(--text);
+}
+
+.viz-accent {
+  fill: var(--text-accent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Closing CTA block
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.endnote {
+  margin-top: var(--sp-12);
+  padding-top: var(--sp-8);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.endnote-title {
+  font-size: var(--fs-label-lg);
+  line-height: var(--lh-label-lg);
+  letter-spacing: 0.06em;
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  color: var(--text-accent);
+  margin-bottom: var(--sp-4);
+}
+
+/* ── Responsive ── */
+@media (max-width: 839px) {
+  .value-grid {
+    grid-template-columns: 1fr;
+  }
+  .figure-frame {
+    padding: var(--sp-5);
+  }
+}

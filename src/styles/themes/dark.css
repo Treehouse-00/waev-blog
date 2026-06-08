@@ -1,0 +1,41 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ * Theme overrides for data-theme="dark".
+ */
+
+:root[data-theme="dark"] {
+  --bg: var(--sys-zinc-950);
+  --bg-raised: var(--sys-zinc-900);
+  --surface: var(--sys-zinc-925);
+  --surface-hover: transparent;
+  --surface-active: var(--sys-white-10);
+  --text: var(--sys-zinc-100);
+  --text-muted: var(--sys-zinc-400);
+  --text-tertiary: var(--sys-zinc-500);
+  --text-accent: var(--sys-bluepurple-400);
+  --border: var(--sys-zinc-850);
+  --border-subtle: var(--sys-white-8);
+  --border-hover: var(--sys-white-14);
+  --border-focus: var(--sys-bluepurple-400);
+  --surface-1: var(--sys-zinc-900);
+  --surface-sunken: var(--sys-zinc-975);
+  --surface-glass: color-mix(in srgb, var(--sys-zinc-900) 75%, transparent);
+  --outline-glass: var(--sys-zinc-800);
+  --surface-tint-1: var(--sys-white-4);
+  --surface-tint-2: var(--sys-white-7);
+  --surface-tint-3: var(--sys-white-8);
+  --surface-tint-4: var(--sys-white-12);
+  --surface-tint-5: var(--sys-white-14);
+  --maplibre-glass-bg: rgba(0, 0, 0, 0.70);
+  --maplibre-glass-border: rgba(255, 255, 255, 0.12);
+  --maplibre-glass-fg: rgba(255, 255, 255, 0.80);
+  --maplibre-glass-fg-dim: rgba(255, 255, 255, 0.70);
+  --maplibre-glass-divider: rgba(255, 255, 255, 0.08);
+  --maplibre-glass-hover: rgba(255, 255, 255, 0.08);
+  --maplibre-attrib-bg: rgba(0, 0, 0, 0.50);
+  --maplibre-attrib-fg: rgba(255, 255, 255, 0.50);
+  --ctl-neutral-bg: var(--bg-raised);
+  --ctl-neutral-bg-hover: var(--bg-raised);
+  --ctl-neutral-bg-on-surface: var(--sys-zinc-800);
+  --ctl-neutral-bg-on-surface-hover: var(--sys-zinc-800);
+}

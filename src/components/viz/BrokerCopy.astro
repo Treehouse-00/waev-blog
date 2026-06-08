@@ -1,0 +1,62 @@
+---
+/**
+ * BrokerCopy — the bring-your-own-broker model: a community publishes to a
+ * broker the operator owns; Waev subscribes and keeps a read-only copy.
+ * Ownership stays on the left.
+ */
+const users = [
+  { x: 40, y: 44 }, { x: 78, y: 30 }, { x: 116, y: 46 },
+  { x: 58, y: 70 }, { x: 100, y: 70 }, { x: 142, y: 36 },
+];
+---
+
+<svg viewBox="0 0 720 280" role="img" aria-label="A community publishes to a broker the operator owns; Waev subscribes and keeps a read-only copy. Control stays with the operator." style="width:100%;height:auto;">
+  <defs>
+    <marker id="bc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+
+  <!-- community dots feeding the broker -->
+  <g>
+    {users.map((u) => (
+      <>
+        <line x1={u.x} y1={u.y} x2="150" y2="150" style="stroke: var(--border-hover);" stroke-width="1" />
+        <circle cx={u.x} cy={u.y} r="5" style="fill: var(--text-tertiary);" />
+      </>
+    ))}
+    <text x="40" y="100" class="viz-label" style="fill: var(--text-muted);">your community</text>
+  </g>
+
+  <!-- left card — operator's broker -->
+  <g>
+    <rect x="40" y="116" width="220" height="120" rx="16" style="fill: var(--surface-1); stroke: var(--border-accent);" stroke-width="1" />
+    <!-- server glyph -->
+    <g transform="translate(64 142)" style="stroke: var(--accent-light); fill: none;" stroke-width="1.75">
+      <rect x="0" y="0" width="26" height="11" rx="2.5" />
+      <rect x="0" y="15" width="26" height="11" rx="2.5" />
+      <circle cx="6" cy="5.5" r="1.2" style="fill: var(--accent-light); stroke: none;" />
+      <circle cx="6" cy="20.5" r="1.2" style="fill: var(--accent-light); stroke: none;" />
+    </g>
+    <text x="104" y="150" style="fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600;">Your broker</text>
+    <text x="104" y="168" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">MQTT · you host it</text>
+    <line x1="64" y1="190" x2="236" y2="190" style="stroke: var(--border-subtle);" stroke-width="1" />
+    <text x="64" y="212" style="fill: var(--accent-light); font-family: var(--mono); font-size: 12px;">you own the data ✓</text>
+  </g>
+
+  <!-- subscribe / copy arrow -->
+  <g>
+    <line x1="268" y1="176" x2="452" y2="176" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#bc-arrow)" />
+    <text x="360" y="160" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">subscribe</text>
+    <text x="360" y="198" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 11px;">a copy, not the keys</text>
+  </g>
+
+  <!-- right card — Waev -->
+  <g>
+    <rect x="460" y="116" width="220" height="120" rx="16" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+    <text x="484" y="150" style="fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600;">Waev</text>
+    <text x="484" y="168" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">keeps a read-only copy</text>
+    <line x1="484" y1="190" x2="656" y2="190" style="stroke: var(--border-subtle);" stroke-width="1" />
+    <text x="484" y="212" style="fill: var(--text-muted); font-family: var(--mono); font-size: 12px;">maps · health · telemetry</text>
+  </g>
+</svg>

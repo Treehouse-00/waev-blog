@@ -1,0 +1,87 @@
+---
+/**
+ * PrivacyScrub — two abstracted-UI rows:
+ *   1. Opt-out marker: a node named with a privacy symbol is never stored.
+ *   2. Companion scrub: an ADVERT arrives, identity fields are nullified at
+ *      the ingest edge, only signal metadata survives.
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 360" role="img" aria-label="Opt-out markers are honored; companion identity is stripped at the ingest edge, leaving only signal metadata." style="width:100%;height:auto;">
+  <defs>
+    <marker id="ps-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+    </marker>
+  </defs>
+
+  <!-- ───────── Row 1 — opt-out marker ───────── -->
+  <text x="20" y="34" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">01 · OPT-OUT IS ABSOLUTE</text>
+
+  <!-- node chip with privacy symbol -->
+  <g>
+    <rect x="20" y="50" width="250" height="52" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+    <!-- stop octagon -->
+    <g transform="translate(44 76)">
+      <polygon points="-7,-13 7,-13 13,-7 13,7 7,13 -7,13 -13,7 -13,-7" style="fill: var(--sys-red-400);" />
+      <line x1="-6" y1="0" x2="6" y2="0" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+    </g>
+    <text x="72" y="71" class="viz-label" style="fill: var(--text-tertiary);">node</text>
+    <text x="72" y="89" style="fill: var(--text); font-family: var(--mono); font-size: 15px;">hilltop-relay</text>
+  </g>
+
+  <line x1="284" y1="76" x2="372" y2="76" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="2 4" marker-end="url(#ps-arrow)" />
+
+  <!-- result: never stored -->
+  <g>
+    <rect x="386" y="50" width="314" height="52" rx="14" style="fill: transparent; stroke: var(--border-hover);" stroke-width="1" stroke-dasharray="5 5" />
+    <g transform="translate(414 76)" style="stroke: var(--text-tertiary);" stroke-width="2" stroke-linecap="round">
+      <circle cx="0" cy="0" r="11" fill="none" />
+      <line x1="-7.8" y1="-7.8" x2="7.8" y2="7.8" />
+    </g>
+    <text x="440" y="71" class="viz-label" style="fill: var(--text-tertiary);">database · map · topology</text>
+    <text x="440" y="89" style="fill: var(--text-muted); font-family: var(--mono); font-size: 14px;">never written. no exceptions.</text>
+  </g>
+
+  <!-- divider -->
+  <line x1="20" y1="142" x2="700" y2="142" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ───────── Row 2 — companion scrub ───────── -->
+  <text x="20" y="178" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">02 · PACKETS ARRIVE, IDENTITY DOESN'T</text>
+
+  <!-- incoming ADVERT card -->
+  <g>
+    <rect x="20" y="196" width="244" height="140" rx="16" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+    <text x="40" y="222" style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">Companion ADVERT</text>
+    <line x1="40" y1="232" x2="244" y2="232" style="stroke: var(--border-subtle);" stroke-width="1" />
+    <text x="40" y="256" class="viz-label">name</text><text x="244" y="256" text-anchor="end" style="fill: var(--text); font-family: var(--mono); font-size: 13px;">Pixel-7a</text>
+    <text x="40" y="280" class="viz-label">type</text><text x="244" y="280" text-anchor="end" style="fill: var(--text); font-family: var(--mono); font-size: 13px;">companion</text>
+    <text x="40" y="304" class="viz-label">snr</text><text x="244" y="304" text-anchor="end" style="fill: var(--text-muted); font-family: var(--mono); font-size: 13px;">8.5 dB</text>
+    <text x="40" y="326" class="viz-label">hops</text><text x="244" y="326" text-anchor="end" style="fill: var(--text-muted); font-family: var(--mono); font-size: 13px;">2</text>
+  </g>
+
+  <!-- ingest-edge gate -->
+  <g>
+    <line x1="328" y1="206" x2="328" y2="326" style="stroke: var(--accent);" stroke-width="2" stroke-dasharray="4 5" />
+    <text x="328" y="352" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">scrub @ ingest edge</text>
+    <line x1="270" y1="266" x2="320" y2="266" style="stroke: var(--text-tertiary);" stroke-width="1.5" marker-end="url(#ps-arrow)" />
+    <line x1="336" y1="266" x2="386" y2="266" style="stroke: var(--text-tertiary);" stroke-width="1.5" marker-end="url(#ps-arrow)" />
+  </g>
+
+  <!-- stored record card -->
+  <g>
+    <rect x="392" y="196" width="308" height="140" rx="16" style="fill: var(--surface-1); stroke: var(--border-accent);" stroke-width="1" />
+    <text x="412" y="222" style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">Written to DB</text>
+    <line x1="412" y1="232" x2="680" y2="232" style="stroke: var(--border-subtle);" stroke-width="1" />
+    <!-- nullified -->
+    <text x="412" y="256" class="viz-label">name</text>
+    <text x="680" y="256" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 13px;">∅ nullified</text>
+    <line x1="628" y1="252" x2="680" y2="252" style="stroke: var(--text-tertiary);" stroke-width="1" />
+    <text x="412" y="280" class="viz-label">type</text>
+    <text x="680" y="280" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 13px;">∅ nullified</text>
+    <line x1="628" y1="276" x2="680" y2="276" style="stroke: var(--text-tertiary);" stroke-width="1" />
+    <!-- kept -->
+    <text x="412" y="304" class="viz-label">snr</text><text x="680" y="304" text-anchor="end" style="fill: var(--accent-light); font-family: var(--mono); font-size: 13px;">8.5 dB ✓</text>
+    <text x="412" y="326" class="viz-label">hops</text><text x="680" y="326" text-anchor="end" style="fill: var(--accent-light); font-family: var(--mono); font-size: 13px;">2 ✓</text>
+  </g>
+</svg>
