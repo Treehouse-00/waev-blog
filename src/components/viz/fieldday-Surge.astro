@@ -1,0 +1,101 @@
+---
+/**
+ * fieldday-Surge — abstracted UI showing a surge in network activity for Field Day.
+ * Two panels side-by-side or stacked: 
+ * Left: A quiet network baseline (e.g. 15 nodes, 2 observers).
+ * Right: The Field Day surge (Live Map filling out with temporary nodes, Stats graph spiking).
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 280" role="img" aria-label="A network map and activity graph showing a massive surge in connected nodes and traffic during ARRL Field Day." style="width:100%;height:auto;">
+  <defs>
+    <!-- Background grid for a bit of map texture -->
+    <pattern id="fd-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="var(--border-subtle)" stroke-width="0.5" />
+    </pattern>
+  </defs>
+
+  <!-- Left panel: Normal Weekend -->
+  <g transform="translate(0, 0)">
+    <rect x="20" y="20" width="330" height="240" rx="12" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+    <text x="40" y="46" style="fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600;">Normal Weekend</text>
+    <text x="40" y="66" class="viz-label">14 active nodes</text>
+
+    <!-- Map bounding box with grid -->
+    <rect x="40" y="80" width="290" height="110" rx="6" style="fill: url(#fd-grid); stroke: var(--border-subtle);" stroke-width="1" />
+    
+    <!-- A few permanent backbone nodes and links -->
+    <g transform="translate(40, 80)">
+      <line x1="145" y1="55" x2="100" y2="40" style="stroke: var(--accent-light);" stroke-width="1.5" />
+      <line x1="145" y1="55" x2="200" y2="70" style="stroke: var(--accent-light);" stroke-width="1.5" />
+      <line x1="200" y1="70" x2="230" y2="30" style="stroke: var(--accent-light);" stroke-width="1.5" />
+
+      <circle cx="145" cy="55" r="5" style="fill: var(--accent);" />
+      <circle cx="100" cy="40" r="4" style="fill: var(--text-accent);" />
+      <circle cx="200" cy="70" r="5" style="fill: var(--accent);" />
+      <circle cx="230" cy="30" r="4" style="fill: var(--text-accent);" />
+    </g>
+
+    <!-- Quiet sparkline -->
+    <g transform="translate(40, 210)">
+      <text x="0" y="24" class="viz-label">Traffic</text>
+      <path d="M 60 20 L 80 18 L 100 21 L 120 19 L 140 22 L 160 17 L 180 20 L 200 18 L 220 19 L 240 20 L 260 18 L 280 20 L 290 19" fill="none" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+
+  <!-- Right panel: Field Day Surge -->
+  <g transform="translate(370, 0)">
+    <rect x="0" y="20" width="330" height="240" rx="12" style="fill: var(--surface-1); stroke: var(--border-accent);" stroke-width="1.5" />
+    <text x="20" y="46" style="fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600;">Field Day Weekend</text>
+    <text x="20" y="66" class="viz-label" style="fill: var(--text-accent);">186 active nodes</text>
+
+    <!-- Map bounding box with grid -->
+    <rect x="20" y="80" width="290" height="110" rx="6" style="fill: url(#fd-grid); stroke: var(--border-accent);" stroke-width="1" />
+
+    <!-- A dense surge of nodes -->
+    <g transform="translate(20, 80)">
+      <!-- permanent backbone -->
+      <line x1="145" y1="55" x2="100" y2="40" style="stroke: var(--accent-light);" stroke-width="1.5" />
+      <line x1="145" y1="55" x2="200" y2="70" style="stroke: var(--accent-light);" stroke-width="1.5" />
+      <line x1="200" y1="70" x2="230" y2="30" style="stroke: var(--accent-light);" stroke-width="1.5" />
+
+      <!-- surge links -->
+      <line x1="145" y1="55" x2="120" y2="80" style="stroke: var(--sys-bluepurple-500); opacity: 0.7;" stroke-width="1" />
+      <line x1="145" y1="55" x2="160" y2="20" style="stroke: var(--sys-bluepurple-500); opacity: 0.7;" stroke-width="1" />
+      <line x1="100" y1="40" x2="60" y2="30" style="stroke: var(--sys-bluepurple-500); opacity: 0.7;" stroke-width="1" />
+      <line x1="100" y1="40" x2="80" y2="70" style="stroke: var(--sys-bluepurple-500); opacity: 0.7;" stroke-width="1" />
+      <line x1="200" y1="70" x2="180" y2="90" style="stroke: var(--sys-bluepurple-500); opacity: 0.7;" stroke-width="1" />
+      <line x1="200" y1="70" x2="250" y2="85" style="stroke: var(--sys-bluepurple-500); opacity: 0.7;" stroke-width="1" />
+      <line x1="230" y1="30" x2="260" y2="20" style="stroke: var(--sys-bluepurple-500); opacity: 0.7;" stroke-width="1" />
+      <line x1="230" y1="30" x2="210" y2="15" style="stroke: var(--sys-bluepurple-500); opacity: 0.7;" stroke-width="1" />
+
+      <!-- permanent nodes -->
+      <circle cx="145" cy="55" r="5" style="fill: var(--accent);" />
+      <circle cx="100" cy="40" r="4" style="fill: var(--text-accent);" />
+      <circle cx="200" cy="70" r="5" style="fill: var(--accent);" />
+      <circle cx="230" cy="30" r="4" style="fill: var(--text-accent);" />
+
+      <!-- temporary nodes -->
+      <circle cx="120" cy="80" r="3" style="fill: var(--sys-bluepurple-500);" />
+      <circle cx="160" cy="20" r="3" style="fill: var(--sys-bluepurple-500);" />
+      <circle cx="60" cy="30" r="3" style="fill: var(--sys-bluepurple-500);" />
+      <circle cx="80" cy="70" r="3" style="fill: var(--sys-bluepurple-500);" />
+      <circle cx="180" cy="90" r="3" style="fill: var(--sys-bluepurple-500);" />
+      <circle cx="250" cy="85" r="3" style="fill: var(--sys-bluepurple-500);" />
+      <circle cx="260" cy="20" r="3" style="fill: var(--sys-bluepurple-500);" />
+      <circle cx="210" cy="15" r="3" style="fill: var(--sys-bluepurple-500);" />
+
+      <!-- A couple detached but heard clusters -->
+      <circle cx="40" cy="80" r="3" style="fill: var(--text-tertiary);" />
+      <circle cx="270" cy="60" r="3" style="fill: var(--text-tertiary);" />
+    </g>
+
+    <!-- Spiking sparkline -->
+    <g transform="translate(20, 210)">
+      <text x="0" y="24" class="viz-label">Traffic</text>
+      <!-- Stepping up into a massive spike -->
+      <path d="M 60 20 L 80 19 L 100 20 L 120 18 L 140 16 L 160 5 L 180 2 L 200 6 L 220 3 L 240 8 L 260 4 L 280 7 L 290 6" fill="none" style="stroke: var(--accent-light);" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+</svg>

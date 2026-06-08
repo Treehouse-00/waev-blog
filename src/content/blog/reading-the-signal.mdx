@@ -1,0 +1,97 @@
+---
+title: "Reading the Signal"
+description: "A guide to SNR, hop count, and path quality for MeshCore operators — what the numbers in Live Packets and Network Stats mean, and how to tell a healthy link from a marginal one."
+date: 2026-07-30
+tags: ["deep-dive", "signal"]
+author: "Waev"
+draft: false
+faq:
+  - q: "What is SNR and why does it matter for LoRa mesh links?"
+    a: "SNR stands for Signal-to-Noise Ratio — the difference in decibels between the incoming signal and the background noise floor. Higher SNR means a cleaner, more reliable link. LoRa can decode signals below the noise floor, which is how MeshCore achieves long range, but links near or below zero dB become inconsistent. For mesh routing purposes, a link you can depend on generally needs at least +5 to +7 dB SNR in typical conditions — treat that as a rule of thumb, not a hard specification."
+  - q: "What counts as a good SNR for a MeshCore link?"
+    a: "+7 dB or above is a useful working target. Links between +5 and +7 dB are workable in clear conditions but become unreliable with weather, terrain obstructions, or antenna misalignment. Below +5 dB, treat the link as marginal — plan for intermittency in adverse conditions. All of these are rules of thumb; your RF environment, antenna, and spread factor all shift where the line falls in your specific network."
+  - q: "What does hop count tell me about my mesh network?"
+    a: "Hop count is how many radio legs a packet traveled from source to observer. One or two hops is ideal; three or four is normal for larger or spread-out networks. What matters most is change: a node that used to reach backbone in two hops and now shows four is routing around something that degraded. Hop-count creep is one of the earliest signs of a coverage problem."
+  - q: "Why does the weakest hop dominate path quality?"
+    a: "A packet has to survive every RF leg on its way through. If any single hop drops below reliable SNR, the entire path becomes unreliable — regardless of how strong the other hops are. A path showing +12 dB, +9 dB, and +2 dB has an effective quality of +2 dB. This is why improving the weakest hop almost always delivers more value than improving one that's already strong."
+  - q: "Where does Waev show SNR and hop count?"
+    a: "Both appear in Live Packets (tagged to each observation in real time), in Network Stats (the path-quality view shows hop count and SNR together with status flags), and in Outpost (per-node SNR history over time). Network Stats is the fastest way to triage overall health; Outpost is where you investigate a specific node."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalSNRScale from "../../components/viz/signal-SNRScale.astro";
+import SignalHopChain from "../../components/viz/signal-HopChain.astro";
+import SignalPathMatrix from "../../components/viz/signal-PathMatrix.astro";
+import SignalOutpostHistory from "../../components/viz/signal-OutpostHistory.astro";
+
+You've been watching the Live Packets stream long enough to have a feel for it. The timestamps, the node names, the SNR number attached to every observation. High numbers seem better than low ones — that much is obvious from the first day. But what does +11 dB actually mean? What's the real difference between +3 and +7? And when a number goes negative, what's the honest answer about whether that link is working?
+
+This is the vocabulary.
+
+<div class="callout">
+<p><strong>In short.</strong> SNR (Signal-to-Noise Ratio) measures how cleanly a signal arrives above the noise floor — higher is better, and the working target for a MeshCore link is roughly +7 dB or above in typical conditions. Hop count tells you how many radio legs a packet traveled; creeping hop counts are an early sign of path degradation. Together, they describe path quality — and a path is only as reliable as its weakest hop. Waev surfaces both in Live Packets, Network Stats, and Outpost.</p>
+</div>
+
+## What SNR actually measures
+
+Signal-to-Noise Ratio is the difference, in decibels, between the signal your receiver hears and the background noise floor. A +10 dB reading means the signal is arriving 10 dB stronger than the noise. At +2 dB, it's barely above it. At −5 dB, it's technically below it.
+
+That last case surprises people. LoRa, the radio modulation MeshCore uses, is engineered specifically to decode signals below the noise floor. It does this through spread-spectrum encoding: the signal is spread across a wide bandwidth in a way that lets the receiver correlate it out of the noise using techniques that simpler modulations can't match. This is why MeshCore nodes can reach distances that look improbable on paper.
+
+But there's a ceiling to that capability. "The radio can decode it" and "this path is reliable for mesh operations" are different standards. As SNR approaches and crosses the noise floor, decodes become inconsistent — the link works eight times out of ten, or six, depending on local conditions. A link that works most of the time fails during a weather event, a high-interference moment, or the exact instant you need it. When you're building community infrastructure, "mostly works" isn't something you can plan around.
+
+<Figure caption="<b>Five SNR zones</b> as rules of thumb for MeshCore LoRa links. Breakpoints shift with terrain, antenna height, and spread factor — read these as guidance, not specification.">
+  <SignalSNRScale />
+</Figure>
+
+The zones are starting points, not hard lines. What doesn't shift is the direction: every decibel of margin you add is more reliability under adverse conditions. A working MeshCore link generally wants at least +5 to +7 dB in typical conditions — that's the figure cited in the coverage playbook and the one you'll see flagged in Network Stats. Under that, plan for intermittency. Consistently negative, plan for failure.
+
+## Hop count: routing distance and health
+
+Hop count is how many discrete radio legs a packet crossed from its source node to the observer that recorded it. A hop count of 1 means the source was heard directly. A count of 3 means the packet passed through two relay nodes along the way.
+
+More hops mean more latency — each relay adds its own forwarding delay, which accumulates. They also mean more exposure to failure: each leg is an independent radio link that can drop a packet. For most deployments, 1–2 hops is the sweet spot. Three or four is reasonable for geographically spread networks. Consistently five or more starts trading away the reliability that makes mesh communications useful in the first place.
+
+The more meaningful signal is **change** in hop count. A node that was reaching your observer in 2 hops at initial deployment and now shows 4 didn't physically move. Something in the shorter path degraded — a relay went offline, a link became intermittent, terrain obstruction changed — and the mesh started routing around it. Hop-count creep is one of the earliest and most reliable early-warning signs of a coverage problem. It doesn't mean the network is broken; it means something changed, and that change is worth understanding.
+
+## Reading them together
+
+Neither number tells the full story alone. A high hop count on a path where every hop is strong — +10 dB, +11 dB, +9 dB across four legs — is a legitimate long-distance coverage solution. A low hop count on a single link at +2 dB is operationally marginal no matter how short the physical distance.
+
+What matters is the combination, and the key principle is this: **a path is only as reliable as its weakest hop.** A packet has to survive every RF leg to get through — there's no averaging, no compensating for a bad hop with good ones. One hop at +3 dB in an otherwise excellent path makes the whole path a +3 dB path.
+
+<Figure caption="A three-hop path from source to observer. <b>Each hop must survive</b> for the packet to deliver. The second hop at +3 dB sets the effective quality for the entire path — the strong hops on either side don't compensate for it.">
+  <SignalHopChain />
+</Figure>
+
+This has a direct practical implication: improving the weakest hop is almost always more valuable than improving one that's already strong. If you're deciding where to add a repeater or tune antenna placement, find the weakest links in your critical paths first — not the longest ones, and not the most visible ones.
+
+The four combinations you'll encounter in the field:
+
+<Figure caption="Four path-quality scenarios. The bottom-right quadrant — many hops plus weak SNR — is the signature of a node at the edge of coverage, routing around a gap. It's the most actionable finding.">
+  <SignalPathMatrix />
+</Figure>
+
+The bottom-right quadrant is the most urgent. High hop count plus low SNR together is the diagnostic signature of a node at the edge of your coverage area, routing far around a gap over a marginal path. That's the combination the Coverage Gap playbook is designed to address — and now you know what the numbers look like when you find it.
+
+## Where Waev surfaces the data
+
+Three surfaces, each with a distinct role.
+
+**Live Packets** shows per-hop SNR in real time as observations arrive. This is the fastest answer to whether a specific node is reaching your network and over how many hops. Packets appear within seconds of transmission; SNR is attached to each one.
+
+**Network Stats** is the diagnostic layer. The path-quality view shows hop count and SNR together for every active node, with status flags for watchlist and degraded paths. The time series shows how these numbers move over hours and days, which is what distinguishes a transient weather event from a structural path failure.
+
+**Outpost** is the per-node deep-dive: one node's activity timeline, its heard-by log, and its SNR history over the past day or week. When a specific node is behaving strangely, Outpost is where you trace the cause.
+
+<Figure caption="<b>Outpost SNR history</b> for a single node over 24 hours. The shaded band is the comfortable zone; the dashed line is the working threshold at +7 dB. Dips below it are real events — a weather front, a relay going offline, or an antenna that shifted.">
+  <SignalOutpostHistory />
+</Figure>
+
+---
+
+The numbers are there on every packet that arrives. Learning to read them takes a few minutes, and then they stop being noise and start being signal — the difference between a network you're watching and one you actually understand.
+
+Questions about what you're seeing on a specific node? [Tell us](mailto:admin@waev.app) — questions about real deployments are the most useful feedback we get.
+
+Ready to see the numbers for your network? [Connect your first observer at waev.app](https://waev.app).

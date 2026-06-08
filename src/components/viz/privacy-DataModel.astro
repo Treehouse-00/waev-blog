@@ -1,0 +1,78 @@
+---
+/**
+ * privacy-DataModel — side-by-side data model comparison for three source types.
+ * Shows exactly which fields are stored (✓) or refused (∅) for:
+ *   1. An enrolled operator node
+ *   2. A companion device (identity scrubbed)
+ *   3. An opted-out node (nothing stored)
+ * Theme-aware via CSS custom properties.
+ */
+const COLS = [
+  { x: 20,  label: "OPERATOR NODE", color: "var(--accent-light)",  border: "var(--border-accent)"  },
+  { x: 262, label: "COMPANION APP",  color: "var(--text-muted)",    border: "var(--border-subtle)"  },
+  { x: 504, label: "OPT-OUT NODE",   color: "var(--sys-red-400)",   border: "var(--sys-red-400)"    },
+];
+
+const FIELDS = [
+  { name: "node name",   op: "✓ stored",     comp: "∅ nullified", out: "∅ never written" },
+  { name: "device type", op: "✓ stored",     comp: "∅ nullified", out: "∅ never written" },
+  { name: "snr",         op: "✓ stored",     comp: "✓ stored",    out: "∅ never written" },
+  { name: "hops",        op: "✓ stored",     comp: "✓ stored",    out: "∅ never written" },
+  { name: "timestamp",   op: "✓ stored",     comp: "✓ stored",    out: "∅ never written" },
+  { name: "topology edge", op: "✓ if verified", comp: "∅ never", out: "∅ never written" },
+];
+
+type ColKey = "op" | "comp" | "out";
+const colKeys: ColKey[] = ["op", "comp", "out"];
+
+function colorForVal(val: string, colIdx: number): string {
+  if (val.startsWith("∅")) return colIdx === 2 ? "var(--sys-red-400)" : "var(--text-tertiary)";
+  if (val.startsWith("✓")) return colIdx === 0 ? "var(--accent-light)" : "var(--text-muted)";
+  return "var(--text-muted)";
+}
+---
+
+<svg viewBox="0 0 720 300" role="img" aria-label="Data model comparison for three node types: operator nodes store all fields; companion apps have name and device type nullified; opted-out nodes have nothing written at all." style="width:100%;height:auto;">
+
+  <!-- Column headers -->
+  {COLS.map((col, i) => (
+    <g>
+      <text x={col.x + 109} y="22" text-anchor="middle" class="viz-label"
+        style={`fill: ${col.color}; letter-spacing: 0.06em;`}>
+        {col.label}
+      </text>
+      <!-- Column box -->
+      <rect x={col.x} y="32" width="218" height={FIELDS.length * 38 + 14} rx="10"
+        style={`fill: var(--surface-1); stroke: ${col.border};`}
+        stroke-width="1" />
+    </g>
+  ))}
+
+  <!-- Rows -->
+  {FIELDS.map((field, fi) => (
+    <g transform={`translate(0, ${32 + 14 + fi * 38})`}>
+      {colKeys.map((key, ci) => {
+        const col = COLS[ci];
+        const val = field[key];
+        return (
+          <g>
+            <!-- field name -->
+            <text x={col.x + 14} y="18" class="viz-label" style="fill: var(--text-tertiary);">
+              {field.name}
+            </text>
+            <!-- field value -->
+            <text x={col.x + 204} y="18" text-anchor="end"
+              style={`fill: ${colorForVal(val, ci)}; font-family: var(--mono); font-size: 11px;`}>
+              {val}
+            </text>
+            <!-- row divider (not on last row) -->
+            {fi < FIELDS.length - 1 && (
+              <line x1={col.x + 14} y1="28" x2={col.x + 204} y2="28"
+                style="stroke: var(--border-subtle);" stroke-width="0.5" />
+            )}
+          </g>
+        );
+      })}
+    </g>
+  ))}
+</svg>

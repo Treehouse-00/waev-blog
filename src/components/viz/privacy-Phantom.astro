@@ -1,0 +1,96 @@
+---
+/**
+ * privacy-Phantom — what a companion device's record would contain
+ * if nothing were scrubbed ("if we kept everything") vs. what
+ * actually exists in Waev's database after the ingest scrub.
+ * Left panel is the phantom — struck-through identity fields, grayed out.
+ * Right panel is reality — only signal metadata, identity fields absent.
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 280" role="img" aria-label="Two database records for the same companion device. Left: what the record would contain if everything were kept — name, device type, SNR, hops, timestamp. Right: what actually exists in Waev's database after scrubbing — name and device type are absent, only signal metadata survives." style="width:100%;height:auto;">
+  <defs>
+    <marker id="priv-ph-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+    </marker>
+  </defs>
+
+  <!-- Left panel: "if we kept everything" (phantom / struck-through) -->
+  <text x="170" y="24" text-anchor="middle" class="viz-label"
+    style="fill: var(--text-tertiary); letter-spacing: 0.06em;">IF WE KEPT EVERYTHING</text>
+
+  <rect x="20" y="32" width="300" height="220" rx="12"
+    style="fill: var(--surface-1); stroke: var(--border-subtle); opacity: 0.6;"
+    stroke-width="1" stroke-dasharray="5 5" />
+
+  <!-- Record header -->
+  <text x="40" y="58" style="fill: var(--text-muted); font-family: var(--font); font-size: 12px; font-weight: 600;">companion_advert</text>
+  <line x1="40" y1="68" x2="300" y2="68" style="stroke: var(--border-subtle);" stroke-width="0.8" />
+
+  <!-- Fields — identity ones crossed out -->
+  <text x="40" y="92" class="viz-label" style="fill: var(--text-tertiary);">name</text>
+  <text x="300" y="92" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px; text-decoration: line-through;">Pixel-7a</text>
+  <!-- strikethrough line -->
+  <line x1="180" y1="89" x2="298" y2="89" style="stroke: var(--sys-red-400); opacity: 0.6;" stroke-width="1" />
+
+  <text x="40" y="120" class="viz-label" style="fill: var(--text-tertiary);">device_type</text>
+  <text x="300" y="120" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px;">companion</text>
+  <line x1="155" y1="117" x2="298" y2="117" style="stroke: var(--sys-red-400); opacity: 0.6;" stroke-width="1" />
+
+  <text x="40" y="148" class="viz-label" style="fill: var(--text-tertiary);">location_derived</text>
+  <text x="300" y="148" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px;">via hop path</text>
+  <line x1="145" y1="145" x2="298" y2="145" style="stroke: var(--sys-red-400); opacity: 0.6;" stroke-width="1" />
+
+  <text x="40" y="176" class="viz-label">snr</text>
+  <text x="300" y="176" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px; opacity: 0.5;">8.5 dB</text>
+
+  <text x="40" y="204" class="viz-label">hops</text>
+  <text x="300" y="204" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px; opacity: 0.5;">2</text>
+
+  <text x="40" y="232" class="viz-label">timestamp</text>
+  <text x="300" y="232" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px; opacity: 0.5;">2026-06-…</text>
+
+  <!-- "doesn't exist" watermark -->
+  <text x="170" y="256" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size: 9px; opacity: 0.7;">this record does not exist</text>
+
+  <!-- Arrow between panels -->
+  <line x1="334" y1="142" x2="378" y2="142" style="stroke: var(--text-tertiary);" stroke-width="1.5" marker-end="url(#priv-ph-arrow)" />
+  <text x="356" y="134" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">scrub</text>
+  <text x="356" y="154" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">@ ingest</text>
+
+  <!-- Right panel: what actually exists -->
+  <text x="549" y="24" text-anchor="middle" class="viz-label"
+    style="fill: var(--accent-light); letter-spacing: 0.06em;">WHAT ACTUALLY EXISTS</text>
+
+  <rect x="392" y="32" width="300" height="220" rx="12"
+    style="fill: var(--surface-1); stroke: var(--border-accent);"
+    stroke-width="1" />
+
+  <!-- Record header -->
+  <text x="412" y="58" style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">companion_signal</text>
+  <line x1="412" y1="68" x2="672" y2="68" style="stroke: var(--border-subtle);" stroke-width="0.8" />
+
+  <!-- Identity fields: absent (shown as absent rows) -->
+  <text x="412" y="92" class="viz-label" style="fill: var(--text-tertiary); opacity: 0.4;">name</text>
+  <text x="672" y="92" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px; opacity: 0.4;">—</text>
+
+  <text x="412" y="120" class="viz-label" style="fill: var(--text-tertiary); opacity: 0.4;">device_type</text>
+  <text x="672" y="120" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px; opacity: 0.4;">—</text>
+
+  <text x="412" y="148" class="viz-label" style="fill: var(--text-tertiary); opacity: 0.4;">location_derived</text>
+  <text x="672" y="148" text-anchor="end" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 12px; opacity: 0.4;">—</text>
+
+  <!-- Signal fields: present and highlighted -->
+  <text x="412" y="176" class="viz-label">snr</text>
+  <text x="672" y="176" text-anchor="end" style="fill: var(--accent-light); font-family: var(--mono); font-size: 12px;">8.5 dB ✓</text>
+
+  <text x="412" y="204" class="viz-label">hops</text>
+  <text x="672" y="204" text-anchor="end" style="fill: var(--accent-light); font-family: var(--mono); font-size: 12px;">2 ✓</text>
+
+  <text x="412" y="232" class="viz-label">timestamp</text>
+  <text x="672" y="232" text-anchor="end" style="fill: var(--accent-light); font-family: var(--mono); font-size: 12px;">2026-06-… ✓</text>
+
+  <!-- "this is all that exists" label -->
+  <text x="549" y="256" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); font-size: 9px;">signal metadata only · no identity</text>
+</svg>
