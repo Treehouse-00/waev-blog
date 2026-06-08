@@ -21,7 +21,7 @@
   <g clip-path="url(#snrs-bar-clip)">
     <rect x="60"  y="54" width="100" height="44" style="fill: var(--sys-red-400);"   opacity="0.55" />
     <rect x="160" y="54" width="100" height="44" style="fill: var(--sys-red-400);"   opacity="0.22" />
-    <rect x="260" y="54" width="140" height="44" style="fill: var(--sys-yellow-400);" opacity="0.38" />
+    <rect x="260" y="54" width="140" height="44" style="fill: var(--sys-orangeyellow-600);" opacity="0.38" />
     <rect x="400" y="54" width="120" height="44" style="fill: var(--accent-light);"  opacity="0.22" />
     <rect x="520" y="54" width="140" height="44" style="fill: var(--accent-light);"  opacity="0.44" />
   </g>
@@ -35,19 +35,19 @@
 
   <!-- ── Zone labels + dB range inside the bar ── -->
   <text x="110" y="73" text-anchor="middle" class="viz-label" style="fill: var(--sys-red-400);">AT FLOOR</text>
-  <text x="110" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:9px;">≤ −5 dB</text>
+  <text x="110" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px;">≤ −5 dB</text>
 
   <text x="210" y="73" text-anchor="middle" class="viz-label" style="fill: var(--sys-red-400); opacity:0.75;">UNRELIABLE</text>
-  <text x="210" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:9px;">−5 to 0 dB</text>
+  <text x="210" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px;">−5 to 0 dB</text>
 
-  <text x="330" y="73" text-anchor="middle" class="viz-label" style="fill: var(--sys-yellow-400);">MARGINAL</text>
-  <text x="330" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:9px;">0 to +7 dB</text>
+  <text x="330" y="73" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600);">MARGINAL</text>
+  <text x="330" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px;">0 to +7 dB</text>
 
   <text x="460" y="73" text-anchor="middle" class="viz-label" style="fill: var(--accent-light);">COMFORTABLE</text>
-  <text x="460" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:9px;">+7 to +13 dB</text>
+  <text x="460" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px;">+7 to +13 dB</text>
 
   <text x="590" y="73" text-anchor="middle" class="viz-label" style="fill: var(--accent-light);">STRONG</text>
-  <text x="590" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:9px;">above +13 dB</text>
+  <text x="590" y="88" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px;">above +13 dB</text>
 
   <!-- ── Tick marks at zone boundaries ── -->
   <line x1="160" y1="98" x2="160" y2="108" style="stroke: var(--text-tertiary);" stroke-width="1.5" />
@@ -62,14 +62,14 @@
   <text x="520" y="122" text-anchor="middle" class="viz-label">+13 dB</text>
 
   <!-- ── Zone descriptions ── -->
-  <text x="110" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">LoRa can decode it;</text>
-  <text x="110" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">mesh can't rely on it</text>
+  <text x="110" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">LoRa can decode it;</text>
+  <text x="110" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">mesh can't rely on it</text>
 
-  <text x="210" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">alive in ideal</text>
-  <text x="210" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">conditions only</text>
+  <text x="210" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">alive in ideal</text>
+  <text x="210" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">conditions only</text>
 
-  <text x="330" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">weather- and</text>
-  <text x="330" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">terrain-dependent</text>
+  <text x="330" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">weather- and</text>
+  <text x="330" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">terrain-dependent</text>
 
   <text x="460" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">reliable under</text>
   <text x="460" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">most conditions</text>
@@ -78,7 +78,7 @@
   <text x="590" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">not always achievable</text>
 
   <!-- ── Rules-of-thumb footnote ── -->
-  <text x="360" y="196" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-style:italic;">
+  <text x="360" y="196" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-style:italic;">
     all zones are rules of thumb — terrain, antenna, and spread factor shift where each transition falls in practice
   </text>
 </svg>

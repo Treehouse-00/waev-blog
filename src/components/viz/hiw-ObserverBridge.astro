@@ -25,17 +25,17 @@
   <!-- Three mesh nodes -->
   <!-- Node 1 (top-left) -->
   <circle cx="42" cy="80" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.5" />
-  <circle cx="42" cy="80" r="3" style="fill: var(--text-tertiary);" />
+  <circle cx="42" cy="80" r="3" style="fill: var(--text-muted);" />
   <text x="42" y="102" text-anchor="middle" class="viz-label">Node A</text>
 
   <!-- Node 2 (bottom-left) -->
   <circle cx="54" cy="148" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.5" />
-  <circle cx="54" cy="148" r="3" style="fill: var(--text-tertiary);" />
+  <circle cx="54" cy="148" r="3" style="fill: var(--text-muted);" />
   <text x="54" y="170" text-anchor="middle" class="viz-label">Node B</text>
 
   <!-- Node 3 (top-right of cluster) -->
   <circle cx="148" cy="62" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.5" />
-  <circle cx="148" cy="62" r="3" style="fill: var(--text-tertiary);" />
+  <circle cx="148" cy="62" r="3" style="fill: var(--text-muted);" />
   <text x="148" y="84" text-anchor="middle" class="viz-label">Node C</text>
 
   <!-- RF edges (dashed) between mesh nodes -->
@@ -45,7 +45,7 @@
 
   <!-- RF → Observer arrow (into observer's radio port) -->
   <path d="M162 90 C 190 100 200 110 216 114" fill="none" style="stroke: var(--border-hover);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#hiw-ob-arrow)" />
-  <text x="186" y="100" text-anchor="middle" class="viz-label" style="font-size: 9px;">RF</text>
+  <text x="186" y="100" text-anchor="middle" class="viz-label" style="font-size: 10px;">RF</text>
 
   <!-- ─── CENTER: Observer ─── -->
   <text x="280" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.06em; text-transform: uppercase;">Observer</text>
@@ -69,7 +69,7 @@
 
   <!-- Observer → Broker arrow (solid — internet) -->
   <path d="M344 120 C 370 120 390 120 406 120" fill="none" style="stroke: var(--accent-light);" stroke-width="1.75" marker-end="url(#hiw-ob-arrow-acc)" />
-  <text x="375" y="115" text-anchor="middle" class="viz-label" style="font-size: 9px; fill: var(--text-accent);">MQTT/TLS</text>
+  <text x="375" y="115" text-anchor="middle" class="viz-label" style="font-size: 10px; fill: var(--text-accent);">MQTT/TLS</text>
 
   <!-- ─── RIGHT: Your Broker ─── -->
   <text x="556" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;">Your Broker</text>
@@ -89,8 +89,8 @@
 
   <!-- Waev subscribe arrow (accent, right side of broker) -->
   <line x1="580" y1="120" x2="640" y2="120" style="stroke: var(--accent-light);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#hiw-ob-arrow-acc)" />
-  <text x="610" y="115" text-anchor="middle" class="viz-label" style="font-size: 9px; fill: var(--text-accent);">Waev</text>
-  <text x="610" y="136" text-anchor="middle" class="viz-label" style="font-size: 9px; fill: var(--text-accent);">subscribes</text>
+  <text x="610" y="115" text-anchor="middle" class="viz-label" style="font-size: 10px; fill: var(--text-accent);">Waev</text>
+  <text x="610" y="136" text-anchor="middle" class="viz-label" style="font-size: 10px; fill: var(--text-accent);">subscribes</text>
 
   <!-- bottom legend: RF=dashed, Internet=solid -->
   <line x1="218" y1="210" x2="260" y2="210" style="stroke: var(--border-hover);" stroke-width="1.5" stroke-dasharray="4 3" />

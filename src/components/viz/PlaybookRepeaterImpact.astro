@@ -11,7 +11,7 @@
 <svg viewBox="0 0 720 220" role="img" aria-label="Before and after comparison. Before: relay-anchor connects to relay-ridge at 4 hops and –3 dB — a degraded intermittent link. After: a new repeater inserted at the midpoint creates two healthy links of 2 hops each at +7 and +8 dB." style="width:100%;height:auto;">
   <defs>
     <marker id="pb-ri-arrow-dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-muted);" />
     </marker>
     <marker id="pb-ri-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
@@ -19,7 +19,7 @@
   </defs>
 
   <!-- ── BEFORE ── -->
-  <text x="148" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); letter-spacing:0.06em;">BEFORE</text>
+  <text x="148" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.06em;">BEFORE</text>
 
   <!-- relay-anchor (left) -->
   <circle cx="44" cy="110" r="12" style="fill: var(--accent);" />
@@ -32,11 +32,11 @@
 
   <!-- Link label -->
   <text x="142" y="98" text-anchor="middle" class="viz-label" style="fill: var(--sys-red-400);">4 hops · –3 dB</text>
-  <text x="142" y="130" text-anchor="middle" style="font-family: var(--mono); font-size: 10px; fill: var(--text-tertiary);">intermittent</text>
+  <text x="142" y="130" text-anchor="middle" style="font-family: var(--mono); font-size: 10px; fill: var(--text-muted);">intermittent</text>
 
   <!-- relay-ridge (right, degraded) — dashed border -->
   <circle cx="252" cy="110" r="11" fill="none" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="3 3" />
-  <text x="252" y="136" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">relay-ridge</text>
+  <text x="252" y="136" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-ridge</text>
 
   <!-- Divider -->
   <line x1="350" y1="30" x2="350" y2="190" style="stroke: var(--border-subtle);" stroke-width="1" />
@@ -59,7 +59,7 @@
   <!-- NEW label badge -->
   <rect x="524" y="76" width="28" height="16" rx="8"
     style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="1" />
-  <text x="538" y="88" text-anchor="middle" style="font-family: var(--mono); font-size: 9px; fill: var(--accent-light); font-weight: 700;">NEW</text>
+  <text x="538" y="88" text-anchor="middle" style="font-family: var(--mono); font-size: 10px; fill: var(--accent-light); font-weight: 700;">NEW</text>
   <text x="531" y="136" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-new</text>
 
   <!-- Link: new repeater → relay-ridge -->

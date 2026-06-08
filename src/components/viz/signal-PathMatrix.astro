@@ -22,7 +22,7 @@
   <!-- Top-left: Optimal (accent green tint) -->
   <rect x="30"  y="44" width="335" height="104" rx="0" style="fill: var(--accent-light);" opacity="0.10" />
   <!-- Top-right: Long Reach (yellow tint) -->
-  <rect x="365" y="44" width="335" height="104" rx="0" style="fill: var(--sys-yellow-400);" opacity="0.10" />
+  <rect x="365" y="44" width="335" height="104" rx="0" style="fill: var(--sys-orangeyellow-600);" opacity="0.10" />
   <!-- Bottom-left: RF Problem (red tint) -->
   <rect x="30"  y="148" width="335" height="104" rx="0" style="fill: var(--sys-red-400);" opacity="0.10" />
   <!-- Bottom-right: Edge of Coverage (red stronger tint) -->
@@ -45,7 +45,7 @@
   <!-- ────────────────────────
        CELL 1 — top-left: OPTIMAL
        ──────────────────────── -->
-  <text x="50" y="70" class="viz-label" style="fill: var(--text-tertiary);">few hops · strong SNR</text>
+  <text x="50" y="70" class="viz-label" style="fill: var(--text-muted);">few hops · strong SNR</text>
   <!-- Status badge dot -->
   <circle cx="50" cy="92" r="5" style="fill: var(--accent-light);" />
   <text x="62" y="97" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--accent-light);">OPTIMAL</text>
@@ -55,16 +55,16 @@
   <!-- ────────────────────────
        CELL 2 — top-right: LONG REACH
        ──────────────────────── -->
-  <text x="385" y="70" class="viz-label" style="fill: var(--text-tertiary);">many hops · strong SNR</text>
-  <circle cx="385" cy="92" r="5" style="fill: var(--sys-yellow-400);" />
-  <text x="397" y="97" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--sys-yellow-400);">LONG REACH</text>
+  <text x="385" y="70" class="viz-label" style="fill: var(--text-muted);">many hops · strong SNR</text>
+  <circle cx="385" cy="92" r="5" style="fill: var(--sys-orangeyellow-600);" />
+  <text x="397" y="97" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--sys-orangeyellow-600);">LONG REACH</text>
   <text x="385" y="118" class="viz-label" style="fill: var(--text-muted);">Working path; each hop is sound.</text>
   <text x="385" y="132" class="viz-label" style="fill: var(--text-muted);">Watch for hop-count creep over time.</text>
 
   <!-- ────────────────────────
        CELL 3 — bottom-left: RF PROBLEM
        ──────────────────────── -->
-  <text x="50" y="170" class="viz-label" style="fill: var(--text-tertiary);">few hops · weak SNR</text>
+  <text x="50" y="170" class="viz-label" style="fill: var(--text-muted);">few hops · weak SNR</text>
   <circle cx="50" cy="192" r="5" style="fill: var(--sys-red-400);" />
   <text x="62" y="197" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--sys-red-400);">RF PROBLEM</text>
   <text x="50" y="218" class="viz-label" style="fill: var(--text-muted);">Short path, poor signal quality.</text>
@@ -73,18 +73,18 @@
   <!-- ────────────────────────
        CELL 4 — bottom-right: EDGE OF COVERAGE
        ──────────────────────── -->
-  <text x="385" y="170" class="viz-label" style="fill: var(--text-tertiary);">many hops · weak SNR</text>
+  <text x="385" y="170" class="viz-label" style="fill: var(--text-muted);">many hops · weak SNR</text>
   <circle cx="385" cy="192" r="5" style="fill: var(--sys-red-400);" />
   <text x="397" y="197" style="font-family: var(--mono); font-size: 13px; font-weight: 700; fill: var(--sys-red-400);">EDGE OF COVERAGE</text>
   <text x="385" y="218" class="viz-label" style="fill: var(--text-muted);">Routing far around a gap on a weak path.</text>
   <text x="385" y="232" class="viz-label" style="fill: var(--text-muted);">Consider a repeater at the midpoint.</text>
 
   <!-- ── Row axis label (right side) ── -->
-  <text x="706" y="101" text-anchor="start" class="viz-label" style="fill: var(--text-tertiary);">STRONG</text>
-  <text x="706" y="115" text-anchor="start" class="viz-label" style="fill: var(--text-tertiary);">SNR</text>
-  <text x="706" y="127" text-anchor="start" class="viz-label" style="fill: var(--text-tertiary);">&gt; +7 dB</text>
+  <text x="706" y="101" text-anchor="start" class="viz-label" style="fill: var(--text-muted);">STRONG</text>
+  <text x="706" y="115" text-anchor="start" class="viz-label" style="fill: var(--text-muted);">SNR</text>
+  <text x="706" y="127" text-anchor="start" class="viz-label" style="fill: var(--text-muted);">&gt; +7 dB</text>
 
-  <text x="706" y="195" text-anchor="start" class="viz-label" style="fill: var(--text-tertiary);">WEAK</text>
-  <text x="706" y="209" text-anchor="start" class="viz-label" style="fill: var(--text-tertiary);">SNR</text>
-  <text x="706" y="221" text-anchor="start" class="viz-label" style="fill: var(--text-tertiary);">&lt; +5 dB</text>
+  <text x="706" y="195" text-anchor="start" class="viz-label" style="fill: var(--text-muted);">WEAK</text>
+  <text x="706" y="209" text-anchor="start" class="viz-label" style="fill: var(--text-muted);">SNR</text>
+  <text x="706" y="221" text-anchor="start" class="viz-label" style="fill: var(--text-muted);">&lt; +5 dB</text>
 </svg>

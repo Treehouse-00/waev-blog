@@ -13,7 +13,7 @@
       <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
     </marker>
     <marker id="shc-arrow-warn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0L10 5L0 10z" style="fill: var(--sys-yellow-400);" />
+      <path d="M0 0L10 5L0 10z" style="fill: var(--sys-orangeyellow-600);" />
     </marker>
   </defs>
 
@@ -26,7 +26,7 @@
 
   <!-- Source node (circle) -->
   <circle cx="70" cy="108" r="16" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.75" />
-  <text x="70" y="113" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:8px;">SRC</text>
+  <text x="70" y="113" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:8px;">SRC</text>
   <text x="70" y="140" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">source</text>
 
   <!-- Relay-A (square) -->
@@ -35,8 +35,8 @@
   <text x="206" y="140" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-A</text>
 
   <!-- Relay-B (square) — slightly highlighted to suggest the weak hop arrived here -->
-  <rect x="368" y="90" width="36" height="36" rx="6" style="fill: var(--surface-1); stroke: var(--sys-yellow-400);" stroke-width="1.5" stroke-dasharray="3 2" />
-  <text x="386" y="113" text-anchor="middle" class="viz-label" style="fill: var(--sys-yellow-400); font-size:8px;">RLY</text>
+  <rect x="368" y="90" width="36" height="36" rx="6" style="fill: var(--surface-1); stroke: var(--sys-orangeyellow-600);" stroke-width="1.5" stroke-dasharray="3 2" />
+  <text x="386" y="113" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600); font-size:8px;">RLY</text>
   <text x="386" y="140" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-B</text>
 
   <!-- Observer (circle, accent border) -->
@@ -52,7 +52,7 @@
   <line x1="87" y1="108" x2="187" y2="108" style="stroke: var(--border-hover);" stroke-width="2" marker-end="url(#shc-arrow)" />
 
   <!-- Hop 2: Relay-A → Relay-B (+3 dB, WEAK — warning color) -->
-  <line x1="225" y1="108" x2="367" y2="108" style="stroke: var(--sys-yellow-400);" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#shc-arrow-warn)" />
+  <line x1="225" y1="108" x2="367" y2="108" style="stroke: var(--sys-orangeyellow-600);" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#shc-arrow-warn)" />
 
   <!-- Hop 3: Relay-B → Observer (+9 dB, strong) -->
   <line x1="405" y1="108" x2="531" y2="108" style="stroke: var(--border-hover);" stroke-width="2" marker-end="url(#shc-arrow)" />
@@ -65,10 +65,10 @@
   <text x="137" y="95" text-anchor="middle" style="font-family: var(--mono); font-size: 12px; font-weight: 600; fill: var(--accent-light);">+11 dB</text>
 
   <!-- Hop 2: midpoint ≈ x=296 — warning styling -->
-  <text x="296" y="89" text-anchor="middle" style="font-family: var(--mono); font-size: 13px; font-weight: 700; fill: var(--sys-yellow-400);">+3 dB</text>
+  <text x="296" y="89" text-anchor="middle" style="font-family: var(--mono); font-size: 13px; font-weight: 700; fill: var(--sys-orangeyellow-600);">+3 dB</text>
   <!-- Small warning badge -->
-  <polygon points="296,72 301,81 291,81" style="fill: var(--sys-yellow-400);" />
-  <text x="296" y="69" text-anchor="middle" class="viz-label" style="fill: var(--sys-yellow-400);">WEAKEST</text>
+  <polygon points="296,72 301,81 291,81" style="fill: var(--sys-orangeyellow-600);" />
+  <text x="296" y="69" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600);">WEAKEST</text>
 
   <!-- Hop 3: midpoint ≈ x=468 -->
   <text x="468" y="95" text-anchor="middle" style="font-family: var(--mono); font-size: 12px; font-weight: 600; fill: var(--accent-light);">+9 dB</text>
@@ -78,6 +78,6 @@
        ──────────────────────── -->
   <rect x="60" y="162" width="600" height="38" rx="9" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
   <text x="360" y="177" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.05em;">EFFECTIVE PATH QUALITY</text>
-  <text x="360" y="193" text-anchor="middle" style="font-family: var(--mono); font-size: 13px; font-weight: 600; fill: var(--sys-yellow-400);">= +3 dB</text>
+  <text x="360" y="193" text-anchor="middle" style="font-family: var(--mono); font-size: 13px; font-weight: 600; fill: var(--sys-orangeyellow-600);">= +3 dB</text>
   <text x="440" y="193" text-anchor="start"  style="font-family: var(--mono); font-size: 11px; fill: var(--text-muted);">· the weakest hop sets the ceiling</text>
 </svg>
