@@ -1,0 +1,92 @@
+---
+title: "Bring Your Own Broker"
+description: "Waev operates on a bring-your-own-broker model: you host the MQTT broker, you own the data, and Waev subscribes with read-only credentials — a deliberate inversion of the usual SaaS data-grab."
+date: 2026-07-16
+tags: ["data-ownership", "how-it-works"]
+author: "Waev"
+draft: false
+faq:
+  - q: "What MQTT broker should I use?"
+    a: "Any standards-compliant MQTT broker works. Mosquitto on a small VPS is the most common choice — it's well-documented, lightweight, and free. Managed MQTT services that give you credential control (HiveMQ Cloud, EMQX Cloud) also work. The requirement is that you control the credentials and the broker has a public address Waev can connect to."
+  - q: "Does my broker need to be publicly accessible from the internet?"
+    a: "Yes. Waev subscribes from our infrastructure, so your broker needs a publicly reachable hostname or IP. This is typically a VPS with a static IP or a domain name pointing to your server. Your MeshCore observers connect from within your local network (or over the internet if they have a path), and Waev connects from outside. Standard TLS and password authentication on port 8883 is the typical setup."
+  - q: "What credentials does Waev need?"
+    a: "A read-only subscriber account — username and password — that you create on your broker. That account can only subscribe to topics, not publish or manage the broker. You create it, you provide it to Waev at setup, and you can rotate or revoke it at any time without contacting us."
+  - q: "What happens to my data if I stop using Waev?"
+    a: "Nothing changes on your broker. Your observer keeps publishing; your broker keeps storing. Waev's copy is a derived read-only subscription — revoking our credentials ends the live feed to Waev, but your data is fully intact on your own infrastructure. There's no export required, no data hostage situation."
+  - q: "Can multiple people or tools subscribe to my broker?"
+    a: "Yes. You can issue multiple subscriber accounts to different tools, give read-only access to a club member who wants to run their own analytics, or set up a monitoring service alongside Waev. Because you issue the credentials, you control who has access at any given time. Add, rotate, and revoke without coordinating with anyone."
+---
+
+import Figure from "../../components/Figure.astro";
+import ByobComparison from "../../components/viz/byob-Comparison.astro";
+import ByobDataFlow from "../../components/viz/byob-DataFlow.astro";
+import ByobCredentials from "../../components/viz/byob-Credentials.astro";
+
+At some point, every mesh network operator running a shared infrastructure has the same conversation. Someone asks for MQTT access. You grant it. Another person asks, and you grant that too. A third person needs a narrower scope than the second — so now you're managing permissions, fielding access requests, and making judgment calls about what level of visibility each person should have. The MQTT server you stood up to monitor your own network has quietly become an access control problem.
+
+This is the model Waev was built to avoid. It doesn't ask you to connect to a centrally hosted server. Instead, you bring your own broker — you host it, you own the data, and Waev subscribes to it. That's not a workaround. It's the design.
+
+<div class="callout">
+<p><strong>In short.</strong> With Waev's bring-your-own-broker model, you host the MQTT broker that your mesh observers publish to. Waev subscribes with read-only credentials you issue and control. Your data has a canonical home that isn't Waev's infrastructure — which means you can rotate or revoke our access at any time, without export requests, without depending on us to release your own data.</p>
+</div>
+
+## The access-list problem
+
+The centralized model has an honest logic to it: one server, one place to look, easy to set up. It works for a single operator monitoring their own gear. But a MeshCore community isn't a single operator. It's a ham club, a neighborhood emergency net, a CERT team. People join and leave. They want visibility into the parts they're responsible for, not everything. Managing that turns into a half-finished permission matrix that nobody quite trusts.
+
+<Figure caption="<b>Left:</b> the centralized model. Three networks, one shared MQTT server — access management falls on whoever's running it, and it gets complicated fast. <b>Right:</b> the BYOB model. Each operator runs their own broker. Waev subscribes to each independently, with read-only credentials the operator issued. No shared server, no access management overhead.">
+  <ByobComparison />
+</Figure>
+
+There's also a subtler problem: if everyone is connecting to the same server, the server operator is implicitly responsible for everyone's data. That's a trust obligation that's hard to audit and easy to get wrong. Distributing the brokers eliminates it — each operator's data stays on infrastructure they control, and nothing depends on a shared server that nobody fully owns.
+
+## Your broker is the canonical copy
+
+In almost every SaaS data model, the platform is the source of truth. Data flows to the provider's infrastructure, and your access to it depends on the provider continuing to exist, continuing to give you access, and handling your data correctly. If the relationship ends, your history ends too, or you're asking for an export.
+
+Waev inverts this. Your MQTT broker — the one you run — is where your data lives canonically. Waev subscribes to it and maintains a derived copy for building the analytics surfaces: the map, the stats, the packet search. But the stream originates on your broker. The first-class store is yours.
+
+<Figure caption="Data lineage in the BYOB model. Your observer publishes to your broker — that's the canonical copy, and it's yours. Waev subscribes read-only and maintains a derived copy for analytics. The ownership is structural, not contractual.">
+  <ByobDataFlow />
+</Figure>
+
+The distinction matters because it determines what happens at the end of any relationship with a tool. If you stop using Waev, your observers keep publishing, your broker keeps accumulating, and nothing is lost. There's no export step, no data migration, no period during which your history is held elsewhere. The canonical data was always on your infrastructure. It still is.
+
+The trade-off is that running a broker is a real responsibility. You need a host with a stable address, reasonable uptime, and credentials you've kept track of. For most operators, this is a small VPS running Mosquitto — something most technically-minded people in the amateur radio and emergency management communities are comfortable with. A managed MQTT service you control works too. The requirement is that you hold the credentials and we don't.
+
+## The read-only subscribe model
+
+When you connect Waev to your broker, you create a subscriber account on your broker and provide those credentials to Waev. That's the only access Waev has: read-only subscription to the topics your observers publish to. Waev can receive messages, but it can't publish, can't manage users or topics, and has no administrative access to your broker.
+
+That scope is narrow by design. Analytics doesn't require publishing. It doesn't require managing the broker. The only thing Waev needs to do is read the stream, and so that's all it's allowed to do.
+
+<Figure caption="Your broker's credential panel and the actions you can take. You issued the credential; you can rotate it (Waev reconnects with the new password, no interruption to your data), add other subscribers, or revoke access entirely. None of these require contacting Waev.">
+  <ByobCredentials />
+</Figure>
+
+Rotating or revoking credentials doesn't require any interaction with Waev. You update the password on your broker, Waev's connection drops, you give us the new credentials and we reconnect — or you don't, and our access ends. Either way, your data is unaffected. This is what "you hold the keys" means in practice: not a policy statement, but a credential model where the relevant administrative actions are on your infrastructure.
+
+You can also add other subscribers to your broker alongside Waev. A club member who wants to run their own dashboard, an alerting tool, a backup archiver — any of these can subscribe to the same broker with their own credentials, and you manage each access independently.
+
+## What this means for your community
+
+The BYOB model is primarily a data control story, but it has practical consequences for how you run a community mesh network.
+
+When someone joins your network and wants visibility, you don't need to give them access to a shared server or trust that a platform's permission model is granular enough for your needs. You give them subscriber credentials to your own broker — scoped as you see fit, revocable without coordination.
+
+When someone leaves, you revoke their credentials. Nothing else changes. The data on your broker is complete. Whatever tools they were using lose their feed; your infrastructure continues unaffected.
+
+When you want to evaluate a different analytics tool alongside Waev, you add another subscriber account. You're not locked to a single platform because your data isn't owned by any platform. You can run two tools on the same stream and compare them. You can switch without migrating data.
+
+This is the practical shape of data ownership: not a slogan about your rights, but a model where the actions that matter — grant access, rotate credentials, revoke access, add a tool, remove a tool — are things you do on infrastructure you control.
+
+---
+
+If you're evaluating whether BYOB is the right setup for your network, or you have questions about what's involved in running your own broker, [reach out](mailto:admin@waev.app). We're happy to talk through the practical details.
+
+Ready to connect? [Start at waev.app.](https://waev.app)
+
+<p class="endnote"><span class="endnote-title">— The Waev team</span></p>
+
+{/* ILLUSTRATION PROMPT: A warm flat illustration of a sturdy physical server rack glowing softly in a small equipment closet or garage workshop, with keys hanging from the rack door handle and colored subscriber cables running to small connected icons around it — the visual feeling of ownership, access, and being in control. Suggested alt: "A glowing server rack in a workshop with keys hanging from its door, representing data ownership and controlled access." */}
