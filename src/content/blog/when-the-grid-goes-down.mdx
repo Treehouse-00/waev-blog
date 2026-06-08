@@ -1,0 +1,99 @@
+---
+title: "When the Grid Goes Down"
+description: "How to use Waev to know your mesh network's real health before an emergency, and to read it during one — because resilience is verified in advance, not hoped for."
+date: 2026-08-27
+tags: ["resilience", "operations"]
+author: "Waev"
+draft: false
+faq:
+  - q: "How do I know if my mesh network is actually ready for an emergency?"
+    a: "Build a baseline. Watch your network's health in Network Stats and Outpost long enough to know what normal looks like — the typical SNR on critical links, the usual hop count to remote nodes, the expected packet rate from sentinel relays. When those numbers change, you see it before it becomes a failure. Without a baseline, ready is a feeling. With one, it's a data point."
+  - q: "What does Waev show before an event that helps with emergency preparedness?"
+    a: "Network Stats shows the health trend for every active node over time — which nodes have been watchlisted, which have been degrading, and when gaps appeared. Outpost shows per-node SNR history. Together they give you a pre-event health picture that's current, not a memory. The 30-day view is often enough to see which nodes are structurally solid and which are holding on marginally."
+  - q: "What is a single point of failure in a mesh network, and how do I find one?"
+    a: "A SPOF is a relay node that is the only path for a cluster of downstream nodes. If it fails, the entire cluster loses network access. SPOFs are visible in the Live Map topology: look for nodes whose failure would isolate a branch of your network. Identifying them — and either adding redundant paths or prioritizing their maintenance — is one of the most effective resilience investments you can make."
+  - q: "What should I watch in Live Packets during an activation?"
+    a: "Two signals: sudden hop-count increases (a node that gained hops means its primary path failed and the mesh rerouted) and new silent nodes (first check the node's neighbors — if they're active, it's a node-specific issue; if they're degraded too, it's a path failure). A baseline tells you which of these patterns are unusual for that specific node."
+  - q: "How do I use Waev for after-action review after an event?"
+    a: "Use Packet Search to query the traffic window for your critical nodes during the event. Look for the inflection points where packet rate dropped, hop counts changed, or SNR fell below threshold. Those are the findings that become infrastructure improvements before the next event. The retrospective is where you close the loop — turning incident observations into upgrades."
+---
+
+import Figure from "../../components/Figure.astro";
+import GridgoneHealthBaseline from "../../components/viz/gridgone-HealthBaseline.astro";
+import GridgoneCriticalPath from "../../components/viz/gridgone-CriticalPath.astro";
+import GridgoneDegradationTable from "../../components/viz/gridgone-DegradationTable.astro";
+import GridgoneLiveRead from "../../components/viz/gridgone-LiveRead.astro";
+
+You built this network for a specific reason. After watching cell towers saturate during an evacuation order, or a multi-day outage made the usual tools unreliable, or a CERT team needed communications infrastructure it actually controlled. The mesh is built, the nodes are up, the repeaters are running. The question that shows up before every exercise, every storm season, every activation: is it actually ready?
+
+Not "it was working last time I checked." That's a memory, not an answer. Ready means you can look at the current health of every critical path and say yes with data behind it.
+
+<div class="callout">
+<p><strong>In short.</strong> The most important question about your mesh isn't whether it was working last week — it's whether you can answer that today. Waev gives you a continuous baseline of your network's health: SNR trends, hop-count changes, and packet-rate patterns that surface problems before they become failures. The time to find a marginal link or a coverage gap is during a routine Tuesday, not during an activation.</p>
+</div>
+
+## Ready is a baseline, not a feeling
+
+"Ready" isn't uptime. It isn't "it worked at the last exercise." Readiness is a known state — a set of numbers you can compare against, updated continuously as packets arrive.
+
+Three things worth knowing about your network before any incident: the SNR on your critical links, the hop count to your most remote nodes, and the packet rate from your sentinel relays. The sentinels — those field repeaters that transmit periodically just to prove they're alive — are your canary nodes. A sentinel that was transmitting 30+ packets per hour and drops to zero, while its neighbors are still active, has a specific, node-level problem. That's not conjecture; it's a timestamp.
+
+Waev gives you this continuously. Network Stats shows the health trend for every active node — you can see which nodes have been on the watchlist, when gaps appeared, and whether the pattern is constant or intermittent. Outpost shows per-node SNR history over days and weeks. You don't need to do anything extra to get this; the data is already arriving from your enrolled observers. You just need to look at it often enough to know what normal looks like.
+
+<Figure caption="<b>30-day baseline for three nodes.</b> backbone-main is solid. relay-ridge and relay-east both show watchlist periods before going silent during the event window — the warning was in the data weeks before the activation.">
+  <GridgoneHealthBaseline />
+</Figure>
+
+The value of a baseline isn't knowing where you are today. It's knowing where you were last week, and the week before, and whether the trend is stable or degrading. When relay-ridge slips to watchlist two weeks before an exercise, that's a repair window. When you discover it during the exercise, it's an incident.
+
+## The marginal links fail first
+
+This is the pattern, almost without exception: the links that fail during an event are the ones that were barely working before it. Not the nodes you replaced last year, not the ones you've been actively managing. The ones that fail are the ones holding at +3 dB, the ones on four-hop paths that were technically alive but never comfortable. Any stress — increased traffic, marginal power, a weather front — tips the balance.
+
+The Live Map shows you where the structural risks are. **Single points of failure** — relay nodes that serve as the only path for a downstream cluster — are the highest-risk points in your topology. If one of those nodes fails, every node behind it goes silent simultaneously. The map makes SPOFs visible; the question is whether you've looked at it recently with that question in mind.
+
+<Figure caption="<b>relay-ridge is a SPOF:</b> three cluster nodes sit behind it with no confirmed alternative path. A fallback exists, but it's marginal. A topology review is a one-time investment that pays off during every incident thereafter.">
+  <GridgoneCriticalPath />
+</Figure>
+
+Three pre-failure patterns show up in Waev before a link fails:
+
+<Figure caption="Three degradation signatures and their diagnostic context. <b>None guarantees failure on its own</b> — but each one is a repair window opening. The window is always between events, not during them.">
+  <GridgoneDegradationTable />
+</Figure>
+
+The most actionable: sustained hop-count creep. A node that was reaching your observer in two hops at initial deployment and now consistently shows four didn't physically move. Something in the two-hop path degraded — silently, without any alarm — and the mesh started routing around it. That degradation happened before you noticed. Waev lets you notice it.
+
+## During the activation
+
+Once the event begins, the work changes. You're not diagnosing; you're triaging. The questions are simpler: who is on the network, who isn't, and is anything getting worse in the last five minutes?
+
+**Live Packets** is the right surface for this. It shows in real time which nodes are active, what their current hop count and SNR are, and which ones have gone quiet. Nodes that are healthy appear on every refresh cycle. A node that went silent shows the gap immediately — the last timestamp standing out against the ongoing activity.
+
+Two things worth watching during an activation:
+
+**Sudden hop-count increases.** A node that gained hops just found an alternate path, which means its primary path failed. The mesh kept it connected; the topology changed. That's worth knowing.
+
+**New silent nodes.** When a node goes quiet, the first check is its neighbors in Live Packets. Neighbors active, node silent: a node-specific issue — power, hardware, antenna. Neighbors also degraded: a path failure upstream, and any node depending on that path is affected.
+
+<Figure caption="<b>Live Packets during an activation.</b> relay-east went silent 2 minutes ago; its neighbors are still active, pointing to a node-specific issue. field-unit-3 is degraded at 4 hops and +2 dB — routing around something. The baseline tells you which of these patterns are new, and which have been building for days.">
+  <GridgoneLiveRead />
+</Figure>
+
+Because you established a baseline before the event, you know what "normal" looks like for each of these nodes. That makes the "is this unusual?" question answerable in seconds rather than minutes — the difference between catching a developing failure and discovering it when it's too late.
+
+## After the event
+
+Packet Search is where you close the loop. Pull the traffic window for your critical nodes during the activation. Find the inflection points: where packet rate dropped, where hop count changed, where SNR fell below threshold. Those are the findings that become infrastructure improvements before the next event.
+
+The retrospective isn't optional. It's the thing that turns the incident into a better network.
+
+---
+
+Resilience isn't the network working when conditions are perfect. It's the network holding when they're not — and you knowing, before the event, which parts of it are most likely to be tested. That knowledge lives in the baseline. Build it, maintain it, and it's there when you need it.
+
+Questions about what you're seeing in your network, or preparing for an upcoming exercise? [Talk to us](mailto:admin@waev.app) — pre-event reviews are a conversation we're always glad to have.
+
+Ready to start building that baseline? [Connect your first observer at waev.app.](https://waev.app)
+
+<p class="endnote"><span class="endnote-title">— The Waev team</span></p>

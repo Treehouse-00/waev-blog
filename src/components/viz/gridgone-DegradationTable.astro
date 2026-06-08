@@ -1,0 +1,106 @@
+---
+/**
+ * gridgone-DegradationTable — three pre-failure degradation patterns:
+ *   1. Hop-count creep   2. SNR drop   3. Packet-rate gap
+ * Each row shows what it looks like in Waev, the likely cause, and when to act.
+ * Color-coded by urgency: yellow (watchlist) through red (act now).
+ * Theme-aware via CSS custom properties.
+ */
+
+const rows = [
+  {
+    sig:     "Hop-count creep",
+    reading: "2 hops → 4+ hops in Network Stats",
+    cause:   "Path degraded; routing around it",
+    act:     "Sustained > 24 h",
+    color:   "var(--sys-yellow-400)",
+    urgency: "watchlist",
+  },
+  {
+    sig:     "SNR drop",
+    reading: "Dips below +7 dB in Outpost history",
+    cause:   "Link margin eroding",
+    act:     "Consistent, not just weather",
+    color:   "var(--sys-yellow-400)",
+    urgency: "watchlist",
+  },
+  {
+    sig:     "Packet-rate gap",
+    reading: "Zero packets during active window",
+    cause:   "Node offline or path failed",
+    act:     "Neighbors still active",
+    color:   "var(--sys-red-400)",
+    urgency: "degraded",
+  },
+];
+
+const COL = { sig: 32, reading: 196, cause: 396, act: 562 };
+const HEADER_Y = 56;
+const FIRST_ROW_Y = 72;
+const ROW_H = 52;
+---
+
+<svg viewBox="0 0 720 246" role="img" aria-label="Degradation signatures table. Three patterns: hop-count creep (2 hops becomes 4 or more in Network Stats, path degraded, act after 24 sustained hours); SNR drop (dips below plus 7 dB in Outpost, link margin eroding, act when consistent); packet-rate gap (zero packets during active window, node offline or path failed, act when neighbors are still active)." style="width:100%;height:auto;">
+
+  <!-- ── Panel chrome ── -->
+  <rect x="18" y="28" width="684" height={FIRST_ROW_Y + rows.length * ROW_H - 28 + 26} rx="14"
+    style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── Kicker ── -->
+  <text x="32" y="22" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">DEGRADATION SIGNATURES · WHAT TO WATCH FOR</text>
+
+  <!-- ── Header row ── -->
+  <line x1="18"  y1={HEADER_Y + 8} x2="702" y2={HEADER_Y + 8} style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x={COL.sig}     y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">SIGNATURE</text>
+  <text x={COL.reading} y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">WAEV READING</text>
+  <text x={COL.cause}   y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">LIKELY CAUSE</text>
+  <text x={COL.act}     y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">WHEN TO ACT</text>
+
+  <!-- ── Data rows ── -->
+  {rows.map((row, i) => {
+    const y = FIRST_ROW_Y + i * ROW_H;
+    const textY = y + ROW_H / 2 + 4;
+    const isAlt = i % 2 === 1;
+    return (
+      <>
+        {isAlt && (
+          <rect x="19" y={y} width="682" height={ROW_H}
+            style="fill: var(--surface-sunken); opacity:0.45;" rx="0" />
+        )}
+        {i > 0 && (
+          <line x1="18" y1={y} x2="702" y2={y}
+            style="stroke: var(--border-subtle); opacity:0.5;" stroke-width="1" />
+        )}
+        {/* Status dot + signature */}
+        <circle cx={COL.sig + 6} cy={textY - 4} r="5" style={`fill: ${row.color};`} />
+        <text x={COL.sig + 16} y={textY}
+          style={`font-family: var(--font); font-size: 12px; font-weight: 600; fill: var(--text);`}>
+          {row.sig}
+        </text>
+        {/* Waev reading */}
+        <text x={COL.reading} y={textY}
+          style={`font-family: var(--mono); font-size: 11px; fill: var(--text-muted);`}>
+          {row.reading}
+        </text>
+        {/* Likely cause */}
+        <text x={COL.cause} y={textY}
+          style={`font-family: var(--mono); font-size: 11px; fill: var(--text-muted);`}>
+          {row.cause}
+        </text>
+        {/* When to act */}
+        <text x={COL.act} y={textY}
+          style={`font-family: var(--mono); font-size: 11px; fill: ${row.color};`}>
+          {row.act}
+        </text>
+      </>
+    );
+  })}
+
+  <!-- ── Footer rule + note ── -->
+  <line x1="18" y1={FIRST_ROW_Y + rows.length * ROW_H + 2} x2="702" y2={FIRST_ROW_Y + rows.length * ROW_H + 2}
+    style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="32" y={FIRST_ROW_Y + rows.length * ROW_H + 20}
+    class="viz-label" style="fill: var(--text-tertiary);">
+    none of these patterns alone guarantees failure — but each is a repair window opening
+  </text>
+</svg>

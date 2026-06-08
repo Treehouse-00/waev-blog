@@ -1,0 +1,144 @@
+---
+/**
+ * gridgone-LiveRead — abstracted Live Packets panel during an activation.
+ * Five rows showing a real-time feed: some nodes active, one watchlist,
+ * one that went silent with an annotation, one degraded.
+ * Teaches what to watch for during an event.
+ * Theme-aware via CSS custom properties.
+ */
+
+const packets = [
+  { ts: "23:14:07", node: "relay-main",    type: "ROUTE",  hops: "2 hops", snr: "+10 dB", color: "var(--accent-light)",  status: "active"    },
+  { ts: "23:14:03", node: "field-unit-7",  type: "ADVERT", hops: "3 hops", snr: "+5 dB",  color: "var(--sys-yellow-400)", status: "watchlist" },
+  { ts: "23:13:59", node: "relay-north",   type: "ROUTE",  hops: "1 hop",  snr: "+12 dB", color: "var(--accent-light)",  status: "active"    },
+  { ts: "23:11:49", node: "field-unit-3",  type: "ADVERT", hops: "4 hops", snr: "+2 dB",  color: "var(--sys-red-400)",   status: "degraded"  },
+  { ts: "23:09:24", node: "relay-main",    type: "ROUTE",  hops: "2 hops", snr: "+9 dB",  color: "var(--accent-light)",  status: "active"    },
+];
+
+const COL = { ts: 34, node: 116, type: 272, hops: 360, snr: 450, status: 536 };
+const HEADER_Y = 58;
+const FIRST_ROW_Y = 74;
+const ROW_H = 34;
+---
+
+<svg viewBox="0 0 720 268" role="img" aria-label="Live Packets feed during an activation. Recent packets: relay-main active at 2 hops plus 10 dB, field-unit-7 watchlist at 3 hops plus 5 dB, relay-north active at 1 hop plus 12 dB, field-unit-3 degraded at 4 hops plus 2 dB, relay-main active again. relay-east is shown as silent, last seen 2 minutes ago." style="width:100%;height:auto;">
+
+  <!-- ── Panel chrome ── -->
+  <rect x="18" y="14" width="684" height="220" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── Panel title + live indicator ── -->
+  <circle cx="36" cy="32" r="5" style="fill: var(--sys-red-400);" />
+  <text x="46" y="37" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">LIVE PACKETS · ACTIVATION IN PROGRESS</text>
+  <text x="690" y="37" text-anchor="end" class="viz-label" style="fill: var(--text-tertiary);">23:14:09 UTC</text>
+
+  <!-- ── Header row ── -->
+  <line x1="18"  y1={HEADER_Y + 6} x2="702" y2={HEADER_Y + 6} style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x={COL.ts}     y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">TIME</text>
+  <text x={COL.node}   y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">NODE</text>
+  <text x={COL.type}   y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">TYPE</text>
+  <text x={COL.hops}   y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">PATH</text>
+  <text x={COL.snr}    y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">SNR</text>
+  <text x={COL.status} y={HEADER_Y} class="viz-label" style="fill: var(--text-tertiary);">STATUS</text>
+
+  <!-- ── Packet rows ── -->
+  {packets.map((p, i) => {
+    const y = FIRST_ROW_Y + i * ROW_H;
+    const textY = y + ROW_H / 2 + 4;
+    const isAlt = i % 2 === 1;
+    return (
+      <>
+        {isAlt && (
+          <rect x="19" y={y} width="682" height={ROW_H}
+            style="fill: var(--surface-sunken); opacity:0.4;" />
+        )}
+        {i > 0 && (
+          <line x1="18" y1={y} x2="702" y2={y}
+            style="stroke: var(--border-subtle); opacity:0.4;" stroke-width="1" />
+        )}
+        {/* Timestamp */}
+        <text x={COL.ts} y={textY}
+          style={`font-family: var(--mono); font-size: 11px; fill: var(--text-tertiary);`}>
+          {p.ts}
+        </text>
+        {/* Node name */}
+        <text x={COL.node} y={textY}
+          style={`font-family: var(--mono); font-size: 12px; fill: var(--text);`}>
+          {p.node}
+        </text>
+        {/* Type */}
+        <text x={COL.type} y={textY}
+          style={`font-family: var(--mono); font-size: 10px; fill: var(--text-tertiary);`}>
+          {p.type}
+        </text>
+        {/* Hops */}
+        <text x={COL.hops} y={textY}
+          style={`font-family: var(--mono); font-size: 11px; fill: var(--text-muted);`}>
+          {p.hops}
+        </text>
+        {/* SNR — colored by status */}
+        <text x={COL.snr} y={textY}
+          style={`font-family: var(--mono); font-size: 12px; font-weight: 600; fill: ${p.color};`}>
+          {p.snr}
+        </text>
+        {/* Status dot */}
+        <circle cx={COL.status + 5} cy={textY - 4} r="4" style={`fill: ${p.color};`} />
+        <text x={COL.status + 14} y={textY}
+          style={`font-family: var(--mono); font-size: 10px; fill: ${p.color};`}>
+          {p.status}
+        </text>
+      </>
+    );
+  })}
+
+  <!-- ── Silent node row (relay-east — shown as a gap in the feed) ── -->
+  {(() => {
+    const y = FIRST_ROW_Y + packets.length * ROW_H;
+    const textY = y + ROW_H / 2 + 4;
+    return (
+      <>
+        <line x1="18" y1={y} x2="702" y2={y}
+          style="stroke: var(--border-subtle); opacity:0.4;" stroke-width="1" />
+        <rect x="19" y={y} width="682" height={ROW_H}
+          style="fill: var(--sys-red-400); opacity:0.04;" />
+        <text x={COL.ts} y={textY}
+          style="font-family: var(--mono); font-size: 11px; fill: var(--text-tertiary);">
+          23:12:14
+        </text>
+        <text x={COL.node} y={textY}
+          style="font-family: var(--mono); font-size: 12px; fill: var(--text-tertiary);">
+          relay-east
+        </text>
+        <text x={COL.type} y={textY}
+          style="font-family: var(--mono); font-size: 10px; fill: var(--text-tertiary);">
+          —
+        </text>
+        <text x={COL.hops} y={textY}
+          style="font-family: var(--mono); font-size: 11px; fill: var(--text-tertiary);">
+          —
+        </text>
+        <text x={COL.snr} y={textY}
+          style="font-family: var(--mono); font-size: 12px; fill: var(--text-tertiary);">
+          —
+        </text>
+        <circle cx={COL.status + 5} cy={textY - 4} r="4"
+          style="fill: var(--text-tertiary); opacity:0.5;" />
+        <text x={COL.status + 14} y={textY}
+          style="font-family: var(--mono); font-size: 10px; fill: var(--text-tertiary);">
+          silent
+        </text>
+        {/* Annotation */}
+        <text x="690" y={textY}
+          text-anchor="end"
+          class="viz-label" style="fill: var(--sys-yellow-400);">
+          ← last seen 2 min ago
+        </text>
+      </>
+    );
+  })()}
+
+  <!-- ── Footer note ── -->
+  <line x1="18" y1="218" x2="702" y2="218" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="34" y="230" class="viz-label" style="fill: var(--text-tertiary);">
+    6 nodes active · 1 watchlist · 1 degraded · 1 silent
+  </text>
+</svg>
