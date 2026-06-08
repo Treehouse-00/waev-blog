@@ -1,6 +1,6 @@
 ---
 title: "The Opinionated Mesh Analyzer"
-description: "We thought about what we want Waev to be, and wrote it down. Six values that decide what we build, what we store, and what we politely decline."
+description: "What Waev is, what it stands for, and why it's built that way — written down for the people who run mesh networks and deserve to know."
 date: 2026-06-08
 tags: ["philosophy", "privacy"]
 author: "Waev"
@@ -11,13 +11,15 @@ import PrivacyScrub from "../../components/viz/PrivacyScrub.astro";
 import TrustedSources from "../../components/viz/TrustedSources.astro";
 import BrokerCopy from "../../components/viz/BrokerCopy.astro";
 
-<span class="waev-brand">Waev</span> reads MeshCore networks for a living — live packets, signal per hop, coverage, the health of the infrastructure operators quietly keep running. Tools like this tend to accumulate features by accretion: whoever shouts loudest, soonest, wins.
+If you're running a mesh network for a community that depends on it — CERT team, ham club, off-grid neighborhood, emergency response group — you already know this is real infrastructure. Quiet, unglamorous, and genuinely important.
 
-We'd rather not work that way. So before the roadmap fills up, here's the part that doesn't change.
+<span class="waev-brand">Waev</span> exists because people like you needed a way to understand what those networks are actually doing: live packets, signal per hop, coverage, the health of the infrastructure you keep running, often alone, often without much tooling.
 
-> We thought about what we want this to be, and wrote it down.
+We thought carefully about what this tool should be, and wrote it down — because you deserve to know where we stand.
 
-It helps us say yes quickly, say no kindly, and stay honest when the two are in tension. Here are the six values underneath everything else.
+> A tool shaped by strategy is more useful than one shaped by whoever asked last.
+
+Here are the six values underneath everything else.
 
 <div class="value-grid not-prose">
   <div class="value-card">
@@ -54,62 +56,72 @@ It helps us say yes quickly, say no kindly, and stay honest when the two are in 
 
 ## 01 · Privacy is the default, not a dial
 
-Mesh networks carry real conversations between real people. We treat that as a hard constraint, not a setting you have to discover.
+The conversations on your mesh are real. The people having them trust the infrastructure you built. We don't take that lightly.
 
-Two rules do most of the work. First, **opt-out is absolute**: add a privacy marker — ⛔ 🛑 🚫 — to a node name and it is never stored, never mapped, never counted. No caching, no edge cases. Second, **personal devices are scrubbed before they're written**. MeshCore companion apps broadcast ADVERTs on the same radio mesh as repeaters, so those packets reach our observers. At the ingest edge we strip the identity — name and device type are nullified — and keep only anonymous signal metadata for aggregate counts.
+Two rules do most of the work. First, **opt-out is absolute**: add a privacy marker — ⛔ 🛑 🚫 — to any node name and it is never stored, never mapped, never counted. No caching, no edge cases, no exceptions. Second, **companion devices are scrubbed before anything is written**. MeshCore personal apps broadcast on the same radio mesh as your repeaters, so those packets reach our observers. At the ingest edge, we strip the identity — name and device type are nullified — and retain only anonymous signal metadata for aggregate counting.
 
 <Figure caption="<b>Left:</b> a node that opts out is dropped entirely. <b>Right:</b> a companion ADVERT keeps its signal numbers, loses its identity.">
   <PrivacyScrub />
 </Figure>
 
-The result: if you're running a companion app, you won't show up on <span class="waev-brand">Waev</span>. The only personal devices we ever treat as visible are ones an operator explicitly connected — and even then, a privacy symbol in the name overrides everything and turns it private.
+If you're running a companion app, you won't appear on <span class="waev-brand">Waev</span>. The only personal devices we ever surface are ones an operator explicitly chose to connect — and even then, a privacy marker in the name overrides everything.
+
+Privacy here isn't a setting. It's the floor.
 
 ## 02 · Evidence over inference
 
-A network map is only as trustworthy as the weakest assumption behind it. Plenty of analyzers will happily draw an edge because two prefixes *looked* related. We don't.
+When you look at your network map, everything on it should be there because something verifiable put it there. Not because we guessed.
 
-Every edge in the topology traces back to something we can verify: an **enrolled observer** connected over MQTT, or an **authenticated repeater**. A spoofed or merely inferred prefix doesn't get a line on the map — it gets rejected. That's less spectacular and far more honest.
+Every edge in the topology traces back to something we can confirm: an **enrolled observer** connected over MQTT, or an **authenticated repeater**. A spoofed or inferred prefix doesn't get a line on the map — it gets rejected.
 
 <Figure caption="Verified sources draw an edge. Inference doesn't — <b>no proof, no line.</b>">
   <TrustedSources />
 </Figure>
 
-If a visualization implies something is true, it's because the evidence is there. That rule is worth more than any feature it costs us.
+That makes the map less crowded, sometimes. But when it shows you something, you can trust it. That's worth more to us than a busier screen.
 
 ## 03 · Aesthetics are a feature
 
-We hold a slightly unfashionable opinion: a dashboard that's hard to read is *wrong*, not just ugly. Clarity is part of correctness. Color has to mean something. Motion has to explain, not decorate. Density has to earn its place.
+You've probably used dashboards that made the network seem more confusing than it actually is. Charts that don't explain themselves. Colors that mean nothing. Density for density's sake. We have too.
 
-This isn't polish bolted on at the end — it's a constraint we design under from the first sketch. If a screen can't make a complex thing feel simple, it isn't done yet.
+A dashboard that's hard to read is *wrong*, not just ugly. Clarity is part of correctness. Color has to mean something. Motion has to explain, not decorate. If a screen can't make a complex thing feel simple, it isn't finished.
+
+This is a constraint we work under from the first sketch — not polish bolted on at the end. The practical payoff: when something is wrong on your network, you should see it immediately. Not after squinting.
 
 ## 04 · Performance is the point
 
-"Real-time" is a claim, and we intend to keep it. Packets should land the instant they arrive; a map should pan without thinking about it; a query that scans the whole mesh should return before you wonder if it's broken.
+"Real-time" is a promise. Packets should appear the instant they arrive. A map should pan without lag. A query that covers your whole mesh should come back before you wonder if it's stuck.
 
-Speed is the difference between a tool you check and a tool you watch. This very blog is built to the same standard — static, near-zero JavaScript, fast on purpose.
+There's a real difference between a tool you have to check and a tool you can actually watch. We're building the second kind, and we hold that bar even when it's expensive to do so.
 
 ## 05 · Your community's data stays yours
 
-Here's the part we care about most, because it's where most platforms get greedy.
+You built your mesh. You recruited the operators, configured the nodes, solved the RF problems, and kept it running. That community — and its data — belongs to you.
 
-We don't want to *be* your network's owner. The old model — everyone requesting access to one central set of MQTT servers — turns into a management nightmare: scoped here, full access there, a half-dozen requests a day, every one a judgment call. We'd rather invert it. **You bring your users to a broker you own. We subscribe, and keep a read-only copy.**
+The old model, where everyone requests access to a central set of MQTT servers, turns into a management problem fast: scoped here, full access there, a half-dozen requests a day, every one a judgment call. We've watched it happen. We'd rather invert it entirely.
+
+**You bring your users to a broker you own. We subscribe, and keep a read-only copy.**
 
 <Figure caption="You host the broker and own the data. <b>We take a copy, not the keys.</b>">
   <BrokerCopy />
 </Figure>
 
-You keep control of your community and its data. We get the telemetry we need to build good tools. Nobody has to manage an access list. It's a better deal for everyone, and it happens to be the honest one.
+You keep full control. We get what we need to build useful tools. Nobody manages an access list. It's a better arrangement for everyone — and it happens to be the honest one.
 
 ## 06 · Opinionated, on purpose
 
-A service like this *should* be responsive to the people who use it — but with time and strategy, not at the whim of whoever asked last. That distinction is the whole job.
+<span class="waev-brand">Waev</span> is built deliberately, in an order that serves the network as a whole — not one shaped by whoever asked most recently. We want to be honest about that upfront.
 
-So we're saying it plainly: <span class="waev-brand">Waev</span> is opinionated by design. We'll build deliberately, in an order that serves the network as a whole. You're welcome to send us a bug report any time — those we take seriously, always. But please don't be offended if a feature suggestion gets a thoughtful *no*. A considered roadmap is a feature too.
+If you send us a bug report, we take it seriously. Always. If you send a feature suggestion, we'll read it carefully, and we might build it, and we might not, and we'll be straight with you about which. Saying no thoughtfully is a form of respect — it means we're not trading the long-term quality of the tool for short-term goodwill.
 
-## Talk to us
+A considered roadmap is a feature too.
 
-Found something broken? Tell us — that's exactly the feedback we want. Bug reports and reproducible issues are the fastest way to make <span class="waev-brand">Waev</span> better, and they're genuinely appreciated.
+## Thank you
 
-Everything above is the contract. We wrote it down so you'd know where we stand — and so we'd remember, too.
+Mesh networks don't maintain themselves. The people who run them — who tune the RF, place the repeaters, recruit the members, keep it alive through outages and upgrades and all the invisible work in between — are doing something that matters. We see it.
+
+<span class="waev-brand">Waev</span> exists to be worthy of that. These six values are how we try to stay honest with ourselves about what that means.
+
+Found something broken? Tell us. Bug reports are the best feedback we get, and we genuinely mean that.
 
 <p class="endnote"><span class="endnote-title">— The Waev team</span></p>
