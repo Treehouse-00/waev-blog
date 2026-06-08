@@ -1,0 +1,90 @@
+---
+/**
+ * gridgone-HealthBaseline — 30-day health timeline for three representative nodes.
+ * Each node's status track shows healthy → watchlist → silent across four weekly periods.
+ * An event-window shading and "pre-event warning signs" annotation illustrate how
+ * baseline data surfaces problems before the incident begins.
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 205" role="img" aria-label="30-day health baseline for three nodes. backbone-main remains healthy throughout. relay-ridge is healthy for three weeks, enters watchlist, then goes silent during the event window. relay-east is healthy for two weeks, enters watchlist, then goes silent at event start." style="width:100%;height:auto;">
+
+  <!-- ── Panel chrome ── -->
+  <rect x="18" y="14" width="684" height="180" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── Kicker ── -->
+  <text x="38" y="36" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">NETWORK HEALTH · 30-DAY BASELINE</text>
+
+  <!-- ────────────────────────────────────────────────
+       Timeline: x=110 to x=686 (576px)
+       Four equal periods (144px each):
+         W1: x=110–254  W2: x=254–398
+         W3: x=398–542  W4/Event: x=542–686
+       Node rows: backbone y=72-92, relay-ridge y=106-126, relay-east y=140-160
+       ──────────────────────────────────────────────── -->
+
+  <!-- ── Event-window background tint ── -->
+  <rect x="556" y="56" width="130" height="116" rx="0" style="fill: var(--sys-red-400);" opacity="0.05" />
+
+  <!-- ── Week boundary gridlines ── -->
+  <line x1="254" y1="58" x2="254" y2="168" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <line x1="398" y1="58" x2="398" y2="168" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <line x1="542" y1="58" x2="542" y2="168" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── Week labels (above tracks) ── -->
+  <text x="182" y="56" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">WEEK 1</text>
+  <text x="326" y="56" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">WEEK 2</text>
+  <text x="470" y="56" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">WEEK 3</text>
+  <text x="614" y="56" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">WEEK 4 · EVENT</text>
+
+  <!-- ── Node name labels ── -->
+  <text x="26"  y="85" class="viz-label" style="fill: var(--text-muted);">backbone-main</text>
+  <text x="26" y="119" class="viz-label" style="fill: var(--text-muted);">relay-ridge</text>
+  <text x="26" y="153" class="viz-label" style="fill: var(--text-muted);">relay-east</text>
+
+  <!-- ────────────────────────
+       backbone-main — healthy all 4 weeks
+       ──────────────────────── -->
+  <rect x="110" y="72" width="576" height="20" rx="4" style="fill: var(--accent-light);" opacity="0.42" />
+
+  <!-- ────────────────────────
+       relay-ridge
+         healthy: W1+W2 = x=110 to x=450 (340px)
+         watchlist: x=451 to x=570 (119px)
+         silent: x=571 to x=686 (115px)
+       ──────────────────────── -->
+  <rect x="110" y="106" width="340" height="20" rx="4" style="fill: var(--accent-light);" opacity="0.42" />
+  <rect x="452" y="106" width="118" height="20" rx="4" style="fill: var(--sys-yellow-400);" opacity="0.48" />
+  <rect x="572" y="106" width="114" height="20" rx="4" style="fill: var(--sys-red-400);" opacity="0.42" />
+
+  <!-- ────────────────────────
+       relay-east
+         healthy: W1+W2 = x=110 to x=375 (265px)
+         watchlist: x=376 to x=572 (196px)
+         silent: x=573 to x=686 (113px)
+       ──────────────────────── -->
+  <rect x="110" y="140" width="265" height="20" rx="4" style="fill: var(--accent-light);" opacity="0.42" />
+  <rect x="377" y="140" width="195" height="20" rx="4" style="fill: var(--sys-yellow-400);" opacity="0.48" />
+  <rect x="574" y="140" width="112" height="20" rx="4" style="fill: var(--sys-red-400);" opacity="0.42" />
+
+  <!-- ── Event start marker ── -->
+  <line x1="556" y1="58" x2="556" y2="168" style="stroke: var(--sys-red-400); opacity:0.6;" stroke-width="1.5" stroke-dasharray="4 3" />
+
+  <!-- ── "Pre-event warning signs" bracket annotation ── -->
+  <!-- bracket from x=452 to x=555, below relay-ridge watchlist track -->
+  <line x1="452" y1="132" x2="555" y2="132" style="stroke: var(--sys-yellow-400); opacity:0.6;" stroke-width="1" />
+  <line x1="452" y1="130" x2="452" y2="134" style="stroke: var(--sys-yellow-400); opacity:0.6;" stroke-width="1" />
+  <line x1="555" y1="130" x2="555" y2="134" style="stroke: var(--sys-yellow-400); opacity:0.6;" stroke-width="1" />
+  <text x="503" y="146" text-anchor="middle" class="viz-label" style="fill: var(--sys-yellow-400);">pre-event warning</text>
+
+  <!-- ── Legend ── -->
+  <rect x="38" y="180" width="10" height="10" rx="2" style="fill: var(--accent-light);" opacity="0.5" />
+  <text x="53" y="190" class="viz-label" style="fill: var(--text-tertiary);">healthy</text>
+
+  <rect x="108" y="180" width="10" height="10" rx="2" style="fill: var(--sys-yellow-400);" opacity="0.5" />
+  <text x="123" y="190" class="viz-label" style="fill: var(--text-tertiary);">watchlist</text>
+
+  <rect x="184" y="180" width="10" height="10" rx="2" style="fill: var(--sys-red-400);" opacity="0.5" />
+  <text x="199" y="190" class="viz-label" style="fill: var(--text-tertiary);">silent</text>
+</svg>

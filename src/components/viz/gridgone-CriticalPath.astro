@@ -1,0 +1,102 @@
+---
+/**
+ * gridgone-CriticalPath — network topology showing a single point of failure (SPOF).
+ * The SPOF node is visually flagged in warning color. A cluster of three downstream
+ * nodes depends entirely on it. A fallback path exists but is marginal.
+ * The figure teaches topology-aware resilience review.
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 256" role="img" aria-label="Network topology with a single point of failure. Observer connects to backbone-main, which connects to a SPOF relay in the center. Three cluster nodes sit behind the SPOF and would be unreachable if it failed. A marginal fallback path at plus 3 dB and 4 hops exists between backbone and one cluster node." style="width:100%;height:auto;">
+  <defs>
+    <marker id="gg-cp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
+    </marker>
+    <marker id="gg-cp-arrow-dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+    </marker>
+  </defs>
+
+  <!-- ── Kicker ── -->
+  <text x="20" y="22" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">TOPOLOGY · SINGLE POINT OF FAILURE</text>
+
+  <!-- ── SPOF zone background tint ── -->
+  <rect x="378" y="42" width="268" height="172" rx="12" style="fill: var(--sys-red-400);" opacity="0.06" />
+  <rect x="378" y="42" width="268" height="172" rx="12" fill="none" style="stroke: var(--sys-red-400); opacity:0.2;" stroke-width="1" stroke-dasharray="5 4" />
+  <text x="512" y="222" text-anchor="middle" class="viz-label" style="fill: var(--sys-red-400); opacity:0.7;">isolated if SPOF fails · 3 nodes unreachable</text>
+
+  <!-- ─────────────────────────────────
+       Edges (draw before nodes so nodes sit on top)
+       ───────────────────────────────── -->
+
+  <!-- Observer → backbone-main: primary path -->
+  <line x1="64"  y1="128" x2="182" y2="128" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#gg-cp-arrow)" />
+
+  <!-- backbone-main → relay-north: side branch (dashed, dim) -->
+  <line x1="210" y1="114" x2="254" y2="62" style="stroke: var(--border-hover);" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#gg-cp-arrow-dim)" />
+
+  <!-- backbone-main → relay-south: side branch (dashed, dim) -->
+  <line x1="210" y1="142" x2="254" y2="194" style="stroke: var(--border-hover);" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#gg-cp-arrow-dim)" />
+
+  <!-- backbone-main → SPOF: critical primary path (thick, solid) -->
+  <line x1="216" y1="128" x2="394" y2="128" style="stroke: var(--text-muted);" stroke-width="2.5" marker-end="url(#gg-cp-arrow)" />
+  <text x="305" y="120" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">primary path</text>
+
+  <!-- SPOF → cluster-A -->
+  <line x1="432" y1="112" x2="592" y2="78" style="stroke: var(--border-hover);" stroke-width="1.5" marker-end="url(#gg-cp-arrow-dim)" />
+  <!-- SPOF → cluster-B -->
+  <line x1="436" y1="128" x2="594" y2="128" style="stroke: var(--border-hover);" stroke-width="1.5" marker-end="url(#gg-cp-arrow-dim)" />
+  <!-- SPOF → cluster-C -->
+  <line x1="432" y1="144" x2="592" y2="178" style="stroke: var(--border-hover);" stroke-width="1.5" marker-end="url(#gg-cp-arrow-dim)" />
+
+  <!-- Fallback path: backbone → cluster-B (dashed, marginal) -->
+  <line x1="216" y1="120" x2="594" y2="124" style="stroke: var(--text-tertiary);" stroke-width="1" stroke-dasharray="3 5" marker-end="url(#gg-cp-arrow-dim)" />
+  <text x="420" y="107" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">fallback · +3 dB · 4 hops</text>
+
+  <!-- ─────────────────────────────────
+       Nodes
+       ───────────────────────────────── -->
+
+  <!-- Observer -->
+  <circle cx="50" cy="128" r="14" style="fill: var(--accent-subtle); stroke: var(--accent-light);" stroke-width="1.75" />
+  <text x="50" y="132" text-anchor="middle" class="viz-label" style="fill: var(--accent-light); font-size:8px;">OBS</text>
+  <text x="50" y="152" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">observer</text>
+
+  <!-- backbone-main -->
+  <circle cx="198" cy="128" r="16" style="fill: var(--accent); opacity:0.9;" />
+  <text x="198" y="132" text-anchor="middle" class="viz-label" style="fill: var(--surface-1); font-size:8px; font-weight:600;">BKBN</text>
+  <text x="198" y="152" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">backbone-main</text>
+
+  <!-- relay-north (side branch) -->
+  <rect x="244" y="44" width="26" height="26" rx="5" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="268" y="60" text-anchor="end" class="viz-label" style="fill: var(--text-tertiary);">relay-north</text>
+
+  <!-- relay-south (side branch) -->
+  <rect x="244" y="186" width="26" height="26" rx="5" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="268" y="202" text-anchor="end" class="viz-label" style="fill: var(--text-tertiary);">relay-south</text>
+
+  <!-- SPOF node (warning-styled) -->
+  <circle cx="414" cy="128" r="20" style="fill: var(--surface-1); stroke: var(--sys-red-400);" stroke-width="2" />
+  <text x="414" y="125" text-anchor="middle" class="viz-label" style="fill: var(--sys-red-400); font-size:8px; font-weight:700;">SPOF</text>
+  <!-- SPOF name below -->
+  <text x="414" y="158" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-ridge</text>
+  <!-- Warning badge -->
+  <circle cx="430" cy="112" r="7" style="fill: var(--sys-red-400);" />
+  <text x="430" y="116" text-anchor="middle" style="font-family: var(--mono); font-size:9px; fill: var(--surface-1); font-weight:700;">!</text>
+
+  <!-- cluster-A -->
+  <circle cx="606" cy="72" r="12" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="606" y="76" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:8px;">A</text>
+  <text x="630" y="68" class="viz-label" style="fill: var(--text-tertiary);">cluster-A</text>
+
+  <!-- cluster-B -->
+  <circle cx="606" cy="128" r="12" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="606" y="132" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:8px;">B</text>
+  <text x="630" y="124" class="viz-label" style="fill: var(--text-tertiary);">cluster-B</text>
+
+  <!-- cluster-C -->
+  <circle cx="606" cy="184" r="12" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="606" y="188" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); font-size:8px;">C</text>
+  <text x="630" y="180" class="viz-label" style="fill: var(--text-tertiary);">cluster-C</text>
+</svg>

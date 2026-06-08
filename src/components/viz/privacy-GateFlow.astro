@@ -1,0 +1,106 @@
+---
+/**
+ * privacy-GateFlow — three-step ingest gate as a vertical decision flow.
+ * Packet arrives → (1) opt-out check → DROP or continue
+ *               → (2) companion check → SCRUB identity or continue
+ *               → (3) topology verification → edge or no edge
+ * Emphasizes that opt-out is checked FIRST, before any other processing.
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 400" role="img" aria-label="Three-step ingest gate: opt-out check first (drops entire packet), companion identity scrub second (nullifies name and type), topology verification third (requires verified source for map edges)." style="width:100%;height:auto;">
+  <defs>
+    <marker id="priv-gf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
+    </marker>
+    <marker id="priv-gf-arrow-drop" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--sys-red-400);" />
+    </marker>
+    <marker id="priv-gf-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+
+  <!-- ── Packet arrives ── -->
+  <rect x="270" y="14" width="180" height="44" rx="10"
+    style="fill: var(--surface-1); stroke: var(--border-subtle);"
+    stroke-width="1" />
+  <text x="360" y="41" text-anchor="middle"
+    style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">packet arrives</text>
+
+  <!-- Arrow down to gate 1 -->
+  <line x1="360" y1="58" x2="360" y2="90" style="stroke: var(--border-hover);" stroke-width="1.5" marker-end="url(#priv-gf-arrow)" />
+
+  <!-- ── Gate 1: opt-out check ── -->
+  <rect x="220" y="92" width="280" height="52" rx="10"
+    style="fill: var(--accent-subtle); stroke: var(--accent);"
+    stroke-width="1.5" />
+  <text x="360" y="114" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.06em;">GATE 1 · OPT-OUT CHECK</text>
+  <text x="360" y="132" text-anchor="middle" style="fill: var(--text); font-family: var(--mono); font-size: 12px;">name contains ⛔ 🛑 🚫 ?</text>
+
+  <!-- Drop branch: right, red -->
+  <line x1="500" y1="118" x2="590" y2="118" style="stroke: var(--sys-red-400);" stroke-width="1.5" marker-end="url(#priv-gf-arrow-drop)" />
+  <text x="596" y="115" class="viz-label" style="fill: var(--sys-red-400);">YES →</text>
+
+  <!-- DROP result -->
+  <rect x="596" y="98" width="106" height="40" rx="8"
+    style="fill: transparent; stroke: var(--sys-red-400); stroke-dasharray: 5 4;"
+    stroke-width="1.2" />
+  <text x="649" y="115" text-anchor="middle" style="fill: var(--sys-red-400); font-family: var(--mono); font-size: 11px; font-weight: 600;">DROP</text>
+  <text x="649" y="130" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">never written</text>
+
+  <!-- Continue branch: down, muted -->
+  <line x1="360" y1="144" x2="360" y2="180" style="stroke: var(--border-hover);" stroke-width="1.5" marker-end="url(#priv-gf-arrow)" />
+  <text x="370" y="166" class="viz-label">NO (continue)</text>
+
+  <!-- ── Gate 2: companion identity scrub ── -->
+  <rect x="220" y="182" width="280" height="52" rx="10"
+    style="fill: var(--accent-subtle); stroke: var(--accent);"
+    stroke-width="1.5" />
+  <text x="360" y="204" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.06em;">GATE 2 · COMPANION SCRUB</text>
+  <text x="360" y="222" text-anchor="middle" style="fill: var(--text); font-family: var(--mono); font-size: 12px;">source is companion device?</text>
+
+  <!-- Scrub branch: right, muted -->
+  <line x1="500" y1="208" x2="590" y2="208" style="stroke: var(--text-muted);" stroke-width="1.5" marker-end="url(#priv-gf-arrow)" />
+  <text x="596" y="205" class="viz-label" style="fill: var(--text-muted);">YES →</text>
+
+  <!-- SCRUB result -->
+  <rect x="596" y="188" width="106" height="40" rx="8"
+    style="fill: var(--surface-1); stroke: var(--border-subtle);"
+    stroke-width="1" />
+  <text x="649" y="205" text-anchor="middle" style="fill: var(--text); font-family: var(--mono); font-size: 11px; font-weight: 600;">SCRUB</text>
+  <text x="649" y="220" text-anchor="middle" class="viz-label">identity ∅</text>
+
+  <!-- Continue branch: down -->
+  <line x1="360" y1="234" x2="360" y2="272" style="stroke: var(--border-hover);" stroke-width="1.5" marker-end="url(#priv-gf-arrow)" />
+  <text x="370" y="257" class="viz-label">NO (continue)</text>
+
+  <!-- ── Gate 3: topology verification ── -->
+  <rect x="220" y="274" width="280" height="52" rx="10"
+    style="fill: var(--accent-subtle); stroke: var(--accent);"
+    stroke-width="1.5" />
+  <text x="360" y="296" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.06em;">GATE 3 · TOPOLOGY VERIFY</text>
+  <text x="360" y="314" text-anchor="middle" style="fill: var(--text); font-family: var(--mono); font-size: 12px;">enrolled observer or auth repeater?</text>
+
+  <!-- Reject topology: right, muted -->
+  <line x1="500" y1="300" x2="590" y2="300" style="stroke: var(--text-tertiary);" stroke-width="1.5" marker-end="url(#priv-gf-arrow)" />
+  <text x="596" y="297" class="viz-label">NO →</text>
+
+  <!-- NO EDGE result -->
+  <rect x="596" y="280" width="106" height="40" rx="8"
+    style="fill: transparent; stroke: var(--text-tertiary); stroke-dasharray: 5 4;"
+    stroke-width="1" />
+  <text x="649" y="297" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 11px;">no edge</text>
+  <text x="649" y="312" text-anchor="middle" class="viz-label">packet stored</text>
+
+  <!-- Verified: down to stored + edge -->
+  <line x1="360" y1="326" x2="360" y2="364" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#priv-gf-arrow-acc)" />
+  <text x="370" y="349" class="viz-label" style="fill: var(--text-accent);">YES (verified)</text>
+
+  <!-- Stored with edge result -->
+  <rect x="255" y="366" width="210" height="24" rx="8"
+    style="fill: var(--surface-1); stroke: var(--border-accent);"
+    stroke-width="1" />
+  <text x="360" y="382" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 12px; font-weight: 600;">stored · topology edge drawn</text>
+</svg>
