@@ -24,20 +24,32 @@ never merge — human merge is publication (AGENT.md Invariant 1).
 ## Preconditions
 1. `cd` into the repo root (the `waev-blog` checkout). Run `nvm use`.
 2. Read every file in `inputs`. `../../src/pages/llms.txt.ts` Key facts are
-   FACTUAL CANON — nothing you write may contradict them. `../VOICE.md` governs
-   tone; `../STRATEGY.md` governs segment + funnel framing.
+   FACTUAL CANON — nothing you write may contradict them. `../VOICE.md` is the
+   BINDING voice law: obey it directly (this brief does not restate or weaken
+   its rules), and you MUST pass its "Pre-PR self-verify checklist" before
+   opening the PR. `../STRATEGY.md` governs segment + funnel framing.
 
 ## Step 1 — Select the slot (deterministic)
-Parse `../calendar.yaml`. Choose the target entry by these rules, in order:
-1. `type == "post"` AND `status == "scheduled"`.
-2. Earliest `slot_date` that is today or in the past relative to the run date.
-3. If none are due, pick the earliest future `slot_date` with
-   `status == "scheduled"` (writing ahead is allowed — the date gate in
-   `../../src/lib/posts.ts` holds it until `slot_date`).
+Parse `../calendar.yaml`. You draft the BACKLOG, never the already-shipped
+posts. Per the file's status semantics and CADENCE.md §2 (status machine
+`proposed → drafted → scheduled → published`):
+- `status: proposed` = a planned slot you SHOULD draft.
+- `status: scheduled` = a post whose `.mdx` ALREADY exists in
+  `../../src/content/blog/` (date-gated). NEVER select one — re-drafting it
+  collides with the existing slug and overwrites a shipped post.
+
+Choose the target entry by these rules, in order:
+1. Restrict to entries with `type == "post"` AND `status == "proposed"`.
+2. From those, keep only slots inside the draft lead window: `slot_date` is on
+   or before `run_date + 21 days` (CADENCE.md §3.2). This includes any overdue
+   (past-dated) `proposed` slot. The date gate in `../../src/lib/posts.ts`
+   holds a future-dated post until its `slot_date`.
+3. Select the earliest `slot_date` among the slots that remain.
 4. Tie-break by funnel priority `awareness > evaluation > adoption`, then by
    the order they appear in the file.
-If no `type == "post"` entry has `status` in {`scheduled`,`proposed`}, STOP and
-report "no writable slot" to the orchestrator. Do not invent a slot.
+If no `type == "post"` entry is both `status == "proposed"` AND within the lead
+window, STOP and report "no due proposed slot" to the orchestrator. Do not pull
+a slot more than 21 days out, and do not invent a slot.
 
 Record the slot's `slot_date`, `segment`, `funnel_stage`, `primary_keyword`,
 `secondary_keyword`, and `brief` for use below.
@@ -50,7 +62,10 @@ Record the slot's `slot_date`, `segment`, `funnel_stage`, `primary_keyword`,
 ## Step 3 — Write the post `.mdx`
 Create `../../src/content/blog/<slug>.mdx`. Conform EXACTLY to the frontmatter
 schema in `../../src/content.config.ts`:
-- `title` — ≤ 60 chars, contains the `primary_keyword` naturally (MT-01/HP-01).
+- `title` — ≤ 48 characters and contains the `primary_keyword` naturally. The
+  rendered page `<title>` is `"<title> — Waev Blog"`: `src/layouts/Post.astro`
+  (line ~74) appends the 12-character suffix ` — Waev Blog`, so a frontmatter
+  title ≤ 48 keeps the `<title>` ≤ 60 for SEO-PLAYBOOK MT-01.
 - `description` — 70–160 chars, one sentence, contains `primary_keyword`;
   reused as SEO + OG copy (MT-02).
 - `date` — set to the slot's `slot_date` (YYYY-MM-DD). This is the publish gate.
@@ -88,11 +103,14 @@ Body requirements (AGENT.md "Authoring a post" + `../VOICE.md`):
   (tinkerer | ham | cert-emcomm | off-grid) and `funnel_stage`
   (awareness | evaluation | adoption) per `../STRATEGY.md`.
 
-## Step 4 — Self-check against the playbook
+## Step 4 — Self-check against the playbook and the voice law
 Run `npm run build` (must pass — it enforces TS strict + the content schema).
 Then verify the per-post `blocker`/`major` rules in `../SEO-PLAYBOOK.md` for
 your new `dist/blog/<slug>/index.html`: SD-01, SD-03, SD-04, MT-01, MT-02,
 MT-05, MT-06, IL-02, HP-04. Fix any FAIL before opening the PR.
+Then run the `../VOICE.md` "Pre-PR self-verify checklist" against your draft:
+EVERY `MUST` item has to PASS — a draft that fails any `MUST` is not shippable.
+Record the PASS/FAIL results in the PR body (VOICE.md requires it).
 
 ## Step 5 — Update calendar status
 In `../calendar.yaml`, set the chosen slot's `status` to `drafted` and ensure

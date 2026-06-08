@@ -12,17 +12,40 @@ structured map verbatim.
 > provisional but still author against it.
 
 ## Category-positioning call
-**Waev designs a new category: the observability/analytics layer for mesh
-networks.** Waev does not compete with MeshCore — MeshCore is the network;
-Waev is how you see it. Position Waev as complementary infrastructure ("mesh
-network intelligence"), the way an observability platform sits atop a fleet of
-servers it did not build. Every piece of content must reinforce that Waev is
-the verification-and-insight layer for a network the operator already runs, not
-a replacement firmware, app, or radio.
+**MeshCore is the network; Waev is how you know it's working.** That is the one
+bet the whole engine rides on. Waev is a real-time analytics platform for a
+MeshCore mesh the operator already runs — the instrument that reports whether the
+network actually works, not whether it is supposed to. It does not replace
+MeshCore, firmware, or a radio, and it does not compete with them; it observes,
+verifies, and improves a mesh that someone else's hardware carries. Canon names
+this *mesh network intelligence*. In an operator's own words, it is what turns
+"I think my mesh is up" into "I can see that it is."
+
+We do not claim to have invented a category. Maps and dashboards for LoRa meshes
+already exist, and pretending otherwise insults a reader who has used them. The
+position Waev takes — and the wedge that makes it defensible — is **trust**, on
+three fronts that competitors usually get wrong:
+- **It draws only what it can prove.** Topology comes from enrolled observers and
+  authenticated repeaters; inferred or spoofed edges are rejected, not guessed.
+  Most mesh maps show what a node *claims*. Waev shows what it can *verify*.
+- **It refuses to know what it doesn't need.** Opted-out nodes are dropped;
+  companion devices are identity-scrubbed at the ingest edge. Privacy is the
+  floor, not a setting (see `./VOICE.md` pillars).
+- **It leaves the data with the operator.** Bring-your-own-broker: you host the
+  broker, you hold the keys, Waev keeps a read-only copy.
+
+For a net people may lean on in an emergency, a confident map that might be
+guessing is worse than no map. That is the gap Waev fills: the mesh tool a
+skeptical operator can trust, precisely because of what it refuses to draw and
+refuses to keep. The competition isn't another product — it's the operator's
+current answer to "is my mesh healthy?", which is too often a hunch.
 
 Decision rule for agents: if a draft frames Waev as a *competitor to* or
 *replacement for* MeshCore (or any radio/firmware), it is off-positioning —
 rewrite it as the layer that observes, verifies, and improves the existing mesh.
+If a draft sells Waev on the breadth of its features rather than the
+trustworthiness of what it shows, it is also off-positioning — the wedge is
+trust, not feature count.
 
 ## Audience model (two axes)
 Waev serves a spectrum, not a single tier. Model every reader on two axes.

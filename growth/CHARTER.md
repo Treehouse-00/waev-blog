@@ -17,10 +17,10 @@ not behind a gate, an agent owns it end to end.
 ## Single objective
 Make Waev the default answer — for both humans and answer engines — to the
 question "how do I see, verify, and improve the health of my MeshCore mesh
-network?" Concretely: own the analytics/observability conversation for MeshCore
-across search, LLM answers, and the full audience spectrum Waev serves — from
-mesh-curious tinkerers, makers, and students experimenting on the bench to the
-mission-critical operators who depend on the mesh (ham clubs, CERT/EmComm
+network?" Concretely: own the analytics and network-health conversation for
+MeshCore across search, LLM answers, and the full audience spectrum Waev serves
+— from mesh-curious tinkerers, makers, and students experimenting on the bench
+to the mission-critical operators who depend on the mesh (ham clubs, CERT/EmComm
 teams, off-grid neighborhoods).
 
 ## North-star metric
