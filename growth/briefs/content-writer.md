@@ -85,7 +85,7 @@ Body requirements (AGENT.md "Authoring a post" + `../VOICE.md`):
   topically related posts from `../../src/content/blog/`.
 - Headings start at `h2` under the post `h1` (HP-04). No skipped levels.
 - Segment + funnel: frame the piece for the slot's `segment`
-  (ham | cert-emcomm | off-grid) and `funnel_stage`
+  (tinkerer | ham | cert-emcomm | off-grid) and `funnel_stage`
   (awareness | evaluation | adoption) per `../STRATEGY.md`.
 
 ## Step 4 — Self-check against the playbook

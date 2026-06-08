@@ -22,7 +22,7 @@ deploy and never merge (AGENT.md Invariant 1).
 `main`.
 
 ## Step 1 — Establish the universe
-- Read `../STRATEGY.md` for the three segments (`ham`, `cert-emcomm`,
+- Read `../STRATEGY.md` for the four segments (`tinkerer`, `ham`, `cert-emcomm`,
   `off-grid`) and their funnel framing, and `../CHARTER.md` for scope.
 - Read `../../src/pages/llms.txt.ts` Key facts — keywords must be consistent
   with canon (MeshCore, privacy-by-default, evidence-based topology,
@@ -44,18 +44,18 @@ specific, winnable long-tail queries over broad head terms.
 ## Step 3 — Maintain the keyword→funnel map
 Write/update `../keyword-map.md` (you own this file) as a structured list. For
 each keyword record VERBATIM fields: `keyword`, `segment`
-(ham | cert-emcomm | off-grid), `funnel_stage`
+  (tinkerer | ham | cert-emcomm | off-grid), `funnel_stage`
 (awareness | evaluation | adoption), `intent`, `status`
 (covered | proposed | gap), and `target_slug_or_post`. This is the durable
 map the other agents read.
 
 ## Step 4 — Propose calendar slots
 For the strongest GAP keywords (default: up to 4 per run, balanced across the
-three segments), append entries to `../calendar.yaml` using the EXACT schema:
+four segments), append entries to `../calendar.yaml` using the EXACT schema:
 - `slot_date` — a future YYYY-MM-DD on the publishing cadence in `../STRATEGY.md`;
   do not collide with an existing `slot_date`.
 - `type` — `post`.
-- `segment` — one of ham | cert-emcomm | off-grid.
+- `segment` — one of tinkerer | ham | cert-emcomm | off-grid.
 - `funnel_stage` — one of awareness | evaluation | adoption.
 - `primary_keyword` — the gap keyword.
 - `secondary_keyword` — a supporting query for the same piece.

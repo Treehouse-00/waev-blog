@@ -18,8 +18,10 @@ not behind a gate, an agent owns it end to end.
 Make Waev the default answer — for both humans and answer engines — to the
 question "how do I see, verify, and improve the health of my MeshCore mesh
 network?" Concretely: own the analytics/observability conversation for MeshCore
-across search, LLM answers, and the three operator communities Waev serves
-(ham clubs, CERT/emcomm teams, off-grid neighborhoods).
+across search, LLM answers, and the full audience spectrum Waev serves — from
+mesh-curious tinkerers, makers, and students experimenting on the bench to the
+mission-critical operators who depend on the mesh (ham clubs, CERT/EmComm
+teams, off-grid neighborhoods).
 
 ## North-star metric
 **Qualified operator activations** — the count of MeshCore operators who connect
@@ -39,8 +41,8 @@ a baseline. Ratification of these targets is a human gate (see below).
    prompts that cite blog.waev.app or state Waev facts. Target: cited in ≥ 40%
    of a tracked prompt set within two quarters. Baseline: TBD.
 2. **Organic entrances by segment** — non-brand organic sessions, split across
-   `ham | cert-emcomm | off-grid`. Target: steady month-over-month growth in all
-   three, with no segment at zero. Baseline: TBD.
+   `tinkerer | ham | cert-emcomm | off-grid`. Target: steady month-over-month
+   growth in all four, with no segment at zero. Baseline: TBD.
 3. **Keyword coverage** — number of mapped primary keywords (see
    `./STRATEGY.md`) with at least one published post ranking in the top 10.
    Target: ≥ 60% of mapped primary keywords covered by published posts within

@@ -31,8 +31,9 @@ the Growth OS optimizes its **measurable proxy**:
 
 **Qualified blog→app referrals per 28-day window** — the count of sessions on
 `waev.app` whose referrer host is `blog.waev.app`. It is the closest
-blog-observable signal that content moves MeshCore operators (CERT, ham,
-off-grid, emergency nets) toward the product, not just that it attracts
+blog-observable signal that content moves the full audience — from mesh-curious
+tinkerers/makers to mission-critical operators (ham, CERT/EmComm, off-grid) —
+toward the product, not just that it attracts
 traffic. When activation instrumentation lands, this proxy is superseded by the
 activation count and this section is updated (a `STRATEGY.md`-level change).
 
@@ -102,6 +103,11 @@ Each row: metric · source · pull method · what it tells the agent.
   6. "off-grid neighborhood mesh network dashboard"
   7. "ham club MeshCore network visualization"
   8. "evidence-based mesh topology vs inferred topology"
+  Mesh-curious / maker / prototyping subset (the broadened `tinkerer` audience):
+  9. "getting started with MeshCore for beginners"
+  10. "MeshCore home lab monitoring and dashboard"
+  11. "visualize a LoRa mesh network you built yourself"
+  12. "MeshCore node hardware prototyping and testing tools"
 - **Pull command:**
 
 ```bash
@@ -150,7 +156,8 @@ data_gaps: []   # e.g. ["north_star: app zone not reachable"]
 - queries tracked: <int>
 
 ## Answer engines (AEO)
-- citation appearances: <int>/8 probe queries (delta <+/-int>)
+- citation appearances: <int>/12 probe queries (delta <+/-int>)
+- citation appearances (mesh-curious subset): <int>/4
 - newly citing queries: [ ... ]
 - lost citations:       [ ... ]
 
@@ -187,7 +194,8 @@ Rules use the current report vs. the immediately previous report.
   `[8.0, 20.0]` AND `impressions >= 100` over the window AND no published post
   already targets it as `primary_keyword`: propose a new `calendar.yaml` entry
   (`type: post`, `status: proposed`) targeting that query. Map `segment`/
-  `funnel_stage` from the query's audience (ham / cert-emcomm / off-grid).
+  `funnel_stage` from the query's audience using the calendar enum
+  (tinkerer / ham / cert-emcomm / off-grid).
   → **calendar.yaml PR.**
 - **T2 — Snippet fix.** Any published post URL with `impressions >= 500` AND
   `ctr < 1.5%` over the window: propose a `type: seo-task` entry to rewrite
@@ -198,10 +206,10 @@ Rules use the current report vs. the immediately previous report.
 - **T4 — Position regression.** Any tracked `query` that dropped `>= 5`
   positions month-over-month while still `impressions >= 100`: propose a
   `type: audit` entry for the seo-auditor to investigate. → **calendar.yaml PR.**
-- **T5 — AEO gap.** AEO citation appearances `< 3/8` for two consecutive
-  reports: flag a STRATEGY.md review — the answer-engine angle is
-  underperforming and positioning/FAQ coverage needs revision.
-  → **STRATEGY.md flag (human-approval).**
+- **T5 — AEO gap.** AEO citation appearances `< 4/12` total OR `0/4` on the
+  mesh-curious subset for two consecutive reports: flag a STRATEGY.md review —
+  the answer-engine angle is underperforming and positioning/FAQ coverage needs
+  revision. → **STRATEGY.md flag (human-approval).**
 - **T6 — North-star stall.** North-star referrals flat or negative
   (`delta <= 0%`) for **three** consecutive reports while `clicks` grew
   `>= 20%` over the same span: the blog attracts traffic that does not convert
