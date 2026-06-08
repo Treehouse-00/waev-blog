@@ -15,7 +15,7 @@
 # ENTRY SCHEMA (verbatim keys — every entry MUST carry all eight):
 #   slot_date        YYYY-MM-DD          when the agent should act on this slot
 #   type             post | seo-task | audit
-#   segment          ham | cert-emcomm | off-grid
+#   segment          tinkerer | ham | cert-emcomm | off-grid
 #   funnel_stage     awareness | evaluation | adoption
 #   primary_keyword  the single target query (for non-post types: the work focus)
 #   secondary_keyword one supporting query/term
@@ -111,14 +111,14 @@ posts:
 
   # =========================================================================
   # NET-NEW KEYWORD-ROADMAP POSTS (status: proposed). ~2 posts/month, balanced
-  # across segment {ham|cert-emcomm|off-grid} and funnel {awareness|evaluation|
+  # across segment {tinkerer|ham|cert-emcomm|off-grid} and funnel {awareness|evaluation|
   # adoption}. The five mandated roadmap targets are tagged [ROADMAP] inline.
   # =========================================================================
 
   # ── 2026-09 ──────────────────────────────────────────────────────────────
   - slot_date: 2026-09-10
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: awareness
     primary_keyword: "what is MeshCore"            # [ROADMAP]
     secondary_keyword: "MeshCore mesh radio explained"
@@ -131,6 +131,15 @@ posts:
     funnel_stage: evaluation
     primary_keyword: "MeshCore vs Meshtastic"      # [ROADMAP]
     secondary_keyword: "mesh radio firmware comparison"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-09-30
+    type: post
+    segment: tinkerer
+    funnel_stage: awareness
+    primary_keyword: "getting started with MeshCore"
+    secondary_keyword: "MeshCore beginner setup guide"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -160,6 +169,15 @@ posts:
     funnel_stage: adoption
     primary_keyword: "Mosquitto MQTT broker setup for MeshCore"  # [ROADMAP]
     secondary_keyword: "self-hosted MQTT broker TLS"
+    status: proposed
+    brief: ./briefs/content-writer.md
+
+  - slot_date: 2026-11-12
+    type: post
+    segment: tinkerer
+    funnel_stage: evaluation
+    primary_keyword: "MeshCore home lab dashboard"
+    secondary_keyword: "visualize a LoRa mesh you built"
     status: proposed
     brief: ./briefs/content-writer.md
 

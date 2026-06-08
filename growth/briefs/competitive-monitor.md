@@ -22,8 +22,8 @@ MeshCore / Meshtastic / mesh-radio landscape and flag content GAPS as
 `main`.
 
 ## Step 1 — Establish baseline
-- Read `../CHARTER.md` + `../STRATEGY.md` for scope, positioning, and the three
-  segments (ham, cert-emcomm, off-grid).
+- Read `../CHARTER.md` + `../STRATEGY.md` for scope, positioning, and the four
+  segments (tinkerer, ham, cert-emcomm, off-grid).
 - Read `../../src/pages/llms.txt.ts` for canon (Waev's real differentiators:
   privacy-by-default, evidence-based topology, bring-your-own-broker). Gaps you
   flag must be answerable WITHOUT contradicting canon.
@@ -52,7 +52,7 @@ For the top gaps (default: up to 4 per run), APPEND entries to
 - `slot_date` — a future YYYY-MM-DD on the cadence in `../STRATEGY.md`; no
   collision with existing dates.
 - `type` — `post` (use `audit` only if the gap is a site/SEO issue, not content).
-- `segment` — ham | cert-emcomm | off-grid.
+- `segment` — tinkerer | ham | cert-emcomm | off-grid.
 - `funnel_stage` — awareness | evaluation | adoption.
 - `primary_keyword` / `secondary_keyword` — derived from the gap topic.
 - `status` — `proposed`.

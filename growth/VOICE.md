@@ -7,8 +7,10 @@ opening a PR. A draft that fails any MUST item is not ready — fix it, do not
 ship it.
 
 ## Voice & tone
-Measured, technical, quietly confident. The reader is a competent operator
-(ham, CERT, or off-grid) who respects precision and distrusts hype. Explain
+Measured, technical, quietly confident. The reader ranges from a mesh-curious
+tinkerer/maker at the bench to a mission-critical operator (ham, CERT, or
+off-grid) — all of whom respect precision and distrust hype. Meet beginners
+without condescension and experts without filler. Explain
 mechanisms, not feelings. Prefer the concrete number, the named field, the real
 mechanism over adjectives. The blog embodies the product: "performance is the
 point," so the prose is lean and free of filler.

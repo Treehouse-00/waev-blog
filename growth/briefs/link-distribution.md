@@ -24,7 +24,7 @@ communities autonomously).
 `main`.
 
 ## Step 1 — Know the audience and the goods
-- Read `../STRATEGY.md` for the three segments (ham, cert-emcomm, off-grid) and
+- Read `../STRATEGY.md` for the four segments (tinkerer, ham, cert-emcomm, off-grid) and
   positioning, and `../VOICE.md` for the tone any suggested outreach copy must
   match.
 - Read `../../src/content/blog/` and `../../src/pages/llms.txt.ts` to know what

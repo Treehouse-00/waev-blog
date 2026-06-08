@@ -24,8 +24,38 @@ Decision rule for agents: if a draft frames Waev as a *competitor to* or
 *replacement for* MeshCore (or any radio/firmware), it is off-positioning —
 rewrite it as the layer that observes, verifies, and improves the existing mesh.
 
+## Audience model (two axes)
+Waev serves a spectrum, not a single tier. Model every reader on two axes.
+
+**Axis A — engagement depth (maps to `funnel_stage`):**
+- *mesh-curious* (awareness): tinkerers, makers, hobbyists, students, and
+  hardware/software prototypers experimenting on the bench, discovering
+  LoRa/MeshCore. Largest TAM, lowest intent.
+- *mesh-committed* (evaluation): running a persistent node/repeater; club
+  members and neighborhood organizers evaluating tooling.
+- *mission-critical* (adoption): CERT/SAR/EmComm, ham clubs running
+  infrastructure, and off-grid communities that depend on the mesh. Smallest
+  audience, highest intent — the conversion core.
+
+**Axis B — use-context segment (the `./calendar.yaml` enum, use verbatim):**
+`tinkerer | ham | cert-emcomm | off-grid`.
+
 ## ICP segments
-Segment enum (use verbatim in `./calendar.yaml`): `ham | cert-emcomm | off-grid`.
+
+### tinkerer — makers, hobbyists, students & prototypers
+- **Trigger / pain:** experimenting with LoRa/MeshCore on the bench or in a
+  home lab; just got nodes talking and wants to *see* the mesh — visualize
+  topology, watch packets, validate a prototype. Curiosity-driven, lowest
+  commitment, largest population; the top of the acquisition funnel that feeds
+  every other segment.
+- **Search vocabulary:** "what is MeshCore", "getting started MeshCore", "LoRa
+  mesh for beginners", "MeshCore home lab", "visualize LoRa mesh", "MeshCore
+  dashboard", "mesh network hobby project", "LoRa node testing".
+- **Primary funnel entry:** awareness via primer / getting-started / "see your
+  mesh" posts that turn a bench experiment into a visible network.
+- **Conversion goal:** connect a broker (even a hobby one) and view the Live
+  Map — the first taste of the product that converts curiosity into a habit and
+  seeds the move toward mesh-committed.
 
 ### ham — amateur radio operators & clubs
 - **Trigger / pain:** runs or co-runs a MeshCore deployment and wants to know if
@@ -66,12 +96,19 @@ Segment enum (use verbatim in `./calendar.yaml`): `ham | cert-emcomm | off-grid`
 
 ## Keyword → segment → funnel_stage map
 This is the source list `./calendar.yaml` draws from. Each row is consumable as
-calendar fields: `segment` matches `ham | cert-emcomm | off-grid`;
+calendar fields: `segment` matches `tinkerer | ham | cert-emcomm | off-grid`;
 `funnel_stage` matches `awareness | evaluation | adoption`. `primary_keyword`
 and `secondary_keyword` map directly to the calendar keys of the same name.
 Agents selecting a slot SHOULD pick an uncovered row before repeating one.
 
 Format per row: `primary_keyword | secondary_keyword | segment | funnel_stage`
+
+### tinkerer
+- `what is meshcore | meshcore explained for beginners | tinkerer | awareness`
+- `getting started with meshcore | meshcore beginner setup | tinkerer | awareness`
+- `visualize lora mesh network | see your mesh topology | tinkerer | awareness`
+- `meshcore home lab dashboard | hobby mesh monitoring | tinkerer | evaluation`
+- `lora mesh project | diy mesh network visualization | tinkerer | awareness`
 
 ### ham
 - `meshcore analytics | mesh network monitoring | ham | awareness`
