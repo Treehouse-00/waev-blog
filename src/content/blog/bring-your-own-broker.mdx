@@ -51,7 +51,7 @@ Waev inverts this. Your MQTT broker — the one you run — is where your data l
   <ByobDataFlow />
 </Figure>
 
-The distinction matters because it determines what happens at the end of any relationship with a tool. If you stop using Waev, your observers keep publishing, your broker keeps accumulating, and nothing is lost. There's no export step, no data migration, no period during which your history is held elsewhere. The canonical data was always on your infrastructure. It still is.
+The distinction matters because it determines what happens at the end of any relationship with a tool. The ownership is structural, not contractual — it's not a clause in a terms-of-service; it's a consequence of where the data physically lives. If you stop using Waev, your observers keep publishing, your broker keeps accumulating, and nothing is lost. There's no export step, no data migration, no period during which your history is held elsewhere. The canonical data was always on your infrastructure. It still is.
 
 The trade-off is that running a broker is a real responsibility. You need a host with a stable address, reasonable uptime, and credentials you've kept track of. For most operators, this is a small VPS running Mosquitto — something most technically-minded people in the amateur radio and emergency management communities are comfortable with. A managed MQTT service you control works too. The requirement is that you hold the credentials and we don't.
 
@@ -85,8 +85,7 @@ This is the practical shape of data ownership: not a slogan about your rights, b
 
 If you're evaluating whether BYOB is the right setup for your network, or you have questions about what's involved in running your own broker, [reach out](mailto:admin@waev.app). We're happy to talk through the practical details.
 
-Ready to connect? [Start at waev.app.](https://waev.app)
+Ready to connect? [Start at waev.app](https://waev.app).
 
-<p class="endnote"><span class="endnote-title">— The Waev team</span></p>
 
 {/* ILLUSTRATION PROMPT: A warm flat illustration of a sturdy physical server rack glowing softly in a small equipment closet or garage workshop, with keys hanging from the rack door handle and colored subscriber cables running to small connected icons around it — the visual feeling of ownership, access, and being in control. Suggested alt: "A glowing server rack in a workshop with keys hanging from its door, representing data ownership and controlled access." */}
