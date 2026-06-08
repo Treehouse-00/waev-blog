@@ -36,7 +36,7 @@ Your mesh doesn't know about <span class="waev-brand">Waev</span>. The nodes on 
 
 ## The observer: your network's window to the internet
 
-A MeshCore observer is a node that does two things at once. It's on your mesh — receiving and relaying RF packets, like any other node. And it has a path to the internet, typically WiFi or Ethernet.
+A MeshCore observer is a repeater with an internet connection. On the radio side it operates exactly like any other repeater — forwarding packets through the mesh. On the internet side it has a path out, typically WiFi or Ethernet.
 
 When a packet arrives at the observer's radio, the observer publishes a JSON record of that packet to your MQTT broker. That's the handoff — from radio to IP, from the air to the internet. Without an enrolled observer, <span class="waev-brand">Waev</span> sees nothing.
 

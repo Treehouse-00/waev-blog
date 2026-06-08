@@ -12,7 +12,7 @@
       <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
     </marker>
     <marker id="ts-arrow-dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-muted);" />
     </marker>
   </defs>
 
@@ -23,13 +23,13 @@
   <g>
     <circle cx="58" cy="66" r="11" style="fill: var(--accent);" />
     <text x="80" y="62" class="viz-label" style="fill: var(--text-muted);">observer</text>
-    <text x="80" y="78" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 11px;">enrolled · MQTT</text>
+    <text x="80" y="78" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">enrolled · MQTT</text>
   </g>
   <!-- repeater -->
   <g>
     <rect x="48" y="103" width="20" height="20" rx="5" style="fill: var(--text-accent);" />
     <text x="80" y="112" class="viz-label" style="fill: var(--text-muted);">repeater</text>
-    <text x="80" y="128" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 11px;">authenticated</text>
+    <text x="80" y="128" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">authenticated</text>
   </g>
 
   <!-- solid edges to gate -->
@@ -55,12 +55,12 @@
   <line x1="20" y1="158" x2="700" y2="158" style="stroke: var(--border-subtle);" stroke-width="1" />
 
   <!-- ───── Lane B — rejected ───── -->
-  <text x="20" y="192" class="viz-label" style="fill: var(--text-tertiary); letter-spacing:0.06em;">INFERENCE → REJECTED</text>
+  <text x="20" y="192" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.06em;">INFERENCE → REJECTED</text>
 
   <g>
     <circle cx="58" cy="232" r="11" fill="none" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="3 3" />
     <text x="80" y="228" class="viz-label" style="fill: var(--text-muted);">spoofed prefix</text>
-    <text x="80" y="244" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 11px;">0x3F · unverified</text>
+    <text x="80" y="244" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">0x3F · unverified</text>
   </g>
 
   <line x1="210" y1="232" x2="300" y2="232" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#ts-arrow-dim)" />
@@ -77,6 +77,6 @@
   <g>
     <rect x="446" y="206" width="254" height="52" rx="14" style="fill: transparent; stroke: var(--border-hover);" stroke-width="1" stroke-dasharray="5 5" />
     <text x="470" y="228" class="viz-label" style="fill: var(--text-muted);">topology edge</text>
-    <text x="470" y="246" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 14px;">not drawn — no proof</text>
+    <text x="470" y="246" style="fill: var(--text-muted); font-family: var(--mono); font-size: 14px;">not drawn — no proof</text>
   </g>
 </svg>

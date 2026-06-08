@@ -18,7 +18,7 @@
   <!-- ── Zone labels ── -->
   <text x="110" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">OBSERVED</text>
   <text x="400" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.06em;">EDGE</text>
-  <text x="608" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary); letter-spacing:0.06em;">SILENT</text>
+  <text x="608" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.06em;">SILENT</text>
 
   <!-- ── Backbone edges (draw first, behind nodes) ── -->
   <line x1="90" y1="115" x2="195" y2="65" style="stroke: var(--accent-light);" stroke-width="1.75" />
@@ -54,20 +54,20 @@
   <!-- ── Weak edge to edge node ── -->
   <line x1="196" y1="65" x2="384" y2="112" style="stroke: var(--text-tertiary);" stroke-width="1.25" stroke-dasharray="5 4" />
   <!-- edge label -->
-  <text x="290" y="80" class="viz-label" style="fill: var(--text-tertiary);">3 hops · +2 dB</text>
+  <text x="290" y="80" class="viz-label" style="fill: var(--text-muted);">3 hops · +2 dB</text>
 
   <!-- ── Edge node (intermittent) ── -->
   <circle cx="393" cy="118" r="11" fill="none" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="3 3" />
-  <text x="393" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">relay-ridge</text>
+  <text x="393" y="144" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">relay-ridge</text>
   <!-- warning dot -->
-  <circle cx="404" cy="109" r="5" style="fill: var(--sys-yellow-400);" />
-  <text x="404" y="112" text-anchor="middle" style="font-family: var(--mono); font-size: 9px; fill: #000; font-weight: 700;">!</text>
+  <circle cx="404" cy="109" r="5" style="fill: var(--sys-orangeyellow-600);" />
+  <text x="404" y="112" text-anchor="middle" style="font-family: var(--mono); font-size: 10px; fill: #000; font-weight: 700;">!</text>
 
   <!-- ── Dotted trace toward silent zone ── -->
   <line x1="404" y1="118" x2="538" y2="138" style="stroke: var(--border-hover);" stroke-width="1" stroke-dasharray="2 5" marker-end="url(#pb-arrow-dim)" />
 
   <!-- ── Silent zone ── -->
   <circle cx="600" cy="148" r="62" style="fill: var(--surface-sunken); stroke: var(--border-hover);" stroke-width="1.5" stroke-dasharray="6 5" />
-  <text x="600" y="143" text-anchor="middle" class="viz-label" style="fill: var(--text-tertiary);">silent zone</text>
-  <text x="600" y="161" text-anchor="middle" style="font-family: var(--mono); font-size: 10px; fill: var(--text-tertiary);">0 packets · 24 h</text>
+  <text x="600" y="143" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">silent zone</text>
+  <text x="600" y="161" text-anchor="middle" style="font-family: var(--mono); font-size: 10px; fill: var(--text-muted);">0 packets · 24 h</text>
 </svg>

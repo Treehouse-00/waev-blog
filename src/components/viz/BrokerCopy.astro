@@ -26,7 +26,7 @@ const users = [
     {users.map((u) => (
       <>
         <line x1={u.x} y1={u.y} x2="150" y2="116" style="stroke: var(--border-hover);" stroke-width="1" />
-        <circle cx={u.x} cy={u.y} r="5" style="fill: var(--text-tertiary);" />
+        <circle cx={u.x} cy={u.y} r="5" style="fill: var(--text-muted);" />
       </>
     ))}
   </g>
@@ -51,7 +51,7 @@ const users = [
   <g>
     <line x1="268" y1="176" x2="452" y2="176" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#bc-arrow)" />
     <text x="360" y="160" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">subscribe</text>
-    <text x="360" y="198" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 11px;">a copy, not the keys</text>
+    <text x="360" y="198" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">a copy, not the keys</text>
   </g>
 
   <!-- right card — Waev -->

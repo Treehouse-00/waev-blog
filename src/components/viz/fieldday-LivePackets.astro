@@ -64,7 +64,7 @@ const typeColor: Record<string, string> = {
   {peak.map((pkt) => (
     <g transform={`translate(358, ${pkt.y})`}>
       <rect x="20" y="0" width="330" height="36" rx="8"
-        style={`fill: var(--surface-1); stroke: ${pkt.hops >= 4 ? "var(--sys-yellow-400)" : "var(--border-subtle)"}; opacity: ${pkt.hops >= 4 ? "1" : "1"};`}
+        style={`fill: var(--surface-1); stroke: ${pkt.hops >= 4 ? "var(--sys-orangeyellow-600)" : "var(--border-subtle)"}; opacity: ${pkt.hops >= 4 ? "1" : "1"};`}
         stroke-width="1" />
       <!-- type badge -->
       <rect x="34" y="8" width="52" height="18" rx="5"
@@ -79,7 +79,7 @@ const typeColor: Record<string, string> = {
         {pkt.label}
       </text>
       <!-- snr + hops -->
-      <text x="232" y="18" class="viz-label" style={`fill: ${parseFloat(pkt.snr) < 5 ? "var(--sys-yellow-400)" : "var(--text-accent)"};`}>
+      <text x="232" y="18" class="viz-label" style={`fill: ${parseFloat(pkt.snr) < 5 ? "var(--sys-orangeyellow-600)" : "var(--text-accent)"};`}>
         {pkt.snr}
       </text>
       <text x="292" y="18" class="viz-label">{pkt.hops}h</text>
@@ -87,9 +87,9 @@ const typeColor: Record<string, string> = {
   ))}
 
   <!-- ── Trailing "stream" indicator ── -->
-  <circle cx="60" cy="242" r="2.5" style="fill: var(--text-tertiary);" />
-  <circle cx="74" cy="242" r="2.5" style="fill: var(--text-tertiary);" />
-  <circle cx="88" cy="242" r="2.5" style="fill: var(--text-tertiary);" />
+  <circle cx="60" cy="242" r="2.5" style="fill: var(--text-muted);" />
+  <circle cx="74" cy="242" r="2.5" style="fill: var(--text-muted);" />
+  <circle cx="88" cy="242" r="2.5" style="fill: var(--text-muted);" />
 
   <circle cx="450" cy="242" r="2.5" style="fill: var(--accent-light);" />
   <circle cx="466" cy="242" r="2.5" style="fill: var(--accent-light);" />
