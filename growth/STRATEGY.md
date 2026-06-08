@@ -63,6 +63,19 @@ Waev serves a spectrum, not a single tier. Model every reader on two axes.
 **Axis B — use-context segment (the `./calendar.yaml` enum, use verbatim):**
 `tinkerer | ham | cert-emcomm | off-grid`.
 
+**Segment emphasis (the mix the engine leads with).** The broadest and
+strongest Mesh/LoRa overlaps are *tinkerer* (makers, hobbyists, students, LoRa
+dev-board experimenters on Heltec/RAK/T-Beam, IoT and home-lab tinkerers) and
+*off-grid* (homestead, rural, resilience, and community networks) — together
+they lead the content mix and feed the top of the funnel. *cert-emcomm* is
+mission-critical and the highest-intent conversion core. *ham* (amateur-radio
+operators and clubs) is a genuine but **narrower, aging niche**: we serve it
+deliberately on its own ground, but it is **not** the default audience and
+never the anchor. And note: LoRa measurement and bench work (SNR, link budget,
+airtime, range testing) are *maker* activities — they belong to *tinkerer*, not
+to ham alone. The ICP order below reflects this lead-with-the-broad-overlaps
+emphasis.
+
 ## ICP segments
 
 ### tinkerer — makers, hobbyists, students & prototypers
@@ -80,18 +93,18 @@ Waev serves a spectrum, not a single tier. Model every reader on two axes.
   Map — the first taste of the product that converts curiosity into a habit and
   seeds the move toward mesh-committed.
 
-### ham — amateur radio operators & clubs
-- **Trigger / pain:** runs or co-runs a MeshCore deployment and wants to know if
-  it actually works — coverage, link quality, where to add the next repeater,
-  how the net behaves under a load spike (e.g. Field Day). Tinkerer who trusts
-  measured data over vibes.
-- **Search vocabulary:** "MeshCore", "LoRa mesh", "SNR", "hop count", "path
-  quality", "repeater placement", "mesh coverage map", "Field Day mesh",
-  "node map", "RF link budget".
-- **Primary funnel entry:** awareness via deep-dive / playbook posts that teach a
-  concrete operating skill (reading the signal, repeater siting).
-- **Conversion goal:** connect their broker to Waev and use the Live Map +
-  Network Stats to make a real siting / health decision (north-star activation).
+### off-grid — off-grid neighborhoods & community networks
+- **Trigger / pain:** a neighborhood or co-op runs a community mesh and wants
+  shared visibility and data ownership without surrendering it to a SaaS vendor.
+  Values privacy and local control. One of the two broadest overlaps — homestead,
+  rural, and resilience-minded operators who lean on the mesh.
+- **Search vocabulary:** "community mesh network", "neighborhood mesh", "off-grid
+  network", "data ownership", "self-hosted MQTT", "privacy mesh", "own your
+  data", "decentralized comms".
+- **Primary funnel entry:** awareness via philosophy / data-ownership posts
+  (privacy-by-default, bring-your-own-broker).
+- **Conversion goal:** stand up their own broker and connect it to Waev,
+  retaining ownership (BYOB) — the activation that proves the values land.
 
 ### cert-emcomm — CERT teams & emergency-comms groups
 - **Trigger / pain:** responsible for comms that must work during an incident;
@@ -103,19 +116,25 @@ Waev serves a spectrum, not a single tier. Model every reader on two axes.
 - **Primary funnel entry:** awareness via resilience / operations posts framed
   around incident readiness and verification.
 - **Conversion goal:** adopt Waev as the pre-incident health check and the
-  during-incident live view for their net.
+  during-incident live view for their net. Mission-critical and the
+  highest-intent conversion core.
 
-### off-grid — off-grid neighborhoods & community networks
-- **Trigger / pain:** a neighborhood or co-op runs a community mesh and wants
-  shared visibility and data ownership without surrendering it to a SaaS vendor.
-  Values privacy and local control.
-- **Search vocabulary:** "community mesh network", "neighborhood mesh", "off-grid
-  network", "data ownership", "self-hosted MQTT", "privacy mesh", "own your
-  data", "decentralized comms".
-- **Primary funnel entry:** awareness via philosophy / data-ownership posts
-  (privacy-by-default, bring-your-own-broker).
-- **Conversion goal:** stand up their own broker and connect it to Waev,
-  retaining ownership (BYOB) — the activation that proves the values land.
+### ham — amateur radio operators & clubs
+- **Trigger / pain:** runs or co-runs a MeshCore deployment and wants to know if
+  it actually works — coverage, link quality, where to add the next repeater,
+  how the net behaves under a load spike (e.g. Field Day). A genuine, high-skill
+  audience, but a **narrower and aging niche**: serve it deliberately on its own
+  ground (Field Day, ARES/RACES, packet/APRS comparison, club nets) — never as
+  the default and never the anchor.
+- **Search vocabulary:** "Field Day mesh", "ARES RACES mesh", "ham club mesh
+  network", "packet radio vs LoRa", "APRS comparison", "repeater placement",
+  "amateur radio mesh community". (Bench/measurement queries — SNR, hop count,
+  link budget, airtime — are *maker* vocabulary and live under tinkerer.)
+- **Primary funnel entry:** awareness via ham-specific dispatches and operating
+  playbooks (Field Day prep, club onboarding, the honest APRS comparison).
+- **Conversion goal:** connect their broker to Waev and use the Live Map +
+  Network Stats to make a real siting / health decision — one activation path
+  among several, not the engine's anchor.
 
 ## Keyword → segment → funnel_stage map
 This is the source list `./calendar.yaml` draws from. Each row is consumable as
@@ -132,15 +151,16 @@ Format per row: `primary_keyword | secondary_keyword | segment | funnel_stage`
 - `visualize lora mesh network | see your mesh topology | tinkerer | awareness`
 - `meshcore home lab dashboard | hobby mesh monitoring | tinkerer | evaluation`
 - `lora mesh project | diy mesh network visualization | tinkerer | awareness`
+- `meshcore snr explained | lora signal quality | tinkerer | awareness`
+- `meshcore hop count | path quality mesh | tinkerer | evaluation`
 
-### ham
-- `meshcore analytics | mesh network monitoring | ham | awareness`
-- `meshcore snr explained | lora signal quality | ham | awareness`
-- `meshcore repeater placement | mesh coverage gaps | ham | evaluation`
-- `mesh network map | meshcore node map | ham | evaluation`
-- `field day mesh network | mesh load testing | ham | awareness`
-- `meshcore hop count | path quality mesh | ham | evaluation`
-- `connect meshcore to waev | meshcore broker setup | ham | adoption`
+### off-grid
+- `community mesh network | neighborhood mesh | off-grid | awareness`
+- `mesh network data ownership | bring your own broker | off-grid | awareness`
+- `privacy mesh network | data minimization mesh | off-grid | awareness`
+- `self-hosted mqtt mesh | own your mesh data | off-grid | evaluation`
+- `off-grid network visibility | community network analytics | off-grid | evaluation`
+- `set up waev byob | self-host broker waev | off-grid | adoption`
 
 ### cert-emcomm
 - `emergency communications mesh | grid-down comms | cert-emcomm | awareness`
@@ -150,13 +170,12 @@ Format per row: `primary_keyword | secondary_keyword | segment | funnel_stage`
 - `verify mesh before emergency | network health check mesh | cert-emcomm | evaluation`
 - `live mesh monitoring incident | emcomm situational awareness | cert-emcomm | adoption`
 
-### off-grid
-- `community mesh network | neighborhood mesh | off-grid | awareness`
-- `mesh network data ownership | bring your own broker | off-grid | awareness`
-- `privacy mesh network | data minimization mesh | off-grid | awareness`
-- `self-hosted mqtt mesh | own your mesh data | off-grid | evaluation`
-- `off-grid network visibility | community network analytics | off-grid | evaluation`
-- `set up waev byob | self-host broker waev | off-grid | adoption`
+### ham
+- `meshcore analytics | mesh network monitoring | ham | awareness`
+- `meshcore repeater placement | mesh coverage gaps | ham | evaluation`
+- `mesh network map | meshcore node map | ham | evaluation`
+- `field day mesh network | mesh load testing | ham | awareness`
+- `connect meshcore to waev | meshcore broker setup | ham | adoption`
 
 ## How agents use this file
 1. Read the positioning call; reject off-positioning drafts per the decision

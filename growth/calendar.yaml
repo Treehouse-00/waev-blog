@@ -207,7 +207,7 @@ posts:
 
   - slot_date: 2026-09-15
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -230,7 +230,7 @@ posts:
 
   - slot_date: 2026-09-20
     type: post
-    segment: ham
+    segment: off-grid
     funnel_stage: evaluation
     bucket: dispatch
     theme: knowing-over-guessing
@@ -253,7 +253,7 @@ posts:
 
   - slot_date: 2026-09-24
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: dispatch
     theme: knowing-over-guessing
@@ -346,7 +346,7 @@ posts:
 
   - slot_date: 2026-10-13
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: awareness
     bucket: primer
     theme: earned-competence
@@ -358,7 +358,7 @@ posts:
 
   - slot_date: 2026-10-15
     type: post
-    segment: ham
+    segment: off-grid
     funnel_stage: evaluation
     bucket: field-manual
     theme: knowing-over-guessing
@@ -381,7 +381,7 @@ posts:
 
   - slot_date: 2026-10-20
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -509,11 +509,11 @@ posts:
 
   - slot_date: 2026-11-15
     type: post
-    segment: ham
+    segment: off-grid
     funnel_stage: awareness
     bucket: position
     theme: networks-of-people
-    primary_keyword: "amateur radio mesh community"
+    primary_keyword: "community mesh network group"
     secondary_keyword: "building a local mesh network group"
     status: proposed
     brief: ./briefs/content-writer.md
@@ -554,7 +554,7 @@ posts:
 
   - slot_date: 2026-11-24
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: awareness
     bucket: primer
     theme: earned-competence
@@ -589,7 +589,7 @@ posts:
 
   - slot_date: 2026-12-01
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -727,7 +727,7 @@ posts:
 
   - slot_date: 2026-12-29
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -901,7 +901,7 @@ posts:
 
   - slot_date: 2027-02-02
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -983,7 +983,7 @@ posts:
 
   - slot_date: 2027-02-18
     type: post
-    segment: ham
+    segment: off-grid
     funnel_stage: evaluation
     bucket: field-manual
     theme: knowing-over-guessing
@@ -1030,11 +1030,11 @@ posts:
 
   - slot_date: 2027-02-28
     type: post
-    segment: ham
+    segment: cert-emcomm
     funnel_stage: evaluation
     bucket: position
     theme: knowing-over-guessing
-    primary_keyword: "trusting your mesh network map"
+    primary_keyword: "trusting your mesh map in an emergency"
     secondary_keyword: "verifying mesh topology you didn't draw"
     status: proposed
     brief: ./briefs/content-writer.md
@@ -1076,7 +1076,7 @@ posts:
 
   - slot_date: 2027-03-09
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -1135,7 +1135,7 @@ posts:
 
   - slot_date: 2027-03-21
     type: post
-    segment: ham
+    segment: off-grid
     funnel_stage: evaluation
     bucket: dispatch
     theme: knowing-over-guessing
@@ -1250,7 +1250,7 @@ posts:
 
   - slot_date: 2027-04-13
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -1262,12 +1262,12 @@ posts:
 
   - slot_date: 2027-04-15
     type: post
-    segment: ham
+    segment: off-grid
     funnel_stage: evaluation
     bucket: under-the-hood
     theme: earned-competence
-    primary_keyword: "monitor a large MeshCore network"
-    secondary_keyword: "mesh analytics at scale"
+    primary_keyword: "monitor a growing community mesh network"
+    secondary_keyword: "community mesh analytics at scale"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -1401,7 +1401,7 @@ posts:
 
   - slot_date: 2027-05-13
     type: post
-    segment: ham
+    segment: cert-emcomm
     funnel_stage: evaluation
     bucket: under-the-hood
     theme: knowing-over-guessing
@@ -1457,7 +1457,7 @@ posts:
 
   - slot_date: 2027-05-25
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -1480,12 +1480,12 @@ posts:
 
   - slot_date: 2027-05-30
     type: post
-    segment: ham
+    segment: off-grid
     funnel_stage: evaluation
     bucket: position
     theme: own-your-ground
-    primary_keyword: "amateur radio data privacy"
-    secondary_keyword: "owning your ham mesh data"
+    primary_keyword: "mesh network data ownership"
+    secondary_keyword: "owning your mesh data"
     status: proposed
     brief: ./briefs/content-writer.md
 
@@ -1527,18 +1527,18 @@ posts:
 
   - slot_date: 2027-06-08
     type: post
-    segment: ham
+    segment: cert-emcomm
     funnel_stage: evaluation
     bucket: signal
-    theme: knowing-over-guessing
-    primary_keyword: "diagnosing intermittent mesh links"
-    secondary_keyword: "link that drops at certain times"
+    theme: ready-before-it-matters
+    primary_keyword: "find the link that fails under load"
+    secondary_keyword: "a link that drops during an incident"
     status: proposed
     brief: ./briefs/content-writer.md
 
   - slot_date: 2027-06-10
     type: post
-    segment: ham
+    segment: off-grid
     funnel_stage: evaluation
     bucket: field-manual
     theme: knowing-over-guessing
@@ -1628,7 +1628,7 @@ posts:
 
   - slot_date: 2027-06-29
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: awareness
     bucket: primer
     theme: earned-competence
@@ -1664,7 +1664,7 @@ posts:
 
   - slot_date: 2027-07-06
     type: post
-    segment: ham
+    segment: tinkerer
     funnel_stage: evaluation
     bucket: signal
     theme: knowing-over-guessing
@@ -1687,7 +1687,7 @@ posts:
 
   - slot_date: 2027-07-11
     type: post
-    segment: ham
+    segment: cert-emcomm
     funnel_stage: evaluation
     bucket: position
     theme: own-your-ground
@@ -1826,11 +1826,11 @@ posts:
 
   - slot_date: 2027-08-08
     type: post
-    segment: ham
+    segment: cert-emcomm
     funnel_stage: evaluation
     bucket: position
     theme: knowing-over-guessing
-    primary_keyword: "accurate mesh network mapping"
+    primary_keyword: "a mesh map you can trust in an incident"
     secondary_keyword: "false confidence mesh map"
     status: proposed
     brief: ./briefs/content-writer.md
@@ -1917,7 +1917,7 @@ posts:
 
   - slot_date: 2027-08-26
     type: post
-    segment: ham
+    segment: cert-emcomm
     funnel_stage: evaluation
     bucket: under-the-hood
     theme: knowing-over-guessing
