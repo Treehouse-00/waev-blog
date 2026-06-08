@@ -16,7 +16,7 @@ marked `MANUAL-GATE` and the agent records `null` rather than guessing.
 # growth/measurement.config — referenced by the analytics-reporter brief.
 gsc_property: "sc-domain:waev.app"        # GSC property (domain property recommended)
 gsc_page_filter: "https://blog.waev.app/" # restrict Search Console rows to the blog
-cf_zone_tag: "<CF_ZONE_ID>"               # Cloudflare *Zone ID* (hex) for the waev.app zone.
+cf_zone_tag: "$CF_ZONE_ID"               # Cloudflare Zone ID — read from the CF_ZONE_ID oz secret.
                                           # blog.waev.app is a subdomain inside this zone, so
                                           # the GraphQL `zoneTag` is this ID — NOT a hostname.
                                           # If the app is served from a *different* Cloudflare
@@ -67,7 +67,7 @@ curl -s https://api.cloudflare.com/client/v4/graphql \
   --data @- <<'JSON'
 { "query":
   "query($zoneTag:String!,$since:Time!,$until:Time!){viewer{zones(filter:{zoneTag:$zoneTag}){httpRequestsAdaptiveGroups(limit:1,filter:{datetime_geq:$since,datetime_leq:$until,requestSource:\"eyeball\",clientRequestHTTPHost:\"waev.app\",clientRefererHost:\"blog.waev.app\"}){count sum{visits}}}}}",
-  "variables": { "zoneTag": "<CF_ZONE_ID>", "since": "<ISO8601-START>", "until": "<ISO8601-END>" } }
+  "variables": { "zoneTag": "$CF_ZONE_ID", "since": "<ISO8601-START>", "until": "<ISO8601-END>" } }
 JSON
 ```
 

@@ -73,10 +73,15 @@ oz secret create CF_ANALYTICS_TOKEN --team \
   --value-file ./cf-analytics-token.txt \
   --description "Cloudflare Account Analytics:Read token"
 
-# Cloudflare account id (not strictly secret, but kept with the set):
+# Cloudflare account id:
 oz secret create CF_ACCOUNT_ID --team \
   --value-file ./cf-account-id.txt \
   --description "Cloudflare account id for GraphQL analytics"
+
+# Cloudflare zone id for waev.app (needed by the north-star referral query):
+oz secret create CF_ZONE_ID --team \
+  --value-file ./cf-zone-id.txt \
+  --description "Cloudflare Zone ID for waev.app (zoneTag in GraphQL analytics)"
 
 # Optional — answer-engine (AEO) probe metric:
 oz secret create PERPLEXITY_API_KEY --team \
@@ -85,7 +90,7 @@ oz secret create PERPLEXITY_API_KEY --team \
 ```
 
 Then delete the local key files: `rm ./gsc-service-account.json
-./cf-analytics-token.txt ./cf-account-id.txt ./perplexity-key.txt`.
+./cf-analytics-token.txt ./cf-account-id.txt ./cf-zone-id.txt ./perplexity-key.txt`.
 
 Verify (names only — values are never printed):
 
@@ -144,6 +149,15 @@ oz schedule create \
   --name "waev-keyword-research" \
   --cron "0 16 21 1,4,7,10 *" \
   --prompt "Read growth/briefs/keyword-research.md and execute it." \
+  --environment <ENV_ID>
+
+# Editorial review — Sun/Tue/Thu 18:00 UTC, ~4h after content drafting (CADENCE §3.10).
+# The internal review cycle: fact-checks + revises draft post PRs, then flips draft->ready
+# so the human gate is a cursory gut-check + hero-image pass only.
+oz schedule create \
+  --name "waev-editor" \
+  --cron "0 18 * * 0,2,4" \
+  --prompt "Read growth/briefs/editor.md and execute it." \
   --environment <ENV_ID>
 ```
 
