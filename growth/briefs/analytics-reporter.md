@@ -6,7 +6,7 @@ inputs:
   - ../calendar.yaml
   - ../../src/content/blog/
 outputs: report
-gate: human-approval
+gate: none
 ---
 
 # Brief: analytics-reporter
@@ -47,12 +47,18 @@ Create `growth/reports/<YYYY-MM-DD>-report.md`. Structure:
   "keyword gap in `cert-emcomm` awareness → propose via `./keyword-research.md`",
   "post X fails to rank → flag for `./seo-auditor.md`". Do NOT act on them.
 
-## Step 4 — Hand off (report, human-approval)
-- Commit the report. Message: `report: <YYYY-MM-DD> analytics` with trailer
-  `Co-Authored-By: Oz <oz-agent@warp.dev>`.
-- Push the branch. Per the `human-approval` gate, do NOT auto-merge: open a
-  DRAFT PR (or notify per `../MEASUREMENT.md` hand-off) so a human reviews the
-  report and decides which recommendations to action.
+## Step 4 — Hand off (report, gate: none)
+- Commit the report under `growth/reports/`. Message: `report: <YYYY-MM-DD>
+  analytics` with trailer `Co-Authored-By: Oz <oz-agent@warp.dev>`.
+- The report is gate `none` (informational — CADENCE.md §3.4): push the branch
+  and open a DRAFT PR for the audit trail, but it changes nothing in production
+  and needs no sign-off. Its recommendations are PROPOSALS only — never action
+  them here; each is routed to a downstream brief that carries its own gate
+  (e.g. `./keyword-research.md`, `./seo-auditor.md`).
+- If a `../MEASUREMENT.md` decision threshold (T1–T7) fires, you MAY also open a
+  SEPARATE `../calendar.yaml` PR proposing the slot change (gate: `human-merge`,
+  CADENCE.md §3.4) — append `status: proposed` slots only, never reorder or
+  delete existing entries.
 - STOP. Report branch + report path + the headline KPI deltas to the
   orchestrator.
 

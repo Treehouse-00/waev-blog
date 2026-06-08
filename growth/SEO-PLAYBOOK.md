@@ -151,10 +151,17 @@ Source surface: `src/layouts/Base.astro` `<head>` (lines ~67–121) and
 
 - **MT-01 — Title present and bounded.** Severity: blocker.
   - Scope: every page.
-  - Check: `<title>` non-empty, 15–60 chars. Posts end with `— Waev Blog`
-    (set by `Post.astro` `title={...}`).
-  - PASS: within bounds; post suffix present.
-  - Fix: page `title` prop; for posts `src/layouts/Post.astro` line ~74.
+  - Check: the `<title>` text content is non-empty and 15–60 characters
+    inclusive. On post pages (`dist/blog/*/index.html`) the text MUST end with
+    the exact 12-character suffix ` — Waev Blog` (space, U+2014 em dash, space,
+    `Waev Blog`), appended by `src/layouts/Post.astro` line ~74 — which means a
+    post's frontmatter `title` must be ≤ 48 chars to keep `<title>` ≤ 60.
+  - PASS: `15 ≤ len(<title> text) ≤ 60` AND (the page is not a post OR the
+    `<title>` ends with ` — Waev Blog`).
+  - Fix: for a too-long post title, shorten the frontmatter `title` in that
+    post's `.mdx` (the suffix is fixed in `src/layouts/Post.astro` line ~74 — do
+    not change it). For non-post pages, fix the `title` prop passed to
+    `src/layouts/Base.astro`.
 
 - **MT-02 — Meta description present and bounded.** Severity: blocker.
   - Scope: every page.
@@ -185,12 +192,21 @@ Source surface: `src/layouts/Base.astro` `<head>` (lines ~67–121) and
   - Fix: `src/layouts/Base.astro` (emit when `type === "article"`); pass `tags`
     from `src/layouts/Post.astro`.
 
-- **MT-06 — `article:published_time` on posts.** Severity: major.
+- **MT-06 — Article time metadata on posts.** Severity: major.
   - Scope: `dist/blog/*/index.html`.
-  - Check: `<meta property="article:published_time">` = ISO date.
-    `article:modified_time` present iff `updated` is set.
-  - PASS: published present; modified present iff `updated`.
-  - Fix: `src/layouts/Base.astro` lines ~87 (published) + add modified.
+  - Check: exactly one `<meta property="article:published_time">` whose `content`
+    is a valid ISO 8601 timestamp equal to the post's frontmatter `date`
+    (`Post.astro` passes `publishedTime={date.toISOString()}`, line ~77). AND
+    `<meta property="article:modified_time">` is present with `content ==
+    updated.toISOString()` IF AND ONLY IF the frontmatter has `updated`; it MUST
+    be absent when `updated` is absent.
+  - PASS: `published_time` present and ISO-valid; `modified_time` present-and-
+    matching iff `updated` is set, absent otherwise.
+  - Fix: `src/layouts/Base.astro` — `article:published_time` is emitted at
+    line ~87; `article:modified_time` is NOT yet emitted. Add a `modifiedTime?:
+    string` prop to `Base.astro`, emit the meta tag beside line ~87, and pass
+    `modifiedTime={updated?.toISOString()}` from the `<Base …>` call in
+    `src/layouts/Post.astro` (lines ~73–79).
 
 - **MT-07 — `twitter:site` (and `twitter:creator`).** Severity: major.
   - Scope: every page.
@@ -323,13 +339,18 @@ Existing posts (slugs for cross-linking): `bring-your-own-broker`,
     `src/layouts/Post.astro` after the `faq` section. Wire its data in
     `src/pages/blog/[...slug].astro`.
 
-- **IL-02 — Every post has ≥2 inline body cross-links.** Severity: major.
-  - Scope: each post `.mdx`.
-  - Check: post body contains ≥2 markdown links to other `/blog/<slug>/` URLs
-    (excludes nav, related block, and external links).
-  - PASS: ≥2 inline internal links.
-  - Fix: the post `.mdx` body — add contextual links. `content-writer` must
-    satisfy this at authoring time.
+- **IL-02 — Every post body has ≥2 inline internal cross-links.** Severity: major.
+  - Scope: `dist/blog/*/index.html`.
+  - Check: count anchors inside the rendered post body ONLY — the
+    `<div class="prose">` container in `src/layouts/Post.astro` (line ~114),
+    which by construction excludes the nav, the post header, the FAQ section,
+    and the `RelatedPosts` block (IL-01, all rendered outside `.prose`) — whose
+    `href` matches `^/blog/<slug>/$` for a slug OTHER than the current post.
+    Count distinct target slugs.
+  - PASS: ≥ 2 distinct other-post `/blog/<slug>/` targets inside `.prose`
+    (self-links excluded).
+  - Fix: add contextual links in the post's `.mdx` body — `content-writer` must
+    satisfy this at authoring time (its brief Step 3 internal-linking rule).
 
 - **IL-03 — No broken internal links.** Severity: blocker.
   - Scope: every page.
@@ -379,13 +400,20 @@ Existing posts (slugs for cross-linking): `bring-your-own-broker`,
     — a FAIL here means a rendering/canon regression, not new copy).
 
 - **SM-04 — llms.txt Key facts stay canon-consistent.** Severity: blocker.
-  - Scope: `dist/llms.txt` `## Key facts`.
-  - Check: the four canon facts (privacy markers ⛔ 🛑 🚫 never stored;
-    evidence-based topology from enrolled observers + authenticated repeaters;
-    bring-your-own-broker; contact `admin@waev.app`) are present and unaltered.
-  - PASS: all four present verbatim in substance.
-  - Fix: `src/pages/llms.txt.ts` — this file IS the canon; treat any drift as a
-    `human-approval` change, never silently rewrite a fact.
+  - Scope: `dist/llms.txt` (the `## Key facts` section).
+  - Check: the built file contains ALL of these exact substrings (case-sensitive),
+    each encoding one canon fact:
+    1. `⛔ 🛑 🚫` and `never stored, mapped, or counted` and
+       `identity-scrubbed at the ingest edge` (privacy by default);
+    2. `enrolled observers` and `authenticated repeaters` and
+       `Spoofed or inferred prefixes are rejected` (evidence-based topology);
+    3. `bring-your-own-broker` and `operators host their own MQTT broker`
+       (data ownership);
+    4. `admin@waev.app` (contact).
+  - PASS: every listed substring is present in `dist/llms.txt`.
+  - Fix: `src/pages/llms.txt.ts` — this file IS the canon; a missing/altered
+    substring is a regression. Any intended change to a fact is a
+    `human-approval` decision (SM-04 is a `blocker`), never a silent rewrite.
 
 - **SM-05 — RSS validity.** Severity: minor.
   - Scope: `dist/rss.xml`.
