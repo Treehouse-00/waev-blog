@@ -83,15 +83,15 @@ The orchestrating run-system reads this section to register jobs.
   PR with only that fix.
 - gate: `none` for the report; `human-merge` for any PR it opens.
 
-### 3.4 Weekly — Analytics pull
+### 3.4 Monthly — Analytics report
 - brief: `./briefs/analytics-reporter.md`
-- cron: `0 12 * * 1`  (Mondays 12:00 UTC, before content drafting)
-- trigger: weekly. Pull traffic / ranking / answer-engine-citation metrics for
-  published posts and the keyword roadmap.
-- output: `report` to `growth/reports/analytics-<YYYY-MM-DD>.md`, including a
-  ranked list of slots that are under-performing vs. expectation (feeds the
-  quarterly keyword refresh and the monthly review).
-- gate: `none`.
+- cron: `0 15 1 * *`  (1st of month, 15:00 UTC) — matches the 28-day window in
+  `./MEASUREMENT.md`; its T1–T7 thresholds are written month-over-month.
+- trigger: monthly. Pull traffic / ranking / answer-engine-citation metrics per
+  `./MEASUREMENT.md`, then evaluate its decision thresholds (T1–T7).
+- output: `report` to `growth/reports/YYYY-MM.md` (the MEASUREMENT template),
+  plus a `calendar.yaml` PR for any threshold that fires.
+- gate: `none` for the report; `human-merge` for any `calendar.yaml` PR.
 
 ### 3.5 Weekly — Competitive watch
 - brief: `./briefs/competitive-monitor.md`
@@ -160,9 +160,10 @@ Human-only (require a gate above):
 
 ## 5. Review rhythm (the human side of the loop)
 - **Weekly triage (human, ~15 min):** review open draft PRs (§3.2) and the
-  week's reports (§3.3–3.5). Merge or request changes. Merging = scheduling.
-- **Monthly review (human):** read the monthly audit (§3.6) and distribution
-  prep (§3.7); approve distribution actions; merge the fix PR.
+  week's reports (§3.3, §3.5). Merge or request changes. Merging = scheduling.
+- **Monthly review (human):** read the monthly analytics report (§3.4), the
+  monthly audit (§3.6), and distribution prep (§3.7); approve distribution
+  actions; merge the fix and calendar PRs.
 - **Quarterly planning (human):** review the keyword refresh PR (§3.8) and
   competitive deep audit (§3.9); merge the `calendar.yaml` changes that set the
   next quarter's backlog.

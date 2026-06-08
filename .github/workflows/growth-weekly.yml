@@ -16,8 +16,8 @@ name: Growth OS — weekly SEO audit
 
 on:
   schedule:
-    # 14:00 UTC every Monday (~06:00 PT). Mirrors the RUNBOOK seo-auditor cron.
-    - cron: "0 14 * * 1"
+    # 14:00 UTC every Tuesday (~06:00 PT). Mirrors CADENCE.md §3.3 (weekly seo-auditor).
+    - cron: "0 14 * * 2"
   workflow_dispatch:
 
 permissions:
