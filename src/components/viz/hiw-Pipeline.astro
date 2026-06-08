@@ -1,0 +1,83 @@
+---
+/**
+ * hiw-Pipeline — full five-stage pipeline:
+ *   On the mesh → Observer → Your Broker → Ingest Edge → Product Surfaces
+ * Theme-aware via CSS custom properties. Used in "From Radio to Map".
+ */
+---
+
+<svg viewBox="0 0 720 164" role="img" aria-label="Five-stage pipeline: mesh nodes broadcast RF, an enrolled observer relays over MQTT to your broker, Waev subscribes and scrubs at the ingest edge, then routes to Live Map, Network Stats, and Packet Search." style="width:100%;height:auto;">
+  <defs>
+    <marker id="hiw-pl-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
+    </marker>
+    <marker id="hiw-pl-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+
+  <!-- ── Stage 1: On the mesh ── -->
+  <rect x="10" y="24" width="108" height="80" rx="13" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1.25" />
+  <circle cx="42" cy="52" r="5.5" style="fill: var(--text-tertiary);" />
+  <circle cx="80" cy="52" r="5.5" style="fill: var(--text-tertiary);" />
+  <line x1="48" y1="52" x2="74" y2="52" style="stroke: var(--border-hover);" stroke-width="1.5" />
+  <path d="M87 52 Q93 46 87 40" fill="none" style="stroke: var(--text-tertiary); opacity: 0.7;" stroke-width="1.4" stroke-linecap="round" />
+  <path d="M87 52 Q96 44 87 36" fill="none" style="stroke: var(--text-tertiary); opacity: 0.35;" stroke-width="1" stroke-linecap="round" />
+  <text x="64" y="86" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">On the mesh</text>
+  <text x="64" y="100" text-anchor="middle" class="viz-label">ADVERT · route</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="120" y1="64" x2="148" y2="64" style="stroke: var(--border-hover); stroke-width: 1.75;" marker-end="url(#hiw-pl-arrow)" />
+
+  <!-- ── Stage 2: Observer (accent border — operator sets this up) ── -->
+  <rect x="150" y="24" width="108" height="80" rx="13" style="fill: var(--surface-1); stroke: var(--text-accent);" stroke-width="1.5" />
+  <rect x="186" y="44" width="36" height="24" rx="4" style="fill: none; stroke: var(--text-accent);" stroke-width="1.75" />
+  <line x1="204" y1="44" x2="204" y2="37" style="stroke: var(--text-accent);" stroke-width="1.75" stroke-linecap="round" />
+  <circle cx="204" cy="35" r="2.5" style="fill: var(--text-accent);" />
+  <text x="204" y="86" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Observer</text>
+  <text x="204" y="100" text-anchor="middle" class="viz-label">enrolled · active</text>
+
+  <!-- Arrow 2→3 + label -->
+  <line x1="260" y1="64" x2="288" y2="64" style="stroke: var(--border-hover); stroke-width: 1.75;" marker-end="url(#hiw-pl-arrow)" />
+  <text x="274" y="59" text-anchor="middle" class="viz-label" style="font-size: 9px;">publish</text>
+
+  <!-- ── Stage 3: Your Broker ── -->
+  <rect x="290" y="24" width="108" height="80" rx="13" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1.25" />
+  <g transform="translate(326, 38)" style="stroke: var(--text-muted); fill: none;" stroke-width="1.5">
+    <rect x="0" y="0" width="32" height="10" rx="2.5" />
+    <rect x="0" y="15" width="32" height="10" rx="2.5" />
+    <circle cx="5" cy="5" r="1.5" style="fill: var(--text-muted); stroke: none;" />
+    <circle cx="5" cy="20" r="1.5" style="fill: var(--text-muted); stroke: none;" />
+  </g>
+  <text x="344" y="86" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Your Broker</text>
+  <text x="344" y="100" text-anchor="middle" class="viz-label">MQTT · you own it</text>
+
+  <!-- Arrow 3→4 + label -->
+  <line x1="400" y1="64" x2="428" y2="64" style="stroke: var(--accent-light); stroke-width: 1.75;" marker-end="url(#hiw-pl-arrow-acc)" />
+  <text x="414" y="59" text-anchor="middle" class="viz-label" style="font-size: 9px; fill: var(--text-accent);">subscribe</text>
+
+  <!-- ── Stage 4: Ingest Edge (accent fill — Waev's gate) ── -->
+  <rect x="430" y="24" width="108" height="80" rx="13" style="fill: var(--accent-subtle); stroke: var(--accent);" stroke-width="1.5" />
+  <polygon points="484,40 499,56 484,72 469,56" style="fill: none; stroke: var(--accent-light);" stroke-width="1.75" />
+  <path d="M478 56 L482 61 L491 51" fill="none" style="stroke: var(--accent-light);" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="484" y="86" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Ingest Edge</text>
+  <text x="484" y="100" text-anchor="middle" style="fill: var(--text-accent); font-family: var(--mono); font-size: 10px;">scrub · verify</text>
+
+  <!-- Arrow 4→5 -->
+  <line x1="540" y1="64" x2="568" y2="64" style="stroke: var(--border-hover); stroke-width: 1.75;" marker-end="url(#hiw-pl-arrow)" />
+
+  <!-- ── Stage 5: Product Surfaces ── -->
+  <rect x="570" y="24" width="130" height="80" rx="13" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1.25" />
+  <rect x="594" y="40" width="82" height="8" rx="2.5" style="fill: var(--text-tertiary); opacity: 0.55;" />
+  <rect x="594" y="52" width="62" height="8" rx="2.5" style="fill: var(--text-tertiary); opacity: 0.35;" />
+  <rect x="594" y="64" width="72" height="8" rx="2.5" style="fill: var(--text-tertiary); opacity: 0.2;" />
+  <text x="635" y="86" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Surfaces</text>
+  <text x="635" y="100" text-anchor="middle" class="viz-label">Map · Stats · Search</text>
+
+  <!-- Stage index row -->
+  <text x="64"  y="124" text-anchor="middle" class="viz-label" style="font-size: 9px; opacity: 0.5;">01</text>
+  <text x="204" y="124" text-anchor="middle" class="viz-label" style="font-size: 9px; opacity: 0.5;">02</text>
+  <text x="344" y="124" text-anchor="middle" class="viz-label" style="font-size: 9px; opacity: 0.5;">03</text>
+  <text x="484" y="124" text-anchor="middle" class="viz-label" style="font-size: 9px; opacity: 0.5;">04</text>
+  <text x="635" y="124" text-anchor="middle" class="viz-label" style="font-size: 9px; opacity: 0.5;">05</text>
+</svg>

@@ -1,0 +1,104 @@
+---
+title: "From Radio to Map"
+description: "The pipeline from a radio broadcast to a verified edge on Waev's Live Map — how enrolled observers, your MQTT broker, and the ingest edge work together."
+date: 2026-06-08
+tags: ["deep-dive", "how-it-works"]
+author: "Waev"
+---
+
+import Figure from "../../components/Figure.astro";
+import HiwPipeline from "../../components/viz/hiw-Pipeline.astro";
+import HiwObserverBridge from "../../components/viz/hiw-ObserverBridge.astro";
+import HiwTopologyDraw from "../../components/viz/hiw-TopologyDraw.astro";
+
+Your mesh doesn't know about <span class="waev-brand">Waev</span>. The nodes on your hilltop relays, the repeaters in the valley — they're broadcasting the same LoRa packets they always have, into the air, to whatever's listening. <span class="waev-brand">Waev</span> has no antenna. So the question, for anyone standing up their first observer, is a fair one: how does anything get from the radio to the browser tab?
+
+Here's exactly how.
+
+<div class="callout">
+<p><strong>In short:</strong> an enrolled observer listens on your mesh and publishes packets to an MQTT broker you host. Waev subscribes to that broker, scrubs private and unverifiable data at the ingest edge, and builds the map from what it can prove. The pipeline has five stages; each one does one job.</p>
+</div>
+
+<Figure caption="The full pipeline — five stages, one job each. The <b>Observer</b> is the bridge your mesh needs. The <b>Ingest Edge</b> is the gate Waev controls.">
+  <HiwPipeline />
+</Figure>
+
+## The observer: your network's window to the internet
+
+A MeshCore observer is a node that does two things at once. It's on your mesh — receiving and relaying RF packets, like any other node. And it has a path to the internet, typically WiFi or Ethernet.
+
+When a packet arrives at the observer's radio, the observer publishes a JSON record of that packet to your MQTT broker. That's the handoff — from radio to IP, from the air to the internet. Without an enrolled observer, <span class="waev-brand">Waev</span> sees nothing.
+
+The word "enrolled" matters. <span class="waev-brand">Waev</span> draws topology only from observers you've connected — you gave Waev your broker address, and the observer is publishing to that broker. An observer that publishes to a different broker, or to a broker Waev hasn't been given, doesn't contribute to your map.
+
+<Figure caption="The observer sits on both sides. <b>Left:</b> RF edges to mesh nodes (dashed — radio). <b>Right:</b> a TCP/IP connection to your broker (solid — internet). Two worlds, one device.">
+  <HiwObserverBridge />
+</Figure>
+
+One observer is enough to start. Multiple observers give you overlapping vantage points — more verified hops, better coverage of nodes that sit far from any single connection point, and more independent evidence per edge. The map gets richer with each additional vantage point you add.
+
+## Your broker: the handshake that keeps you in control
+
+<span class="waev-brand">Waev</span> subscribes to your broker with read-only credentials. You set those credentials. You run the broker — on a VPS, a home server, a managed service, wherever makes sense for your setup. Waev gets a copy of the data as it arrives. You can rotate or revoke credentials without asking anyone.
+
+This inverts the usual model. The alternative — where operators connect into a centrally-hosted MQTT server — creates access management problems at any scale: different permission levels, request workflows, a shared database everyone has to trust. Bring-your-own-broker removes those problems by design. You are never dependent on us to access your own data.
+
+## The ingest edge: where the picture gets verified
+
+<span class="waev-brand">Waev</span> receives the stream from your broker and runs three checks, in order, before anything is written.
+
+**Opt-out markers drop the packet entirely.** If the source node name contains a privacy marker — ⛔, 🛑, or 🚫 — the packet is discarded before any other processing. Nothing stored, nothing counted. The marker is checked first, no exceptions.
+
+**Companion devices are scrubbed to signal metadata only.** MeshCore personal apps broadcast on the same RF mesh as your repeaters, so their packets reach your observers too. At the ingest edge, identity fields — name and device type — are nullified before anything is stored. What survives is the signal record: SNR, hop count, timing. The person doesn't appear on the map; the signal does, counted anonymously in Network Stats.
+
+**Topology edges require verified sources.** The lines on the Live Map are drawn only when an observation comes from an enrolled observer or an authenticated repeater. Packets that don't trace back to a verifiable source don't produce edges. If we can't prove it, we don't draw it.
+
+<Figure caption="<b>Left:</b> a packet travels two RF hops — from Node A, relayed by Node B, heard at the enrolled Observer. <b>Right:</b> Waev draws exactly two edges, backed by those observations. The SNR numbers traveled with the packet.">
+  <HiwTopologyDraw />
+</Figure>
+
+The result is a Live Map that's accurate where it has evidence and deliberately quiet where it doesn't. A node you haven't reached from an enrolled observer won't appear — not because it doesn't exist, but because <span class="waev-brand">Waev</span> hasn't seen proof.
+
+## What each surface shows
+
+Once packets clear the ingest edge, they're stored and routed to the relevant surfaces.
+
+**Live Packets** is the stream as it arrives — privacy-filtered, timestamped, sorted by arrival. If a node is reaching Waev, it appears here first. It's the fastest way to check whether a given node is getting through.
+
+**Live Map** draws topology from verified edges, updated as new observations arrive. Edges don't disappear the moment a node goes quiet; they age. But the map won't draw a new edge to a silent node until fresh evidence arrives.
+
+**Network Stats** tracks activity over time: unique nodes active in the last hour, day, week. It uses both confirmed observer records and anonymized companion signal records, so the counts reflect real traffic — including devices that don't appear on the map.
+
+**Packet Search** gives you a queryable history of non-private activity. Useful for after-action review, debugging a node that went quiet, or understanding traffic patterns over a specific time window.
+
+**Outpost** is a per-node view: one node's activity timeline, heard-by list, and SNR history.
+
+---
+
+## Common questions
+
+### Does my MQTT broker need to be reachable from the public internet?
+
+Yes. <span class="waev-brand">Waev</span> subscribes from our infrastructure, so your broker needs a public address or hostname that resolves externally. Many operators run Mosquitto on a small VPS. You control the credentials and TLS configuration — Waev just subscribes.
+
+### What happens if my observer goes offline?
+
+<span class="waev-brand">Waev</span> stops receiving packets from that observer. The map shows the last-known topology; edges age but aren't immediately removed. Nothing is inferred to fill the gap. When the observer reconnects, the data stream resumes.
+
+### My node shows up in Live Packets but not on the Live Map. Why?
+
+Live Packets shows everything that clears the privacy gate. The Live Map draws topology edges, which require a verified observation — the packet must arrive through an enrolled observer and include a traceable hop record. If the packet appears in Live Packets but no edge appears on the map, the most common causes are: the hop record was incomplete, the node is a companion device (scrubbed from the map by design), or the observation arrived through a path Waev couldn't verify.
+
+### Can I run more than one observer?
+
+Yes — and in most networks you should. Each additional observer adds an independent vantage point, which increases the number of verified hops <span class="waev-brand">Waev</span> can see and reduces coverage blind spots. Two observers hearing the same packet from different positions produce independent evidence for each edge, which makes the topology picture more reliable.
+
+---
+
+The five stages work together: the observer bridges RF to the internet, your broker holds the data on your terms, the ingest edge enforces what gets in, and the surfaces show what the network can prove about itself. When something looks off on the map — a missing node, a gap in topology — tracing back through those five stages is usually enough to find where the observation chain broke.
+
+Questions about a specific setup, or something that doesn't add up? [Talk to us](mailto:admin@waev.app) — concrete questions about real networks are the most useful feedback we get.
+
+Ready to connect? [Start at waev.app.](https://waev.app)
+
+<p class="endnote"><span class="endnote-title">— The Waev team</span></p>
