@@ -4,6 +4,10 @@ description: "The pipeline from a radio broadcast to a verified edge on Waev's L
 date: 2026-06-08
 tags: ["deep-dive", "how-it-works"]
 author: "Waev"
+ogImage: "/og-how-waev-reads-your-mesh.jpg"
+hero:
+  src: "/hero-how-waev-reads-your-mesh.jpg"
+  alt: "A hand-painted scene of a radio operator at a coastal workstation — a dish antenna and receiver on the desk, faint mesh links glinting across the landscape beyond."
 faq:
   - q: "Does my MQTT broker need to be reachable from the public internet?"
     a: "Yes. Waev subscribes from our infrastructure, so your broker needs a public address or hostname that resolves externally. Many operators run Mosquitto on a small VPS. You control the credentials and TLS configuration; Waev just subscribes."

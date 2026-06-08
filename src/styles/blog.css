@@ -642,3 +642,55 @@
   object-fit: contain;
   display: block;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Signature display type — Google Sans Code (mono, semibold) for headlines
+   ═══════════════════════════════════════════════════════════════════════ */
+.masthead-title,
+.featured-title,
+.post-title,
+.post-card-title,
+.prose h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Post cards with hero covers — "More posts" becomes a 2-up showcase grid
+   ═══════════════════════════════════════════════════════════════════════ */
+.post-list {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.post-card {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  align-content: start;
+}
+
+.post-card-cover {
+  width: 100%;
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.post-card-cover img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;   /* fit at natural ratio — never crop or stretch */
+  display: block;
+}
+
+.post-card-body {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--card-pad-hero);
+}
+
+@media (max-width: 839px) {
+  .post-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -65,15 +65,22 @@ const fmt = (d: Date) =>
           {rest.map((post) => (
             <li>
               <a class="card post-card" href={`/blog/${post.id}/`}>
-                <div class="post-card-meta">
-                  <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
-                  {post.data.tags.slice(0, 2).map((t) => (
-                    <span class="tag">{t}</span>
-                  ))}
+                {post.data.hero && (
+                  <div class="post-card-cover">
+                    <img src={post.data.hero.src} alt="" loading="lazy" decoding="async" />
+                  </div>
+                )}
+                <div class="post-card-body">
+                  <div class="post-card-meta">
+                    <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+                    {post.data.tags.slice(0, 2).map((t) => (
+                      <span class="tag">{t}</span>
+                    ))}
+                  </div>
+                  <h3 class="post-card-title">{post.data.title}</h3>
+                  <p class="post-card-desc">{post.data.description}</p>
+                  <span class="post-card-more">Read →</span>
                 </div>
-                <h3 class="post-card-title">{post.data.title}</h3>
-                <p class="post-card-desc">{post.data.description}</p>
-                <span class="post-card-more">Read →</span>
               </a>
             </li>
           ))}
