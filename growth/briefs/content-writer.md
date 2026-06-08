@@ -4,6 +4,7 @@ inputs:
   - ../CHARTER.md
   - ../STRATEGY.md
   - ../VOICE.md
+  - ../EDITORIAL.md
   - ../SEO-PLAYBOOK.md
   - ../calendar.yaml
   - ../../AGENT.md
@@ -51,8 +52,10 @@ If no `type == "post"` entry is both `status == "proposed"` AND within the lead
 window, STOP and report "no due proposed slot" to the orchestrator. Do not pull
 a slot more than 21 days out, and do not invent a slot.
 
-Record the slot's `slot_date`, `segment`, `funnel_stage`, `primary_keyword`,
-`secondary_keyword`, and `brief` for use below.
+Record the slot's `slot_date`, `segment`, `funnel_stage`, `bucket`, `theme`,
+`primary_keyword`, `secondary_keyword`, and `brief` for use below. The `bucket`
+sets the post's SHAPE and the `theme` is the human tension it ladders up to
+(see `../EDITORIAL.md`).
 
 ## Step 2 — Derive the slug and branch
 - `slug` = kebab-case of the chosen title (see Step 3); must be unique against
@@ -102,6 +105,13 @@ Body requirements (AGENT.md "Authoring a post" + `../VOICE.md`):
 - Segment + funnel: frame the piece for the slot's `segment`
   (tinkerer | ham | cert-emcomm | off-grid) and `funnel_stage`
   (awareness | evaluation | adoption) per `../STRATEGY.md`.
+- Bucket + theme (`../EDITORIAL.md`): write the SHAPE the slot's `bucket`
+  implies (`primer` = onboarding explainer; `signal` = a transferable technical
+  skill; `field-manual` = one real operating decision; `under-the-hood` = how
+  Waev works; `position` = a citable POV; `dispatch` = timely/seasonal), and
+  ladder the niche topic up to the slot's `theme` so it resonates beyond the
+  keyword. A draft that nails the keyword but lands no theme is tactical SEO —
+  not shippable.
 
 ## Step 4 — Self-check against the playbook and the voice law
 Run `npm run build` (must pass — it enforces TS strict + the content schema).
@@ -122,9 +132,10 @@ change any other entry.
   edit. Commit message: `post: <title>` with trailer
   `Co-Authored-By: Oz <oz-agent@warp.dev>`.
 - Push `growth/post-<slug>` and open a DRAFT PR with `gh pr create --draft`.
-  Body must list: the slot (date/segment/funnel/keywords), the SEO-PLAYBOOK
-  rules you verified, whether the hero image asset is still pending, and the
-  internal posts you linked.
+  Body must list: the slot (date/segment/funnel/`bucket`/`theme`/keywords), one
+  sentence on how the piece ladders its niche up to the `theme`, the
+  SEO-PLAYBOOK rules you verified, whether the hero image asset is still
+  pending, and the internal posts you linked.
 - STOP. Human merge publishes (gate: human-merge). Report the branch + PR URL
   to the orchestrator.
 

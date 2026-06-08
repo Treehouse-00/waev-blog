@@ -97,5 +97,9 @@ These mirror the repo constitution in `../AGENT.md` and bind every growth agent:
   segment → funnel map the calendar draws from.
 - `./VOICE.md` — how everything must sound and the self-verify checklist content
   agents run before opening a PR.
-- `./calendar.yaml` — the schedule of slots (posts, SEO tasks, audits).
+- `./EDITORIAL.md` — the editorial rails: the content buckets, the
+  demographic×psychographic resonance model, the ownable themes, the annual
+  flow (a guide, not dogma), and the mix/pulse rules the planner and writer obey.
+- `./calendar.yaml` — the schedule of slots (posts, SEO tasks, audits); every
+  `type: post` slot carries a `bucket` + `theme` per `./EDITORIAL.md`.
 - `./briefs/*.md` — the executable prompts scheduled agents run.
