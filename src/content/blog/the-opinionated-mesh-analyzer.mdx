@@ -1,6 +1,6 @@
 ---
 title: "The Opinionated Mesh Analyzer"
-description: "What Waev is and what it stands for — written down for the people running mesh networks."
+description: "Waev is a real-time analytics platform for MeshCore mesh radio networks. Privacy by default, evidence-based topology, and a data ownership model that keeps your community's data where it belongs — with you."
 date: 2026-06-08
 tags: ["philosophy", "privacy"]
 author: "Waev"
@@ -13,7 +13,9 @@ import BrokerCopy from "../../components/viz/BrokerCopy.astro";
 
 If you're running a mesh network for a community that depends on it, you already know what it actually takes. Quiet work, unglamorous, and genuinely important.
 
-<span class="waev-brand">Waev</span> is a real-time analytics platform for MeshCore networks. It exists because people like you needed a way to understand what those networks are actually doing — live packets, signal per hop, coverage, the health of the infrastructure you keep running, often alone, often without much tooling.
+<span class="waev-brand">Waev</span> is a real-time analytics platform for MeshCore networks. It exists because people like you needed a way to understand what those networks are actually doing — live packets, signal per hop, coverage, the health of the infrastructure you keep running, often alone, often without much tooling. And it’s built around a simple idea: your community’s data belongs to you, not us.
+
+{/* TODO social proof: add one real number here before major distribution — e.g. “Currently monitoring X active networks across Y communities.” Even a single sentence changes the credibility read for first-time visitors. */}
 
 > We thought about what we want this to be. Here's what we landed on.
 
@@ -107,6 +109,8 @@ The old model, where everyone requests access to a central set of MQTT servers, 
 You keep full control. We get what we need to build useful tools. Nobody manages an access list. It's a better arrangement for everyone — and it happens to be the honest one.
 
 ## 06 · How we decide what to build
+
+We use the word “opinionated” as a description, not a warning. Principled about what we build. Honest about what we won’t.
 
 We try to build in an order that makes sense for the whole tool, not just whatever came up most recently. That means we might not build what you ask for, or we might get to it later than you'd like.
 
