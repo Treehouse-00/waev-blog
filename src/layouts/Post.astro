@@ -78,58 +78,62 @@ const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
   image={socialImage}
   jsonLd={jsonLd}
 >
-  <article class="post container container--reading">
-    <a class="post-back" href="/">← All posts</a>
+  <article class="post">
+    <div class="container container--reading">
+      <a class="post-back" href="/">← All posts</a>
 
-    <header class="post-header">
-      <div class="post-meta">
-        <time datetime={date.toISOString()}>{fmt(date)}</time>
-        {readingMinutes && (
-          <>
-            <span class="footer-sep">·</span>
-            <span>{readingMinutes} min read</span>
-          </>
-        )}
-        <span class="footer-sep">·</span>
-        <span>{author}</span>
-      </div>
-      <h1 class="post-title">{title}</h1>
-      <p class="post-lead">{description}</p>
-      {tags.length > 0 && (
-        <div class="post-meta" style="gap: var(--sp-2);">
-          {tags.map((t) => <span class="tag">{t}</span>)}
+      <header class="post-header">
+        <div class="post-meta">
+          <time datetime={date.toISOString()}>{fmt(date)}</time>
+          {readingMinutes && (
+            <>
+              <span class="footer-sep">·</span>
+              <span>{readingMinutes} min read</span>
+            </>
+          )}
+          <span class="footer-sep">·</span>
+          <span>{author}</span>
         </div>
-      )}
-    </header>
+        <h1 class="post-title">{title}</h1>
+        <p class="post-lead">{description}</p>
+        {tags.length > 0 && (
+          <div class="post-meta" style="gap: var(--sp-2);">
+            {tags.map((t) => <span class="tag">{t}</span>)}
+          </div>
+        )}
+      </header>
+    </div>
 
     {hero && (
-      <figure class="post-hero">
+      <figure class="post-hero container">
         <img src={hero.src} alt={hero.alt} loading="eager" decoding="async" />
       </figure>
     )}
 
-    <div class="prose">
-      <slot />
+    <div class="container container--reading">
+      <div class="prose">
+        <slot />
+      </div>
+
+      {faq.length > 0 && (
+        <section class="faq" aria-labelledby="faq-title">
+          <h2 class="faq-title" id="faq-title">Frequently asked</h2>
+          <dl class="faq-list">
+            {faq.map((f) => (
+              <div class="faq-item">
+                <dt class="faq-q">{f.q}</dt>
+                <dd class="faq-a">{f.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
+
+      {updated && (
+        <p class="post-meta" style="margin-top: var(--sp-10);">
+          Last updated {fmt(updated)}
+        </p>
+      )}
     </div>
-
-    {faq.length > 0 && (
-      <section class="faq" aria-labelledby="faq-title">
-        <h2 class="faq-title" id="faq-title">Frequently asked</h2>
-        <dl class="faq-list">
-          {faq.map((f) => (
-            <div class="faq-item">
-              <dt class="faq-q">{f.q}</dt>
-              <dd class="faq-a">{f.a}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-    )}
-
-    {updated && (
-      <p class="post-meta" style="margin-top: var(--sp-10);">
-        Last updated {fmt(updated)}
-      </p>
-    )}
   </article>
 </Base>

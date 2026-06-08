@@ -609,17 +609,36 @@
   text-wrap: pretty;
 }
 
-/* ── Hero illustration (optional, top of post) ── */
+/* ── Hero masthead (optional, full-width band under the title) ──
+   The figure also carries `.container`, so it spans the 1200px content width
+   while the article text stays in the narrow reading column — a NYT-style
+   photo masthead. The image always fits its width at natural aspect ratio:
+   never stretched, never cropped, never bleeding past the frame. */
 .post-hero {
-  margin: 0 0 var(--sp-10);
-  border-radius: var(--shape-xl);
-  overflow: hidden;
-  border: 1px solid var(--border-subtle);
-  background: var(--surface-sunken);
+  margin: var(--sp-2) auto var(--sp-12);
 }
 
 .post-hero img {
   width: 100%;
+  height: auto;          /* preserve aspect ratio — never stretch */
+  object-fit: contain;   /* fit within bounds — never crop or overflow */
+  display: block;
+  border-radius: var(--shape-xl);
+  border: 1px solid var(--border-subtle);
+}
+
+/* ── Featured card cover as a photo (homepage) ──
+   When the featured post has a hero illustration, the cover panel holds the
+   image edge-to-edge instead of the MeshField diagram. Fits at natural aspect
+   ratio; never stretched or cropped. */
+.featured-visual--photo {
+  padding: 0;
+  background: none;
+}
+
+.featured-visual--photo img {
+  width: 100%;
   height: auto;
+  object-fit: contain;
   display: block;
 }

@@ -45,8 +45,15 @@ const fmt = (d: Date) =>
           <p class="featured-desc">{featured.data.description}</p>
           <span class="featured-cta">Read the post →</span>
         </div>
-        <div class="featured-visual" aria-hidden="true">
-          <MeshField />
+        <div
+          class={`featured-visual${featured.data.hero ? " featured-visual--photo" : ""}`}
+          aria-hidden="true"
+        >
+          {featured.data.hero ? (
+            <img src={featured.data.hero.src} alt="" loading="eager" decoding="async" />
+          ) : (
+            <MeshField />
+          )}
         </div>
       </a>
     )}
