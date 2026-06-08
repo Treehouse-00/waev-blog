@@ -56,7 +56,7 @@ Here are the six things underneath everything else.
 
 The conversations on your mesh are real. The people having them trust the infrastructure you built. We don't take that lightly.
 
-Two rules do most of the work. First, **opt-out is absolute**: add a privacy marker — ⛔ 🛑 🚫 — to any node name and it is never stored, never mapped, never counted. No caching, no edge cases, no exceptions. Second, **companion devices are scrubbed before anything is written**. MeshCore personal apps broadcast on the same radio mesh as your repeaters, so those packets reach our observers. At the ingest edge, we strip the identity — name and device type are nullified — and retain only anonymous signal metadata for aggregate counting.
+Two rules do most of the work. First, **opt-out is absolute**: add a privacy marker — ⛔ 🛑 🚫 — to any node name and it is never stored, never mapped, never counted. No caching, no exceptions. Second, **companion devices are scrubbed before anything is written**. MeshCore personal apps broadcast on the same radio mesh as your repeaters, so those packets reach our observers. At the ingest edge, we strip the identity — name and device type are nullified — and retain only anonymous signal metadata for aggregate counting.
 
 <Figure caption="<b>Left:</b> a node that opts out is dropped entirely. <b>Right:</b> a companion ADVERT keeps its signal numbers, loses its identity.">
   <PrivacyScrub />
@@ -84,11 +84,11 @@ You've probably used dashboards that made the network seem more confusing than i
 
 We think a dashboard that's hard to read is wrong, not just ugly. Clarity is part of correctness. Color should mean something. Motion should explain, not decorate. If a screen makes a complex thing feel more complex, it's not done yet.
 
-That's a constraint from the first sketch, not polish at the end. The practical upshot: when something is actually wrong on your network, you should see it immediately. Not after squinting.
+That's a constraint from the first sketch, not polish at the end. The practical upshot: when something is actually wrong on your network, you should see it — not hunt for it.
 
 ## 04 · Speed is a promise
 
-Packets should appear the instant they arrive. A map should pan without lag. A query that covers your whole mesh should come back before you wonder if it's stuck.
+Packets should appear as they arrive. A map should pan without lag. A query that covers your whole mesh should come back before you wonder if it's stuck.
 
 There's a real difference between a tool you have to check and a tool you can actually watch. We want to build the second kind.
 
