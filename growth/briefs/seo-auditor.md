@@ -62,11 +62,15 @@ After fixes, re-run `npm run build` and re-evaluate the previously-FAILing
 rules to confirm they now PASS. The build MUST pass before you open the PR.
 
 ## Step 4 — Hand off
+- Write the full JSON result set (one line per rule/url from Step 2) to a report
+  file for the audit trail (CADENCE.md §3.3/§3.6): `growth/reports/seo-sweep-
+  <YYYY-MM-DD>.md` for the weekly sweep, or `growth/reports/audit-<YYYY-MM>.md`
+  for the monthly full audit. Commit it alongside any fixes.
 - Commit fixes. Message: `seo: fix <comma-separated rule IDs>` with trailer
   `Co-Authored-By: Oz <oz-agent@warp.dev>`.
 - Push the branch and open a DRAFT PR (`gh pr create --draft`). PR body MUST
-  include: the full JSON result set (or a summary table of FAILs), the rule IDs
-  fixed in-PR, and links to any issues opened for human-judgment items.
+  include: a summary table of FAILs (the full set lives in the report file), the
+  rule IDs fixed in-PR, and links to any issues opened for human-judgment items.
 - Open `gh` issues for every non-mechanical `major` and every `human-approval`
   finding, each titled `seo:<rule-id> — <short>` and referencing the playbook
   rule.
