@@ -1,0 +1,97 @@
+---
+/**
+ * hiw-TopologyDraw — evidence-based topology construction:
+ *   Left: a packet's journey on the radio — Node A tx → relayed by Node B
+ *         → heard at Observer.
+ *   Right: what Waev draws on the Live Map — two verified edges (A-B, B-Observer),
+ *          backed by real observations. Nothing is inferred.
+ * Theme-aware via CSS custom properties. Used in "From Radio to Map".
+ */
+---
+
+<svg viewBox="0 0 720 280" role="img" aria-label="Left panel: Node A transmits, Node B relays, Observer hears — three hops on radio. Right panel: Waev draws two topology edges (A to B, B to Observer) backed by that verified observation. No guessing." style="width:100%;height:auto;">
+  <defs>
+    <marker id="hiw-td-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+    </marker>
+    <marker id="hiw-td-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+
+  <!-- ─── LEFT PANEL: What the air said ─── -->
+  <text x="10" y="26" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.06em;">WHAT THE AIR SAID</text>
+
+  <!-- Node A (transmitter) -->
+  <circle cx="50" cy="120" r="14" style="fill: var(--accent); opacity: 0.9;" />
+  <circle cx="50" cy="120" r="22" style="fill: var(--accent); opacity: 0.1;" />
+  <text x="50" y="124" text-anchor="middle" style="fill: var(--surface-1); font-family: var(--mono); font-size: 11px; font-weight: 700;">A</text>
+  <text x="50" y="148" text-anchor="middle" class="viz-label">Node A</text>
+  <text x="50" y="162" text-anchor="middle" style="fill: var(--text-accent); font-family: var(--mono); font-size: 9px;">tx</text>
+
+  <!-- Hop A→B -->
+  <line x1="70" y1="120" x2="150" y2="120" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#hiw-td-arrow)" />
+  <text x="110" y="112" text-anchor="middle" class="viz-label" style="font-size: 9px;">hop 1</text>
+  <text x="110" y="136" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">SNR +7.4 dB</text>
+
+  <!-- Node B (relay) -->
+  <circle cx="170" cy="120" r="12" style="fill: var(--surface-1); stroke: var(--text-muted);" stroke-width="1.5" />
+  <text x="170" y="124" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px; font-weight: 700;">B</text>
+  <text x="170" y="146" text-anchor="middle" class="viz-label">Node B</text>
+  <text x="170" y="160" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">relay</text>
+
+  <!-- Hop B→Observer -->
+  <line x1="184" y1="120" x2="264" y2="120" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#hiw-td-arrow)" />
+  <text x="224" y="112" text-anchor="middle" class="viz-label" style="font-size: 9px;">hop 2</text>
+  <text x="224" y="136" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">SNR +5.2 dB</text>
+
+  <!-- Observer -->
+  <rect x="272" y="106" width="44" height="28" rx="6" style="fill: var(--surface-1); stroke: var(--text-accent);" stroke-width="1.5" />
+  <line x1="294" y1="106" x2="294" y2="98" style="stroke: var(--text-accent);" stroke-width="1.5" stroke-linecap="round" />
+  <circle cx="294" cy="96" r="2.5" style="fill: var(--text-accent);" />
+  <text x="294" y="148" text-anchor="middle" class="viz-label">Observer</text>
+  <text x="294" y="162" text-anchor="middle" style="fill: var(--text-accent); font-family: var(--mono); font-size: 9px;">enrolled</text>
+
+  <!-- ingest-edge label below -->
+  <text x="155" y="210" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size: 10px;">Observer publishes to broker</text>
+  <text x="155" y="226" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size: 10px;">→ Waev receives two observation records</text>
+
+  <!-- Divider -->
+  <line x1="360" y1="20" x2="360" y2="260" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ─── RIGHT PANEL: What the map shows ─── -->
+  <text x="380" y="26" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.06em;">WHAT THE MAP DRAWS</text>
+
+  <!-- Node A (map) -->
+  <circle cx="430" cy="110" r="14" style="fill: var(--accent); opacity: 0.9;" />
+  <circle cx="430" cy="110" r="22" style="fill: var(--accent); opacity: 0.1;" />
+  <text x="430" y="114" text-anchor="middle" style="fill: var(--surface-1); font-family: var(--mono); font-size: 11px; font-weight: 700;">A</text>
+  <text x="430" y="138" text-anchor="middle" class="viz-label">Node A</text>
+
+  <!-- Edge A-B (verified → solid accent) -->
+  <line x1="446" y1="110" x2="526" y2="120" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#hiw-td-arrow-acc)" />
+  <!-- evidence badge on edge -->
+  <rect x="466" y="96" width="50" height="16" rx="4" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="0.75" />
+  <text x="491" y="107" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 9px;">verified</text>
+
+  <!-- Node B (map) -->
+  <circle cx="540" cy="124" r="12" style="fill: var(--surface-1); stroke: var(--accent-light);" stroke-width="1.75" />
+  <text x="540" y="128" text-anchor="middle" style="fill: var(--text); font-family: var(--mono); font-size: 11px; font-weight: 700;">B</text>
+  <text x="540" y="150" text-anchor="middle" class="viz-label">Node B</text>
+
+  <!-- Edge B-Observer (verified → solid accent) -->
+  <line x1="552" y1="120" x2="628" y2="112" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#hiw-td-arrow-acc)" />
+  <rect x="572" y="96" width="50" height="16" rx="4" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="0.75" />
+  <text x="597" y="107" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 9px;">verified</text>
+
+  <!-- Observer (map) -->
+  <rect x="636" y="98" width="38" height="24" rx="5" style="fill: var(--surface-1); stroke: var(--text-accent);" stroke-width="1.5" />
+  <line x1="655" y1="98" x2="655" y2="92" style="stroke: var(--text-accent);" stroke-width="1.5" stroke-linecap="round" />
+  <circle cx="655" cy="90" r="2.5" style="fill: var(--text-accent);" />
+  <text x="655" y="138" text-anchor="middle" class="viz-label">Observer</text>
+
+  <!-- "no proof no line" note -->
+  <line x1="380" y1="186" x2="700" y2="186" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="380" y="206" class="viz-label" style="fill: var(--text-muted); font-size: 10px;">Every edge on the Live Map traces back to a verified observation.</text>
+  <text x="380" y="222" class="viz-label" style="fill: var(--text-muted); font-size: 10px;">If Waev can't prove it happened, the line is not drawn.</text>
+</svg>
