@@ -1,0 +1,22 @@
+name: Hero asset check
+# Enforces CHARTER gate 2 — the final pre-publish checkpoint. A content PR that
+# adds a post with a pending hero stays RED here until a human generates the
+# image from the post's ILLUSTRATION PROMPT and adds it under public/. Then it
+# goes green and the PR can be merged.
+on:
+  pull_request:
+    paths:
+      - "src/content/blog/**"
+      - "public/**"
+      - "scripts/check-hero-assets.mjs"
+permissions:
+  contents: read
+jobs:
+  hero-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: node scripts/check-hero-assets.mjs
