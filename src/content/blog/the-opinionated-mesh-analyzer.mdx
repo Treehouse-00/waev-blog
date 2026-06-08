@@ -1,6 +1,6 @@
 ---
 title: "The Opinionated Mesh Analyzer"
-description: "What Waev is, what it stands for, and why it's built that way — written down for the people who run mesh networks and deserve to know."
+description: "What Waev is and what it stands for — written down for the people running mesh networks."
 date: 2026-06-08
 tags: ["philosophy", "privacy"]
 author: "Waev"
@@ -15,11 +15,9 @@ If you're running a mesh network for a community that depends on it — CERT tea
 
 <span class="waev-brand">Waev</span> exists because people like you needed a way to understand what those networks are actually doing: live packets, signal per hop, coverage, the health of the infrastructure you keep running, often alone, often without much tooling.
 
-We thought carefully about what this tool should be, and wrote it down — because you deserve to know where we stand.
+> We thought about what we want this to be. Here's what we landed on.
 
-> A tool shaped by strategy is more useful than one shaped by whoever asked last.
-
-Here are the six values underneath everything else.
+Here are the six things underneath everything else.
 
 <div class="value-grid not-prose">
   <div class="value-card">
@@ -68,7 +66,7 @@ If you're running a companion app, you won't appear on <span class="waev-brand">
 
 Privacy here isn't a setting. It's the floor.
 
-## 02 · Evidence over inference
+## 02 · Only what we can verify
 
 When you look at your network map, everything on it should be there because something verifiable put it there. Not because we guessed.
 
@@ -78,21 +76,21 @@ Every edge in the topology traces back to something we can confirm: an **enrolle
   <TrustedSources />
 </Figure>
 
-That makes the map less crowded, sometimes. But when it shows you something, you can trust it. That's worth more to us than a busier screen.
+The map is less crowded for it. But what's there, you can trust.
 
-## 03 · Aesthetics are a feature
+## 03 · Clarity is part of the job
 
 You've probably used dashboards that made the network seem more confusing than it actually is. Charts that don't explain themselves. Colors that mean nothing. Density for density's sake. We have too.
 
-A dashboard that's hard to read is *wrong*, not just ugly. Clarity is part of correctness. Color has to mean something. Motion has to explain, not decorate. If a screen can't make a complex thing feel simple, it isn't finished.
+We think a dashboard that's hard to read is wrong, not just ugly. Clarity is part of correctness. Color should mean something. Motion should explain, not decorate. If a screen makes a complex thing feel more complex, it's not done yet.
 
-This is a constraint we work under from the first sketch — not polish bolted on at the end. The practical payoff: when something is wrong on your network, you should see it immediately. Not after squinting.
+That's a constraint from the first sketch, not polish at the end. The practical upshot: when something is actually wrong on your network, you should see it immediately. Not after squinting.
 
-## 04 · Performance is the point
+## 04 · Speed is a promise
 
-"Real-time" is a promise. Packets should appear the instant they arrive. A map should pan without lag. A query that covers your whole mesh should come back before you wonder if it's stuck.
+Packets should appear the instant they arrive. A map should pan without lag. A query that covers your whole mesh should come back before you wonder if it's stuck.
 
-There's a real difference between a tool you have to check and a tool you can actually watch. We're building the second kind, and we hold that bar even when it's expensive to do so.
+There's a real difference between a tool you have to check and a tool you can actually watch. We want to build the second kind.
 
 ## 05 · Your community's data stays yours
 
@@ -108,19 +106,19 @@ The old model, where everyone requests access to a central set of MQTT servers, 
 
 You keep full control. We get what we need to build useful tools. Nobody manages an access list. It's a better arrangement for everyone — and it happens to be the honest one.
 
-## 06 · Opinionated, on purpose
+## 06 · How we decide what to build
 
-<span class="waev-brand">Waev</span> is built deliberately, in an order that serves the network as a whole — not one shaped by whoever asked most recently. We want to be honest about that upfront.
+We try to build in an order that makes sense for the whole tool, not just whatever came up most recently. That means we might not build what you ask for, or we might get to it later than you'd like.
 
-If you send us a bug report, we take it seriously. Always. If you send a feature suggestion, we'll read it carefully, and we might build it, and we might not, and we'll be straight with you about which. Saying no thoughtfully is a form of respect — it means we're not trading the long-term quality of the tool for short-term goodwill.
+Bug reports we take seriously — always. Feature suggestions we read carefully. Sometimes we build them, sometimes we don't, and if it's the latter we'll say so.
 
-A considered roadmap is a feature too.
+That's the deal, and we think it's a fair one.
 
 ## Thank you
 
-Mesh networks don't maintain themselves. The people who run them — who tune the RF, place the repeaters, recruit the members, keep it alive through outages and upgrades and all the invisible work in between — are doing something that matters. We see it.
+Mesh networks don't maintain themselves. The people who run them — who tune the RF, place the repeaters, recruit the members, keep it alive through outages and upgrades and all the invisible work in between — are doing something that matters.
 
-<span class="waev-brand">Waev</span> exists to be worthy of that. These six values are how we try to stay honest with ourselves about what that means.
+These six things are how we try to stay honest about what we're building, and why.
 
 Found something broken? Tell us. Bug reports are the best feedback we get, and we genuinely mean that.
 
