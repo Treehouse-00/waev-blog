@@ -90,36 +90,52 @@ same minimal shape — read a brief and execute it — so the brief stays the
 single source of truth for what the agent does. All crons are UTC and chosen
 to land **after** the 13:00 UTC scheduled-publish rebuild where order matters.
 
+Crons below mirror `growth/CADENCE.md` §3 verbatim — CADENCE is the authority on
+which loops exist and when; if it changes, update these to match.
+
 ```bash
-# Weekly SEO audit — Mondays 14:00 UTC.
+# Weekly content drafting — Mondays 14:00 UTC (CADENCE §3.2).
 oz schedule create \
   --cron "0 14 * * 1" \
+  --prompt "Read growth/briefs/content-writer.md and execute it." \
+  --environment <ENV_ID>
+
+# Weekly SEO link & crawl sweep — Tuesdays 14:00 UTC (CADENCE §3.3).
+oz schedule create \
+  --cron "0 14 * * 2" \
   --prompt "Read growth/briefs/seo-auditor.md and execute it." \
   --environment <ENV_ID>
 
-# Monthly analytics report — 1st of the month 15:00 UTC.
+# Weekly competitive watch — Wednesdays 14:00 UTC (CADENCE §3.5).
+oz schedule create \
+  --cron "0 14 * * 3" \
+  --prompt "Read growth/briefs/competitive-monitor.md and execute it." \
+  --environment <ENV_ID>
+
+# Monthly analytics report + thresholds — 1st of month 15:00 UTC (CADENCE §3.4).
 oz schedule create \
   --cron "0 15 1 * *" \
   --prompt "Read growth/briefs/analytics-reporter.md and execute it." \
   --environment <ENV_ID>
 
-# Monthly calendar planning — 2nd of the month 15:00 UTC (after the report).
+# Monthly distribution prep — 5th of month 15:00 UTC (CADENCE §3.7).
 oz schedule create \
-  --cron "0 15 2 * *" \
-  --prompt "Read growth/briefs/calendar-planner.md and execute it." \
+  --cron "0 15 5 * *" \
+  --prompt "Read growth/briefs/link-distribution.md and execute it." \
   --environment <ENV_ID>
 
-# Weekly content drafting — Wednesdays 14:00 UTC.
+# Quarterly keyword roadmap refresh — 21st Jan/Apr/Jul/Oct 16:00 UTC (CADENCE §3.8).
 oz schedule create \
-  --cron "0 14 * * 3" \
-  --prompt "Read growth/briefs/content-writer.md and execute it." \
+  --cron "0 16 21 1,4,7,10 *" \
+  --prompt "Read growth/briefs/keyword-research.md and execute it." \
   --environment <ENV_ID>
 ```
 
-> Brief filenames and the loop set are owned by sibling layers
-> (`growth/CADENCE.md`, `growth/briefs/*.md`). If a brief is named
-> differently there, update the `--prompt` path to match — keep CADENCE.md as
-> the authority on which loops exist and at what cron.
+> `growth/CADENCE.md` §3 also defines the monthly full SEO audit (§3.6, reuses
+> `seo-auditor.md`) and the quarterly competitive deep audit (§3.9, reuses
+> `competitive-monitor.md`). Register those the same way if you want them on a
+> separate cron from their weekly counterparts. Keep CADENCE.md as the single
+> authority on the loop set and crons.
 
 ## 4. Inspect & operate
 

@@ -24,11 +24,17 @@ report_window_days: 28                     # GSC data is ~2-3 days delayed; use 
 
 ## North-star metric
 
+The Charter (`./CHARTER.md`) defines the north star as **qualified operator
+activations** — operators who connect their own broker and view their live
+network. That is an app-side event and is not yet instrumented. Until it is,
+the Growth OS optimizes its **measurable proxy**:
+
 **Qualified blog→app referrals per 28-day window** — the count of sessions on
-`waev.app` whose referrer host is `blog.waev.app`. This is the single number
-the Growth OS optimizes: it measures whether the blog actually moves MeshCore
-operators (CERT, ham, off-grid, emergency nets) toward the product, not just
-whether it attracts traffic.
+`waev.app` whose referrer host is `blog.waev.app`. It is the closest
+blog-observable signal that content moves MeshCore operators (CERT, ham,
+off-grid, emergency nets) toward the product, not just that it attracts
+traffic. When activation instrumentation lands, this proxy is superseded by the
+activation count and this section is updated (a `STRATEGY.md`-level change).
 
 - **Source:** Cloudflare Web Analytics (GraphQL Analytics API), `cf_app_zone`.
 - **Why this and not raw pageviews:** pageviews reward generic traffic; the
@@ -202,9 +208,9 @@ Rules use the current report vs. the immediately previous report.
   → flag STRATEGY.md (segment/offer mismatch). → **STRATEGY.md flag
   (human-approval).**
 - **T7 — Cadence pressure.** If fewer than the planned number of posts (per
-  `./CADENCE.md`) published in the window AND impressions `delta < +5%`: flag
-  the calendar-planner that cadence is too low to move search.
-  → **calendar.yaml PR (add proposed slots).**
+  `./CADENCE.md`) published in the window AND impressions `delta < +5%`: open a
+  `calendar.yaml` PR adding `proposed` post slots (cadence is too low to move
+  search). → **calendar.yaml PR (add proposed slots).**
 
 If **no** rule fires, the agent records `Triggered actions: none` and opens no
 PR. Silence is a valid, expected outcome.
