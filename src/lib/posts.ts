@@ -14,9 +14,13 @@ import { getCollection, type CollectionEntry } from "astro:content";
  */
 export async function getPublishedPosts(): Promise<CollectionEntry<"blog">[]> {
   const now = Date.now();
+  // WAEV_PREVIEW=true bypasses the date gate — used for the preview deployment
+  // so all scheduled posts are visible for editorial review before going live.
+  const preview = process.env.WAEV_PREVIEW === "true";
   const posts = await getCollection("blog", ({ data }) => {
     if (data.draft) return false;
     if (import.meta.env.DEV) return true;
+    if (preview) return true;
     return data.date.valueOf() <= now;
   });
   return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
