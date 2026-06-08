@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getCollection } from "astro:content";
+import { getPublishedPosts } from "../lib/posts";
 
 /**
  * /llms.txt — the emerging convention (llmstxt.org) that hands LLMs a
@@ -9,9 +9,7 @@ import { getCollection } from "astro:content";
  */
 export const GET: APIRoute = async ({ site }) => {
   const base = (site?.href ?? "https://blog.waev.app/").replace(/\/$/, "");
-  const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-  );
+  const posts = await getPublishedPosts();
 
   const lines = [
     "# Waev Blog",

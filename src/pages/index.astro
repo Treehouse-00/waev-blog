@@ -1,11 +1,9 @@
 ---
-import { getCollection } from "astro:content";
+import { getPublishedPosts } from "../lib/posts";
 import Base from "../layouts/Base.astro";
 import MeshField from "../components/viz/MeshField.astro";
 
-const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+const posts = await getPublishedPosts();
 const [featured, ...rest] = posts;
 
 const fmt = (d: Date) =>
