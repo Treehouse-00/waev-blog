@@ -145,7 +145,28 @@ Produce three things:
 NEVER create, fabricate, or commit a binary image. Your job ends at the prompt
 and the ledger row; the human makes the image.
 
-## Step 5 — Self-check against the playbook and the voice law
+## Step 5 — Source discipline (verify every external claim)
+This audience catches a wrong default value or misremembered firmware behavior
+instantly, and one such error costs more trust than ten good posts earn. Before
+you self-check, audit your own draft for factual claims about anything OUTSIDE
+Waev's canon — MeshCore/Meshtastic firmware behavior, CLI commands, default
+values, version/release facts, RF/LoRa physics, hardware specs, regulations,
+competitor features. For EACH such claim:
+- Verify it against a PRIMARY source via web search — official docs
+  (docs.meshcore.io), the project repo/release notes/changelog, the radio or
+  chipset datasheet, the regulator. Community forum posts are a lead, not proof.
+- If verified, keep it (cite the source inline or in a short note where it adds
+  credibility — never fabricate a citation).
+- If you cannot verify it, SOFTEN it to what you can support, or CUT it. Never
+  ship a confident external claim you did not check. "I'm not sure, so I won't
+  say it" is always correct.
+- Waev's own facts still come from `llms.txt` canon (Step 3); this step governs
+  the outside world, which canon does not cover.
+Note in the PR body which load-bearing external claims you verified and against
+what. The editor loop (`./editor.md`) independently re-checks this — sloppiness
+here comes back as a revision cycle.
+
+## Step 6 — Self-check against the playbook and the voice law
 Run `npm run build` (must pass — it enforces TS strict + the content schema).
 Then verify the per-post `blocker`/`major` rules in `../SEO-PLAYBOOK.md` for
 your new `dist/blog/<slug>/index.html`: SD-01, SD-03, SD-04, MT-01, MT-02,
@@ -157,16 +178,19 @@ Finally run `node scripts/check-hero-assets.mjs`. It WILL report your new post's
 hero as missing — that is expected and correct: it is the signal that the human
 hero handoff is pending, not a failure for you to fix. Never make the image.
 
-## Step 6 — Update calendar status + concept ledger
+## Step 7 — Update calendar status + concept ledger
 In `../calendar.yaml`, set the chosen slot's `status` to `drafted` and ensure
 its `brief` points at this file (`./briefs/content-writer.md`) if unset. Do not
 change any other entry. Keep your appended `../image-concepts.md` row.
 
-## Step 7 — Open the PR (no deploy)
+## Step 8 — Open the PR (no deploy)
 - Commit: `git add` the new `.mdx`, any new viz component, the `../calendar.yaml`
   edit, AND the `../image-concepts.md` row. Commit message: `post: <title>` with
   trailer `Co-Authored-By: Oz <oz-agent@warp.dev>`.
-- Push `growth/post-<slug>` and open a DRAFT PR with `gh pr create --draft`.
+- Push `growth/post-<slug>` and open a DRAFT PR with `gh pr create --draft`. The
+  PR stays a DRAFT on purpose: the editor loop (`./editor.md`) independently
+  reviews and revises it, then flips it to ready-for-review. Do NOT mark it ready
+  yourself.
 - The PR body MUST open with this block, so the human handoff is unmissable:
   `## 🎨 HERO IMAGE — HUMAN ACTION REQUIRED BEFORE MERGE`
   followed by the illustration prompt (verbatim), the target path
