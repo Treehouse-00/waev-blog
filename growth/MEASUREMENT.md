@@ -257,6 +257,12 @@ data_gaps: []   # e.g. ["north_star: app zone not reachable"]
 ## Decay watch
 - posts with clicks down >= 30% vs prior window: [ /blog/<slug>/ ]
 
+## Editorial mix (rolling quarter, vs ./EDITORIAL.md rails)
+- bucket mix: primer <n> · signal <n> · field-manual <n> · under-the-hood <n> · position <n> · dispatch <n>
+- buckets out of tolerance (±1 vs target): [ ... ]
+- segments / funnel stages at zero this quarter: [ ... ]
+- themes touched: <n>/6
+
 ## Triggered actions (see MEASUREMENT.md thresholds)
 - [ ] <rule id> -> <calendar.yaml | STRATEGY.md change proposed in PR #...>
 ```
@@ -313,6 +319,13 @@ Rules use the current report vs. the immediately previous report.
   Check first that unpublished work isn't already sitting in open draft PRs
   (that's a merge-gate problem for the weekly human triage, not a cadence one).
   → **calendar.yaml PR (add proposed slots).**
+
+- **T8 — Editorial mix drift.** Over the trailing rolling quarter of *published*
+  posts (per `./EDITORIAL.md`): if any `bucket` is outside its target by more
+  than the ±1 tolerance, OR any `segment`/`funnel_stage` is at zero, OR fewer
+  than four of the six `theme`s were touched: propose `calendar.yaml` slots
+  (correct `bucket`/`theme`, on cadence) that restore the mix. Keeps the rails
+  honest without a human in the loop. → **calendar.yaml PR.**
 
 If **no** rule fires, the agent records `Triggered actions: none` and opens no
 PR. Silence is a valid, expected outcome.

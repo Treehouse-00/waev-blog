@@ -3,6 +3,7 @@ role: keyword-research
 inputs:
   - ../CHARTER.md
   - ../STRATEGY.md
+  - ../EDITORIAL.md
   - ../SEO-PLAYBOOK.md
   - ../calendar.yaml
   - ../../src/pages/llms.txt.ts
@@ -51,12 +52,18 @@ map the other agents read.
 
 ## Step 4 — Propose calendar slots
 For the strongest GAP keywords (default: up to 4 per run, balanced across the
-four segments), append entries to `../calendar.yaml` using the EXACT schema:
+four segments AND chosen to keep the rolling-quarter `bucket` mix within the
+`../EDITORIAL.md` rails), append entries to `../calendar.yaml` using the EXACT
+schema:
 - `slot_date` — a future YYYY-MM-DD on the publishing cadence in `../STRATEGY.md`;
   do not collide with an existing `slot_date`.
 - `type` — `post`.
 - `segment` — one of tinkerer | ham | cert-emcomm | off-grid.
 - `funnel_stage` — one of awareness | evaluation | adoption.
+- `bucket` — one of primer | signal | field-manual | under-the-hood | position |
+  dispatch (the content shape, per `../EDITORIAL.md`).
+- `theme` — one of the six ownable themes in `../EDITORIAL.md` the slot ladders
+  up to.
 - `primary_keyword` — the gap keyword.
 - `secondary_keyword` — a supporting query for the same piece.
 - `status` — `proposed`.

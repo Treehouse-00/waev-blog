@@ -7,6 +7,7 @@ It is written for an autonomous agent reader. Prefer the explicit rules here
 over judgement; where judgement is unavoidable it is routed to a marked gate.
 
 Read alongside: `./calendar.yaml` (the dated backlog this rhythm draws from),
+`./EDITORIAL.md` (the content buckets, themes, annual flow, and mix/pulse rails),
 `../AGENT.md` (Invariants — hard constraints), `../src/pages/llms.txt.ts`
 (factual canon — never contradict).
 

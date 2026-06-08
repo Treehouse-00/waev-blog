@@ -12,11 +12,15 @@
 # to avoid drift — only their monthly/quarterly checkpoints are seeded below.
 #
 # ───────────────────────────────────────────────────────────────────────────
-# ENTRY SCHEMA (verbatim keys — every entry MUST carry all eight):
+# ENTRY SCHEMA (verbatim keys). Every entry carries the core keys below; every
+# `type: post` entry ALSO carries `bucket` + `theme` — the editorial rails (see
+# ./EDITORIAL.md). Non-post entries (audit | seo-task) omit bucket/theme.
 #   slot_date        YYYY-MM-DD          when the agent should act on this slot
 #   type             post | seo-task | audit
 #   segment          tinkerer | ham | cert-emcomm | off-grid
 #   funnel_stage     awareness | evaluation | adoption
+#   bucket           [post only] primer | signal | field-manual | under-the-hood | position | dispatch
+#   theme            [post only] knowing-over-guessing | power-of-refusal | own-your-ground | ready-before-it-matters | earned-competence | networks-of-people
 #   primary_keyword  the single target query (for non-post types: the work focus)
 #   secondary_keyword one supporting query/term
 #   status           proposed | scheduled | drafted | published
@@ -41,6 +45,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: awareness
+    bucket: position
+    theme: power-of-refusal
     primary_keyword: "MeshCore analytics platform"
     secondary_keyword: "mesh network intelligence"
     status: scheduled
@@ -50,6 +56,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: knowing-over-guessing
     primary_keyword: "MeshCore network mapping"
     secondary_keyword: "MQTT observer ingest pipeline"
     status: scheduled
@@ -59,6 +67,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
     primary_keyword: "mesh repeater placement"
     secondary_keyword: "LoRa coverage gap analysis"
     status: scheduled
@@ -68,6 +78,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: adoption
+    bucket: dispatch
+    theme: networks-of-people
     primary_keyword: "ARRL Field Day mesh network"
     secondary_keyword: "Field Day MeshCore setup"
     status: scheduled
@@ -77,6 +89,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: evaluation
+    bucket: position
+    theme: power-of-refusal
     primary_keyword: "MeshCore privacy data minimization"
     secondary_keyword: "mesh network opt-out marker"
     status: scheduled
@@ -86,6 +100,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: own-your-ground
     primary_keyword: "bring your own MQTT broker"
     secondary_keyword: "mesh network data ownership"
     status: scheduled
@@ -95,6 +111,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
     primary_keyword: "LoRa SNR hop count"
     secondary_keyword: "mesh link path quality"
     status: scheduled
@@ -104,6 +122,8 @@ posts:
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
     primary_keyword: "emergency mesh network resilience"
     secondary_keyword: "single point of failure mesh"
     status: scheduled
@@ -120,6 +140,8 @@ posts:
     type: post
     segment: tinkerer
     funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
     primary_keyword: "what is MeshCore"            # [ROADMAP]
     secondary_keyword: "MeshCore mesh radio explained"
     status: proposed
@@ -129,6 +151,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: evaluation
+    bucket: dispatch
+    theme: knowing-over-guessing
     primary_keyword: "MeshCore vs Meshtastic"      # [ROADMAP]
     secondary_keyword: "MeshCore vs Meshtastic routing"
     status: proposed
@@ -138,6 +162,8 @@ posts:
     type: post
     segment: tinkerer
     funnel_stage: awareness
+    bucket: primer
+    theme: earned-competence
     primary_keyword: "MeshCore node not showing up"
     secondary_keyword: "first MeshCore node troubleshooting"
     status: proposed
@@ -148,6 +174,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: adoption
+    bucket: primer
+    theme: own-your-ground
     primary_keyword: "LoRa mesh network setup tutorial"   # [ROADMAP]
     secondary_keyword: "your first three mesh nodes"
     status: proposed
@@ -157,6 +185,8 @@ posts:
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
+    bucket: field-manual
+    theme: ready-before-it-matters
     primary_keyword: "ham radio CERT EMCOMM mesh"  # [ROADMAP]
     secondary_keyword: "mesh radio for ARES RACES"
     status: proposed
@@ -167,6 +197,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: adoption
+    bucket: field-manual
+    theme: own-your-ground
     primary_keyword: "Mosquitto MQTT broker setup for MeshCore"  # [ROADMAP]
     secondary_keyword: "self-hosted MQTT broker TLS"
     status: proposed
@@ -176,6 +208,8 @@ posts:
     type: post
     segment: tinkerer
     funnel_stage: evaluation
+    bucket: under-the-hood
+    theme: earned-competence
     primary_keyword: "MeshCore home lab dashboard"
     secondary_keyword: "visualize a LoRa mesh you built"
     status: proposed
@@ -185,6 +219,8 @@ posts:
     type: post
     segment: cert-emcomm
     funnel_stage: awareness
+    bucket: position
+    theme: ready-before-it-matters
     primary_keyword: "why emergency mesh networks fail"
     secondary_keyword: "untested emergency communications"
     status: proposed
@@ -195,6 +231,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: evaluation
+    bucket: signal
+    theme: earned-competence
     primary_keyword: "best antenna for LoRa mesh range"
     secondary_keyword: "antenna gain vs height tradeoff"
     status: proposed
@@ -204,6 +242,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: adoption
+    bucket: signal
+    theme: knowing-over-guessing
     primary_keyword: "MeshCore repeater configuration mistakes"
     secondary_keyword: "when a repeater hurts your mesh"
     status: proposed
@@ -214,6 +254,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: awareness
+    bucket: primer
+    theme: networks-of-people
     primary_keyword: "off-grid neighborhood communication"
     secondary_keyword: "neighborhood comms when cell is down"
     status: proposed
@@ -223,6 +265,8 @@ posts:
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
+    bucket: field-manual
+    theme: ready-before-it-matters
     primary_keyword: "writing mesh into an EMCOMM plan"
     secondary_keyword: "ARES RACES mesh integration"
     status: proposed
@@ -233,6 +277,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: adoption
+    bucket: under-the-hood
+    theme: knowing-over-guessing
     primary_keyword: "MeshCore observer setup"
     secondary_keyword: "enroll your first observer"
     status: proposed
@@ -242,6 +288,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: evaluation
+    bucket: signal
+    theme: ready-before-it-matters
     primary_keyword: "spot a failing mesh backbone"
     secondary_keyword: "mesh topology early warning signs"
     status: proposed
@@ -252,6 +300,8 @@ posts:
     type: post
     segment: tinkerer
     funnel_stage: awareness
+    bucket: dispatch
+    theme: earned-competence
     primary_keyword: "best LoRa boards for MeshCore"
     secondary_keyword: "cheap mesh radio hardware to avoid"
     status: proposed
@@ -261,6 +311,8 @@ posts:
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
+    bucket: field-manual
+    theme: ready-before-it-matters
     primary_keyword: "mesh communications exercise"
     secondary_keyword: "EMCOMM tabletop exercise"
     status: proposed
@@ -271,6 +323,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: evaluation
+    bucket: position
+    theme: power-of-refusal
     primary_keyword: "what a mesh network reveals about you"
     secondary_keyword: "mesh metadata privacy"
     status: proposed
@@ -280,6 +334,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: adoption
+    bucket: field-manual
+    theme: knowing-over-guessing
     primary_keyword: "prove your mesh network coverage"
     secondary_keyword: "coverage report for a served agency"
     status: proposed
@@ -290,6 +346,8 @@ posts:
     type: post
     segment: cert-emcomm
     funnel_stage: awareness
+    bucket: position
+    theme: ready-before-it-matters
     primary_keyword: "is your CERT mesh actually ready"
     secondary_keyword: "measuring communications readiness"
     status: proposed
@@ -299,6 +357,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: evaluation
+    bucket: dispatch
+    theme: earned-competence
     primary_keyword: "MeshCore vs packet radio"
     secondary_keyword: "APRS vs mesh network"
     status: proposed
@@ -309,6 +369,8 @@ posts:
     type: post
     segment: off-grid
     funnel_stage: adoption
+    bucket: signal
+    theme: earned-competence
     primary_keyword: "what breaks when a mesh network grows"
     secondary_keyword: "LoRa mesh congestion at scale"
     status: proposed
@@ -318,6 +380,8 @@ posts:
     type: post
     segment: ham
     funnel_stage: adoption
+    bucket: dispatch
+    theme: networks-of-people
     primary_keyword: "Field Day mesh network playbook"
     secondary_keyword: "ARRL Field Day 2027 MeshCore"
     status: proposed
