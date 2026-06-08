@@ -36,16 +36,20 @@ oz environment create \
   --name "waev-growth-os" \
   --docker-image "warpdotdev/dev-web:latest-agents" \
   --repo "<ORG>/waev-blog" \
-  --setup-command "nvm install 24 && npm ci" \
+  --setup-command "cd /workspace/waev-blog && npm install --no-audit --no-fund" \
   --output-format text
 # -> note the returned ENV_ID, e.g. UA17BXYZ. Used below as <ENV_ID>.
 ```
 
 `--repo` takes `owner/repo` (not a URL) and may be repeated. `--docker-image`
-(`-d`) is the image flag. The setup command runs in a shell after clone;
-`nvm install 24` reads/installs the `.nvmrc` pin (use plain `nvm use 24` only if
-24 is already installed). If the image ships without `nvm`, drop to
-`--setup-command "npm ci"` — `dev-web:latest-agents` already provides Node.
+(`-d`) is the image flag. Two gotchas, both learned the hard way:
+- The setup command does **not** run from the repo root — the repo clones to
+  `/workspace/<repo>`, so the command must `cd` there first or `npm` finds no
+  `package.json` and fails in ~5s. `dev-web:latest-agents` already ships Node 24,
+  so no `nvm` step is needed.
+- Use `npm install`, not `npm ci`: a `package-lock.json` generated on macOS can
+  omit the Linux-native optional deps that `npm ci` strictly requires, so `npm
+  ci` fails on the Linux image while `npm install` resolves them.
 Confirm:
 
 ```bash
@@ -65,12 +69,12 @@ oz secret create GSC_SERVICE_ACCOUNT_JSON --team \
   --description "GSC API service account for the analytics-reporter loop"
 
 # Cloudflare Analytics (north-star + blog traffic):
-oz secret create CF_API_TOKEN --team \
+oz secret create CF_ANALYTICS_TOKEN --team \
   --value-file ./cf-analytics-token.txt \
   --description "Cloudflare Account Analytics:Read token"
 
 # Cloudflare account id (not strictly secret, but kept with the set):
-oz secret create CLOUDFLARE_ACCOUNT_ID --team \
+oz secret create CF_ACCOUNT_ID --team \
   --value-file ./cf-account-id.txt \
   --description "Cloudflare account id for GraphQL analytics"
 

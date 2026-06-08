@@ -54,7 +54,7 @@ activation count and this section is updated (a `STRATEGY.md`-level change).
 ### How the agent pulls it
 
 ```bash
-# Cloudflare GraphQL Analytics API. CF_API_TOKEN scope: "Zone Analytics:Read"
+# Cloudflare GraphQL Analytics API. CF_ANALYTICS_TOKEN scope: "Zone Analytics:Read"
 # covering the waev.app zone (or an Account Analytics:Read token that covers it).
 # `requestSource:"eyeball"` excludes Cloudflare-internal/bot traffic; we count app-host
 # requests whose referrer host is the blog. `count` = sampled requests; `sum{visits}` =
@@ -62,7 +62,7 @@ activation count and this section is updated (a `STRATEGY.md`-level change).
 # closer proxy for a real blog->app handoff. Use `visits`; keep `count` as a sanity check.
 # Replace the three placeholders below; hosts match cf_app_host / cf_blog_host.
 curl -s https://api.cloudflare.com/client/v4/graphql \
-  -H "Authorization: Bearer $CF_API_TOKEN" \
+  -H "Authorization: Bearer $CF_ANALYTICS_TOKEN" \
   -H "Content-Type: application/json" \
   --data @- <<'JSON'
 { "query":
