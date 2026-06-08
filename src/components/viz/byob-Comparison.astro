@@ -1,0 +1,109 @@
+---
+/**
+ * byob-Comparison — two MQTT access models side by side.
+ * LEFT: the old centralized model — multiple operator networks all feed into
+ *       one shared MQTT server, requiring access-level management.
+ * RIGHT: the BYOB model — each operator runs their own broker; Waev
+ *        subscribes to each with read-only credentials.
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 290" role="img" aria-label="Two MQTT access models. Left: the centralized model, where all operators connect to a shared server and someone must manage access permissions. Right: the BYOB model, where each operator runs their own broker and Waev subscribes read-only." style="width:100%;height:auto;">
+  <defs>
+    <marker id="byob-cmp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
+    </marker>
+    <marker id="byob-cmp-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+
+  <!-- ── LEFT: centralized / old model ── -->
+  <text x="175" y="20" text-anchor="middle" class="viz-label"
+    style="fill: var(--text-tertiary); letter-spacing: 0.06em;">CENTRALIZED MODEL</text>
+
+  <!-- Three operator networks feeding into one server -->
+  <!-- Operator A -->
+  <circle cx="52" cy="80" r="9" style="fill: var(--text-tertiary);" />
+  <text x="52" y="103" text-anchor="middle" class="viz-label">Operator A</text>
+  <line x1="61" y1="80" x2="126" y2="130" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
+
+  <!-- Operator B -->
+  <circle cx="175" cy="60" r="9" style="fill: var(--text-tertiary);" />
+  <text x="175" y="83" text-anchor="middle" class="viz-label">Operator B</text>
+  <line x1="175" y1="69" x2="175" y2="116" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
+
+  <!-- Operator C -->
+  <circle cx="298" cy="80" r="9" style="fill: var(--text-tertiary);" />
+  <text x="298" y="103" text-anchor="middle" class="viz-label">Operator C</text>
+  <line x1="289" y1="80" x2="224" y2="130" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
+
+  <!-- Central shared server -->
+  <rect x="106" y="120" width="138" height="60" rx="10"
+    style="fill: var(--surface-1); stroke: var(--text-tertiary);"
+    stroke-width="1" />
+  <text x="175" y="145" text-anchor="middle"
+    style="fill: var(--text-muted); font-family: var(--font); font-size: 12px; font-weight: 600;">Shared MQTT</text>
+  <text x="175" y="163" text-anchor="middle" class="viz-label">access managed by…?</text>
+
+  <!-- Pain point annotation -->
+  <rect x="88" y="198" width="174" height="38" rx="8"
+    style="fill: transparent; stroke: var(--sys-yellow-400); stroke-dasharray: 4 4;"
+    stroke-width="1" />
+  <text x="175" y="214" text-anchor="middle" class="viz-label" style="fill: var(--sys-yellow-400);">access-level requests</text>
+  <text x="175" y="228" text-anchor="middle" class="viz-label" style="fill: var(--sys-yellow-400);">shared credential risk</text>
+
+  <!-- Divider -->
+  <line x1="360" y1="20" x2="360" y2="270" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── RIGHT: BYOB model ── -->
+  <text x="543" y="20" text-anchor="middle" class="viz-label"
+    style="fill: var(--accent-light); letter-spacing: 0.06em;">BRING YOUR OWN BROKER</text>
+
+  <!-- Operator A network + their own broker -->
+  <circle cx="412" cy="70" r="9" style="fill: var(--accent-light);" />
+  <text x="412" y="92" text-anchor="middle" class="viz-label">Operator A</text>
+  <rect x="378" y="104" width="68" height="36" rx="7"
+    style="fill: var(--surface-1); stroke: var(--border-accent);"
+    stroke-width="1" />
+  <text x="412" y="122" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">your broker</text>
+  <text x="412" y="134" text-anchor="middle" class="viz-label">you own it</text>
+  <line x1="412" y1="79" x2="412" y2="103" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
+
+  <!-- Operator B -->
+  <circle cx="543" cy="70" r="9" style="fill: var(--accent-light);" />
+  <text x="543" y="92" text-anchor="middle" class="viz-label">Operator B</text>
+  <rect x="509" y="104" width="68" height="36" rx="7"
+    style="fill: var(--surface-1); stroke: var(--border-accent);"
+    stroke-width="1" />
+  <text x="543" y="122" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">your broker</text>
+  <text x="543" y="134" text-anchor="middle" class="viz-label">you own it</text>
+  <line x1="543" y1="79" x2="543" y2="103" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
+
+  <!-- Operator C -->
+  <circle cx="674" cy="70" r="9" style="fill: var(--accent-light);" />
+  <text x="674" y="92" text-anchor="middle" class="viz-label">Operator C</text>
+  <rect x="640" y="104" width="68" height="36" rx="7"
+    style="fill: var(--surface-1); stroke: var(--border-accent);"
+    stroke-width="1" />
+  <text x="674" y="122" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">your broker</text>
+  <text x="674" y="134" text-anchor="middle" class="viz-label">you own it</text>
+  <line x1="674" y1="79" x2="674" y2="103" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
+
+  <!-- Waev subscribes to each (read-only arrows from each broker downward) -->
+  <rect x="490" y="196" width="106" height="36" rx="10"
+    style="fill: var(--surface-1); stroke: var(--border-subtle);"
+    stroke-width="1" />
+  <text x="543" y="210" text-anchor="middle"
+    style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Waev</text>
+  <text x="543" y="224" text-anchor="middle" class="viz-label">read-only subscriber</text>
+
+  <!-- Dashed subscribe lines -->
+  <line x1="412" y1="140" x2="494" y2="196" style="stroke: var(--accent-light); stroke-dasharray: 4 4;" stroke-width="1.25" marker-end="url(#byob-cmp-arrow-acc)" />
+  <line x1="543" y1="140" x2="543" y2="196" style="stroke: var(--accent-light); stroke-dasharray: 4 4;" stroke-width="1.25" marker-end="url(#byob-cmp-arrow-acc)" />
+  <line x1="674" y1="140" x2="592" y2="196" style="stroke: var(--accent-light); stroke-dasharray: 4 4;" stroke-width="1.25" marker-end="url(#byob-cmp-arrow-acc)" />
+
+  <!-- "subscribe" annotation -->
+  <text x="456" y="166" class="viz-label" style="fill: var(--text-accent);">subscribe</text>
+</svg>
