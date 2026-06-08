@@ -63,12 +63,14 @@ The orchestrating run-system reads this section to register jobs.
 - gate: `none` — it only ships posts a human already merged. Listed here so the
   rhythm is complete; do not duplicate or reschedule it from another loop.
 
-### 3.2 Weekly — Content drafting
+### 3.2 Thrice-weekly — Content drafting (3×/week publish grid: Tue/Thu/Sun)
 - brief: `./briefs/content-writer.md`
-- cron: `0 14 * * 1`  (Mondays 14:00 UTC)
-- trigger: weekly. Select the earliest `calendar.yaml` `type: post` entry with
+- cron: `0 14 * * 0,2,4`  (Sun/Tue/Thu 14:00 UTC)
+- trigger: each run, select the earliest `calendar.yaml` `type: post` entry with
   `status: proposed` whose `slot_date` is ≤ 21 days out (the draft lead window).
-  If none, no-op.
+  Running three mornings a week keeps the ~3 drafts/week the 156/yr grid needs;
+  drafting ahead is fine (the date gate holds each post until its `slot_date`).
+  If none is due, no-op.
 - output: `pr` — a draft post `.mdx` under `src/content/blog/` matching
   `content.config.ts` frontmatter, plus the `status: proposed → drafted` flip in
   `calendar.yaml`, opened as one draft PR.
