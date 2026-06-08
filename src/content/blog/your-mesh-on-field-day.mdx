@@ -1,0 +1,98 @@
+---
+title: "Your Mesh on Field Day"
+description: "ARRL Field Day is the year's biggest off-grid operating event — and for mesh operators, a rare window to watch your network absorb a genuine surge of temporary stations in real time."
+date: 2026-06-18
+tags: ["field-notes", "community"]
+author: "Waev"
+draft: false
+faq:
+  - q: "What is ARRL Field Day and why does it matter to mesh operators?"
+    a: "Field Day is an annual 27-hour amateur radio operating event held the last full weekend of June. Operators set up temporary, battery or solar-powered stations all across North America. For MeshCore mesh operators, it's the year's most dramatic traffic test — dozens of temporary nodes appear over a few hours, stress-testing coverage and routing that normally carries a fraction of that load."
+  - q: "What will I see on Waev during Field Day?"
+    a: "Live Packets will fill quickly with packets from temporary stations. The Live Map will draw new topology edges as those stations appear and connect through your permanent repeaters. Network Stats will show a clear spike in unique nodes and packet volume for the operating window."
+  - q: "Do I need to configure anything special for Field Day?"
+    a: "No. If you have an enrolled observer connected to your MQTT broker and Waev is already subscribed, the Field Day traffic will appear automatically as it arrives. The only thing to check beforehand is that your observer is online and your broker connection is healthy."
+  - q: "Will temporary Field Day stations appear on the Live Map?"
+    a: "If a temporary station routes through one of your enrolled observers or authenticated repeaters, and they haven't marked their node with an opt-out symbol, yes — they'll appear in Live Packets and potentially draw edges on the Live Map. Nodes that haven't been heard by your observers won't appear, which is accurate: Waev only maps what it can verify."
+  - q: "What's the most useful thing to watch for during the operating window?"
+    a: "Watch which of your permanent backbone repeaters carry the most new traffic. A repeater that becomes a hub for temporary stations is both a sign that your placement is good and a potential bottleneck to track. SNR on those hub links in Network Stats will tell you whether the traffic load degrades link quality — useful data for next year's planning."
+---
+
+import Figure from "../../components/Figure.astro";
+import FielddaySurge from "../../components/viz/fieldday-Surge.astro";
+import FielddayLivePackets from "../../components/viz/fieldday-LivePackets.astro";
+import FielddayNetStats from "../../components/viz/fieldday-NetStats.astro";
+
+Every year, near the end of June, a quiet hill somewhere gets a little busier. Generators fire up. Antennas go into the air. Operators who usually work from a home station spend 27 hours entirely off-grid, running on batteries and solar, calling CQ into a contest that's less about competition than it is about proving the infrastructure works when you need it. ARRL Field Day — June 27–28 this year — is the most widely participated amateur radio event in North America, and for anyone running a MeshCore network, it's something specific: the year's best live load test.
+
+<div class="callout">
+<p><strong>In short.</strong> Field Day puts 30,000+ operators on the air simultaneously, many of them on temporary mesh nodes that appear, route traffic, and disappear again over a 27-hour window. Waev gives you a real-time view of that surge through your own infrastructure — the packets arriving, the map expanding, the stats climbing — and something useful to look back on afterward.</p>
+</div>
+
+## The mesh before the weekend starts
+
+There's a particular quality to a mesh network on a Thursday evening before Field Day. Your permanent backbone is doing what it always does — a route packet here, an ADVERT there, maybe a message or two. Network Stats is flat, the way it usually is. The Live Map shows the same topology you've been tuning for months.
+
+That's the baseline. Hold it in mind, because by Saturday evening it's going to look different.
+
+## Live Packets: when the stream speeds up
+
+The first sign of Field Day is usually in Live Packets, sometime Saturday morning as operators start activating their portable setups. If a temporary station's signal reaches your enrolled observer — directly or through your repeaters — you'll see it arrive in the stream. Call sign-style node names, sometimes with a `-FD` or `-2` suffix if the operator has labeled their gear. ADVERT packets as nodes come online, message traffic as teams check in.
+
+<Figure caption="<b>Left:</b> a quiet weekday stream — a handful of known nodes, steady packet rate. <b>Right:</b> Field Day peak — new temporary stations appearing in quick succession, some at four or five hops, a few just barely above noise.">
+  <FielddayLivePackets />
+</Figure>
+
+Two things are worth watching in that stream. First, the hop counts. A temporary station reaching your network at four or five hops is proof that your repeater chain is doing real work — something to feel good about. Second, the SNR on those long paths. A +3 dB link is alive, but it's not margin you'd want to depend on. Neither of those observations calls for immediate action; they're the kind of data that becomes useful in the after-action review.
+
+One note on what you're seeing: **Waev shows you only what your enrolled observers heard.** If a Field Day station is operating nearby but isn't routing through your observer coverage area, it won't appear. The map stays honest about what it can verify. Silence on your screen doesn't mean silence on the air — just silence from your vantage point.
+
+## The Live Map filling in
+
+Starting Saturday afternoon and accelerating toward the 18:00 UTC start time, the Live Map starts to change. New nodes appear as topology edges are drawn — not modeled or estimated, but from packets that actually traversed those paths through your observers.
+
+<Figure caption="<b>Left:</b> the permanent network on a normal weekend. <b>Right:</b> Field Day — temporary nodes extending the topology, new edges connecting through backbone repeaters, a few isolated stations at the fringe. The permanent infrastructure is the same; what changed is the traffic flowing through it.">
+  <FielddaySurge />
+</Figure>
+
+What you'll often notice is which of your permanent repeaters suddenly have a lot of new edges. A relay on a good hilltop that normally connects four or five permanent nodes might, during Field Day, become a hub for fifteen or twenty temporary stations. That concentration tells you something real about your placement — and about which node would be the most painful to lose during an actual emergency.
+
+You might also notice the opposite: a cluster of Field Day stations that appear in Live Packets but show no map topology because they're reaching the network through paths your observers can't verify. That's not a bug; it's the Live Map being honest about what it knows. The stations are there, the signal is there, but the path is indirect or unobserved. Useful to know, especially if those stations are in a direction you've been thinking about improving coverage toward.
+
+## Network Stats: the surge in numbers
+
+The clearest view of the whole event comes from Network Stats, and it comes afterward more than during.
+
+<Figure caption="Unique node count across a 72-hour window. The Field Day operating period — Saturday 18:00 through Sunday 18:00 — appears as a clear surge. The permanent network is still visible underneath it; what changes is everything else sitting on top.">
+  <FielddayNetStats />
+</Figure>
+
+During the 27-hour operating window, Network Stats will show the unique node count climbing well above your normal baseline. The packet rate climbs too, but it's the node count that carries the interesting information — how many distinct stations are touching your infrastructure, and for how long.
+
+After Field Day ends Sunday at 18:00, that number drops back, usually within a few hours. What you're left with is a time series that shows your network's normal capacity clearly bracketed by the event. If you run the same network through two or three Field Days, that comparison becomes a rough measure of how your coverage has grown — or where it needs to.
+
+Three specific things worth checking in Stats during the weekend:
+
+**Hub link SNR.** The repeaters that attract the most new traffic during Field Day are the ones most likely to show SNR pressure. A backbone link that normally runs at +10 dB can drop a few points under sustained load from many simultaneous sessions. Not a cause for alarm, but worth noting for capacity planning.
+
+**Hop distribution.** Watch whether the median hop count goes up during the event. An increase suggests temporary stations are reaching you through longer paths — which either means your core coverage is good enough to be a backstop for distant stations, or that the stations closer to you aren't connecting as directly as you'd want. Either reading is useful.
+
+**Drop-off time.** When does the surge end on your network versus the official 18:00 end time? Some stations pack up early; others stay on through the evening. Your Stats will show the exact tail.
+
+## Why this is the year to be watching
+
+Field Day is not a normal traffic load, and that's exactly what makes it useful. It's a scheduled, predictable surge with a known start time, a known end time, and operators who are there to operate — not to debug mesh issues. If your network absorbs it cleanly, you have real evidence that your infrastructure works under pressure. If something bends — a key repeater saturating, a long path degrading, a coverage gap showing up for the first time — you find out during a controlled event rather than when it counts more.
+
+You don't need to do anything special to take advantage of this. If your observer is running and your broker is connected, the data will be there. The best preparation is making sure everything is healthy before the weekend starts — observer online, MQTT connection clean, Waev subscribed.
+
+The rest is just watching. And this particular weekend, watching is worth it.
+
+---
+
+Questions about getting your observer connected before Field Day? [Reach out](mailto:admin@waev.app) — we're happy to help you get set up in time. And if you see something interesting in your Field Day data that doesn't fit the patterns above, [tell us that too](mailto:admin@waev.app).
+
+Ready to connect? [Start at waev.app.](https://waev.app)
+
+<p class="endnote"><span class="endnote-title">— The Waev team</span></p>
+
+{/* ILLUSTRATION PROMPT: A warm flat-illustration of a portable ham radio Field Day operating position at golden hour — folding table, dipole antenna against a sunset sky, a glowing mesh topology visualization floating gently above the equipment like a holographic overlay. Suggested alt: "A portable ham radio Field Day station at sunset with a glowing mesh network topology floating above it." */}

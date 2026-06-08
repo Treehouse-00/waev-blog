@@ -1,0 +1,100 @@
+---
+/**
+ * fieldday-LivePackets — abstracted Live Packets stream showing the difference
+ * between a quiet weekday trickle and the Field Day burst.
+ * Two vertical strips: sparse left (before 18:00 local) / dense right (peak).
+ * Theme-aware via CSS custom properties.
+ */
+const quiet = [
+  { y: 40,  type: "route",  snr: "+8 dB",  hops: 2, label: "relay-north" },
+  { y: 98,  type: "advert", snr: "+6 dB",  hops: 1, label: "hilltop-a"   },
+  { y: 160, type: "msg",    snr: "+11 dB", hops: 2, label: "relay-main"  },
+];
+const peak = [
+  { y: 30,  type: "advert", snr: "+9 dB",  hops: 1, label: "w6abc-fd"    },
+  { y: 62,  type: "msg",    snr: "+5 dB",  hops: 3, label: "kd9zzz-fd"   },
+  { y: 94,  type: "route",  snr: "+7 dB",  hops: 2, label: "relay-north" },
+  { y: 126, type: "advert", snr: "+4 dB",  hops: 4, label: "n7qrs-fd"    },
+  { y: 158, type: "msg",    snr: "+6 dB",  hops: 2, label: "wn6fg-fd"    },
+  { y: 190, type: "advert", snr: "+3 dB",  hops: 5, label: "ka6tyz-fd"   },
+];
+const typeColor: Record<string, string> = {
+  advert: "var(--text-accent)",
+  msg:    "var(--accent-light)",
+  route:  "var(--text-muted)",
+};
+---
+
+<svg viewBox="0 0 720 260" role="img" aria-label="Live Packets stream showing a quiet weekday trickle compared to a dense Field Day burst of incoming packets from temporary stations." style="width:100%;height:auto;">
+
+  <!-- ── Column headers ── -->
+  <text x="20" y="20" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">BEFORE 18:00 LOCAL</text>
+  <text x="380" y="20" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">FIELD DAY PEAK</text>
+
+  <!-- ── Left: quiet trickle ── -->
+  {quiet.map((pkt) => (
+    <g transform={`translate(0, ${pkt.y})`}>
+      <rect x="20" y="0" width="330" height="44" rx="8"
+        style="fill: var(--surface-1); stroke: var(--border-subtle);"
+        stroke-width="1" />
+      <!-- type badge -->
+      <rect x="34" y="10" width="52" height="18" rx="5"
+        style={`fill: var(--accent-subtle); stroke: var(--border-accent);`}
+        stroke-width="1" />
+      <text x="60" y="23" text-anchor="middle" class="viz-label"
+        style={`fill: ${typeColor[pkt.type]};`}>
+        {pkt.type}
+      </text>
+      <!-- node label -->
+      <text x="102" y="20" style="fill: var(--text); font-family: var(--mono); font-size: 12px;">
+        {pkt.label}
+      </text>
+      <!-- snr + hops -->
+      <text x="200" y="20" class="viz-label" style="fill: var(--text-accent);">
+        {pkt.snr}
+      </text>
+      <text x="268" y="20" class="viz-label">{pkt.hops}h</text>
+    </g>
+  ))}
+
+  <!-- ── Divider ── -->
+  <line x1="362" y1="10" x2="362" y2="250" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── Right: Field Day burst ── -->
+  {peak.map((pkt) => (
+    <g transform={`translate(358, ${pkt.y})`}>
+      <rect x="20" y="0" width="330" height="36" rx="8"
+        style={`fill: var(--surface-1); stroke: ${pkt.hops >= 4 ? "var(--sys-yellow-400)" : "var(--border-subtle)"}; opacity: ${pkt.hops >= 4 ? "1" : "1"};`}
+        stroke-width="1" />
+      <!-- type badge -->
+      <rect x="34" y="8" width="52" height="18" rx="5"
+        style="fill: var(--accent-subtle); stroke: var(--border-accent);"
+        stroke-width="1" />
+      <text x="60" y="21" text-anchor="middle" class="viz-label"
+        style={`fill: ${typeColor[pkt.type]};`}>
+        {pkt.type}
+      </text>
+      <!-- node label (hint: temporary stations have -fd suffix) -->
+      <text x="102" y="18" style="fill: var(--text); font-family: var(--mono); font-size: 12px;">
+        {pkt.label}
+      </text>
+      <!-- snr + hops -->
+      <text x="232" y="18" class="viz-label" style={`fill: ${parseFloat(pkt.snr) < 5 ? "var(--sys-yellow-400)" : "var(--text-accent)"};`}>
+        {pkt.snr}
+      </text>
+      <text x="292" y="18" class="viz-label">{pkt.hops}h</text>
+    </g>
+  ))}
+
+  <!-- ── Trailing "stream" indicator ── -->
+  <circle cx="60" cy="242" r="2.5" style="fill: var(--text-tertiary);" />
+  <circle cx="74" cy="242" r="2.5" style="fill: var(--text-tertiary);" />
+  <circle cx="88" cy="242" r="2.5" style="fill: var(--text-tertiary);" />
+
+  <circle cx="450" cy="242" r="2.5" style="fill: var(--accent-light);" />
+  <circle cx="466" cy="242" r="2.5" style="fill: var(--accent-light);" />
+  <circle cx="482" cy="242" r="2.5" style="fill: var(--accent-light);" />
+  <circle cx="498" cy="242" r="2.5" style="fill: var(--accent-light);" />
+  <circle cx="514" cy="242" r="2.5" style="fill: var(--accent-light);" />
+  <circle cx="530" cy="242" r="2.5" style="fill: var(--accent-light);" />
+</svg>
