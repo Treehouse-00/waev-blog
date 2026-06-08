@@ -1,0 +1,114 @@
+---
+title: "Where Your Network Ends"
+description: "A practical playbook for using Waev's Live Map, Network Stats, and packet data to locate mesh coverage gaps and decide where the next repeater belongs."
+date: 2026-06-08
+tags: ["playbook", "operations"]
+author: "Waev"
+---
+
+import Figure from "../../components/Figure.astro";
+import PlaybookCoverageGap from "../../components/viz/PlaybookCoverageGap.astro";
+import PlaybookLinkTable from "../../components/viz/PlaybookLinkTable.astro";
+import PlaybookRepeaterImpact from "../../components/viz/PlaybookRepeaterImpact.astro";
+
+The complaint usually arrives the same way: someone on the far edge of the mesh can't reach anyone after they leave the main road, or a field team drops off the network during an exercise and nobody notices for twenty minutes. You already suspect a repeater gap. The question isn't whether to add one — it's whether your instinct about the location is right.
+
+This is a playbook for using <span class="waev-brand">Waev</span> to move from "I think there's a gap" to "here's the evidence, and here's where to place the repeater."
+
+<div class="callout">
+  <p>In short: Waev gives you three independent readings of the same coverage problem — contours on the Live Map, signal trends in Network Stats, and path evidence in the packet log. Read them together before you commit to a site, and you'll have a placement decision backed by data, not a drive on a hunch.</p>
+</div>
+
+## 01 · Read the map before you move
+
+The Live Map shows your network the way your enrolled observers see it — not modeled, not estimated, but based on packets that actually traveled those paths. The first thing to look for isn't nodes. It's the edges between them.
+
+An edge on the map means two things are true: a packet traversed that path, and an enrolled observer (connected over MQTT) recorded it. If a stretch of your service area shows nothing — no nodes, no edges — you're looking at one of two things: a genuine dead zone, or a region with no observer coverage. Knowing which one is what determines your next move. The map is honest about the limits of its own visibility.
+
+Start by finding the boundary where your map transitions from dense, connected topology to sparse edges or silence. That boundary is where your investigation begins.
+
+<Figure caption="The Live Map's coverage frontier. <b>Left:</b> backbone nodes with solid, observed links. <b>Middle:</b> an intermittent edge node at the limit of the observed network. <b>Right:</b> a silent zone — no packets in 24 hours. Map silence is a hypothesis, not a verdict.">
+  <PlaybookCoverageGap />
+</Figure>
+
+What to look for on the map:
+
+- Nodes that appear in Live Packets but have no edges in the topology view — they're reaching *something*, but the observer isn't capturing the full path
+- Areas where members or volunteers are actively operating but the map shows nothing
+- Long, sparse edges with high hop counts — a backbone pair connected at 4 or more hops is routing around a gap, not through it
+
+## 02 · Diagnose the signal
+
+Once you have a suspect area, Network Stats is where you move from "I see something" to "I understand what I'm seeing."
+
+Look at the path-quality view for the nodes closest to the silent zone. Three diagnostic signals, in order of weight:
+
+**Hop count creep.** A node that was reaching backbone in two hops during initial deployment but now shows three or four is routing around a degraded or failed path. That's not a routing quirk — it's a symptom worth investigating.
+
+**SNR at the edge of acceptable.** A working MeshCore link generally needs at least +5 to +7 dB SNR in typical conditions. Under that threshold, you're in weather-dependent territory. A node holding at +1 or +2 dB is technically alive but not reliably useful. Pull the time series in Stats to see whether the degradation is constant or shows patterns — weather, terrain obstructions, interference at certain hours.
+
+**Zero-packet stretches.** A node that logged 30–40 packets per hour all week and then dropped to zero for a day isn't necessarily down. Compare with neighbor nodes. If neighbors are active and this one isn't, that's a path failure, not a power issue.
+
+<Figure caption="Network Stats path-quality view. <b>Hop count and SNR together</b> tell a clearer story than either alone — a 4-hop path at –3 dB is the signature of a node holding on at the edge of coverage.">
+  <PlaybookLinkTable />
+</Figure>
+
+A node showing four hops, sub-zero SNR, and irregular packet counts is almost certainly at the limit of coverage — alive on the network but only just. That combination is your most actionable finding.
+
+## 03 · Choose the location
+
+You now know approximately where the gap is and which node marks its near edge. The candidate site needs to satisfy two constraints: a credible path back to your closest backbone node, and a credible path toward the isolated cluster. "Credible" means reasonable line-of-sight to both — or something close. Waev doesn't supply elevation data or RF propagation modeling. The terrain judgment is still yours. But it tells you which node would serve as the upstream anchor, and exactly how well that anchor is currently performing.
+
+**The working checklist:**
+
+1. Identify the node closest to the gap that still maintains a clean connection to backbone. That's your anchor. The new repeater bridges from it toward the silent zone.
+2. On the Live Map, check the anchor node's current edge quality. If it's already under SNR stress, adding a downstream repeater solves one link but leaves the other weak — you may need two placements, staged.
+3. Find the geographic midpoint between the anchor and the silent zone. That's your first candidate site. Adjust for terrain, access, and power — but start there.
+
+<Figure caption="<b>Before:</b> relay-ridge hangs on at 4 hops and –3 dB — technically connected, operationally unreliable. <b>After:</b> a repeater placed at the midpoint produces two clean 2-hop links. The improvement shows immediately in Network Stats.">
+  <PlaybookRepeaterImpact />
+</Figure>
+
+The most common placement error at this stage is going too far — siting the repeater at the far edge of the silent zone rather than the midpoint. That covers the outer fringe but leaves the nodes in the middle still struggling on a long, marginal path. Start at the midpoint. The data will tell you if you need to go further.
+
+## 04 · Confirm the improvement
+
+Once the new repeater is running and connected to your MQTT observer network, watch Live Packets for 24 to 48 hours. A successful placement has a clear signature:
+
+- Nodes that were routing at 4+ hops now show shorter paths — 2 or 3 hops — in their packet metadata
+- SNR on formerly-degraded links improves, and the improvement is consistent across the day, not just at optimal times
+- The Live Map draws new edges where the silent zone was
+
+Network Stats shows this as an inflection point in the time series — link quality and packet rate both step up at the moment the new repeater comes online. That inflection is your validation. Not just "the node is up," but "the path quality demonstrably changed."
+
+If the improvement is smaller than expected, the gap may be wider than one repeater covers. Or the anchor node you're bridging from was more stressed than it appeared — check its Stats for the same period. Either finding gives you a clear next step.
+
+---
+
+## Questions operators ask
+
+### Do I need an observer inside the gap area to detect the gap?
+
+Not to confirm the gap exists — a node at the edge of coverage will show its degraded metrics in Network Stats regardless of where your observers are positioned. But to *map* the gap, you do need observer coverage in the area. The Live Map draws topology from what observers recorded. If all your observers sit on the backbone, the backbone will appear clear and edge nodes will appear intermittently or not at all. An observer placed in or near the suspect area dramatically improves map fidelity for that region — and makes the post-placement validation much easier to read.
+
+### The map shows silence, but members in that area say the mesh is working. Who's right?
+
+Both. Short messages at low traffic pass through marginal links that would fail under sustained load. Trust the members for operational reports; use the Stats data for infrastructure decisions. A link at +1 dB SNR with 2 packets per hour is working *today* — but it's not the foundation you want when it counts. The data tells you the margin. The margin tells you the risk.
+
+### Can I do a manual field survey using Live Packets?
+
+Yes. If you're carrying a MeshCore device that connects to your MQTT observer network — and the node doesn't carry a privacy opt-out marker — transmissions will appear in Live Packets. Drive or walk the edge of the suspect zone and watch whether packets are reaching the network, and over how many hops. It's a manual survey and it works. Pair it with the Stats view afterward to correlate what you saw in the field with what the data shows over time.
+
+### What does the before/after look like in Network Stats?
+
+The clearest signal is SNR improvement on the links that were degraded, followed by hop-count reduction for the nodes that were routing around the gap. In the time series, the repeater's commissioning time appears as an inflection — both metrics step up together. If neither moves after 48 hours, the candidate site may not be close enough to the actual gap, or the anchor node's own path quality needs attention first.
+
+---
+
+Coverage problems aren't mysterious. They're geometry, terrain, and signal math — and they all leave traces in packet data. <span class="waev-brand">Waev</span> gives you a window into those traces. The judgment call — where exactly to reach, what to power the repeater from, how to get it up the hill — is still yours. That call gets considerably easier when you have evidence underneath it.
+
+Found a signal-quality pattern that doesn't fit this playbook? [Tell us](mailto:admin@waev.app) — edge cases are how the tools get better.
+
+Ready to put the data to work? [Connect your first observer at waev.app](https://waev.app).
+
+<p class="endnote"><span class="endnote-title">— The Waev team</span></p>
