@@ -1,0 +1,67 @@
+---
+title: "Mesh Networking at a Hamfest"
+description: "Mesh networking at a hamfest puts your MeshCore observer at the center of one of the year's most radio-dense events — here is what Waev shows you."
+date: 2026-10-04
+tags: ["field-notes", "community"]
+hero:
+  src: "/hero-mesh-networking-at-a-hamfest.jpg"
+  alt: "A warm hand-painted close-up of a small LoRa node resting on a badge-strewn vendor table in a ham radio hall, its short antenna upright in soft overhead light."
+faq:
+  - q: "What happens to my mesh when operators bring nodes to a hamfest?"
+    a: "Nodes on matching radio settings that come within range of your enrolled observer will appear in Live Packets as they transmit adverts or messages. If they route traffic through your observer or authenticated repeaters, they draw new edges on the Live Map. Nodes outside your observer's coverage won't appear — the map stays honest about what it can verify."
+  - q: "Should I bring a dedicated repeater or room server to the demo table?"
+    a: "A room server at the table gives visitors an immediate, concrete experience: they power on a companion node, send a flood advert, and see themselves appear in your network within seconds. An observer pointed toward the demo area lets you show that activity on the Waev Live Map on a laptop screen at the same time."
+  - q: "Do visiting nodes need to match my radio settings to appear in Waev?"
+    a: "Yes. Nodes must share the same frequency, bandwidth, spreading factor, and coding rate to hear each other. For North America, the community-coordinated setting is 910.525 MHz, 62.5 kHz bandwidth, SF7, CR5. Nodes on different settings are invisible to yours, even at close range."
+  - q: "How is mesh networking at a hamfest different from operating on Field Day?"
+    a: "Field Day is a planned 27-hour endurance exercise with known participants. A hamfest brings unscheduled contacts — strangers walking past with nodes in their pockets — for a few hours in one location. The encounters are shorter, the network is more spontaneous, and what you gain is a clearer picture of how many active mesh users your region already has."
+---
+
+import Figure from "../../components/Figure.astro";
+import FielddayLivePackets from "../../components/viz/fieldday-LivePackets.astro";
+
+A hamfest is, at its core, a room full of people who talk to radios. For a few hours on a Saturday morning, that room becomes one of the most radio-dense environments any of your mesh nodes will encounter in a year. If you have an enrolled observer running and Waev subscribed, you have a live view of what happens when several hundred operators — many of them carrying LoRa companion nodes in their pockets or kit bags — walk past your table.
+
+<div class="callout">
+<p><strong>In short.</strong> Mesh networking at a hamfest is a field sample you didn't schedule: visiting operators bring nodes, those nodes transmit, and your observer captures whatever routes through your infrastructure. The Live Map grows for a few hours, then contracts. What stays behind is a clearer count of active MeshCore users in your region — and a set of new contacts already in your node's memory for the next time you're within range.</p>
+</div>
+
+## What you bring to the table
+
+The minimum setup for a useful hamfest showing is a room server on a laptop (or a spare device), a repeater on a small tripod antenna above the table, and an observer pointed into the room, connected and subscribed to Waev. That's it.
+
+The payoff is concrete: a visitor powers on a companion node, sends a flood advert to announce themselves to the mesh, and — if they're on the coordinated North American settings (910.525 MHz, 62.5 kHz, SF7, CR5) — they appear in Live Packets within seconds. You can show that on the screen. A second visitor connects to the room server and sends a message. You can show that too.
+
+This is the moment that converts a curious bystander into someone who goes home to order hardware. Reading about a mesh is abstract; watching your own node name appear on someone else's live map, in real time, is not. Keep a flashed companion node on the table for people to hold.
+
+## What the observer picks up from the floor
+
+Beyond the demo table, your observer is picking up transmissions from anyone else in the building running the same radio configuration. The coordinated North American setting gives you a baseline chance of hearing nodes from other clubs, regional operators, and vendors who brought equipment for demonstrations of their own.
+
+<Figure caption="<b>Left:</b> Live Packets on a normal weekday — a handful of known nodes, a predictable rhythm. <b>Right:</b> Hamfest morning — unfamiliar node names appearing in quick succession, some reaching your observer directly, others arriving through your repeater two hops out. Adverts first, then messages, then the occasional packet from someone walking the far end of the hall.">
+  <FielddayLivePackets />
+</Figure>
+
+The stream is worth watching carefully. Not every node at the event will match your settings — some visitors operate different platforms, and others may be on regional frequency plans that diverge from the North American coordination standard. The nodes that appear in your Live Packets are the ones already interoperable with your network. Those are the contacts worth making deliberately.
+
+One thing the map won't show you: nodes that are in the building but not reaching your observer. Waev only draws [what your enrolled observers can verify](/blog/how-waev-reads-your-mesh/) — an empty screen doesn't mean empty airwaves, it means those transmissions didn't make it to your infrastructure. That distinction matters when you're trying to assess regional MeshCore density: the nodes you see are a floor, not a ceiling.
+
+## The edges that appear and disappear
+
+A hamfest visit creates a specific pattern in Live Map topology. Edges form between your infrastructure and visiting nodes, hold for an hour or two, then vanish as those operators pack up and leave. The map cleans itself.
+
+What persists is the count — and the character of what appeared. A busy Saturday morning with fifteen distinct unfamiliar nodes tells you something about regional deployment that no forum post can. You're seeing the population of active MeshCore operators who showed up to an in-person radio event in your area. That's a real number.
+
+It also tells you something structural. Which of your repeaters attracted the most activity? A relay that becomes a hub for temporary contacts during a hamfest is almost certainly your best-placed infrastructure — for the [same reasons it anchors coverage for emergency operations](/blog/when-the-grid-goes-down/). Concentrated temporary traffic is an unintentional load test that a quiet Tuesday can't replicate.
+
+## After the tables fold
+
+The contacts you make at a hamfest don't all disappear with the packet stream. If you exchanged contact codes via QR at the table, or if a visitor's direct messages reached your node and you acknowledged them, those contacts persist in your node's memory. The next time they're within range of your infrastructure — at a public service event, at a club net night, on a park trail — the path is already known.
+
+That's the human thread running through all of this. Mesh networking at a hamfest isn't primarily a technology demonstration. It's a map of who in your region is building the same thing you're building. The topology is the community made visible.
+
+---
+
+Questions about setting up a demo table or connecting a room server before a local hamfest? [Reach out](mailto:admin@waev.app) — we're glad to talk through what the setup looks like.
+
+{/* ILLUSTRATION PROMPT: A warm hand-painted close-up still life — a small LoRa node with a short rubber-duck antenna sits upright on a vendor table scattered with HF name badges, a coaxial connector, and a handwritten price tag on a piece of tape. Soft overhead hall lighting casts a gentle shadow behind the node; out of focus in the background are the warm blurred shapes of operators at neighboring tables. The mood is quiet and human — the node is the one still object in a room that's otherwise in motion. Medium: hand-painted flat illustration with painterly texture. Palette: warm amber and muted cream, with a single small green indicator light as the only saturated accent. */}
