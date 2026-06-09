@@ -1,0 +1,89 @@
+---
+title: "What dBm Actually Measures"
+description: "What is dBm? It is an absolute radio power level referenced to 1 milliwatt — the unit behind every SNR reading, transmit spec, and antenna gain calculation."
+date: 2026-11-24
+tags: ["primer", "signal"]
+hero:
+  src: "/hero-what-is-dbm.jpg"
+  alt: "A hand-painted close-up of a ruler resting on a sheet of graph paper, its scale markings visible, warm afternoon light slanting across the surface from one side."
+faq:
+  - q: "What does dBm stand for?"
+    a: "dBm stands for decibels relative to one milliwatt. It is an absolute unit of power — 0 dBm is exactly 1 milliwatt, +10 dBm is 10 milliwatts, and +30 dBm is 1 watt."
+  - q: "What is the difference between dB and dBm?"
+    a: "dB (without any suffix) is a relative ratio — it describes a change or a difference, with no fixed reference. dBm is absolute — it anchors the measurement to 1 milliwatt. You can add a dB value to a dBm value (applying a gain or loss) to get a new dBm value. You cannot add two dBm values together in the usual way; that would be treating absolute levels as ratios."
+  - q: "Why does the number go negative for received signals?"
+    a: "Because received signals are far weaker than 1 milliwatt. A received LoRa signal might be at −90 dBm, which is 1 billionth of a milliwatt. Since that is less than the 1 mW reference, the dBm value is negative. Negative dBm is not a problem — it just means very low power, which is normal for long-range radio reception."
+  - q: "What is a typical transmit power for a LoRa node?"
+    a: "Many common LoRa nodes transmit at +20 dBm (100 mW) or slightly above. The exact value depends on the hardware and regional regulations. In the US 915 MHz ISM band, operation is permitted up to a regulatory limit; most boards are configured well below that limit for efficiency and compliance."
+  - q: "Where does dBm show up in Waev?"
+    a: "Waev uses SNR (Signal-to-Noise Ratio) as the per-hop signal quality metric in Live Packets and Network Stats. SNR is measured in plain dB — the ratio between the received signal level and the noise floor — but understanding dBm is the foundation for understanding why that ratio matters and what the absolute power levels involved actually are."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalDBmScale from "../../components/viz/signal-DBmScale.astro";
+
+The Live Packets stream shows an SNR number on every packet. Datasheets quote transmit power in dBm. Antenna specs list gain in dBi. Link budget calculations add and subtract across all of these in one chain. They all speak the same language — and dBm is where that language starts.
+
+<div class="callout"><p><strong>In short.</strong> What is dBm? It is an absolute radio power level referenced to 1 milliwatt: 0 dBm = 1 mW, +10 dBm = 10 mW, +30 dBm = 1 W. Received signals are typically deeply negative — a LoRa radio may decode a signal as weak as −120 dBm or lower — while transmitters output around +20 dBm. The key rules: +3 dB doubles power, +10 dB multiplies it by ten, and you can add a dB gain or loss to a dBm level to get a new dBm level.</p></div>
+
+## The decibel problem it solves
+
+Radio work spans an enormous range of power levels. A LoRa node transmits at roughly +20 dBm — 100 milliwatts, which is 0.1 watts. That same transmission, received by a node several kilometers away through terrain and buildings, might arrive at −90 dBm — about 1 nanowatt, or 0.000000001 watts. The ratio between those two levels is 100,000,000:1.
+
+Working with numbers that span eight orders of magnitude in raw watts is unwieldy. Linear arithmetic on them is error-prone. The decibel solves this by working in logarithms: it converts multiplication into addition, which turns that 100,000,000:1 ratio into a tidy "−110 dB." Engineers have been doing this since the 1920s because it makes chain calculations — transmitter power through cable through antenna through propagation through receiver — a sequence of additions and subtractions rather than a chain of multiplications.
+
+dBm anchors this logarithmic scale to a concrete reference: 1 milliwatt.
+
+## The definition and the key numbers
+
+dBm = 10 × log₁₀(power in mW / 1 mW)
+
+You do not need to compute this from scratch for day-to-day work. A handful of reference points are all you need:
+
+| dBm | Power |
+|-----|-------|
+| 0 dBm | 1 mW |
+| +3 dBm | ~2 mW |
+| +10 dBm | 10 mW |
+| +20 dBm | 100 mW |
+| +30 dBm | 1 W |
+| −10 dBm | 0.1 mW |
+| −30 dBm | 1 µW |
+| −60 dBm | 1 nW |
+| −90 dBm | 1 pW |
+
+The two rules that matter most in practice:
+
+**+3 dB ≈ double the power.** An amplifier with 3 dB gain doubles whatever signal it receives. A cable with 3 dB loss halves it. These round numbers compound: 6 dB is 4× power, 9 dB is 8×, 10 dB is 10×.
+
+**+10 dB = 10× the power.** This makes it easy to reason about orders of magnitude. A signal at −80 dBm is 10 times stronger than one at −90 dBm, and 100 times stronger than one at −100 dBm.
+
+<Figure caption="dBm reference scale. Key markers: near the noise floor (−120 dBm), the LoRa receiver sensitivity limit, a typical strong received signal band, the reference point at 0 dBm (1 mW), typical LoRa transmit power around +20 dBm (100 mW), and 1 W at +30 dBm.">
+  <SignalDBmScale />
+</Figure>
+
+## dB vs. dBm: the distinction that trips people
+
+**dB** (without a suffix) is a relative ratio — it describes a change, a gain, or a loss, with no fixed reference. A cable with 3 dB loss reduces whatever signal passes through it by half. That statement is true regardless of the absolute power level.
+
+**dBm** is absolute — it anchors the measurement to 1 milliwatt. −90 dBm is a specific amount of power (1 picowatt) that you can measure with a power meter.
+
+The arithmetic rule: **dBm + dB = dBm.** Apply a gain (dB) to an absolute level (dBm) and you get a new absolute level (dBm). Subtract cable loss (dB) from transmit power (dBm) and you get the power at the antenna port (dBm). This is the backbone of every link budget.
+
+What you cannot do: add two dBm values. Two separate signals at −80 dBm do not sum to −160 dBm — that is not how power addition works in the logarithmic domain. (The correct answer, if you actually need to add two equal powers, is approximately −77 dBm: −80 dBm + 3 dB.) But for antenna and link calculations, you almost never need to add two absolute levels — you are always adding or subtracting gains and losses to a starting power level.
+
+## Where this shows up in practice
+
+On a LoRa mesh, these units appear in a few specific places:
+
+**Transmit power.** Typical community MeshCore nodes transmit between +14 and +22 dBm depending on hardware and regional configuration. The exact value is set in firmware and may be limited by regional regulations; most common boards operate well within regulatory limits.
+
+**Receiver sensitivity.** LoRa radios can decode signals at deeply negative levels — approximately −100 to −137 dBm depending on the spreading factor, bandwidth, and coding rate (source: LoRa radio datasheets and modulation specification). This sensitivity is why LoRa achieves such long range even at low transmit power.
+
+**SNR.** The SNR value you see in Live Packets and Network Stats is measured in plain dB — it is the ratio between the received signal level (in dBm) and the noise floor (also in dBm). A signal at −85 dBm arriving against a noise floor of −95 dBm shows an SNR of +10 dB. Understanding dBm is what lets you interpret why that +10 dB matters — and what it means when the noise floor rises or the signal weakens. The full treatment of SNR as a practical diagnostic is in [Reading the Signal](/blog/reading-the-signal/).
+
+**Antenna gain.** Antenna gain is typically quoted in dBi (decibels relative to an isotropic radiator) or dBd (relative to a dipole). These are relative gains — dB values — which you add to or subtract from the transmit power (dBm) and cable losses (dB) to compute effective radiated power.
+
+The moment these pieces connect — transmit power, cable loss, antenna gain, path loss, receiver sensitivity — you have a link budget. dBm is the unit that holds it all together. Working through a practical example — how much margin does a [repeater placement](/blog/where-to-put-your-next-repeater/) decision actually require? — makes the arithmetic concrete.
+
+{/* ILLUSTRATION PROMPT: A warm flat hand-painted close-up of a ruler resting on a sheet of graph paper. The ruler is old, wooden, with clearly marked scale divisions, catching warm afternoon light from one side. The subject is measurement itself — the quiet precision of a familiar tool. No tech imagery, no screens, no radio hardware. Palette: warm amber paper, aged wood tone, soft shadow on one side. */}

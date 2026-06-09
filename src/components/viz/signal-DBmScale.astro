@@ -1,0 +1,74 @@
+---
+/**
+ * signal-DBmScale — dBm reference ruler showing common power levels.
+ * Key anchors: 0 dBm = 1 mW, +20 dBm = 100 mW, +30 dBm = 1 W,
+ * typical LoRa Tx, and typical received signal range.
+ * No client JS. Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 215" role="img" aria-label="dBm reference scale. A horizontal ruler shows values from minus 120 dBm on the left to plus 30 dBm on the right. Key markers: minus 120 dBm near the noise floor, minus 100 dBm near LoRa sensitivity limit, minus 80 dBm a strong received signal, 0 dBm equals 1 milliwatt, plus 20 dBm equals 100 milliwatt, plus 30 dBm equals 1 watt. A shaded band marks the typical received signal zone for LoRa. An arrow marks a typical LoRa transmit power around plus 20 dBm." style="width:100%;height:auto;">
+
+  <!-- Kicker -->
+  <text x="20" y="22" class="viz-label" style="fill:var(--text-accent);letter-spacing:0.06em;">dBm REFERENCE SCALE</text>
+
+  <!-- Background ruler bar -->
+  <rect x="20" y="40" width="680" height="28" rx="6"
+    style="fill:var(--surface-1); stroke:var(--border-subtle);" stroke-width="1"/>
+
+  <!-- Received signal band (approx -100 to -60 dBm) -->
+  <!-- Scale: -120 to +30 = 150 dB range across 680px → 4.53px/dB
+       -100 dBm: 20 + ((-100 - (-120)) × 4.53) = 20 + 90.7 = 110.7
+       -60 dBm:  20 + ((-60  - (-120)) × 4.53) = 20 + 271.8 = 291.8
+       width = 291.8 - 110.7 = 181.1 -->
+  <rect x="111" y="40" width="181" height="28" rx="0"
+    style="fill:var(--accent-light);opacity:0.12;"/>
+  <text x="201" y="52" text-anchor="middle" class="viz-label"
+    style="fill:var(--accent-light);font-size:8px;">typical received range</text>
+
+  <!-- Tick marks and labels — evenly spaced reference points -->
+  <!-- -120 dBm @ x=20 -->
+  <line x1="20" y1="68" x2="20" y2="78" style="stroke:var(--text-tertiary);" stroke-width="1.5"/>
+  <text x="20" y="90" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">−120</text>
+  <text x="20" y="103" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">noise</text>
+  <text x="20" y="116" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">floor</text>
+
+  <!-- -100 dBm @ x=111 (20 dB from -120, 20 × 4.53 = 90.7 → 111) -->
+  <line x1="111" y1="68" x2="111" y2="78" style="stroke:var(--text-tertiary);" stroke-width="1.5"/>
+  <text x="111" y="90" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">−100</text>
+  <text x="111" y="103" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">LoRa</text>
+  <text x="111" y="116" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">sensitivity</text>
+
+  <!-- 0 dBm @ x=20 + 120 × 4.53 = 563.8 → 564 -->
+  <line x1="564" y1="68" x2="564" y2="78" style="stroke:var(--text-accent);" stroke-width="2"/>
+  <text x="564" y="90" text-anchor="middle" class="viz-label" style="fill:var(--text-accent);">0</text>
+  <text x="564" y="103" text-anchor="middle" class="viz-label" style="fill:var(--text-accent);">= 1 mW</text>
+
+  <!-- +20 dBm @ x=20 + 140 × 4.53 = 654 -->
+  <line x1="654" y1="68" x2="654" y2="78" style="stroke:var(--sys-orangeyellow-600);" stroke-width="2"/>
+  <text x="654" y="90" text-anchor="middle" class="viz-label" style="fill:var(--sys-orangeyellow-600);">+20</text>
+  <text x="654" y="103" text-anchor="middle" class="viz-label" style="fill:var(--sys-orangeyellow-600);">= 100 mW</text>
+  <text x="654" y="116" text-anchor="middle" class="viz-label" style="fill:var(--sys-orangeyellow-600);">typical LoRa Tx</text>
+
+  <!-- +30 dBm @ x=20 + 150 × 4.53 = 700 → clamp to 700 (but 680 max, so show at 700 - 680 offset to right edge) -->
+  <!-- Actually: 20 + 150*4.533 = 20+679.9 = 699.9. Let's place at 695 with label -->
+  <line x1="695" y1="40" x2="695" y2="78" style="stroke:var(--text-tertiary);" stroke-width="1.5"/>
+  <text x="700" y="90" text-anchor="end" class="viz-label" style="fill:var(--text-muted);">+30</text>
+  <text x="700" y="103" text-anchor="end" class="viz-label" style="fill:var(--text-muted);">= 1 W</text>
+
+  <!-- The key rule: +3 dB = ×2, +10 dB = ×10 -->
+  <rect x="20" y="132" width="680" height="55" rx="8"
+    style="fill:var(--surface-1); stroke:var(--border-subtle);" stroke-width="1"/>
+  <text x="40" y="152" class="viz-label" style="fill:var(--text-accent);">KEY RULES</text>
+  <text x="40" y="168" class="viz-label" style="fill:var(--text-muted);">+3 dB ≈ double the power</text>
+  <text x="40" y="182" class="viz-label" style="fill:var(--text-muted);">+10 dB = 10× the power</text>
+  <text x="280" y="152" class="viz-label" style="fill:var(--text-accent);">dBm + dB = dBm</text>
+  <text x="280" y="168" class="viz-label" style="fill:var(--text-muted);">add a cable loss (dB) to a received</text>
+  <text x="280" y="182" class="viz-label" style="fill:var(--text-muted);">signal (dBm) → result is still dBm</text>
+  <text x="550" y="152" class="viz-label" style="fill:var(--text-accent);">dBm − dBm = dB</text>
+  <text x="550" y="168" class="viz-label" style="fill:var(--text-muted);">difference between two</text>
+  <text x="550" y="182" class="viz-label" style="fill:var(--text-muted);">absolute levels is a ratio</text>
+
+  <!-- Bottom note -->
+  <text x="360" y="210" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-style:italic;">LoRa sensitivity varies with spreading factor, bandwidth, and coding rate; the figure above is approximate</text>
+</svg>
