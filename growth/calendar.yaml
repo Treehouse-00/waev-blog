@@ -423,7 +423,7 @@ posts:
     series: bench-notes
     primary_keyword: "tuning a LoRa antenna SWR"
     secondary_keyword: "measuring antenna SWR with a NanoVNA"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-29

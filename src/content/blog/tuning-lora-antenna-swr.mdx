@@ -1,0 +1,83 @@
+---
+title: "Tuning a LoRa Antenna with a NanoVNA"
+description: "How to measure and interpret SWR at 915 MHz using a NanoVNA — what the numbers mean, what a well-matched LoRa antenna looks like, and what to do when the dip is at the wrong frequency."
+date: 2026-10-27
+tags: ["signal", "deep-dive"]
+hero:
+  src: "/hero-tuning-lora-antenna-swr.jpg"
+  alt: "A hand-painted close-up still life: a small coiled LoRa antenna stub resting on a workbench next to a loop of thin coaxial wire and a small adjustment tool — warm workshop light, earthy tones, painterly texture."
+faq:
+  - q: "What is SWR and why does it matter for a LoRa antenna?"
+    a: "SWR (Standing Wave Ratio) measures how well an antenna is matched to the 50-ohm impedance of your radio's transmit port. A lower SWR means more power is radiated rather than reflected back. An SWR of 1.0 is perfect (all power radiated); SWR of 2.0 means roughly 11% of power is reflected; SWR of 3.0 means about 25% is reflected. For LoRa nodes, SWR below 2.0 at 915 MHz is the practical target — the difference between SWR 1.2 and 1.5 does not produce a detectable change in link margin."
+  - q: "What is a NanoVNA and what does it measure?"
+    a: "A NanoVNA (Vector Network Analyzer) is a sub-$50 tool that sends a swept RF signal into your antenna and measures what reflects back. From that, it calculates SWR and impedance across a frequency range you set. For antenna testing, you connect the antenna to CH0 (Port 1), calibrate with the included Open/Short/Load standards, and read the SWR curve. It does not measure antenna gain or radiation pattern — only the match between the antenna and the feed line."
+  - q: "What SWR should I see at 915 MHz for a well-matched LoRa antenna?"
+    a: "An SWR of 1.0 to 1.5 is excellent — the antenna is well-matched at 915 MHz. SWR between 1.5 and 2.0 is acceptable for most deployments. Above 2.0, you are losing a measurable but small fraction of transmit power. Above 3.0, the antenna is poorly matched and you should investigate the cause. If the SWR dip is at the right value but at the wrong frequency — centered at 868 MHz rather than 915 MHz, for example — the antenna is likely a relabeled unit tuned for the European band."
+  - q: "My NanoVNA shows high SWR on a brand-new antenna — what is wrong?"
+    a: "The most common cause is an uncalibrated NanoVNA or the wrong frequency range set before calibration. Calibrate only after setting the sweep range (850–950 MHz for LoRa at 915 MHz), and always calibrate at the reference plane — the end of whatever cable or adapter you plan to use for testing, not just at the NanoVNA port. Other common causes: RP-SMA mismatch (many LoRa antennas use reverse-polarity SMA and require an adapter), a damaged or dirty connector, or the antenna requires a ground plane that is missing in the test setup."
+  - q: "Does SWR below 2.0 matter as much as SNR for LoRa range?"
+    a: "No. Antenna match (SWR) affects the fraction of transmit power that reaches the air. SNR and path loss dominate LoRa link performance by a much larger margin. Going from SWR 1.5 to 1.0 recovers less than 0.2 dB — barely detectable. Going from a poorly placed antenna to a well-placed one, or from a marginal path to a clean line of sight, can change SNR by 10–20 dB. Fix your match if it is above 3.0 and causes concern; otherwise, focus on placement, height, and path."
+---
+
+import Figure from "../../components/Figure.astro";
+import BenchSWRCurve from "../../components/viz/bench-SWRCurve.astro";
+
+Part 7 of the *bench-notes* series. This one covers the NanoVNA — the sub-$50 tool that answers the question you couldn't answer before: is this antenna actually tuned for 915 MHz?
+
+<div class="callout">
+<p><strong>In short.</strong> SWR measures how well an antenna is matched to your radio's 50-ohm port. A NanoVNA sweeps across your target frequency range and shows you the SWR curve — the dip at 915 MHz tells you the resonant frequency and match. For LoRa at 915 MHz, target SWR below 2.0. Calibrate before every measurement. Most apparent failures are a calibration or connector issue, not the antenna.</p>
+</div>
+
+## What SWR measures
+
+Every RF transmitter outputs power at 50 ohms. An antenna that presents a 50-ohm load receives all of that power and radiates it. An antenna that presents a different impedance reflects some power back. The Standing Wave Ratio is the ratio of peak to minimum voltage on the feed line — it's a measure of how much of the forward power is being reflected.
+
+The math: SWR 1.0 = 0% reflected (perfect). SWR 2.0 = about 11% reflected. SWR 3.0 = about 25% reflected. In decibels, SWR 2.0 corresponds to roughly −0.5 dB of power lost to reflection — detectable in a lab, not meaningful at the link level for LoRa. SWR 3.0 is about −1.3 dB. Once you're above 3.0, the mismatch starts costing more than just a fraction of a dB.
+
+For practical LoRa mesh deployment, an SWR below 2.0 at 915 MHz is the target. Spending effort chasing SWR from 1.5 to 1.2 will not improve your link margin in any measurable way. What the NanoVNA does tell you is whether your antenna is actually resonant at 915 MHz at all — and whether that "915 MHz antenna" you received is actually tuned for 868 MHz (the European LoRa band) instead.
+
+## The NanoVNA workflow
+
+The NanoVNA measures SWR by sending a swept RF signal into your antenna and measuring the reflected signal on the same port (CH0, also labeled S11 or Port 1). CH1 is for transmission measurements between two devices; you don't need it for antenna testing.
+
+**Step 1: Set the frequency range.** Navigate to Stimulus → Start and set 850 MHz. Set Stop to 950 MHz. This gives you a 100 MHz window centered on the US 915 MHz LoRa band. Setting the range before calibrating is critical — calibration is only valid for the range you set when you calibrate.
+
+**Step 2: Calibrate.** Connect the OPEN standard to CH0. Select Open in the calibration menu. Swap to SHORT, select Short. Swap to the 50-ohm LOAD standard, select Load. Save. Skip this and the readings are garbage.
+
+Calibrate at the reference plane — the end of whatever cable or adapter you'll use to connect the antenna, not at the NanoVNA itself. If you use a pigtail cable for testing, that cable must be attached during calibration. Adding or removing it after calibration moves the reference plane and invalidates the calibration.
+
+**Step 3: Connect the antenna and read the curve.**
+
+<Figure caption="A well-matched 915 MHz LoRa antenna shows a resonant dip at 915 MHz. This example reads SWR 1.3 at 915 MHz — excellent. The dip position tells you the antenna's resonant frequency; the depth tells you the match quality.">
+  <BenchSWRCurve />
+</Figure>
+
+The curve should show a "V" shape (or a broad U for a wideband design) with the lowest point — the resonant dip — ideally at or near 915 MHz. A marker placed at 915 MHz tells you the exact SWR at that frequency.
+
+## What the dip position tells you
+
+**Dip at 915 MHz:** The antenna is correctly resonant at your target frequency.
+
+**Dip below 915 MHz (e.g., at 868 MHz):** The antenna is electrically or physically too long. This is the most common failure mode when "915 MHz" antennas arrive from suppliers — they are sometimes relabeled 868 MHz units. The NodakMesh LoRa testing community has documented this issue with some stub antennas sold on marketplaces; measurement is the only way to confirm. If the antenna is adjustable, lengthening it shifts the dip down in frequency; shortening it shifts the dip up.
+
+**Dip above 915 MHz:** The antenna is too short. Less common with stub and whip designs.
+
+**No dip at all (flat SWR above 3.0 across the whole range):** Open or short circuit — a damaged connector, a detached antenna element, or a missing ground plane. Also triggered by an uncalibrated NanoVNA.
+
+## The connector problem: RP-SMA vs SMA
+
+Many LoRa antennas use RP-SMA (Reverse Polarity SMA) connectors rather than standard SMA. RP-SMA has the center pin on the bulkhead side rather than the cable side — the reverse of standard SMA. Plugging an RP-SMA antenna into a standard SMA port (or vice versa) produces a connection that partially engages the threads but has no center-pin contact. The result is high SWR across the board.
+
+Check your connector type before concluding there's a problem with the antenna. Use an RP-SMA female to SMA male adapter if needed to connect to CH0.
+
+## What SWR doesn't tell you
+
+The NanoVNA measures match (SWR) and impedance, not gain. A perfectly matched antenna with 0 dBi gain will cover less ground than a slightly mismatched antenna with 6 dBi gain. SWR is one input to your link budget — antenna gain and [placement](/blog/where-to-put-your-next-repeater/) are larger variables.
+
+Two antennas can both show SWR 1.3 at 915 MHz and have completely different gain, radiation patterns, and real-world range. The NanoVNA confirms electrical match; a field test or drive test confirms actual coverage.
+
+For diagnosing range problems: if SWR is below 2.0, the antenna match is not your issue. Look at [path loss, SNR, and link margin](/blog/reading-the-signal/) instead.
+
+Questions about antenna testing at your site? [Tell us what you're measuring](mailto:admin@waev.app).
+
+{/* ILLUSTRATION PROMPT: A hand-painted close-up still life of a small coiled LoRa antenna stub resting on a worn wooden workbench surface, next to a neat loop of thin coaxial cable and a small flat-blade adjustment tool. Warm directional workshop light from the upper left. Earthy brown and ochre tones, no digital elements, no screens or glowing indicators. The composition is horizontal and simple — three objects on a bench, intimate workbench scale. House style: painterly, warm, grounded. */}
