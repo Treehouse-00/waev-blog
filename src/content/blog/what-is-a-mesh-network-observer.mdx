@@ -1,0 +1,62 @@
+---
+title: "What Is a Mesh Network Observer?"
+description: "A mesh network observer is an enrolled node that bridges the radio mesh and your MQTT broker, giving Waev a verified read-only window into your network's traffic."
+date: 2026-11-26
+tags: ["how-it-works"]
+hero:
+  src: "/hero-what-is-a-mesh-network-observer.jpg"
+  alt: "A warm flat illustration of an old brass ear trumpet leaning against a window sill, morning light coming through, the device listening with no mouth."
+faq:
+  - q: "What is a mesh network observer?"
+    a: "A mesh network observer is a MeshCore node that connects to your MQTT broker and publishes the radio packets it hears from the mesh. Waev subscribes to those packets over MQTT to build its analytics. The observer listens; it does not transmit commands or modify the mesh."
+  - q: "Does an observer need a radio, or can it be software-only?"
+    a: "An observer needs a physical LoRa radio to hear mesh packets over the air. It is a real node on the mesh — the same hardware that runs as a repeater or a handheld. The difference is in role: an observer is configured to publish what it hears to an MQTT broker rather than (or in addition to) participating in routing."
+  - q: "How does Waev use observer data differently from other mesh sources?"
+    a: "Waev draws topology edges only from enrolled observers and authenticated repeaters. Packets received from other sources may be stored for statistics, but topology edges — the lines on the Live Map — require a verified source. This is what evidence-based topology means: no observer, no edge."
+  - q: "How many observers does a network need?"
+    a: "It depends on coverage. One observer in a good central location can hear a significant fraction of a small network's traffic. Larger or more spread-out networks benefit from multiple observers positioned to cover different areas. Each observer enrolled adds another verified vantage point."
+  - q: "Can I enroll an existing repeater as an observer?"
+    a: "A node can act as both a repeater and an observer simultaneously if it has internet connectivity to reach your MQTT broker. The observer function — publishing heard packets to MQTT — does not prevent the node from participating in mesh routing."
+---
+
+import Figure from "../../components/Figure.astro";
+import HiwObserverBridge from "../../components/viz/hiw-ObserverBridge.astro";
+import TrustedSources from "../../components/viz/TrustedSources.astro";
+
+Waev has no antenna. It does not connect directly to a LoRa radio or hear packets off the air. What it does have is a subscription to your MQTT broker, where an observer — a MeshCore node with internet connectivity — publishes the packets it hears from the mesh. Everything Waev knows about your network arrives through that path.
+
+<div class="callout">
+<p><strong>In short.</strong> A mesh network observer is an enrolled MeshCore node that bridges the radio mesh and your MQTT broker. It hears RF packets from nearby nodes and publishes them over the internet to your broker, where Waev subscribes read-only. The observer is Waev's only window into the mesh — which also means it is the only source Waev trusts for drawing topology edges.</p>
+</div>
+
+## The observer as a bridge between two worlds
+
+A LoRa mesh operates on RF — packets travel over radio between nodes without any internet involved. An analytics platform operates over IP — it reads data from a broker over a TCP/IP connection. The observer is the device that lives in both worlds: it has a LoRa radio that hears mesh packets, and it has an internet connection that lets it publish those packets to your MQTT broker.
+
+<Figure caption="The observer bridges two worlds. Left: radio mesh — nodes exchange packets over RF, dashed lines. Center: the observer, with both a radio interface and an ethernet interface. Right: your MQTT broker, which Waev subscribes to over a solid TCP/IP connection.">
+  <HiwObserverBridge />
+</Figure>
+
+That path — radio to observer to broker to Waev — is the only path Waev uses to receive mesh data. Waev does not have a direct radio connection to your mesh. It cannot hear packets you have not given an enrolled observer the chance to publish.
+
+## What makes an observer enrolled
+
+An observer is enrolled when you configure a MeshCore node to publish to your MQTT broker using credentials you have set up, and then register that observer with Waev. "Enrolled" is not a firmware state — it is Waev's term for an observer it recognizes as a verified source for topology data.
+
+The distinction matters because Waev's topology edges — the connections drawn on the Live Map — are drawn only from enrolled observers and authenticated repeaters.
+
+<Figure caption="Evidence vs. inference at Waev's topology engine. Top lane: an enrolled observer or authenticated repeater produces a packet, the gate verifies the source, and a topology edge is drawn. Bottom lane: a spoofed or inferred prefix arrives, the gate rejects it, and no edge is drawn.">
+  <TrustedSources />
+</Figure>
+
+A packet that arrives from a source Waev cannot verify does not produce a topology edge. The packet may be stored for statistics, but the map will not show a connection that lacks a verified source. This is the meaning of evidence-based topology: the map shows what can be proved, not what can be inferred.
+
+The practical consequence is that observer placement matters. A single observer in a good central location can verify a significant portion of the links in a small network. A network with multiple observers at different positions gets more complete coverage — more links verified, more of the topology visible on the map. For more on how that coverage translates into useful data, see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/).
+
+## What an observer does not do
+
+An observer is a listener. It hears RF packets from nearby nodes and publishes them to MQTT. It does not transmit instructions back to the mesh, does not modify routing tables, and does not send commands to other nodes. The traffic flow is one-directional: mesh to observer, observer to broker, broker to Waev.
+
+This is structurally consistent with the broader model. Waev holds read-only credentials on your broker; Waev's subscriber session cannot write back to the mesh through the broker. The observer itself publishes to the broker, but its role is to carry the ambient packet stream — not to direct it. The [bring-your-own-broker model](/blog/bring-your-own-broker/) keeps your infrastructure as the canonical store; the observer is just the source of the stream.
+
+{/* ILLUSTRATION PROMPT: A warm flat illustration of an old brass ear trumpet (hearing aid) leaning against a window sill, morning light coming through. The device listens; it has no mouth. Warm amber light, cream plaster wall, no tech elements. */}
