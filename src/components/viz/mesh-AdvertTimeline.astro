@@ -1,0 +1,123 @@
+---
+/**
+ * mesh-AdvertTimeline — two-row timeline comparing normal advert cadence
+ * vs a chatty node flooding adverts at short intervals.
+ * Theme-aware via CSS custom properties. Pure SVG, no client JS.
+ */
+---
+
+<svg viewBox="0 0 720 200" role="img" aria-label="Two-row timeline comparing advert cadence. Top row: normal repeater, adverts spaced roughly every 47 hours — only one advert visible in the 4-hour window. Bottom row: chatty node, adverts every 2 to 5 minutes — a dense cluster of ticks filling the same 4-hour window." style="width:100%;height:auto;">
+
+  <!-- Axis labels -->
+  <text x="20" y="28" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;">NODE</text>
+  <text x="300" y="28" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">← 4-hour window →</text>
+  <text x="700" y="28" text-anchor="end" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">FLOOD ADVERT RATE</text>
+
+  <!-- Time axis -->
+  <line x1="200" y1="36" x2="710" y2="36" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="200" y="50" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">T+0h</text>
+  <text x="327" y="50" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">T+1h</text>
+  <text x="453" y="50" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">T+2h</text>
+  <text x="580" y="50" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">T+3h</text>
+  <text x="707" y="50" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">T+4h</text>
+
+  <!-- Row 1: Normal repeater (healthy) -->
+  <text x="20" y="92" style="fill: var(--text); font-family: var(--mono); font-size: 11px;">relay-north</text>
+  <text x="20" y="108" style="fill: var(--text-muted); font-family: var(--font); font-size: 10px;">(normal)</text>
+  <line x1="200" y1="88" x2="710" y2="88" style="stroke: var(--border-subtle);" stroke-width="1.5" />
+  <!-- One advert tick in 4h window: only if interval was 47h, none would appear in 4h -->
+  <!-- Show "no adverts in this window" gracefully -->
+  <text x="455" y="92" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--font); font-size: 10px; font-style: italic;">— 1 advert per 47 hours (default) —</text>
+  <text x="710" y="92" text-anchor="end" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11px; font-weight: 600;">~0.02/h</text>
+
+  <!-- Row 2: Chatty node (problem) -->
+  <text x="20" y="148" style="fill: var(--text); font-family: var(--mono); font-size: 11px;">relay-edge</text>
+  <text x="20" y="164" style="fill: var(--sys-red-400); font-family: var(--font); font-size: 10px;">(chatty)</text>
+  <line x1="200" y1="144" x2="710" y2="144" style="stroke: var(--border-subtle);" stroke-width="1.5" />
+  <!-- Dense advert ticks every ~3 mins -->
+  <g style="stroke: var(--sys-red-400); stroke-width: 2; opacity: 0.85;">
+    <line x1="200" y1="134" x2="200" y2="154" />
+    <line x1="206" y1="134" x2="206" y2="154" />
+    <line x1="213" y1="134" x2="213" y2="154" />
+    <line x1="219" y1="134" x2="219" y2="154" />
+    <line x1="225" y1="134" x2="225" y2="154" />
+    <line x1="232" y1="134" x2="232" y2="154" />
+    <line x1="238" y1="134" x2="238" y2="154" />
+    <line x1="245" y1="134" x2="245" y2="154" />
+    <line x1="251" y1="134" x2="251" y2="154" />
+    <line x1="258" y1="134" x2="258" y2="154" />
+    <line x1="264" y1="134" x2="264" y2="154" />
+    <line x1="271" y1="134" x2="271" y2="154" />
+    <line x1="277" y1="134" x2="277" y2="154" />
+    <line x1="284" y1="134" x2="284" y2="154" />
+    <line x1="290" y1="134" x2="290" y2="154" />
+    <line x1="297" y1="134" x2="297" y2="154" />
+    <line x1="303" y1="134" x2="303" y2="154" />
+    <line x1="310" y1="134" x2="310" y2="154" />
+    <line x1="317" y1="134" x2="317" y2="154" />
+    <line x1="323" y1="134" x2="323" y2="154" />
+    <line x1="330" y1="134" x2="330" y2="154" />
+    <line x1="336" y1="134" x2="336" y2="154" />
+    <line x1="343" y1="134" x2="343" y2="154" />
+    <line x1="349" y1="134" x2="349" y2="154" />
+    <line x1="356" y1="134" x2="356" y2="154" />
+    <line x1="362" y1="134" x2="362" y2="154" />
+    <line x1="369" y1="134" x2="369" y2="154" />
+    <line x1="375" y1="134" x2="375" y2="154" />
+    <line x1="382" y1="134" x2="382" y2="154" />
+    <line x1="388" y1="134" x2="388" y2="154" />
+    <line x1="395" y1="134" x2="395" y2="154" />
+    <line x1="401" y1="134" x2="401" y2="154" />
+    <line x1="408" y1="134" x2="408" y2="154" />
+    <line x1="414" y1="134" x2="414" y2="154" />
+    <line x1="421" y1="134" x2="421" y2="154" />
+    <line x1="427" y1="134" x2="427" y2="154" />
+    <line x1="434" y1="134" x2="434" y2="154" />
+    <line x1="440" y1="134" x2="440" y2="154" />
+    <line x1="447" y1="134" x2="447" y2="154" />
+    <line x1="453" y1="134" x2="453" y2="154" />
+    <line x1="460" y1="134" x2="460" y2="154" />
+    <line x1="466" y1="134" x2="466" y2="154" />
+    <line x1="473" y1="134" x2="473" y2="154" />
+    <line x1="479" y1="134" x2="479" y2="154" />
+    <line x1="486" y1="134" x2="486" y2="154" />
+    <line x1="492" y1="134" x2="492" y2="154" />
+    <line x1="499" y1="134" x2="499" y2="154" />
+    <line x1="505" y1="134" x2="505" y2="154" />
+    <line x1="512" y1="134" x2="512" y2="154" />
+    <line x1="518" y1="134" x2="518" y2="154" />
+    <line x1="525" y1="134" x2="525" y2="154" />
+    <line x1="531" y1="134" x2="531" y2="154" />
+    <line x1="538" y1="134" x2="538" y2="154" />
+    <line x1="544" y1="134" x2="544" y2="154" />
+    <line x1="551" y1="134" x2="551" y2="154" />
+    <line x1="557" y1="134" x2="557" y2="154" />
+    <line x1="564" y1="134" x2="564" y2="154" />
+    <line x1="570" y1="134" x2="570" y2="154" />
+    <line x1="577" y1="134" x2="577" y2="154" />
+    <line x1="583" y1="134" x2="583" y2="154" />
+    <line x1="590" y1="134" x2="590" y2="154" />
+    <line x1="596" y1="134" x2="596" y2="154" />
+    <line x1="603" y1="134" x2="603" y2="154" />
+    <line x1="610" y1="134" x2="610" y2="154" />
+    <line x1="616" y1="134" x2="616" y2="154" />
+    <line x1="623" y1="134" x2="623" y2="154" />
+    <line x1="629" y1="134" x2="629" y2="154" />
+    <line x1="636" y1="134" x2="636" y2="154" />
+    <line x1="642" y1="134" x2="642" y2="154" />
+    <line x1="649" y1="134" x2="649" y2="154" />
+    <line x1="655" y1="134" x2="655" y2="154" />
+    <line x1="662" y1="134" x2="662" y2="154" />
+    <line x1="668" y1="134" x2="668" y2="154" />
+    <line x1="675" y1="134" x2="675" y2="154" />
+    <line x1="681" y1="134" x2="681" y2="154" />
+    <line x1="688" y1="134" x2="688" y2="154" />
+    <line x1="694" y1="134" x2="694" y2="154" />
+    <line x1="701" y1="134" x2="701" y2="154" />
+    <line x1="707" y1="134" x2="707" y2="154" />
+  </g>
+  <text x="710" y="148" text-anchor="end" style="fill: var(--sys-red-400); font-family: var(--mono); font-size: 11px; font-weight: 700;">~20+/h</text>
+
+  <!-- Footnote -->
+  <text x="200" y="186" style="fill: var(--text-muted); font-family: var(--font); font-size: 10px;">Default flood.advert.interval is 47 h (v1.16.0+). A misconfigured node at 2–5 min floods all its relay neighbors.</text>
+</svg>
