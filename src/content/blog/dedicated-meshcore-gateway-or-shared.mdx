@@ -1,0 +1,82 @@
+---
+title: "Dedicated MeshCore Gateway or Shared?"
+description: "Should your MeshCore MQTT gateway be a dedicated node or shared with a repeater? The answer depends on where your gateway needs to be — not on how many devices you own."
+date: 2026-10-15
+tags: ["how-it-works", "field-notes"]
+hero:
+  src: "/hero-dedicated-meshcore-gateway-or-shared.jpg"
+  alt: "A warm, painterly close-up of a Y-shaped wooden branch fork resting on a workbench, representing a clear decision point between two distinct paths."
+faq:
+  - q: "Can one MeshCore node act as both a repeater and an MQTT gateway?"
+    a: "Yes. An ESP32-based node like the Heltec WiFi LoRa 32 can relay mesh packets over RF while simultaneously publishing observations to an MQTT broker via WiFi. Both functions run concurrently on the same firmware."
+  - q: "Does running gateway and repeater on the same node degrade RF performance?"
+    a: "Not in any measurable way for most deployments. The gateway function (WiFi publishing to MQTT) is handled by the microcontroller independently of the LoRa radio. The RF performance of the SX1262 transceiver is not affected by concurrent WiFi activity during typical mesh traffic."
+  - q: "What is the main disadvantage of a shared gateway-repeater node?"
+    a: "Position. A repeater should be placed for RF coverage — elevated, clear sightlines, between the nodes it serves. A gateway needs reliable WiFi or Ethernet access. Those two requirements often point to different physical locations. A shared node compromises one or both."
+  - q: "When should I use a dedicated gateway node?"
+    a: "Use a dedicated gateway when your best repeater site has no internet access, or when your internet-connected location has poor RF position. Separating the roles lets you optimize each independently."
+  - q: "What hardware do I need for a dedicated gateway node?"
+    a: "Any WiFi-capable MeshCore node can serve as a gateway. An ESP32-based board like the Heltec WiFi LoRa 32 is the common choice — it has onboard WiFi, runs MeshCore firmware, and costs under $20. It does not need to relay RF traffic to publish MQTT observations."
+---
+
+import Figure from "../../components/Figure.astro";
+import FieldmanualGatewayRole from "../../components/viz/fieldmanual-GatewayRole.astro";
+import ByobDataFlow from "../../components/viz/byob-DataFlow.astro";
+
+The question arrives once you've got a working mesh and you're thinking about connecting it to Waev. You have repeaters placed for coverage. You need a node that can bridge the mesh to your MQTT broker. Should that be its own dedicated device, or should one of your existing repeaters take on the job?
+
+The framing that makes this decision clearer: these are two different placement requirements. Confusing them is how you end up with a node that does both jobs badly.
+
+<div class="callout">
+<p><strong>In short.</strong> Whether to run a dedicated MeshCore gateway node or share it with a repeater comes down to position. A repeater should go where RF coverage is best; a gateway goes where it has reliable internet access. When those two places are the same location, sharing is fine. When they're different — which is common — separating the roles lets you optimize each one.</p>
+</div>
+
+## What each role actually requires
+
+A mesh **repeater** exists to extend RF coverage. Its job is to hear packets from distant nodes and re-broadcast them further into the mesh. That job requires good antenna position — elevated, with clear line of sight to the nodes it serves. Where you put it is everything.
+
+An **MQTT gateway** exists to bridge RF observations to the internet. Its job is to receive packets on the mesh and publish them to your broker. That job requires reliable internet access — a stable WiFi connection or a wired Ethernet link. Where it can connect is everything.
+
+<Figure caption="Two configurations. Left: a dedicated gateway node placed where WiFi is good, separate from the repeater network. Right: a shared node doing both — placed where RF and WiFi overlap, which may compromise each.">
+  <FieldmanualGatewayRole />
+</Figure>
+
+These requirements pull in different directions. The best repeater site is often on a rooftop, on a hill, or at the edge of a property — places with good RF sightlines. The best gateway site is often near a router, inside a structure with a stable uplink, or on a network with managed credentials. Overlap happens, but it's not the norm.
+
+## When sharing works
+
+A shared gateway-repeater makes sense when the location satisfies both requirements adequately. A node on the second floor of a building, near a window, with good WiFi signal and a clear view to neighboring mesh nodes — that's a reasonable candidate.
+
+For small indoor meshes, sharing is almost always fine. The node doesn't have conflicting placement demands: everything is within range of the WiFi router and within RF range of the other nodes.
+
+If you're running an ESP32-based node like a Heltec WiFi LoRa 32, it handles both functions concurrently. The LoRa radio and the WiFi radio operate independently. One listens on the mesh frequency; the other maintains its MQTT broker connection. They don't interfere in any meaningful way during normal mesh traffic loads.
+
+## When to separate them
+
+Separation becomes worth considering when you're optimizing for coverage and reliability:
+
+**Your best repeater site has no internet access.** A rooftop relay running off solar power, a hill site with no network cable — these are excellent RF positions and poor gateway candidates. A second node, lower down, connected to your router, can handle the MQTT bridge without compromising the relay's position.
+
+**Your internet-connected location has poor RF coverage.** If your router is on one side of a building and the mesh nodes you care about are on the other, a gateway placed for WiFi access will hear fewer packets. A separate relay in a better RF position will hear more — and if it's connected to the gateway via the mesh, both jobs get done better.
+
+**You want resilience.** A shared node that loses WiFi also loses its gateway function. A dedicated gateway going offline doesn't take down your repeater network — the mesh continues to relay traffic, and Waev's Live Map simply shows the topology as stale until the gateway reconnects. Separation gives you independent failure modes.
+
+## The data flow either way
+
+Whether the gateway is dedicated or shared, the data path is the same: the gateway node publishes MQTT records to [your broker](/blog/bring-your-own-broker/), Waev subscribes, and the map is built from what enrolled observers report.
+
+<Figure caption="Data lineage: whether gateway and repeater are one node or two, the observation path to your MQTT broker stays the same. The broker is always yours; Waev subscribes read-only.">
+  <ByobDataFlow />
+</Figure>
+
+The number of enrolled observers matters more than their physical form. Two nodes reporting to your broker from different positions give the map more coverage than one node doing both jobs from a compromised position. A shared node counts as one observer; two separate nodes count as two.
+
+## A practical starting point
+
+If you're getting started: share the roles on a single ESP32 node. It's simpler to configure, and for most small meshes, placement isn't a limiting factor.
+
+If you're optimizing an existing mesh: look at your Live Map and Live Packets. If nodes that you know are active aren't showing up, the likely cause is that your gateway can't hear them. Check whether [moving your observer closer to those nodes](/blog/where-to-put-your-next-repeater/) would help — and whether that means separating the gateway role so the repeater can be repositioned.
+
+The decision is placement, not philosophy.
+
+{/* ILLUSTRATION PROMPT: A warm, painterly still-life close-up of a Y-shaped wooden branch fork resting flat on a bare workbench surface — the fork is smooth, slightly worn, clearly a deliberate split into two distinct paths. Warm earthy tones; soft, indirect light from one side. The fork is the only subject, centered with breathing room. No annotations, no text, no digital elements. The composition reads clearly at thumbnail size: a choice, waiting to be made. */}

@@ -1,0 +1,133 @@
+---
+// Dedicated vs Shared Gateway Role — static SVG viz (no client JS)
+---
+<figure class="fm-gateway-role" aria-label="Two gateway configurations compared: dedicated node versus shared repeater-gateway">
+  <div class="fm-gr-wrap">
+    <div class="fm-gr-option">
+      <div class="fm-gr-label">Dedicated gateway</div>
+      <div class="fm-gr-device fm-gr-gateway">
+        <span class="fm-gr-icon">⌛</span>
+        <span class="fm-gr-name">Gateway node</span>
+        <div class="fm-gr-roles">
+          <span class="fm-gr-role fm-gr-active">WiFi → MQTT</span>
+          <span class="fm-gr-role fm-gr-inactive">RF relay</span>
+        </div>
+      </div>
+      <div class="fm-gr-arrow">↓</div>
+      <div class="fm-gr-broker">MQTT broker</div>
+      <div class="fm-gr-note">One job: bridge the mesh to the internet. Placed where WiFi is good.</div>
+    </div>
+    <div class="fm-gr-divider"></div>
+    <div class="fm-gr-option">
+      <div class="fm-gr-label">Shared node</div>
+      <div class="fm-gr-device fm-gr-shared">
+        <span class="fm-gr-icon">📡</span>
+        <span class="fm-gr-name">Repeater + gateway</span>
+        <div class="fm-gr-roles">
+          <span class="fm-gr-role fm-gr-active">WiFi → MQTT</span>
+          <span class="fm-gr-role fm-gr-active">RF relay</span>
+        </div>
+      </div>
+      <div class="fm-gr-arrow">↓</div>
+      <div class="fm-gr-broker">MQTT broker</div>
+      <div class="fm-gr-note">Two jobs: relay RF and report to the broker. Position is a compromise.</div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .fm-gateway-role {
+    margin: 1.5rem 0;
+    font-family: inherit;
+  }
+  .fm-gr-wrap {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    background: var(--surface-2, #f8f5f0);
+    border: 1px solid var(--border, #d9d0c4);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fm-gr-option {
+    flex: 1;
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .fm-gr-divider {
+    width: 1px;
+    background: var(--border, #d9d0c4);
+    flex-shrink: 0;
+  }
+  .fm-gr-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted, #7a6f62);
+    margin-bottom: 0.25rem;
+  }
+  .fm-gr-device {
+    background: var(--surface-1, #fff);
+    border: 1px solid var(--border, #d9d0c4);
+    border-radius: 6px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .fm-gr-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+  .fm-gr-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text, #2d2620);
+  }
+  .fm-gr-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .fm-gr-role {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    display: inline-block;
+    width: fit-content;
+  }
+  .fm-gr-active {
+    background: #d4edda;
+    color: #1a5c2a;
+  }
+  .fm-gr-inactive {
+    background: var(--surface-2, #f0ece6);
+    color: var(--text-muted, #7a6f62);
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+  .fm-gr-arrow {
+    text-align: center;
+    color: var(--text-muted, #7a6f62);
+    font-size: 1.1rem;
+  }
+  .fm-gr-broker {
+    background: var(--surface-1, #fff);
+    border: 1px dashed var(--border, #d9d0c4);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text, #2d2620);
+    text-align: center;
+  }
+  .fm-gr-note {
+    font-size: 0.75rem;
+    color: var(--text-muted, #7a6f62);
+    line-height: 1.4;
+    margin-top: 0.25rem;
+  }
+</style>
