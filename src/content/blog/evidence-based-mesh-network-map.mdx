@@ -1,0 +1,94 @@
+---
+title: "If the Map Shows It"
+description: "An evidence based mesh network map draws only edges it can verify — enrolled observers and authenticated repeaters. No proof, no line. That restraint is the feature."
+date: 2026-09-13
+tags: ["mesh-topology", "deep-dive"]
+hero:
+  src: "/hero-evidence-based-mesh-network-map.jpg"
+  alt: "A hand-painted close-up of a drafting compass and a folded map on a wooden table, warm natural light, quiet and methodical."
+faq:
+  - q: "What makes a mesh network map evidence-based?"
+    a: "An evidence-based mesh network map draws topology edges only from verified observations — packets relayed through enrolled observers over MQTT and authenticated repeater reports. If the system cannot produce a verifiable source for an edge, it does not draw the edge. The map reflects what the network did, not what the system infers or guesses it might have done."
+  - q: "Why would a mesh map show connections that don't actually exist?"
+    a: "Most LoRa mesh nodes broadcast ADVERT packets that include information about their neighbors. A naive mapping tool can draw edges from those neighbor lists without verifying that the claimed link is current, functional, or even real. Nodes can also carry stale neighbor tables or be deliberately misconfigured. An evidence-based approach ignores claimed neighbor relationships and draws only from direct RF observations made by enrolled observers."
+  - q: "What happens to inferred or spoofed edges in Waev?"
+    a: "They are rejected and not drawn. When a topology source cannot be verified against an enrolled observer or authenticated repeater, Waev does not add the edge to the Live Map. The edge simply does not appear. This is not a failure to collect data — it is a deliberate decision to report nothing rather than report something unverified."
+  - q: "Does an evidence-based map show fewer nodes than my network has?"
+    a: "It may. Nodes that are not within hearing range of any enrolled observer will not appear, even if they are transmitting normally. Nodes that have opted out with a privacy marker will not appear by design. The map shows what the observer infrastructure can verify — its gaps are informative. A silent zone on an evidence-based map is a real finding: either an observer is needed, or that zone is genuinely unreachable."
+  - q: "How does Waev verify a topology edge?"
+    a: "A topology edge is drawn when an enrolled observer (connected to your MQTT broker over TCP/IP) reports receiving a packet relayed through a specific path. The observer is the ground truth: it physically heard the RF transmission at a measured SNR and reported the observation. Edges that trace back to an enrolled observer observation are drawn. Edges that trace back only to a node's self-reported neighbor list are not."
+---
+
+import Figure from "../../components/Figure.astro";
+import TrustedSources from "../../components/viz/TrustedSources.astro";
+import HiwTopologyDraw from "../../components/viz/hiw-TopologyDraw.astro";
+
+There is a common pattern in mesh mapping tools: draw everything you hear. A node broadcasts its neighbor list; the tool draws edges to all of them. Packets arrive with hop-path metadata; the tool connects every node in the path. The resulting map is dense and confident. It also may not be accurate.
+
+Confidence without verification isn't trust. It's noise with a clean interface.
+
+<div class="callout">
+<p><strong>In short.</strong> An evidence based mesh network map draws only the edges it can prove: connections backed by enrolled observers receiving real RF transmissions, or authenticated repeaters reporting real relays. If Waev cannot produce a verifiable source for an edge, it does not draw the line. That restraint is not a limitation — it is the point.</p>
+</div>
+
+## The hearing problem
+
+When a MeshCore node transmits a packet, nearby nodes hear it and relay it forward. That process produces a lot of metadata: hop counts, path records, neighbor advertisements, signal measurements. Most of this metadata is accurate most of the time. Some of it isn't.
+
+Neighbor advertisement tables go stale. A node that moved six months ago still appears in another node's neighbor list if neither has rebooted. A misconfigured node can broadcast a neighbor list that includes nodes it cannot actually reach. And in a longer-lived network, the gap between what a node *claims* about its neighbors and what the RF environment actually supports grows over time without anyone noticing.
+
+A map that draws from ADVERT metadata is drawing from a node's self-report. Self-reports are useful signals. They are not evidence.
+
+<Figure caption="<b>Two lanes.</b> Top: an enrolled observer receives a packet relayed through an authenticated repeater — both sources are verifiable. The edge is drawn. Bottom: a spoofed prefix arrives with no verifiable source — the edge is rejected. The map shows only what something verifiable produced.">
+  <TrustedSources />
+</Figure>
+
+## What makes an edge verifiable
+
+Waev draws topology edges from two sources: enrolled observers and authenticated repeaters.
+
+An **enrolled observer** is a MeshCore node (or compatible device) that is connected to your MQTT broker over TCP/IP. When a packet passes through the observer's radio range, the observer hears it, records the SNR and hop data, and publishes the observation to your broker. Waev subscribes to the broker and reads the observation. The observer is the physical evidence: it was there, it received the RF signal, it measured the SNR at that moment.
+
+An **authenticated repeater** is a node that Waev can verify as a legitimate relay in your network. Its packet contributions carry provenance that can be traced. Inferred or spoofed prefixes — nodes whose identity cannot be verified against your enrolled network — are not authenticated and their edges are not drawn.
+
+The pipeline is important to understand: Waev has no antenna. It does not receive RF directly. Everything it knows about your mesh came through an enrolled observer, over MQTT, from a real physical measurement. There is no step in that chain where Waev guesses.
+
+<Figure caption="What the air said, and what the map draws. Left: Node A transmits; Node B relays; Observer hears it at +7.4 dB on hop 1, +5.2 dB on hop 2. Right: Waev draws exactly two edges — A-B and B-Observer — each backed by the Observer's verified measurement. Nothing is inferred.">
+  <HiwTopologyDraw />
+</Figure>
+
+## What rejection means
+
+When Waev encounters a topology source it cannot verify, it rejects it. The edge is not drawn. This happens silently — there's no error, no placeholder, no dashed line marking the gap. The topology simply reflects only what has been verified.
+
+This is a deliberate design choice, and it has an important implication: absence has meaning.
+
+If a node does not appear on the Live Map, one of a small set of things is true: it is not within range of any enrolled observer; it is opted out via a privacy marker; it is offline; or its observer is not connected. Each of those is a real finding. The map is not broken; it is reporting honestly that it has no verified evidence of that node's activity.
+
+Compare this to a map that draws from self-reported neighbor lists. In that model, a node that went offline three weeks ago might still appear — its last-reported neighbors are still in other nodes' tables. The map shows a ghost. The operator sees coverage that doesn't exist, plans around it, and discovers the gap during an event rather than during a Tuesday routine check.
+
+For a network people may lean on in an emergency, the ghost is worse than the gap.
+
+## The map's gaps are findings
+
+An evidence-based map's silences are informative. A silent zone tells you: no enrolled observer covers this area. That's actionable. Either you need to add an observer to get coverage visibility, or the zone is genuinely not reachable from your current relay infrastructure.
+
+A zone that shows weak, intermittent edges tells you: something in that path is marginal. SNR data from the observer backs that up — a +2 dB link that was +9 dB four months ago has physically changed. The degradation is in the data, not in an assumption.
+
+This is what we mean by [evidence-based topology](https://waev.app): the map is built from the signal record, not from a topology inference engine. For a deeper look at how the observation pipeline works — from RF packet to Live Map edge — see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/).
+
+## The position
+
+The case for evidence-based topology is not primarily about edge cases — misconfigured nodes, stale neighbor tables, spoofed prefixes. Those exist, but they're not the main argument.
+
+The main argument is simpler: a map you can trust behaves differently from a map you can't. When the map shows a link, you act on it. You plan coverage based on it. You tell a served agency it's there. If the map is drawing from unverified self-reports, those actions rest on claims, not evidence. In a non-critical context, that's probably fine. In an emergency, it isn't.
+
+Waev's position is that the honest map — the one that says "I don't know" rather than guessing, the one that shows gaps rather than filling them with inference — is more useful precisely because of what it refuses to draw. The gap you see is a problem you can fix. The ghost you don't know about is a risk you're carrying.
+
+For more on how signal quality data informs what gets drawn and what gets flagged, see [how to read SNR and hop count](/blog/reading-the-signal/).
+
+---
+
+The map is only as good as what produced it. If you're ready to see what your network can prove, [connect at waev.app](https://waev.app).
+
+{/* ILLUSTRATION PROMPT: A hand-painted warm flat illustration — extreme close-up of a brass drafting compass and a folded topographic map on a wooden worktable, bathed in warm raking natural light from a window. The compass is open mid-measurement. No screens, no digital elements, no figures. The metaphor is deliberate measurement: the map was built from careful observation, not assumption. Earthy warm palette with one restrained accent color. Still-life composition, breathing room. */}
