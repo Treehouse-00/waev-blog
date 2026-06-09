@@ -116,9 +116,11 @@
   z-index: 1;
 }
 
-/* Cover artwork — the container is the sized box (16:7) with rounded corners;
-   the image fills it edge-to-edge via object-fit: cover. */
+/* Cover artwork — the container is the sized rounded box (16:7); the image is
+   pinned to all four edges so it fills completely, top-to-bottom and side-to-
+   side, regardless of the image's intrinsic ratio. */
 .post-card-cover {
+  position: relative;
   aspect-ratio: 16 / 7;
   border-radius: var(--shape-lg);
   overflow: hidden;
@@ -126,7 +128,8 @@
 }
 
 .post-card-cover img {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -726,15 +729,17 @@ a.tag:hover {
   height: auto;
 }
 
-/* Photo hero: same recipe — sized rounded container, image fills edge-to-edge. */
+/* Photo hero: same recipe — pin the image to fill the rounded panel completely. */
 .featured-visual--photo {
+  position: relative;
   padding: 0;
   border: none;
   aspect-ratio: 16 / 7;
 }
 
 .featured-visual--photo img {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
