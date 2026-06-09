@@ -1,6 +1,6 @@
 ---
 title: "Choosing a LoRa Dev Board for MeshCore"
-description: "A practical LoRa dev board comparison for MeshCore — Heltec V3, Heltec V4, and RAK WisBlock 4631 evaluated by TX power, sleep current, and the use case each handles best."
+description: "LoRa dev board comparison for MeshCore: Heltec V3, Heltec V4, and RAK WisBlock 4631 — TX power, sleep current, and the use case each handles best."
 date: 2026-09-22
 tags: ["signal", "hardware"]
 hero:
@@ -8,13 +8,13 @@ hero:
   alt: "A warm hand-painted studio close-up of three paintbrushes laid side by side on a wooden surface, each with a different tip, warm directional light — the right tool for the right job."
 faq:
   - q: "Which LoRa dev board should I start with for MeshCore?"
-    a: "The Heltec V3 is the most common starting point — it's inexpensive (roughly $18–25 depending on source), has a built-in OLED display, onboard LiPo charging, WiFi and BLE, and first-class MeshCore firmware support. If you're buying fresh today and want more transmit power, the V4 is the natural upgrade at a similar price."
+    a: "The Heltec V3 is a common starting point — it's inexpensive (roughly $18–25 depending on source), has a built-in OLED display, onboard LiPo charging, WiFi and BLE, and first-class MeshCore firmware support. If you're buying fresh today and want more transmit power, the V4 is the natural upgrade at a similar price."
   - q: "What is the difference between Heltec V3 and V4 for MeshCore?"
     a: "Both use an ESP32-S3 with SX1262 LoRa radio. The V4 adds an integrated power amplifier for 28 dBm output (versus 21 dBm on V3), a solar charging connector, a GNSS header, and more memory. If you're deploying a fixed repeater and want maximum transmit power without an external PA, the V4 is the better choice. For bench work and companion nodes, the V3 is adequate and lower cost."
   - q: "When should I choose RAK WisBlock over Heltec for MeshCore?"
-    a: "When power budget matters more than anything else. The RAK 4631 module uses an nRF52840 which sleeps below 10 microamps — substantially lower than the ESP32-S3 in the Heltec boards. For a solar-powered repeater that needs to run months unattended on a small panel, the nRF52840 sleep current is a meaningful advantage. The trade-off is no WiFi and more assembly work."
+    a: "When power budget matters more than anything else. The RAK 4631 module uses an nRF52840 which sleeps at around 2 µA — substantially lower than the ESP32-S3 in the Heltec boards, which draws around 15 µA on battery power. For a solar-powered repeater that needs to run months unattended on a small panel, the nRF52840 sleep current is a meaningful advantage. The trade-off is no WiFi and more assembly work."
   - q: "Do I need WiFi on a MeshCore node?"
-    a: "Only for MQTT gateway and web configuration use cases. A Companion node just needs Bluetooth. A Repeater configured entirely via serial or the web config tool at config.meshcore.io does not need WiFi at runtime. If your node role is a remote solar repeater that you configure once and leave, WiFi is unnecessary."
+    a: "Only for MQTT gateway and web configuration use cases. A Companion node just needs Bluetooth. A Repeater configured entirely via serial or the MeshCore web flasher does not need WiFi at runtime. If your node role is a remote solar repeater that you configure once and leave, WiFi is unnecessary."
   - q: "Can I mix Heltec and RAK nodes on the same MeshCore mesh?"
     a: "Yes. MeshCore firmware runs on all three boards, and they interoperate over LoRa as long as they share the same radio settings — frequency, bandwidth, spreading factor, and coding rate. The hardware choice affects power consumption and transmit power, not protocol compatibility."
 ---
@@ -52,7 +52,7 @@ The 21 dBm transmit power (verified against Heltec datasheet) is adequate for mo
 
 The ESP32-S3's sleep current on VBAT power (around 15 µA in battery-powered sleep mode, per Heltec's datasheet) is workable for moderate battery use, but not for a node that runs for weeks on a small solar panel.
 
-If you're starting from scratch and want a board that won't fight you, start with the V3 (or its V4 successor if buying new). The community support is the largest of any platform in this space.
+If you're starting from scratch and want a board that won't fight you, start with the V3 (or its V4 successor if buying new). Both Meshtastic and MeshCore firmware treat it as a first-class target.
 
 ## Heltec V4: when transmit power matters
 
@@ -66,7 +66,7 @@ The V4 is not a better battery-powered node than the V3. Both are ESP32-based, w
 
 The RAK WisBlock is a modular system: a 4631 core module (nRF52840 + SX1262) onto a base board (RAK19003 or RAK19007). No onboard display; add a RAK1921 OLED if you need one. Higher assembly effort than a Heltec board, and the modular approach adds learning curve.
 
-What the 4631 does better than any ESP32 board: sleep current. The nRF52840 sleeps below 10 µA in power-saving mode. Compare that to 15 µA for the Heltec on VBAT — a difference that compounds over the many months a remote repeater runs unattended. For a solar-powered node that spends most of its time dormant, the nRF52840's power profile is not just incrementally better; it's structurally different.
+What the 4631 does better than any ESP32 board: sleep current. The nRF52840 sleeps at around 2 µA (per the RAK4631 datasheet). Compare that to 15 µA for the Heltec V3 on VBAT — a factor-of-seven difference that compounds over the many months a remote repeater runs unattended. For a solar-powered node that spends most of its time dormant, the nRF52840's power profile is not just incrementally better; it's structurally different.
 
 No WiFi is the RAK 4631's significant trade-off. Configure it once via serial (USB or BLE using meshcore-cli), set the frequency and advert interval, and leave it. If your deployment model allows for that workflow, the power advantage is worth the WiFi loss. If you need a node that can do MQTT gateway duty over WiFi, the RAK is the wrong choice.
 
