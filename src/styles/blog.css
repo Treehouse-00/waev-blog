@@ -78,6 +78,8 @@
   gap: var(--sp-3);
   align-content: start;
   padding: var(--card-pad-hero);
+  /* Clip the full-bleed cover to the card's rounded corners. */
+  overflow: hidden;
   color: inherit;
   transition: transform var(--dur-short-3) var(--ease-standard),
     box-shadow var(--dur-short-3) var(--ease-standard),
@@ -116,10 +118,11 @@
   z-index: 1;
 }
 
-/* Cover image — fixed aspect so the grid stays even */
+/* Cover artwork — full-bleed banner pulled out to the card edges so the card
+   surface never frames it (keeps alignment identical across dim/dark/light).
+   The card's overflow:hidden + radius clips the top corners. */
 .post-card-cover {
-  border-radius: var(--shape-lg);
-  overflow: hidden;
+  margin: calc(-1 * var(--card-pad-hero)) calc(-1 * var(--card-pad-hero)) 0;
   background: var(--surface-sunken);
 }
 
@@ -722,6 +725,19 @@ a.tag:hover {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Photo hero fills the panel edge-to-edge — no inner gray frame. */
+.featured-visual--photo {
+  padding: 0;
+  border: none;
+}
+
+.featured-visual--photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
 }
 
 /* ── More posts ── */
