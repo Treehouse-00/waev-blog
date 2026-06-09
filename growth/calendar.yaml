@@ -469,7 +469,7 @@ posts:
     theme: own-your-ground
     primary_keyword: "Mosquitto MQTT broker setup for MeshCore"
     secondary_keyword: "self-hosted MQTT broker with TLS"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-08

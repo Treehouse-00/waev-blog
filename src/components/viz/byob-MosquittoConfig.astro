@@ -1,0 +1,79 @@
+---
+/**
+ * byob-MosquittoConfig — three security layers of a Mosquitto broker.
+ * LEFT: MeshCore Observer (publishes); CENTER: Mosquitto (TLS→AuthN→AuthZ);
+ * RIGHT: Waev (read-only subscriber). Theme-aware CSS custom properties.
+ */
+---
+<svg viewBox="0 0 720 280" role="img"
+  aria-label="Three-layer Mosquitto broker diagram. Left: MeshCore observer publishes on port 8883. Center: Mosquitto enforces TLS, password_file authentication, and acl_file authorization where observer gets readwrite and subscriber gets read-only. Right: Waev subscribes read-only."
+  style="width:100%;height:auto;">
+  <defs>
+    <marker id="mc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
+    </marker>
+    <marker id="mc-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+  <!-- LEFT: Observer -->
+  <rect x="20" y="100" width="130" height="80" rx="10"
+    style="fill: var(--surface-1); stroke: var(--border-hover);" stroke-width="1.25" />
+  <text x="85" y="132" text-anchor="middle"
+    style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">MeshCore</text>
+  <text x="85" y="150" text-anchor="middle"
+    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">Observer</text>
+  <text x="85" y="169" text-anchor="middle" class="viz-label">publishes</text>
+  <!-- Observer → Broker -->
+  <line x1="150" y1="140" x2="210" y2="140"
+    style="stroke: var(--border-hover);" stroke-width="1.5" marker-end="url(#mc-arrow)" />
+  <text x="180" y="133" text-anchor="middle" class="viz-label">port 8883</text>
+  <!-- CENTER: Mosquitto outer box -->
+  <rect x="210" y="50" width="300" height="180" rx="12"
+    style="fill: transparent; stroke: var(--border-accent);" stroke-width="1.5" />
+  <text x="360" y="75" text-anchor="middle"
+    style="fill: var(--text-accent); font-family: var(--font); font-size: 12px; font-weight: 700; letter-spacing: 0.06em;">MOSQUITTO BROKER</text>
+  <!-- Layer 1: TLS -->
+  <rect x="228" y="85" width="264" height="38" rx="7"
+    style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="270" y="102" text-anchor="start"
+    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">listener 8883</text>
+  <text x="270" y="117" text-anchor="start"
+    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">certfile / keyfile / cafile</text>
+  <text x="474" y="105" text-anchor="middle"
+    style="fill: var(--text-tertiary); font-family: var(--font); font-size: 10px; font-weight: 600;">TLS</text>
+  <!-- Layer 2: password_file -->
+  <rect x="228" y="133" width="264" height="38" rx="7"
+    style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="270" y="150" text-anchor="start"
+    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">allow_anonymous false</text>
+  <text x="270" y="165" text-anchor="start"
+    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">password_file /etc/mosquitto/passwd</text>
+  <text x="474" y="152" text-anchor="middle"
+    style="fill: var(--text-tertiary); font-family: var(--font); font-size: 10px; font-weight: 600;">AuthN</text>
+  <!-- Layer 3: acl_file -->
+  <rect x="228" y="181" width="264" height="38" rx="7"
+    style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="270" y="196" text-anchor="start"
+    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">observer  → topic readwrite #</text>
+  <text x="270" y="211" text-anchor="start"
+    style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">subscriber → topic read #</text>
+  <text x="474" y="200" text-anchor="middle"
+    style="fill: var(--text-tertiary); font-family: var(--font); font-size: 10px; font-weight: 600;">AuthZ</text>
+  <!-- Broker → Waev -->
+  <line x1="510" y1="140" x2="570" y2="140"
+    style="stroke: var(--accent-light);" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#mc-arrow-acc)" />
+  <text x="540" y="133" text-anchor="middle"
+    style="fill: var(--text-accent); font-family: var(--font); font-size: 10px;">read-only</text>
+  <!-- RIGHT: Waev -->
+  <rect x="570" y="100" width="130" height="80" rx="10"
+    style="fill: var(--surface-1); stroke: var(--border-accent);" stroke-width="1.25" />
+  <text x="635" y="132" text-anchor="middle"
+    style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Waev</text>
+  <text x="635" y="150" text-anchor="middle"
+    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">subscriber</text>
+  <text x="635" y="169" text-anchor="middle" class="viz-label">subscribes</text>
+  <!-- Credential note -->
+  <text x="360" y="252" text-anchor="middle" class="viz-label"
+    style="fill: var(--text-muted);">You issue the credentials. You rotate them. You revoke them.</text>
+</svg>
