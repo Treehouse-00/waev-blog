@@ -388,7 +388,7 @@ posts:
     series: measure-your-mesh
     primary_keyword: "measuring LoRa link margin"
     secondary_keyword: "how much link margin is enough"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-22
