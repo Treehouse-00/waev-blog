@@ -272,7 +272,7 @@ posts:
     series: readiness
     primary_keyword: "ham radio CERT EMCOMM mesh"
     secondary_keyword: "mesh radio for ARES RACES readiness"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-29
