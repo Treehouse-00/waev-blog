@@ -1,6 +1,6 @@
 ---
 title: "The Chatty Node"
-description: "How to spot and fix a chatty node on a LoRa mesh — diagnosing too-frequent adverts in Live Packets, identifying the source node, and the CLI command that fixes it."
+description: "How to spot and fix a chatty node on a LoRa mesh — diagnosing too-frequent adverts in Live Packets, identifying the source node, and the CLI fix."
 date: 2026-09-29
 tags: ["signal", "diagnostics"]
 hero:
@@ -8,7 +8,7 @@ hero:
   alt: "A warm hand-painted close-up of an old analog radio dial with the needle pushed into the red zone, warm studio light, the rest of the radio soft in the background."
 faq:
   - q: "What is a chatty node on a LoRa mesh?"
-    a: "A chatty node is a MeshCore repeater or sensor that sends flood advertisement packets far more frequently than the intended interval — often every few minutes instead of the default 47 hours. Every advert floods through all relay neighbors, consuming shared channel time and pushing useful traffic out."
+    a: "A chatty node is a MeshCore repeater or sensor that sends flood advertisement packets far more frequently than the intended interval — often every few minutes instead of the default 47 hours (firmware v1.16.0+). Every advert floods through all relay neighbors, consuming shared channel time and pushing useful traffic out."
   - q: "What is the default flood advert interval in MeshCore?"
     a: "Since firmware v1.16.0, the default flood.advert.interval for repeaters is 47 hours. Earlier firmware versions defaulted to 12 hours. A node sending adverts every few minutes has either a misconfigured interval or is running significantly older firmware with a lower default."
   - q: "How do I find a chatty node in Waev's Live Packets?"
@@ -34,7 +34,7 @@ That's the chatty node. Here's how to confirm what you're seeing, find which nod
 
 A MeshCore repeater announces its presence to the network by sending periodic flood advertisement packets. These adverts travel through relay neighbors and let the mesh learn about newly available routes and nodes. They're necessary — but infrequent by design.
 
-Since firmware v1.16.0 (released April 2026), the default `flood.advert.interval` on a MeshCore repeater is 47 hours. Older firmware defaulted to 12 hours. Either way: adverts are measured in hours, not minutes.
+Since firmware v1.16.0 (released June 2026), the default `flood.advert.interval` on a MeshCore repeater is 47 hours. Older firmware defaulted to 12 hours. Either way: adverts are measured in hours, not minutes.
 
 When a node sends flood adverts every 2 to 5 minutes instead of every 47 hours, every relay within range relays that advert outward — consuming channel airtime on a shared medium. LoRa has a practical duty cycle limit; a node that floods adverts at that rate is filling a meaningful fraction of the available airtime with housekeeping packets instead of messages.
 
@@ -100,6 +100,6 @@ Once the interval is corrected, go back to Live Packets. The node that was appea
 
 If the node was elevated in hop count before the fix (because the extra adverts were competing with routing traffic and causing retransmissions), you may see hop counts stabilize over the next few hours as the mesh re-learns optimal paths.
 
-The [how-waev-reads-your-mesh](/blog/how-waev-reads-your-mesh/) post covers what the observer sees at the MQTT level — useful context if you're trying to understand why the advert flood was visible across a wide area despite the node being in one location. The short version: every relay that hears an advert rebroadcasts it, and with 47 hops as the default cap, a well-connected mesh spreads adverts far.
+The [how-waev-reads-your-mesh](/blog/how-waev-reads-your-mesh/) post covers what the observer sees at the MQTT level — useful context if you're trying to understand why the advert flood was visible across a wide area despite the node being in one location. The short version: every relay that hears an advert rebroadcasts it, and with 8 hops as the default `flood.max.advert` cap, a well-connected mesh spreads adverts far. For a broader picture of what SNR and hop count tell you about a link, see [Reading the Signal](/blog/reading-the-signal/).
 
 {/* ILLUSTRATION PROMPT: A warm, hand-painted close-up illustration of an old analog radio tuner dial — the needle sitting visibly in the red zone at the far right of the scale. Warm studio light from one side, the rest of the radio body soft and out of focus behind. Earthy warm tones with a single muted red accent on the needle and the edge of the red zone. No figures, no glow effects, no screen. The mood: something is misconfigured but fixable. Calm, intimate, vintage. Painterly texture. */}
