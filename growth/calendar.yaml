@@ -561,7 +561,7 @@ posts:
     series: signal-glossary
     primary_keyword: "what is dBm"
     secondary_keyword: "dBm vs dB radio power explained"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-26
