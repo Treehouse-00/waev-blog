@@ -1,0 +1,72 @@
+---
+/**
+ * primer-LivePacketRow — annotated single Live Packets row for a new Waev user.
+ * Shows the anatomy of one packet entry: type badge, node name, SNR, hops, timestamp.
+ * No client JS. Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 210" role="img" aria-label="Annotated Live Packets row showing one arriving packet. Type badge reads ADVERT, node name reads hilltop-relay, SNR reads plus 9 dB labeled signal quality, hop count reads 2h labeled routing distance, and a timestamp reads 14:07:03. Each field is labeled with an annotation." style="width:100%;height:auto;">
+
+  <!-- Background row -->
+  <rect x="20" y="30" width="680" height="50" rx="9"
+    style="fill:var(--surface-1); stroke:var(--border-subtle);" stroke-width="1"/>
+
+  <!-- Type badge -->
+  <rect x="36" y="41" width="62" height="20" rx="5"
+    style="fill:var(--accent-subtle); stroke:var(--border-accent);" stroke-width="1"/>
+  <text x="67" y="55" text-anchor="middle" class="viz-label"
+    style="fill:var(--text-accent);">ADVERT</text>
+
+  <!-- Node name -->
+  <text x="112" y="59"
+    style="font-family:var(--mono); font-size:13px; font-weight:600; fill:var(--text);">hilltop-relay</text>
+
+  <!-- SNR -->
+  <text x="390" y="59"
+    style="font-family:var(--mono); font-size:13px; font-weight:600; fill:var(--accent-light);">+9 dB</text>
+
+  <!-- Hops -->
+  <text x="480" y="59"
+    style="font-family:var(--mono); font-size:13px; fill:var(--text-muted);">2h</text>
+
+  <!-- Timestamp -->
+  <text x="570" y="59"
+    style="font-family:var(--mono); font-size:11px; fill:var(--text-tertiary);">14:07:03</text>
+
+  <!-- ── Annotation lines and labels ── -->
+
+  <!-- Type badge annotation -->
+  <line x1="67" y1="61" x2="67" y2="90" style="stroke:var(--text-tertiary);" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="67" y="103" text-anchor="middle" class="viz-label" style="fill:var(--text-accent);">PACKET TYPE</text>
+  <text x="67" y="117" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">advert = node</text>
+  <text x="67" y="131" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">announcing itself</text>
+
+  <!-- Node name annotation -->
+  <line x1="175" y1="61" x2="175" y2="90" style="stroke:var(--text-tertiary);" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="175" y="103" text-anchor="middle" class="viz-label" style="fill:var(--text-accent);">NODE NAME</text>
+  <text x="175" y="117" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">the node your</text>
+  <text x="175" y="131" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">observer heard</text>
+
+  <!-- SNR annotation -->
+  <line x1="405" y1="61" x2="405" y2="90" style="stroke:var(--text-tertiary);" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="405" y="103" text-anchor="middle" class="viz-label" style="fill:var(--text-accent);">SNR</text>
+  <text x="405" y="117" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">signal quality at</text>
+  <text x="405" y="131" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">your observer</text>
+
+  <!-- Hops annotation -->
+  <line x1="487" y1="61" x2="487" y2="90" style="stroke:var(--text-tertiary);" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="487" y="103" text-anchor="middle" class="viz-label" style="fill:var(--text-accent);">HOPS</text>
+  <text x="487" y="117" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">routing distance</text>
+  <text x="487" y="131" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">from source</text>
+
+  <!-- Timestamp annotation -->
+  <line x1="610" y1="61" x2="610" y2="90" style="stroke:var(--text-tertiary);" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="610" y="103" text-anchor="middle" class="viz-label" style="fill:var(--text-accent);">WHEN</text>
+  <text x="610" y="117" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">seconds after</text>
+  <text x="610" y="131" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">it arrived</text>
+
+  <!-- Bottom note -->
+  <text x="360" y="165" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">ADVERT packets appear when a node announces itself to the mesh — often the first thing you see</text>
+  <text x="360" y="179" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">in Live Packets when a new node comes online or your observer first connects.</text>
+</svg>
