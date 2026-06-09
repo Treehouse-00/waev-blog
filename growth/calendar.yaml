@@ -236,7 +236,7 @@ posts:
     theme: knowing-over-guessing
     primary_keyword: "mesh map missing nodes"
     secondary_keyword: "why my mesh shows fewer nodes than I have"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-22
