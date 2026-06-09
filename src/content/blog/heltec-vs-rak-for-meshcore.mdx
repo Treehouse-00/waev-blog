@@ -1,0 +1,97 @@
+---
+title: "Heltec vs RAK for MeshCore"
+description: "Heltec vs RAK for MeshCore: the WiFi LoRa 32 and the WisMesh Pocket V2 are different tools for different jobs — here's how to pick the right one for your build."
+date: 2026-10-29
+tags: ["hardware", "getting-started"]
+hero:
+  src: "/hero-heltec-vs-rak-for-meshcore.jpg"
+  alt: "A warm, painterly workbench still-life of two LoRa boards side by side — one a bare dev board with exposed pins, one enclosed in a compact case — representing two approaches to the same task."
+faq:
+  - q: "Which board should I buy first for MeshCore — Heltec or RAK?"
+    a: "If you want to experiment, build a home base station, or run an MQTT gateway, start with the Heltec WiFi LoRa 32 V3 or V4. If you need a ready-to-carry portable device with built-in GPS and multi-day battery, the RAK WisMesh Pocket V2 is the better fit. They serve different roles."
+  - q: "Can the RAK WisMesh Pocket V2 run MeshCore firmware?"
+    a: "Yes. The WisMesh Pocket V2 ships pre-flashed with Meshtastic firmware, but can be reflashed to MeshCore using a web flasher in a few minutes. The underlying RAK4631 module (Nordic nRF52840 + Semtech SX1262) is a supported MeshCore hardware target."
+  - q: "Can the Heltec WiFi LoRa 32 act as an MQTT gateway for Waev?"
+    a: "Yes. An ESP32-based board with WiFi — like the Heltec WiFi LoRa 32 — is the most common choice for an MQTT gateway node. It runs MeshCore firmware, connects to your WiFi network, and publishes observations to your MQTT broker."
+  - q: "What is the main tradeoff between ESP32 and nRF52840 for mesh nodes?"
+    a: "The ESP32 draws more power but includes WiFi, which makes it useful for MQTT gateways and home base stations. The nRF52840 draws significantly less power, enabling multi-day battery life, but has no WiFi. For portable carry, nRF52840-based boards are the better choice."
+  - q: "Should I buy the Heltec V3 or V4?"
+    a: "If buying new, the V4 is the direct upgrade: same footprint and pin layout as the V3, but with a higher transmit power (28 dBm vs 21 dBm), 16 MB flash, a solar connector, and a GNSS interface header. Existing V3 deployments don't need to be replaced."
+---
+
+import Figure from "../../components/Figure.astro";
+import DispatchBoardCompare from "../../components/viz/dispatch-BoardCompare.astro";
+
+The two boards that come up most in first-time MeshCore builds are the Heltec WiFi LoRa 32 and the RAK WisMesh Pocket V2. Both run on the Semtech SX1262 LoRa transceiver. Both support MeshCore firmware. That's roughly where the similarities end.
+
+They're not competing products. They're tools for different jobs, at different price points, aimed at different moments in building out a mesh. Getting the comparison right means understanding which job you're trying to do.
+
+<div class="callout">
+<p><strong>In short.</strong> For Heltec vs RAK for MeshCore: the Heltec WiFi LoRa 32 is a bare-board dev platform — inexpensive, WiFi-capable, requires assembly, draws more power. The RAK WisMesh Pocket V2 is a complete ready-to-carry handheld — more expensive, no WiFi, built-in GPS and battery, low power draw. Buy the Heltec if you're building a home node, a gateway, or a bench experiment. Buy the RAK if you need something you can put in a pack and walk out the door with.</p>
+</div>
+
+## The Heltec WiFi LoRa 32
+
+The WiFi LoRa 32 is Heltec's long-running ESP32 + SX1262 development board. The current generation (V3, and the newer V4) pairs an ESP32-S3 dual-core processor with the SX1262 LoRa radio, a 0.96-inch OLED display, and onboard WiFi and Bluetooth — all on a 50 × 26 mm board for around $18–20.
+
+The V3 transmits at up to 21 dBm (about 125 mW). The V4, which went on sale in September 2025, upgrades this to 28 dBm via an integrated power amplifier, adds 16 MB flash, and includes a solar connector and a GNSS interface header. Same footprint and pin layout as the V3; new builds should default to the V4.
+
+**What the Heltec is good at:**
+
+The WiFi radio is the differentiating factor. An ESP32-based node is the most common choice for an MQTT observer: it connects to your home network, runs MeshCore firmware, and publishes observations to your broker without any additional hardware. It's the standard gateway board.
+
+It's also a capable home base station: plugged in, indoors, within WiFi range, monitoring the local mesh passively. The onboard OLED shows live status without a phone.
+
+For bench work — testing firmware changes, validating link behavior, understanding how MeshCore routing works — it's the board you reach for because it's inexpensive, familiar, and gets out of the way.
+
+**What the Heltec isn't:**
+
+It's a bare board. No enclosure. No battery included. You'll need a LiPo cell (SH1.25-2 connector), an antenna, and something to mount it in if it's going anywhere other than a desk. It draws enough power on battery — typical of ESP32 hardware — that a small cell lasts roughly a day of moderate mesh traffic. For anything portable beyond a day hike, that's a constraint.
+
+## The RAK WisMesh Pocket V2
+
+The WisMesh Pocket V2 is RAK Wireless's ready-to-use mesh handheld. It's built on the RAK4631 module — a Nordic nRF52840 paired with the SX1262 radio — housed in a complete IP66 enclosure with a 1.3-inch OLED display, a 3200 mAh rechargeable battery, a built-in GNSS module, an accelerometer, and an SMA antenna connector. It ships pre-flashed with Meshtastic firmware and can be reflashed to MeshCore in minutes.
+
+The nRF52840 is the significant difference from the Heltec. Nordic's low-power ARM Cortex-M4 draws a fraction of what an ESP32 does under the same mesh traffic load. Expect multi-day battery life in normal use, where the Heltec gets a day. For something you're carrying or deploying away from mains power, that matters.
+
+**What the RAK is good at:**
+
+It goes out the door already assembled. No sourcing a battery, no building an enclosure, no configuring a WiFi network. Charge it over USB-C, screw on the antenna, flash MeshCore, and you have a working portable node. The built-in GPS means you don't need to add hardware to get position tracking.
+
+The SMA connector is a real advantage: you can swap to a higher-gain antenna for fixed deployments, or run a cable from an outdoor antenna, without any adapters. For a node that's going to sit permanently at a window or outside in a weatherproof box, that flexibility matters.
+
+**What the RAK isn't:**
+
+There's no WiFi. The WisMesh Pocket V2 has Bluetooth for phone pairing, but it cannot connect to an MQTT broker directly. If you want to use it as a Waev observer — publishing packets to your broker for the Live Map — you need either a separate gateway node on the same mesh, or to route it through an existing WiFi-connected observer.
+
+It's also nearly five times the cost of a bare Heltec board. If you need two gateway nodes for a home mesh, two Heltec V4s cost less than one WisMesh Pocket V2. That's the right trade for those jobs.
+
+## The comparison
+
+<Figure caption="Key differences between the two platforms. The Heltec WiFi LoRa 32 V3/V4 is a dev board; the RAK WisMesh Pocket V2 is a complete device. Both run MeshCore.">
+  <DispatchBoardCompare />
+</Figure>
+
+Neither board is universally better. The Heltec wins on price, WiFi, and flexibility. The RAK wins on portability, battery life, GPS, and out-of-box readiness. The question is which of those properties you need for the node you're building.
+
+## Which to buy
+
+**Buy the Heltec WiFi LoRa 32 V4 if:**
+- You're building a home base station or MQTT gateway
+- You're setting up a Waev observer on a fixed network
+- You're experimenting with MeshCore for the first time at low cost
+- You need WiFi connectivity for any reason
+
+**Buy the RAK WisMesh Pocket V2 if:**
+- You need a portable daily-carry node with multi-day battery
+- You need built-in GPS without adding a module
+- You want a complete device ready to hand to someone who isn't going to build anything
+- Battery life is more important than WiFi capability
+
+For a home mesh connected to Waev: a Heltec V4 as the observer/gateway, and a WisMesh Pocket V2 for portable coverage when you're away from the desk. You can [place the observer](/blog/where-to-put-your-next-repeater/) where it has good WiFi and RF coverage, and carry the RAK when you need to know what the mesh looks like from somewhere else.
+
+---
+
+Both boards run MeshCore. Both can be [enrolled as observers](/blog/how-waev-reads-your-mesh/) — though for the RAK you'll need to route its observations through a WiFi-capable gateway on the same mesh. The right starting point is whichever one matches the job you have today.
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted workbench still-life: two small electronic boards resting side by side on a bare wooden bench surface. One is a compact bare circuit board with exposed header pins and a tiny OLED screen (representing a dev board). The other is a rounded plastic-encased device with a slightly larger screen and an antenna connector (representing a ready-to-use handheld). Both rest naturally, as if set down mid-comparison. Warm earthy tones, soft light from one side. No text labels, no glowing elements, no wires in frame. */}

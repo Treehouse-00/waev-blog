@@ -435,7 +435,7 @@ posts:
     series: gear-up
     primary_keyword: "Heltec vs RAK for MeshCore"
     secondary_keyword: "which LoRa board to buy first"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-01
