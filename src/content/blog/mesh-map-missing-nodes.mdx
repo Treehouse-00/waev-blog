@@ -1,0 +1,90 @@
+---
+title: "Why the Map Comes Up Short"
+description: "Mesh map missing nodes usually means one of four things: no observer in range, node offline, opted-out privacy marker, or observer not connected to the broker. Each has a fix."
+date: 2026-09-20
+tags: ["mesh-topology", "operations", "troubleshooting"]
+hero:
+  src: "/hero-mesh-map-missing-nodes.jpg"
+  alt: "A hand-painted aerial view of a neighborhood grid with some houses lit warmly and others dark, seen from above in cool blue dusk light — presence and absence at a glance."
+faq:
+  - q: "Why does my mesh map show fewer nodes than I have deployed?"
+    a: "There are four reasons a node does not appear on the Live Map: no enrolled observer is in range to hear it; the node is offline and not transmitting; the node has an opt-out privacy marker (⛔ 🛑 🚫) in its name; or the enrolled observer is not connected to your MQTT broker. Each cause is distinguishable and each has a specific remedy."
+  - q: "How can I tell if a node is offline vs. just out of observer range?"
+    a: "Check Outpost for the node's last-seen timestamp. If the node recently appeared on the map and has now gone silent, it may be offline — power loss, firmware crash, or hardware failure. If it never appeared on the map at all after deployment, it may be out of observer range. The distinction is in the history: a node you've seen before that went silent is different from a node you've never seen."
+  - q: "What does it mean when I add ⛔ to a node name?"
+    a: "Adding a privacy marker (⛔, 🛑, or 🚫) to a node's name tells Waev's ingest edge to discard all packets from that node before any processing occurs. The node does not appear on the Live Map, does not appear in Packet Search, and does not count toward any aggregate statistics. This is deliberate: the opt-out is for nodes whose owners have chosen not to be tracked, and it works unconditionally."
+  - q: "My observer seems to be working but nodes aren't showing up. What should I check?"
+    a: "Verify that the observer is connected to your MQTT broker — not just to the mesh. An observer that is on the radio network but has lost its internet connection (or whose MQTT credentials have changed) will hear RF traffic but not publish it. In Waev, check whether the observer itself appears in the Live Map. If the observer is missing, the broker connection is the issue. If the observer appears but specific nodes do not, the issue is those nodes' radio range relative to the observer."
+  - q: "Does a node need to be within direct range of an observer?"
+    a: "No. A MeshCore node can be relayed through multiple hops before reaching the observer. Each hop reduces SNR, so multi-hop paths may be weaker, but they still produce valid observations. A node six hops from an observer can appear on the map — provided each hop in the chain is solid enough to forward the packet. The Live Map shows hop count per node, which tells you how many relays are in the path."
+---
+
+import Figure from "../../components/Figure.astro";
+import DispatchWhyNotVisible from "../../components/viz/dispatch-WhyNotVisible.astro";
+import PlaybookCoverageGap from "../../components/viz/PlaybookCoverageGap.astro";
+
+You installed twelve nodes. The map shows eight. The four missing nodes aren't failing to transmit — you can see their LEDs cycling. But they're not on the map.
+
+This is a common situation for off-grid mesh operators, and it's usually not a problem with the nodes themselves. It's a visibility problem: the map shows only what an enrolled observer can verify. The reasons something doesn't appear are specific, and each has a specific fix.
+
+<div class="callout">
+<p><strong>In short.</strong> Mesh map missing nodes almost always trace to one of four causes: no observer close enough to hear the node, the node itself is offline, an opt-out privacy marker in the node name, or the observer's connection to your MQTT broker is down. The map is being honest — absence here is information, not silence.</p>
+</div>
+
+## The four reasons
+
+<Figure caption="Four distinct scenarios where a node does not appear on the Live Map. Each has a different diagnostic signal and a different fix. Starting with the most common (no observer in range) eliminates the most cases first.">
+  <DispatchWhyNotVisible />
+</Figure>
+
+**1. No observer in range.** The node is transmitting normally. It's hitting its neighbors in the mesh. But no enrolled observer — no device connected to your MQTT broker — is close enough to hear it, directly or via relay. The map can only draw from observations; if no observation was made, nothing is drawn.
+
+This is the most common cause. It's also the most actionable: either extend your observer coverage (another enrolled observer placed to cover the zone) or extend relay coverage to bridge the gap to an existing observer.
+
+**2. Node offline.** The node isn't transmitting at all. Power failure, firmware crash, antenna disconnection, battery drain on a solar node that had a cloudy week. The observer is there and listening — there's just nothing to hear.
+
+Distinguishing this from scenario 1: check the node's history in Outpost. A node that appeared on the map before and then went silent suggests an offline event. A node that has never appeared suggests it was never in range.
+
+**3. Opted-out privacy marker.** The node name contains ⛔, 🛑, or 🚫. When a packet from that node reaches the ingest edge, it is discarded before any processing — before any record is created, before topology is drawn, before statistics are counted. The node does not appear anywhere in Waev.
+
+If you added the marker intentionally (a household member's personal device, a node you've chosen to exclude), this is correct behavior. If you added it accidentally while setting up a node name, removing the marker and rebooting the node will cause it to start appearing. For more on how opt-out works and what gets dropped vs. scrubbed, see [what Waev chooses not to know](/blog/what-we-choose-not-to-know/).
+
+**4. Observer not publishing to the broker.** The observer is on the mesh, hearing RF traffic, but its MQTT connection to your broker is down. It could be an internet outage, a credential change, a broker restart that the observer hasn't reconnected from, or a TLS certificate issue. The observer hears the node; it just can't forward the observation.
+
+The diagnostic here: check whether the observer itself appears in the Live Map. If the observer is also missing, the broker connection is the issue. If the observer appears but nodes in its vicinity don't, the issue is specific to those nodes' RF reach.
+
+## The coverage map
+
+Once you know why nodes are missing, the Live Map tells you something useful about your entire deployment: the silent zones are real gaps, not omissions.
+
+<Figure caption="Three coverage zones on a real Live Map: observed (solid edges, healthy SNR), edge (weak path, warning state), and silent (no packets in 24 hours). The silent zone is not unmapped by error — it's unmapped because no observer has verified anything there.">
+  <PlaybookCoverageGap />
+</Figure>
+
+A silent zone on an evidence-based map means: nothing that can verify RF coverage is operating in that area. It might mean no observer, or it might mean no node. Either way, the map isn't guessing. It's showing you the boundary of what it can prove.
+
+This is valuable for an off-grid deployment. If you're building a neighborhood or property-wide mesh, the silent zones tell you exactly where to deploy next — either a relay to extend coverage reach, or an additional observer to extend visibility.
+
+## Diagnosing from the map
+
+The fastest way to narrow down which cause applies:
+
+**Is the observer itself visible?** If the observer is missing from the map, stop there. Fix the broker connection first. Everything downstream of the observer is invisible until its connection is restored. For a step-by-step look at how the observer connects to the map pipeline, see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/).
+
+**When was the node last seen?** Open Outpost and look for the node's history. A node that appeared last week and vanished is likely offline. A node that never appeared is either out of range or opted out.
+
+**Is the node name clean?** Check for ⛔, 🛑, or 🚫. These are easy to add by accident when choosing emoji for node names. A node with a privacy marker is invisible by design.
+
+**Are neighboring nodes visible?** If a node's immediate mesh neighbors appear on the map but the node itself doesn't, it's transmitting (neighbors heard it) but not producing the specific topology observation that would draw it. This can happen when the node's packets don't reach the observer directly or via relay — check the Live Map for hop count on nearby nodes to see where the relay chain breaks.
+
+## Absence as information
+
+The most important thing about the four reasons above: all of them are honest. The map didn't drop the node silently. It's telling you something specific about why the node isn't visible.
+
+An off-grid mesh that isn't fully visible isn't a failed deployment. It's a deployment with known gaps. The map's job is to show you those gaps accurately — not to fill them in with guesses. Each missing node is a question with a specific answer, and the answer usually leads to a concrete action.
+
+---
+
+If you're diagnosing missing nodes in a deployment and want to talk through the topology, [reach out at admin@waev.app](mailto:admin@waev.app). Questions like these are worth working through before an incident, not during one.
+
+{/* ILLUSTRATION PROMPT: A hand-painted warm flat aerial illustration looking straight down at a neighborhood grid at dusk — some houses glow with warm amber interior light, others are dark and unlit. The bird's-eye perspective gives an immediate sense of presence and absence across the grid. No network lines, no UI, no nodes depicted literally — the metaphor is which houses are visible vs. dark from above. Cool blue-grey dusk sky, warm amber accent only on the lit houses. Simple, readable at thumbnail size. */}
