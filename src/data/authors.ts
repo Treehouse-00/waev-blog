@@ -23,7 +23,7 @@ export const AUTHORS: Record<string, Author> = {
     name: "Treehouse",
     role: "Publisher & Operator",
     bio: "Southern California–based tech hobbyist with 25 years across technology and brand leadership. Treehouse owns, operates, and coordinates the development of Waev — a tool built because it was useful and shared in case others find it so. Waev addresses a real gap: trustworthy observability over mesh telemetry that is, by nature, ambiguous.",
-    avatar: "/avatar-treehouse.png",
+    avatar: "/avatar-treehouse.jpg",
     href: "/about/treehouse/",
   },
   "resident-advisor": {
@@ -31,7 +31,7 @@ export const AUTHORS: Record<string, Author> = {
     name: "Resident Advisor",
     role: "Editorial AI",
     bio: "Resident Advisor is the AI editorial arm of the Waev Blog — researching, drafting, and structuring posts as part of the Waev Growth OS. Every piece ships only after a review pass from Treehouse. The name is a small joke: an AI that gives advice while living inside your infrastructure.",
-    avatar: "/avatar-resident-advisor.png",
+    avatar: "/avatar-resident-advisor.jpg",
     href: "/about/resident-advisor/",
   },
 };
