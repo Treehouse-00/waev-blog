@@ -1,0 +1,72 @@
+---
+title: "Do You Need an Observer on Every Node?"
+description: "The question of how many mesh observers to enroll comes down to placement, not count. One well-sited observer can give you visibility into an entire network; a dozen poorly placed ones can still leave gaps."
+date: 2026-11-22
+tags: ["off-grid", "field-notes"]
+hero:
+  src: "/hero-do-you-need-an-observer-on-every-node.jpg"
+  alt: "A hand-painted aerial view looking down at a rural crossroads — fields, a few rooftops, and a single high water tower at the center intersection, catching the light."
+faq:
+  - q: "Do I need an observer on every MeshCore node?"
+    a: "No. An observer is a node that reports what it hears to an MQTT broker. A single well-placed observer — typically on high ground or at the most connected point in your mesh — can hear packets from every other node in range. You only need additional observers if a part of your network is out of range of the first one."
+  - q: "What is the difference between a MeshCore observer and a repeater?"
+    a: "A repeater relays packets through the mesh — it extends the network's range by rebroadcasting traffic. An observer listens to what's happening on the mesh and reports it to an MQTT broker over the internet. A node can serve as a repeater, an observer, or both, depending on its firmware and configuration."
+  - q: "Where should I place my observer?"
+    a: "Place the observer where it can hear the most nodes. High ground with line-of-sight to your backbone repeaters is ideal. The observer needs internet connectivity — Wi-Fi, Ethernet, or a cellular modem — to push data to your MQTT broker, so the chosen location also needs a reliable connection."
+  - q: "What happens to nodes the observer can't hear?"
+    a: "Nodes that the observer can't hear won't appear in Waev's Live Packets or Live Map. Waev's evidence-based topology only draws what it can verify from enrolled observers — silence doesn't mean the node isn't on the air, just that it isn't reaching your observer. This is useful: it tells you exactly where your monitoring coverage ends."
+  - q: "Can I add a second observer later if I expand the network?"
+    a: "Yes. Adding a second observer at a new location is straightforward: enroll it in the same MQTT broker, and Waev will incorporate what it hears. The two observers give you a larger verified picture of the mesh, and the Live Map will reflect the union of what both can confirm."
+---
+
+import Figure from "../../components/Figure.astro";
+import ObserverCoverageModel from "../../components/viz/observer-CoverageModel.astro";
+
+The question arrives reliably once you have more than three or four nodes: does every node need to be an observer? Or just some of them? And if some, which ones?
+
+The short answer is: no, not every node needs to be an observer. The useful answer is longer, because it depends on what you're trying to see and where you've placed the one observer you do have.
+
+<div class="callout">
+<p><strong>In short.</strong> You don't need an observer on every mesh node. One well-placed observer — on high ground, with line-of-sight to your backbone repeaters — can give you visibility into an entire network. The question isn't how many observers to enroll; it's where to place the ones you have so they hear what matters.</p>
+</div>
+
+## What an observer actually does
+
+A MeshCore observer is a node whose job is to listen to the mesh and report what it hears to an MQTT broker over the internet. Unlike a repeater, which relays packets to extend the network's reach, the observer is a read-only listener. It doesn't change how the mesh routes traffic; it provides the window through which Waev sees the network.
+
+That distinction is worth holding clearly. An observer is not a backbone node. It doesn't make the mesh work better by being added. What it does is make the mesh *visible* — specifically, from one vantage point. Everything within range of the observer appears in the Live Packets feed and on the Live Map. Everything out of range does not appear, which is accurate: [Waev's evidence-based topology](/blog/how-waev-reads-your-mesh/) shows only what it can verify.
+
+The radio physics here are the same as any other node: the observer hears what's in range at a useful signal level. A node on the other side of a hill, or inside a metal building, or simply too far away, won't show up in the observer's reports.
+
+## Placement matters more than count
+
+One well-sited observer outperforms five poorly sited ones in visibility. The reason is simple: an observer on high ground with line-of-sight to your backbone repeaters can hear every packet those repeaters hear. Packets from nodes relayed through those repeaters show up in the observer's feed even if the originating node is out of the observer's direct range.
+
+<Figure caption="Left: one observer on high ground hears all five mesh nodes — solid lines confirm coverage. Right: one observer in a low location hears only two of five — three nodes are invisible to the monitoring layer despite being on the air. Adding more observers in low positions wouldn't solve the problem; moving the one observer to high ground would.">
+  <ObserverCoverageModel />
+</Figure>
+
+What to prioritize when siting an observer:
+- **Height above the terrain.** A rooftop, a ridge, or the upper floor of a building gives more radio horizon than a ground-level placement.
+- **Proximity to backbone repeaters.** The observer doesn't need to hear every leaf node directly; if it hears the backbone, it sees what the backbone sees.
+- **Internet connectivity.** The observer needs a reliable internet connection to push data to your broker. A location with unreliable Wi-Fi produces an observer that drops out intermittently and leaves gaps in your monitoring record.
+
+## When one observer is enough
+
+For most small networks — a homestead, a neighborhood cluster, a property with four to eight nodes — one well-placed observer covers the whole picture. If your backbone repeater can hear all your nodes, and your observer can hear your backbone repeater, you have complete coverage.
+
+You can verify this by looking at Live Packets after your buildout is settled. If all your nodes appear regularly in the packet stream, you have good observer coverage. If some nodes are missing or appear only rarely, either the observer can't hear them directly or through a relay, or those nodes aren't transmitting as expected. Both are useful findings.
+
+## When to add a second observer
+
+The right time to add a second observer is when part of your network is genuinely out of range of the first. The most common cases:
+
+**Geographic split.** Your network spans a valley or ridge that blocks line-of-sight between two clusters. One observer covers one cluster; the second covers the other.
+
+**Scale.** As a community mesh grows, the outermost nodes may be too far from the original observer to appear reliably. An observer positioned in the expansion area fills the gap.
+
+**Independent verification.** On some networks, having two observers at different locations lets you cross-reference what each sees — a form of monitoring redundancy separate from the mesh routing layer.
+
+What is not a good reason to add more observers: wanting "more coverage" without diagnosing where the actual gaps are. [The Live Map and Live Packets feed tell you exactly what the observer can and cannot see](/blog/how-waev-reads-your-mesh/). Start with one, verify its coverage, and add more only when the data shows you where the gaps are.
+
+{/* ILLUSTRATION PROMPT: A hand-painted aerial or elevated view looking down at a rural crossroads or small cluster of buildings — fields, a few rooftops at different positions, and a single tall water tower or windmill at a central elevated point catching the morning light. The composition should convey vantage point and reach — the high structure in the center can see everything around it. No figures, no screens, no overlaid circles. House style: warm flat illustration, painterly texture, soft morning light. */}

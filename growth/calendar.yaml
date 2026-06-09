@@ -549,7 +549,7 @@ posts:
     theme: knowing-over-guessing
     primary_keyword: "do I need an observer on every node"
     secondary_keyword: "how many mesh observers to enroll"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-24
