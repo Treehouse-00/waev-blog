@@ -14,7 +14,7 @@ faq:
   - q: "How do I flash MeshCore firmware without a compiler?"
     a: "Use the web flasher at meshcore.io/flasher in a Chromium-based browser. Connect your board via USB, select the board type and firmware role (Companion or Repeater), and flash. The whole process takes about five minutes and requires no local toolchain."
   - q: "My two nodes are on and I do not see a link in the app. What should I check?"
-    a: "First confirm both boards are flashed with the same firmware version and share the same radio settings. Then check physical proximity — start within 5 meters indoors to eliminate range as a factor. If the boards are too close, some receivers clip on the strong signal; 2 to 5 meters is a reliable test distance. Finally check that neither node name contains a privacy marker."
+    a: "First confirm both boards are flashed with the same firmware version and share the same radio settings. Then check physical proximity — start within 5 meters indoors to eliminate range as a factor. If the boards are too close, some receivers clip on the strong signal; 2 to 5 meters is a reliable test distance. If you still see nothing, try powering the boards off and back on: a fresh boot triggers a new advertisement broadcast."
   - q: "How do I know a MeshCore link is healthy?"
     a: "Watch the SNR reading in the companion app when a node's advert arrives. A healthy indoor test link at short range should show +5 dB or above. Below 0 dB outdoors at distance, expect intermittent delivery. Waev's Live Packets view shows the same readings with a persistent history for every observed link."
 ---
