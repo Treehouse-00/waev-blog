@@ -1,0 +1,82 @@
+---
+title: "How LoRa Mesh Routing Works"
+description: "How LoRa mesh routing works in MeshCore: first contact floods through repeaters, recording each hop, then all later messages travel the cached direct path."
+date: 2026-06-11
+tags: ["primer", "how-it-works"]
+hero:
+  src: "/hero-how-lora-mesh-routing-works.jpg"
+  alt: "A warm hand-painted close-up of a worn wooden peg board with two brass pegs connected by a single thread carefully threaded through the holes between them, warm raking afternoon light on the wood grain."
+faq:
+  - q: "How does LoRa mesh routing work in MeshCore?"
+    a: "MeshCore uses a two-phase approach. When a node sends to a destination it has not reached before, the packet floods outward through every repeater in range, each forwarder appending its identifier to a growing path record. When the destination receives it, it reverses that path and sends it back. All subsequent messages between those two nodes travel the direct cached route — only the repeaters on the recorded path handle them."
+  - q: "What is the difference between flood routing and direct routing in MeshCore?"
+    a: "Flood routing sends a packet outward through all reachable repeaters simultaneously, building a path record as it travels. Direct routing sends a packet along a specific pre-determined sequence of repeater hops. MeshCore uses flood routing for initial path discovery, then switches to direct routing for all subsequent messages to the same destination, using the path learned during the flood."
+  - q: "Why do MeshCore companion nodes not repeat packets?"
+    a: "In MeshCore, only nodes configured as repeaters forward packets on behalf of other nodes. Companion radios — the personal nodes paired to the mobile app via Bluetooth — receive and transmit their own messages but never relay other traffic. This is by design: it keeps relay behavior under deliberate infrastructure control, reduces airtime consumption on the shared LoRa channel, and allows companion battery life to be measured in weeks rather than hours."
+  - q: "What happens when a learned route breaks in MeshCore?"
+    a: "If the sender does not receive an acknowledgment after retries, the firmware marks the stored path as invalid. The next message to that contact triggers a fresh discovery flood, re-learning whatever route is currently available through the mesh. This self-healing is automatic: a relay going offline or a link degrading past its decoding floor causes the next message to rediscover a working path without manual intervention."
+  - q: "Do group channel messages use direct routing in MeshCore?"
+    a: "No. Group channel messages always flood. There is no single destination to cache a path toward, so every repeater in range forwards every group message outward on every transmission. This is intentional design: group channels are broadcast traffic by definition, and the airtime cost of always flooding is the price of reaching all recipients."
+---
+
+import Figure from "../../components/Figure.astro";
+import ComparisonRoutingModels from "../../components/viz/comparison-RoutingModels.astro";
+import PrimerNodeRoles from "../../components/viz/primer-NodeRoles.astro";
+
+You've got nodes on the air and packets arriving in Live Packets. But when your companion radio sends a message to a contact three repeaters away, how does it find a route? There is no routing table pre-loaded on any node, no administrator who configured the path. So how does the packet get there?
+
+Understanding how LoRa mesh routing works is the difference between a network you have and a network you understand.
+
+<div class="callout">
+<p><strong>In short.</strong> How LoRa mesh routing works in MeshCore: the first message to any destination floods outward through every repeater in range, each forwarder appending its identifier to a growing path record. The destination reverses that record and sends it back. All subsequent messages between those two nodes travel the direct cached route — only the repeaters on the stored path handle them. Group messages always flood. If a path breaks, the next message discovers a new one automatically.</p>
+</div>
+
+## The first message: a flood with memory
+
+When your node sends a message to a destination it has no cached path to, the firmware marks the packet as a flood (`ROUTE_TYPE_FLOOD`). Every repeater that hears it checks two conditions: has it already seen this packet? Is the hop count still within the configured limit? If both pass, the repeater appends its own one-byte identifier — the first byte of its Ed25519 public key — to the packet's path field and retransmits.
+
+The packet propagates outward. Each forwarder adds its signature. By the time the packet reaches the destination, the path field contains an ordered record of every intermediate repeater that handled it: a complete hop-by-hop log from source to destination.
+
+Duplicate suppression runs in parallel. Each repeater maintains a hash table of packets already processed. If the same flood packet arrives via two different routes, the second copy is silently dropped before any forwarding logic runs. This prevents the packet from circling back through nodes it already passed. (Source: EastMesh Wiki, MeshCore routing algorithm — `SimpleMeshTables` implementation.)
+
+<Figure caption="Two routing models side by side. Flood routing propagates to all reachable neighbors at every hop. MeshCore's source routing floods once to discover the path, then routes directly along the cached route for all messages after — only the on-path repeaters handle each packet.">
+  <ComparisonRoutingModels />
+</Figure>
+
+## The path comes back, and stays
+
+When the destination receives the flooded message, it reverses the accumulated path and wraps it in a `PAYLOAD_TYPE_PATH` packet sent back toward the originator. This reply carries the route in reverse order, retracing the same hops.
+
+When the originator receives the PATH packet, the route is stored against that contact. Every subsequent message to that destination carries the pre-populated path, marked `ROUTE_TYPE_DIRECT`. At each hop along the route, only the repeater that matches the next identifier forwards the packet — every other node ignores it. When the path field is exhausted, the packet has arrived.
+
+The consequence: one flood to discover, then minimal airtime for every message after. A two-hop direct message between two contacts involves exactly two relay transmissions, not one per every repeater in the mesh. In a network with many repeaters, this difference compounds with every conversation.
+
+## Only repeaters relay
+
+The routing model above depends on one structural fact: in MeshCore, only infrastructure nodes — repeaters — forward packets. Companion nodes do not.
+
+<Figure caption="The three MeshCore firmware roles. Companion: your personal radio, pairs via Bluetooth, does not relay. Repeater: a fixed node that extends range by relaying packets along the mesh. Room Server: stores group messages for offline members.">
+  <PrimerNodeRoles />
+</Figure>
+
+Companion radios — the nodes you carry or keep at your station, paired to the app — transmit and receive their own messages, but they never relay another node's traffic. Only nodes explicitly configured as repeaters participate in forwarding. (Source: MeshCore FAQ, docs.meshcore.io.)
+
+This is not a constraint to work around; it is an architectural choice that keeps the shared LoRa channel from becoming a commons problem. Add a hundred new companion users to a MeshCore network and the relay load stays flat. Relay capacity grows only when you deliberately add infrastructure repeaters.
+
+For the routing model to be useful, this also means repeater placement is a design decision. Where you mount your repeaters determines which paths the mesh can discover. The closer a relay is to a gap in coverage, the more paths it enables. [Repeater placement and coverage gaps](/blog/where-to-put-your-next-repeater/) starts from the same observation: the routing model can only use the infrastructure you give it.
+
+## Group messages: always a flood
+
+Routing to a single contact can be optimized after the first contact. Routing to a group cannot.
+
+When a node sends a group channel message, there is no single destination whose path can be learned and cached. The packet floods on every transmission, through every repeater in range. Each group message produces as many relay transmissions as there are repeaters that can hear it. This is intentional — group channels are broadcast traffic by design — but it is also why [understanding how flooding costs airtime](/blog/every-node-heard-it-twice/) is worth the time before you configure a heavily used public channel on a dense mesh.
+
+## When a path breaks
+
+Stored paths go stale. A relay goes offline. A seasonal obstruction kills a link. A path that worked last week no longer delivers an acknowledgment.
+
+After retries are exhausted, the firmware marks the path as invalid and clears it. The next message to that contact triggers a fresh discovery flood. The mesh re-learns whatever route is currently available — which may route through entirely different repeaters than the original path. This self-healing happens without any manual intervention and without the operator knowing a re-discovery occurred.
+
+The post on [why mesh packets disappear](/blog/why-mesh-packets-disappear/) covers what happens when no working path exists to discover at all — when a coverage gap prevents any route from completing.
+
+{/* ILLUSTRATION PROMPT: A warm hand-painted close-up of a worn wooden peg board viewed at a shallow angle — the kind used in a workshop for tool storage. Two small brass or painted wooden pegs stand at either end of the board, connected by a single natural-fiber thread carefully threaded through a row of small holes drilled between them. The thread follows a direct path through the holes from one peg to the other — deliberate, specific, established. Warm raking light from the left side casts a gentle shadow from the thread and the pegs onto the wood grain. No other objects. Palette: warm ochre and honey wood tones, off-white thread, muted brass, soft directional shadow. The mood: a specific path, laid down once, used many times. House style: painterly, intimate workbench scale, earthy, calm. */}
