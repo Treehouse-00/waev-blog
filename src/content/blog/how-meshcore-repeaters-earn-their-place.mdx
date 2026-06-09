@@ -1,0 +1,80 @@
+---
+title: "How MeshCore Repeaters Earn Their Place"
+description: "How MeshCore uses public-key identity and access control to authenticate repeaters — and why Waev only draws topology edges from repeaters it can verify."
+date: 2026-09-10
+tags: ["operations", "how-it-works"]
+hero:
+  src: "/hero-how-meshcore-repeaters-earn-their-place.jpg"
+  alt: "A hand-painted close-up of a single brass skeleton key lying on an open-weave linen textile, casting a precise shadow in warm amber light."
+faq:
+  - q: "How does MeshCore authenticate a repeater?"
+    a: "Every MeshCore node generates a public-private key pair the first time it boots. The public key is the node's persistent identity — it is embedded in every advertisement the repeater broadcasts, along with a timestamp and an Ed25519 signature. When a client wants to administer a repeater, it sends a password over an encrypted channel; the repeater verifies it and grants the appropriate permissions. The private key never leaves the device; every advertisement carries the full public key and signature, making the repeater's identity verifiable by any node that hears it."
+  - q: "What is the access control list on a MeshCore repeater?"
+    a: "The ACL is a table of known clients stored on the repeater. When a client successfully authenticates, the repeater saves that client's public key and permission level to the ACL. On subsequent logins, if the client's key is already in the ACL, authentication can succeed with a blank password by matching the stored key alone. Operators can view and modify ACL entries directly via the CLI using the setperm command."
+  - q: "Why does Waev only draw edges from authenticated repeaters?"
+    a: "A topology edge in Waev represents a path that something verifiable produced — a packet that traveled through a repeater whose identity is cryptographically established. Drawing an edge from an inferred or spoofed source would mean the map contains guesses. Evidence-based topology means: if the map shows it, something verifiable produced it. No proof, no line."
+  - q: "What is the difference between an enrolled observer and an authenticated repeater in Waev?"
+    a: "An enrolled observer is a MeshCore node connected to your MQTT broker over the internet — it hears RF packets and publishes them as telemetry to Waev. An authenticated repeater is a node running repeater firmware whose public-key identity is established on the mesh. Waev draws topology edges only from what enrolled observers witness about authenticated repeaters, combining both sources to build the map."
+---
+
+import Figure from "../../components/Figure.astro";
+import TrustedSources from "../../components/viz/TrustedSources.astro";
+import HiwObserverBridge from "../../components/viz/hiw-ObserverBridge.astro";
+
+When Waev draws an edge between two nodes on the topology map, that line represents something specific: a packet was observed traveling through a repeater whose identity is cryptographically established, and an enrolled observer witnessed it over MQTT. It is not an inference. It is not a claimed connection. It is evidence.
+
+That evidence chain starts in the repeater's firmware, at first boot.
+
+<div class="callout">
+<p><strong>In short.</strong> How MeshCore repeaters are authenticated starts at the device level: every repeater generates a public-private key pair at first boot and signs every advertisement it broadcasts. Clients authenticate against that identity using a password and ECDH-derived shared secrets. Waev's topology map draws edges only from enrolled observers and authenticated repeaters — if a source cannot be verified, its claimed edge is rejected, not drawn.</p>
+</div>
+
+## The identity on the device
+
+Every MeshCore node — not just repeaters, but every node — generates a public-private key pair the first time it boots. For ESP32-based hardware, this identity is stored at `/identity` in SPIFFS; for nRF52-based boards, it lives in the internal filesystem. The key pair persists across reboots.
+
+The public key is the node's address on the mesh. The first byte of the public key is used as a routing hash — the compact identifier that path headers embed to direct traffic. When a repeater sends an advertisement, that packet carries the repeater's full public key, a timestamp, and an Ed25519 signature over both. Any node that hears the advertisement can verify the signature against the embedded public key without any central authority.
+
+Source: MeshCore GitHub repository, `examples/simple_repeater/main.cpp` and `src/Mesh.cpp` — the advertisement payload structure and key loading sequence.
+
+This is the repeater's credential. It is bound to that specific device and that specific flash. A spoofed prefix — an advertisement that claims a public-key prefix without the private key to sign it — fails signature verification.
+
+## How a client logs in
+
+The repeater's identity establishes what it *is*. The login mechanism establishes who is *allowed* to manage it.
+
+MeshCore repeaters carry two passwords: an admin password and a guest password. When a client connects to a repeater over the mesh and sends a login request, the repeater checks the password against these stored values. A matching admin password grants full management access; a matching guest password grants read-only access to status data.
+
+If a client's public key is already in the repeater's Access Control List (ACL), it can authenticate with a blank password — the ACL entry confirms it is a previously authorized node. The ACL is a fixed-size table of client records, each storing the client's public key and permission level. Operators can view and modify ACL entries using the `setperm` CLI command from a serial console or via remote management.
+
+The login exchange is encrypted using a shared secret derived from ECDH (Elliptic Curve Diffie-Hellman) — each node derives the shared key from its own private key and the other node's public key, so the derived secret is the same on both sides without being transmitted over the air. Login traffic is never sent in the clear.
+
+## The map's source requirement
+
+This is where the device-level identity connects to what Waev can draw.
+
+<Figure caption="<b>Evidence produces a topology edge; inference does not.</b> An enrolled observer + authenticated repeater combination generates a verified path. A spoofed or inferred prefix fails verification and produces no edge.">
+  <TrustedSources />
+</Figure>
+
+Waev's topology is built from what enrolled observers report over MQTT. An enrolled observer is a MeshCore node — typically running on a fixed installation — that has both a radio interface and an internet connection. It hears RF packets on the mesh and publishes them to your MQTT broker, where Waev subscribes. The observer is the bridge between the radio world and the analytics layer.
+
+<Figure caption="<b>The observer bridges radio and network.</b> On the left, it hears RF packets from mesh nodes. On the right, it publishes over MQTT/TLS to your broker. Waev subscribes read-only to that broker. Waev has no antenna — it sees only what enrolled observers relay.">
+  <HiwObserverBridge />
+</Figure>
+
+When an enrolled observer reports a packet that carries a repeater's advertisement, Waev gets the repeater's public key, timestamp, and signature as part of that report. The edge is drawn only if the source is identifiable from this data — an authenticated repeater whose key has been established on the mesh. Inferred or spoofed prefixes — sources that claim an identity they cannot cryptographically substantiate — are rejected at ingest. The edge is never drawn.
+
+This is what the brief in [From Radio to Map](/blog/how-waev-reads-your-mesh/) describes as evidence-based topology: the map shows only what can be proven, not what can be guessed. The mechanism that makes that possible at the firmware level is the key pair generated at first boot, the signature on every advertisement, and the access control that governs who can manage the repeater.
+
+## What this means for the map you see
+
+A topology edge in Waev is a different kind of claim than a topology edge in a system that draws from inferred or crowd-sourced data.
+
+Each edge represents: a packet traveled this path; an enrolled observer with an MQTT connection to your broker witnessed it; the repeater in that path signed its advertisement with a private key it generated at first boot and has never transmitted. That is the chain.
+
+The practical implication: you can read the Live Map before an activation and know that what it shows reflects something real. Not a claim. Not an assumption. A packet that actually traveled those paths, witnessed by an observer you enrolled, through a repeater whose identity is established at the device level.
+
+For more on how Waev's bring-your-own-broker model keeps that MQTT connection under operator control, see [Bring Your Own Broker](/blog/bring-your-own-broker/).
+
+{/* ILLUSTRATION PROMPT: Hand-painted warm illustration, intimate close-up still life. A single antique brass skeleton key lying on an open-weave natural linen textile, casting a precise angled shadow. The key is the sole subject — no lock, no door, no hand holding it. Warm amber side light, painterly texture, earthy tones, no tech elements, no glowing effects. The mood: a credential at rest, specific and singular. Thumbnail-readable at any size. */}

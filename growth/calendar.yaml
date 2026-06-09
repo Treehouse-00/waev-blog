@@ -190,7 +190,7 @@ posts:
     theme: knowing-over-guessing
     primary_keyword: "how MeshCore repeaters are authenticated"
     secondary_keyword: "verified mesh edges vs claimed connections"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-13
