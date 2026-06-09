@@ -1,0 +1,72 @@
+---
+title: "Seeing Your First MeshCore Packet"
+description: "See your first MeshCore packet in Waev's Live Packets view: what each field means, why ADVERT packets usually arrive first, and what the numbers tell you."
+date: 2026-11-10
+tags: ["primer", "how-it-works"]
+hero:
+  src: "/hero-seeing-your-first-meshcore-packet.jpg"
+  alt: "A hand-painted close-up of a workbench surface: a single small circuit board resting on aged graph paper, a pencil nearby, warm afternoon light cutting across it from a window at the left."
+faq:
+  - q: "What is an ADVERT packet in MeshCore?"
+    a: "An ADVERT is a broadcast a MeshCore node transmits to announce its presence to the mesh — its name, device type, and optionally its GPS coordinates. When you first connect Waev to your network, ADVERT packets from nearby nodes are typically the first entries you see in Live Packets."
+  - q: "What does the hop count in Live Packets tell me?"
+    a: "Hop count is how many radio legs a packet traveled from the source node to your observer. A hop count of 1 means the source was heard directly. A count of 2 means it passed through one relay. For a newly connected observer, seeing different hop counts tells you whether nodes are close by or reaching through the network."
+  - q: "What is the SNR number I see on each packet?"
+    a: "SNR (Signal-to-Noise Ratio) is the quality of the radio signal as received by your observer, in decibels. Higher is better. An SNR above +7 dB is a comfortable working link; below 0 dB the link is marginal. The number is attached to each packet your observer recorded, not to the source node itself."
+  - q: "Do I need to be enrolled as an observer to see packets in Live Packets?"
+    a: "Yes. Live Packets shows what your enrolled observers have heard. An observer is a MeshCore device connected to your MQTT broker over the network. When your observer goes online and Waev connects to your broker, packets start appearing in real time as they arrive at the observer's radio."
+  - q: "Why do I see multiple entries for the same node?"
+    a: "Nodes send adverts periodically, and each transmission creates a new entry in Live Packets. You may also see a node appear from different observers or at different hop counts if the mesh routed around an obstacle. Multiple entries for the same node are normal and give you a record of the node's activity over time."
+---
+
+import Figure from "../../components/Figure.astro";
+import PrimerLivePacketRow from "../../components/viz/primer-LivePacketRow.astro";
+
+The first time you connect an observer and open Live Packets, the stream starts populating. Names appear. Numbers. Timestamps ticking in real time. It looks like a lot — but each row contains exactly five pieces of information, and once you know what they are, the stream stops being a wall of text and starts being a live window into your network.
+
+<div class="callout"><p><strong>In short.</strong> Seeing your first MeshCore packet in Live Packets means reading five fields: the packet type (what kind of packet this is), the node name (who sent it), the SNR (how cleanly your observer heard it), the hop count (how many radio legs it traveled), and the timestamp (when it arrived). ADVERT packets — nodes announcing their presence — are usually the first to appear. Everything else follows from there.</p></div>
+
+## What the stream shows
+
+Live Packets displays every packet your enrolled observers have received, in order of arrival. Each row is one packet, one radio event, one moment in your mesh.
+
+<Figure caption="A single Live Packets row, annotated. The type badge identifies the packet's role; the node name is the source; SNR is the signal quality at your observer; hops is how many relays the packet traversed; the timestamp is when it arrived.">
+  <PrimerLivePacketRow />
+</Figure>
+
+The five fields:
+
+**Packet type.** What kind of packet this is. The most common types you will see:
+- `ADVERT` — a node announcing its identity to the mesh. This is how nodes make themselves known.
+- `MSG` — a direct message between two contacts.
+- `GRP_TXT` — a group channel (public or private) message.
+- `PATH` — a path-discovery response, part of MeshCore's routing handshake.
+- `ACK` — an acknowledgment confirming message delivery.
+
+ADVERT packets tend to dominate a newly connected observer's stream, because repeaters broadcast them periodically and companion radios send them when they first join. An ADVERT from a node you have never seen before means a new contact is within radio range.
+
+**Node name.** The human-readable name the node's operator assigned it. This is whatever was set in the firmware configuration — often something like `w6abc-hilltop` or `relay-north`. If the node carries a privacy marker (⛔ 🛑 🚫), it is identity-scrubbed at the ingest edge and does not appear in Live Packets.
+
+**SNR.** Signal-to-Noise Ratio, in decibels, as received by your observer's radio. This is the quality of the radio signal at the moment your observer heard this particular packet. +9 dB is a comfortable working link. +2 dB is marginal. Below 0 dB, the radio is working harder to decode the signal — LoRa's spread-spectrum modulation can handle it, but do not plan around it for infrastructure you depend on. A deeper explanation of what the numbers mean is in [Reading the Signal](/blog/reading-the-signal/).
+
+**Hop count.** How many radio legs the packet traveled from its source node to your observer. A hop count of `1` means your observer heard the source directly. A count of `2` means it passed through one relay. For a first-look diagnostic: a node showing `1h` is within direct radio range of your observer; `4h` is routing a long way through the network, which may be normal for a remote node or may signal a path problem worth looking at.
+
+**Timestamp.** When the packet arrived at your observer, to the second. Packets appear in Live Packets within seconds of the radio event — this is what "real time" means in practice.
+
+## The first packet usually says "I'm here"
+
+When your observer first comes online and Waev connects to your broker, the first packets to appear are almost always ADVERTs from nearby repeaters or companion radios. This is expected: repeaters broadcast adverts on a schedule (the interval varies by firmware version and node configuration, and nodes also send one sooner after they power on), and the first advert you see from a given node is that node introducing itself to your observer.
+
+If you see an ADVERT from a node you recognize — a repeater you deployed, a club member's radio — it is confirmation the mesh is reaching your observer and the pipeline from radio to Live Packets is working end-to-end. That is the milestone. Everything else is the network doing what it always does; now you can watch it.
+
+## What a quiet stream tells you
+
+If Live Packets is empty, or nothing has arrived in several minutes, there are a few likely causes. The most common: your observer is not yet enrolled in Waev, or the MQTT connection between your observer and your broker has not established. Check the observer's MQTT status and confirm it is publishing to the correct broker. If the connection is healthy and the network is genuinely quiet, that is also useful data — it means no nodes are currently within radio range of your observer, or all nearby nodes are privacy-marked. Both tell you something real about your coverage.
+
+## Where to look next
+
+Once the first packets start arriving, two surfaces in Waev help you go deeper. **Network Stats** aggregates the path-quality picture across all active nodes — hop counts, SNR trends, and status flags for nodes that warrant attention. **Outpost** is the per-node view: activity over time for one specific node, useful when you want to understand a particular node's behavior rather than the whole network at once.
+
+For understanding how your network's topology is being built from the packets your observers record, [From Radio to Map](/blog/how-waev-reads-your-mesh/) walks through the ingest pipeline in detail.
+
+{/* ILLUSTRATION PROMPT: A warm flat hand-painted close-up of a workbench surface: a single small circuit board — compact, green, with a small antenna stub — resting on a sheet of aged graph paper, a pencil lying nearby. Warm afternoon light cuts in from a window at left, casting a soft shadow. The focus is the object itself, the moment of attention before the build. No screens, no UI, no text on the board. Palette: warm amber desk surface, muted green board, soft graphite shadow. */}
