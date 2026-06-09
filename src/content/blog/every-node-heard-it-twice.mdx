@@ -1,0 +1,77 @@
+---
+title: "Every Node Heard It Twice"
+description: "Duplicate packet floods in a LoRa mesh waste airtime and hide real problems. Here is what causes them, how MeshCore suppresses them, and how to spot the difference in Live Packets."
+date: 2026-11-17
+tags: ["signal", "deep-dive"]
+hero:
+  src: "/hero-every-node-heard-it-twice.jpg"
+  alt: "A hand-painted close-up of a desktop surface with two identical folded paper notes side by side, one slightly overlapping the other, on a warm wooden surface with a faint shadow."
+faq:
+  - q: "Why does a LoRa mesh flood packets in the first place?"
+    a: "Flooding is how MeshCore discovers paths to nodes it has not reached before, and how all group channel messages propagate. When a sender has no cached route, every repeater in range forwards the packet outward until it reaches the destination or the hop limit. This is intentional — it is the discovery mechanism."
+  - q: "What is duplicate suppression, and does MeshCore have it?"
+    a: "Duplicate suppression is a mechanism that prevents a node from forwarding or processing the same packet twice. MeshCore implements this via a hash table that tracks packets already seen. When a repeater receives a packet it has already processed, it drops it silently. This prevents routing loops and limits redundant retransmissions."
+  - q: "What is the difference between duplicate suppression and seeing duplicate entries in Live Packets?"
+    a: "Duplicate suppression operates at the repeater level — a repeater drops a packet it has already forwarded. Live Packets in Waev shows what your enrolled observers heard, which can include the same packet arriving via different paths or at different times. Seeing a node appear multiple times in Live Packets is usually normal; it means your observer recorded multiple deliveries of that packet, possibly via different routes."
+  - q: "How do I know if my mesh has a flooding problem?"
+    a: "Warning signs include unusually high packet counts in Live Packets with no corresponding increase in node activity, the same packet appearing many times in quick succession with different hop counts, and SNR degradation across the board suggesting the channel is congested. The key diagnostic is whether packet volume is proportionate to the number of active nodes and traffic."
+  - q: "Should I worry about duplicate flooding on a small network?"
+    a: "On a network with a handful of nodes, flooding overhead is minimal. It becomes a concern as the mesh grows and the channel approaches capacity. For most community deployments, the practical concern is group channel traffic — if the public channel is heavily used, each message produces N retransmissions where N is the number of relays in range."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalFloodAirtimeCost from "../../components/viz/signal-FloodAirtimeCost.astro";
+
+Open Live Packets on an active mesh and you will sometimes see the same node appear several times within a few seconds: same name, same packet type, slightly different hop counts or timestamps. Some of that is expected. Some is the mesh doing redundant work — burning airtime on copies the network did not need.
+
+Knowing the difference is what this post is about.
+
+<div class="callout"><p><strong>In short.</strong> Duplicate packet floods in a LoRa mesh arise because flooding is the legitimate mechanism for discovery and group channel delivery. MeshCore limits flooding via duplicate suppression (a hash table that drops already-seen packets) and its flood-once-then-direct routing for unicast messages. What you see as duplicates in Live Packets is usually normal multi-observer delivery, not a malfunction — but high-volume flooding on a congested channel does cost real airtime, and a poorly sited repeater with no tuning can amplify it.</p></div>
+
+## Why flooding exists
+
+Flooding is not an accident. It is the answer to a genuine problem: in a mesh network with no pre-configured routing table, how does a packet find its destination?
+
+MeshCore's answer: the first message to a new destination floods through every repeater until it arrives. Each repeater appends its identifier to the path field. The destination reverses the path and sends it back. From that point, all direct messages between those two contacts travel along the cached route — and only the repeaters on that route handle the packet. This is the flood-once-then-direct model described in [Flood First, Then Direct](/blog/flood-first-then-direct/).
+
+Group channel messages are different: they always flood, every time. There is no single destination to cache a path toward, so every repeater in range forwards every channel message. This is by design, not a flaw.
+
+The cost: every repeater that hears a flood packet retransmits it. A mesh with five repeaters produces up to five retransmissions per flood packet. For occasional direct-message path discovery, this is negligible. For high-volume public channel traffic on a dense mesh, it adds up.
+
+<Figure caption="Airtime cost comparison for a 10-message conversation on a 5-repeater mesh. Perpetual flooding produces 5 relay transmissions per message — 50 total. Flood-once-then-direct produces 1 flood (5 tx) plus 9 direct messages (1 tx each) — about 76% fewer relay transmissions in this example.">
+  <SignalFloodAirtimeCost />
+</Figure>
+
+## How MeshCore limits duplicate flooding
+
+MeshCore implements duplicate suppression at every repeater. Each node maintains a hash table tracking the packet hashes it has already processed. When a repeater receives a packet it has already seen, it drops it silently before any routing decision is made. (Source: EastMesh Wiki, MeshCore routing algorithm — the `SimpleMeshTables` implementation uses a 128-entry packet hash table and a 64-entry ACK table with cyclic replacement.)
+
+This prevents routing loops: without duplicate suppression, a flood packet could circle back to a node it has already passed through and cause exponential retransmission. With it, each node handles each packet at most once.
+
+The SNR-based retransmission delay also helps. When multiple repeaters hear the same flood packet, the one with the stronger signal (shorter path, better link) retransmits first. By the time weaker nodes begin to forward, many will have already heard the packet from the stronger path and will drop it as a duplicate. This naturally suppresses redundant copies — nodes at the edges forward first; nodes in the middle often find the packet already covered.
+
+## What duplicate entries in Live Packets actually mean
+
+Live Packets shows what your enrolled observers recorded. An observer is a radio — it hears what is in range. Seeing the same node appear multiple times in Live Packets is usually not a symptom of a problem; it is the normal consequence of:
+
+1. **Multiple observers:** if your network has more than one enrolled observer, a packet heard by both produces two entries — one per observer. Same node name, same packet type, possibly different SNR readings (each observer measuring from its own location).
+
+2. **Multiple paths in a flood:** during path discovery, a flood packet may arrive via different repeater chains before duplicate suppression on the relevant nodes catches up. Two copies arriving at your observer via different routes — one in two hops, one in three — are two legitimate observations.
+
+3. **Periodic adverts:** nodes send adverts on a schedule. Each advert is a new transmission, so a node showing up in Live Packets every few hours is behaving normally.
+
+What would indicate a real flooding problem: the same packet appearing many times in rapid succession from the same direction, or packet volume substantially higher than the number of active nodes and messages can explain. This is unusual on well-configured networks but can occur if a repeater's `flood_max` is set too high relative to the network's density, or if a node is misbehaving and sending adverts at an abnormal rate.
+
+## Checking flood health in Live Packets
+
+A practical check: look at the packet types in a recent window. A healthy mesh in normal operation shows a mix of `ADVERT`, `ACK`, and occasional `MSG` or `GRP_TXT`. If `GRP_TXT` dominates the stream — and especially if they all show different hop counts for the same originating node — the public channel is generating heavy flood traffic. This is expected during active operations but is a sign to watch if you see it at low-activity times.
+
+SNR trends matter here too. If the overall SNR in Live Packets starts degrading across unrelated links without any changes in node configuration or position, channel congestion is a candidate cause: the channel is busy enough that reception quality is suffering. This is where [Reading the Signal](/blog/reading-the-signal/) and the per-link stats in Network Stats help you separate a coverage problem from a congestion problem.
+
+## The repeater siting connection
+
+A repeater placed where it can hear everything — a high hilltop with wide coverage, no `txdelay` tuning — amplifies flood traffic. It retransmits every flood packet it hears to everyone in range, creating a large flood zone. This is not inherently wrong; it is what backbone repeaters are supposed to do. But a backbone repeater that is also at low altitude in a dense neighborhood can produce redundant retransmissions to nodes that would have been better served by a closer relay.
+
+The principle: flood behavior follows topology. Understanding that channel messages always flood is the reason repeater placement and `txdelay` configuration matter — not as theoretical optimizations, but as practical controls on how much of the channel your infrastructure consumes.
+
+{/* ILLUSTRATION PROMPT: A warm flat hand-painted close-up of a wooden desk surface with two identical small folded paper notes lying side by side, one slightly overlapping the other, casting a soft shadow. The duplication is the subject — two of the same thing, unexpected. Warm amber light from above, a quiet surface. No text visible on the notes. Palette: warm ochre desk, off-white paper, soft shadow. */}

@@ -1,0 +1,59 @@
+---
+/**
+ * signal-FloodAirtimeCost — airtime cost comparison between perpetual flood
+ * and flood-once-then-direct for a 10-message conversation on a 5-repeater mesh.
+ * Shows message count vs. radio transmissions.
+ * No client JS. Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 220" role="img" aria-label="Bar chart comparing airtime cost. Left side: perpetual flood, 10 messages, 50 repeater transmissions. Right side: flood-once-then-direct, 10 messages, 12 transmissions (1 flood plus 9 direct). Direct routing cuts repeater transmissions by about 76 percent in this example." style="width:100%;height:auto;">
+
+  <!-- Kicker -->
+  <text x="20" y="22" class="viz-label" style="fill:var(--text-accent);letter-spacing:0.06em;">AIRTIME COST — 10 MESSAGES, 5-REPEATER MESH</text>
+
+  <!-- ── Perpetual flood bar ── -->
+  <text x="155" y="48" text-anchor="middle" class="viz-label" style="fill:var(--sys-red-400);">PERPETUAL FLOOD</text>
+  <!-- bar: 50 tx = full height 120px -->
+  <rect x="75" y="58" width="160" height="120" rx="6"
+    style="fill:var(--sys-red-400);opacity:0.25;"/>
+  <rect x="75" y="58" width="160" height="120" rx="6"
+    style="fill:none;stroke:var(--sys-red-400);" stroke-width="1.5"/>
+  <text x="155" y="128" text-anchor="middle"
+    style="font-family:var(--mono);font-size:22px;font-weight:700;fill:var(--sys-red-400);">50</text>
+  <text x="155" y="148" text-anchor="middle" class="viz-label" style="fill:var(--sys-red-400);">repeater tx</text>
+  <text x="155" y="163" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">per message:</text>
+  <text x="155" y="177" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">5 relays × 10 msgs</text>
+
+  <!-- ── Flood-once-then-direct bar ── -->
+  <text x="565" y="48" text-anchor="middle" class="viz-label" style="fill:var(--accent-light);">FLOOD ONCE, THEN DIRECT</text>
+  <!-- bar proportional: 12 tx ≈ 29px tall out of 120 for 50 -->
+  <rect x="485" y="149" width="160" height="29" rx="6"
+    style="fill:var(--accent-light);opacity:0.25;"/>
+  <rect x="485" y="149" width="160" height="29" rx="6"
+    style="fill:none;stroke:var(--accent-light);" stroke-width="1.5"/>
+  <text x="565" y="169" text-anchor="middle"
+    style="font-family:var(--mono);font-size:18px;font-weight:700;fill:var(--accent-light);">~12</text>
+
+  <!-- Dashed baseline for the "short" bar -->
+  <line x1="75" y1="178" x2="645" y2="178"
+    style="stroke:var(--border-subtle);" stroke-width="1" stroke-dasharray="4 3"/>
+
+  <!-- Breakdown label -->
+  <text x="565" y="197" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">1 flood (5 tx) + 9 direct (1 tx each)</text>
+
+  <!-- Savings callout -->
+  <line x1="245" y1="118" x2="485" y2="118"
+    style="stroke:var(--border-subtle);" stroke-width="1"/>
+  <text x="365" y="113" text-anchor="middle" class="viz-label"
+    style="fill:var(--text-accent);">~76% fewer</text>
+  <text x="365" y="127" text-anchor="middle" class="viz-label"
+    style="fill:var(--text-accent);">relay transmissions</text>
+
+  <!-- Arrow tips on the savings line -->
+  <polygon points="245,118 257,113 257,123" style="fill:var(--border-subtle);"/>
+  <polygon points="485,118 473,113 473,123" style="fill:var(--border-subtle);"/>
+
+  <!-- Note -->
+  <text x="360" y="210" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-style:italic;">example only — exact savings depend on mesh size and topology</text>
+</svg>
