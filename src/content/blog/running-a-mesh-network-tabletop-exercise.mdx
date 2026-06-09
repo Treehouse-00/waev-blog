@@ -1,0 +1,110 @@
+---
+title: "The Tabletop Before the Activation"
+description: "Running a mesh network tabletop exercise before an incident is how you find the coverage gaps and single points of failure while you still have time to fix them."
+date: 2026-10-18
+tags: ["playbook", "operations"]
+hero:
+  src: "/hero-running-a-mesh-network-tabletop-exercise.jpg"
+  alt: "A warm hand-painted illustration of a notepad with a hand-drawn mesh network diagram on a conference table, beside a coffee mug and a quiet radio, in still morning light."
+faq:
+  - q: "What is a mesh network tabletop exercise?"
+    a: "A tabletop exercise is a structured discussion in which your team works through a simulated incident scenario — step by step, role by role — without deploying equipment. For a mesh network, the scenario focuses on comms failures: a repeater goes down, coverage disappears, the MQTT broker loses internet access. The goal is to surface gaps in your plan before a real incident demands answers."
+  - q: "How is a mesh network tabletop different from a standard ARES SET exercise?"
+    a: "A standard Simulated Emergency Test (SET) is a functional exercise that deploys operators and tests on-air procedures. A mesh tabletop is a discussion-only session focused on the network's topology and data flows: which nodes are single points of failure, what the Live Map shows during degradation, and how operators interpret the data they see. The two exercises complement each other."
+  - q: "How long should a mesh network tabletop exercise take?"
+    a: "A focused tabletop covering two or three failure scenarios runs in about two to four hours with a group of four to eight participants. You do not need a full day. The after-action discussion is part of that time, not separate from it."
+  - q: "What does Waev's Live Map show during a simulated mesh failure?"
+    a: "During a tabletop, you review Waev's historical data and Network Stats rather than watching live traffic. You identify nodes that are structurally single points of failure in the topology, review SNR trends on critical links, and discuss what the team would see if those nodes went silent. This becomes the baseline your operators reference during a real incident."
+  - q: "How do I identify single points of failure in my mesh before a tabletop?"
+    a: "Open Waev's Live Map and look for nodes whose removal would disconnect a cluster of downstream nodes. A repeater with three or more downstream nodes and no alternative paths is a single point of failure. Confirm this by checking Network Stats: if those downstream nodes have no other high-SNR paths, the SPOF is structural, not just topological."
+---
+
+import Figure from "../../components/Figure.astro";
+import GridgoneCriticalPath from "../../components/viz/gridgone-CriticalPath.astro";
+import PlaybookLinkTable from "../../components/viz/PlaybookLinkTable.astro";
+
+Every CERT or EmComm group that depends on a mesh network for incident communications needs to answer one question before the pager goes off: when the network breaks, does your team know what to do?
+
+The answer isn't in a manual. It is in how your team thinks through the scenario while there is still time to reconfigure, repair, and practice. That is what a tabletop exercise is for. Running a mesh network tabletop exercise is not a test of your radios. It is a test of your operators' ability to read the network and make decisions under a scenario where the usual infrastructure is not behaving as expected.
+
+<div class="callout">
+<p><strong>In short.</strong> Running a mesh network tabletop exercise surfaces the gaps that only appear when you ask "what would we do if this node went dark?" in a room with the people who would actually answer that question. Two to four hours, three scenarios, and a structured after-action discussion is usually enough to identify the one or two infrastructure decisions worth making before the next activation.</p>
+</div>
+
+## What a mesh tabletop covers that a standard exercise doesn't
+
+The ARRL's annual Simulated Emergency Test (SET) and most ARES/CERT activation drills test whether operators can deploy, communicate, and pass traffic under simulated conditions. They are functional exercises — people go to locations, radios go on the air, nets are established.
+
+A mesh network tabletop is different in scope and focus. It is a discussion exercise that zeroes in on the network's topology and data flows. The questions it asks are:
+
+- Which nodes in the topology are single points of failure, and does the team know which ones?
+- When the Live Map shows a cluster of nodes going silent, does the incident commander know whether that's a node-specific failure or a path failure?
+- What is the procedure when the MQTT broker loses internet access? Does the team know the mesh still routes RF traffic even when Waev can't see it?
+- Who decides to deploy a portable repeater, and on what threshold?
+
+These are questions that don't get answered in the field during an activation — they get answered in a conference room on a Tuesday.
+
+## Three scenarios worth running
+
+### Scenario 1: The backbone repeater goes offline
+
+Remove your highest-traffic relay node from the topology on paper. Have the team describe:
+
+- Which downstream nodes are now isolated?
+- Does the map show any remaining high-SNR paths to those nodes?
+- What is the fallback communications path for those nodes?
+- Is there a portable repeater in the go-kit that covers the gap, and does anyone know where it needs to go?
+
+<Figure caption="<b>relay-ridge is a SPOF in this topology.</b> Three cluster nodes sit behind it with no verified alternative path. The tabletop forces the team to name the fallback before the scenario makes it real.">
+  <GridgoneCriticalPath />
+</Figure>
+
+The key finding from this scenario is almost always one of two things: the fallback path is a +3 dB marginal link that no one had looked at recently, or there is no confirmed fallback and the team needs to decide whether to add a second relay or a portable go-kit.
+
+### Scenario 2: Degraded link quality on a critical path
+
+Present the team with a printed or shared view of Network Stats showing a backbone link whose SNR has dropped from +10 dB to +1 dB over the past two weeks. Have the team discuss:
+
+- At what SNR does this link become unreliable under increased traffic load?
+- What is the likely cause (antenna alignment, obstruction, hardware degradation)?
+- Who is responsible for investigating, and in what timeframe before the next exercise?
+- Is this link in the [same position in the topology as the repeater placement decision](/blog/where-to-put-your-next-repeater/) you made last year?
+
+<Figure caption="Link quality on two backbone paths over 30 days. A link that was +11 dB on day one is now at +2 dB — still alive, but not a link you want under incident load.">
+  <PlaybookLinkTable />
+</Figure>
+
+The value of this scenario is establishing a shared definition of "degraded." An SNR floor below which the team agrees to escalate is a simple, memorable decision. Without the tabletop, every operator may have a different threshold in their head.
+
+### Scenario 3: Broker loss
+
+The MQTT broker loses internet access. The mesh continues routing RF packets between nodes — it does not need the broker for that. But Waev can no longer show the Live Map or update Network Stats.
+
+Have the team answer:
+- What changes operationally when Waev goes dark?
+- Can the incident commander still determine mesh health from direct node interaction?
+- What is the verbal or radio-based fallback for communicating topology status between operators?
+
+This scenario often reveals that the team treats the analytics dashboard as a real-time safety net rather than a useful-when-available tool. [The mesh works independently of the observation layer](/blog/when-the-grid-goes-down/) — but that statement needs to be understood and practiced, not just assumed.
+
+## After-action: turning findings into infrastructure
+
+The hour after the scenarios matter as much as the scenarios. For each finding, the team should resolve one of three dispositions:
+
+1. **Infrastructure action:** a specific upgrade, repair, or addition (move relay-ridge to a better location; add a portable repeater to the go-kit covering the north cluster).
+2. **Procedure update:** a change to the activation checklist or the incident communications plan (add an SNR threshold to the degradation protocol; specify who deploys the backup broker).
+3. **Known accepted risk:** a gap the team acknowledges but accepts given the constraints (the marginal link is the only viable path; monitor monthly).
+
+Items in category 1 and 2 become tickets. Category 3 items go into the risk register. Nothing from a tabletop should disappear into a meeting notes document that nobody reads.
+
+## Running this exercise without a full team
+
+If your group is small or geographically distributed, a mesh tabletop still runs effectively with four participants: the incident commander, the network operator, a field operator, and a facilitator who injects the scenario injects. Remote participation via voice or video works fine because no equipment is involved.
+
+The only requirement is that each participant has reviewed the current Live Map topology and knows which nodes are in the infrastructure before the session starts. That review takes ten minutes and is itself a useful readiness check.
+
+---
+
+If you have run a mesh tabletop and want to share what you found, or want guidance on which topology views in Waev are most useful for preparing the scenario materials, [reach out](mailto:admin@waev.app).
+
+{/* ILLUSTRATION PROMPT: A warm hand-painted illustration of a notepad lying open on a plain conference table, showing a hand-drawn mesh network diagram in pencil — circles for nodes, lines for links, one node circled in red. Beside it: a ceramic coffee mug with a faint steam curl and a handheld radio lying face-down. Soft overcast morning light from a window. No people, no screens, no UI. The mood is quiet and preparatory — the work done before the work begins. Medium: hand-painted flat illustration with warm painterly texture. Palette: cream, warm grey, faint pencil-line blue, with a single red accent circle on the drawn diagram. */}
