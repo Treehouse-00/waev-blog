@@ -538,7 +538,7 @@ posts:
     theme: power-of-refusal
     primary_keyword: "MeshCore node naming privacy marker"
     secondary_keyword: "how to opt a node out of mesh mapping"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-22

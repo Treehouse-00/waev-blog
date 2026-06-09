@@ -1,0 +1,63 @@
+---
+title: "Your Node Name Is a Privacy Switch"
+description: "MeshCore node naming privacy markers — ⛔, 🛑, or 🚫 in a node name — tell Waev's ingest edge to drop every packet before storage, mapping, or counting."
+date: 2026-11-19
+tags: ["privacy"]
+hero:
+  src: "/hero-meshcore-node-naming-privacy-markers.jpg"
+  alt: "A warm flat illustration of a small hand-written name tag lying flat on a wooden surface, with a privacy marker emoji written on it in pen."
+faq:
+  - q: "Which characters trigger the opt-out in a node name?"
+    a: "Add ⛔, 🛑, or 🚫 anywhere in the node name. Waev's ingest edge checks the name field of every arriving packet before any other processing. If a match is found, the packet is discarded entirely — nothing is written, nothing is counted."
+  - q: "Is an opted-out node visible at all on Waev's Live Map or Network Stats?"
+    a: "No. The packet is dropped at Gate 1, before topology processing, before the map, and before any aggregate count. An opted-out node does not appear anywhere in Waev's output."
+  - q: "Does the opt-out apply retroactively to packets already stored?"
+    a: "No. Adding a marker to a node name prevents future packets from being stored; it does not delete records that were stored before the marker was added. If you want records removed, contact admin@waev.app."
+  - q: "Can I use the privacy marker on a repeater as well as a personal device?"
+    a: "Yes. The ingest check applies to any node name, regardless of the device type. If a repeater carries a marker, its packets are dropped the same way. Bear in mind that a dropped repeater node will not contribute topology edges to the map."
+  - q: "What is the difference between an opted-out node and a companion device scrub?"
+    a: "An opted-out node is dropped entirely — no record, no signal metadata. A companion device scrub is different: Waev detects the device type, nullifies the name and device identity, but retains anonymous signal metadata such as SNR and hop count for aggregate Network Stats. The privacy marker produces the more complete exclusion."
+---
+
+import Figure from "../../components/Figure.astro";
+import PrivacyGateFlow from "../../components/viz/privacy-GateFlow.astro";
+
+A node's name in MeshCore is normally just a label for humans — a callsign, a location, a reminder of what the hardware is. In Waev's ingest pipeline, the node name also functions as an explicit control: put the right character in it and that node's packets are dropped at the first gate, before they are stored, before they appear on the map, before they contribute to any count.
+
+<div class="callout">
+<p><strong>In short.</strong> MeshCore node naming privacy markers — ⛔, 🛑, or 🚫 in a node name — are checked first at Waev's ingest edge. A packet from a node whose name contains any of these characters is discarded entirely before any other processing. Nothing is stored, nothing is mapped, nothing is counted.</p>
+</div>
+
+## How to apply a marker
+
+Open the MeshCore configuration for the node you want to opt out, and add ⛔, 🛑, or 🚫 anywhere in the node name. The rest of the name can be whatever it was before. `BASE1` becomes `BASE1 ⛔` or `⛔ BASE1` or `BASE1⛔` — all work. The marker does not need to be at the start or end; any position triggers the check.
+
+The change takes effect on the next packet from that node that arrives at Waev's ingest edge. There is no other configuration required — no account setting, no Waev dashboard toggle. The opt-out lives in the node name.
+
+## What happens at the ingest edge
+
+Waev's ingest pipeline runs three checks in order: opt-out, companion identity, and topology verification. The opt-out check is first.
+
+<Figure caption="Waev's three-gate ingest flow. Gate 1 checks the node name for a privacy marker and drops the packet entirely if one is found — before companion scrub, before topology verification, before any write to storage.">
+  <PrivacyGateFlow />
+</Figure>
+
+When a packet arrives, the first thing Waev does is read the name field. If that name contains ⛔, 🛑, or 🚫, the packet is discarded. No record is created. The node does not appear on the Live Map. It does not increment any counter in Network Stats. It does not show up in packet search. The drop is complete.
+
+The order matters. The opt-out check runs before the companion device scrub, before topology verification, before any other logic. A node with a privacy marker is not scrubbed — it is simply never processed.
+
+## When to use it
+
+The most common use cases are personal or family devices that happen to be on the mesh — a companion app on a phone, a handheld carried by someone who did not sign up to be logged — and infrastructure nodes you are testing or running in a sensitive context.
+
+For personal companion devices, Waev already scrubs identity at the ingest edge by default (name and device type are nullified, only anonymous signal metadata is kept). If you want a stronger guarantee — no record at all, no signal metadata, no anything — a privacy marker on the companion's node name achieves that. [What we choose not to know](/blog/what-we-choose-not-to-know/) covers both gates in full detail.
+
+For infrastructure nodes, the marker is a deliberate choice about visibility. A test node you are moving around to check coverage might carry a marker while you are working with it and lose the marker once it is installed permanently. A repeater at a private location might carry a marker permanently.
+
+## What the marker does not do
+
+A privacy marker in a MeshCore node name is a convention that Waev checks at its own ingest edge. It does not affect how MeshCore's firmware broadcasts the node's packets on the mesh. Other nodes on the mesh still hear those packets; other tools connected to your broker still receive them. The marker controls only what Waev does with the packet when it arrives.
+
+It also does not change what your MQTT broker stores, if your broker retains messages. Your broker stores whatever the observer publishes; the marker operates downstream of that, at Waev's ingest, not at the broker. This is one of the structural consequences of the [bring-your-own-broker model](/blog/bring-your-own-broker/): your broker and Waev's ingest are separate layers, each with their own controls.
+
+{/* ILLUSTRATION PROMPT: A warm flat illustration of a small hand-written name tag or address label lying flat on a wooden surface. One of the privacy emoji characters (⛔ or 🚫) is written on it in pen, cleanly. Simple, quiet, direct. Warm wood tones, cream paper, soft afternoon light. */}
