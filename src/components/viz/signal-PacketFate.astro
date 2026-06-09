@@ -1,0 +1,66 @@
+---
+/**
+ * signal-PacketFate — four reasons a LoRa mesh packet fails to arrive.
+ * Displays four failure modes in a 2×2 grid: RF margin, collision,
+ * duty-cycle hold, and coverage gap. Theme-aware via CSS custom properties.
+ * No client JS.
+ */
+---
+
+<svg viewBox="0 0 720 340" role="img" aria-label="Four reasons a LoRa mesh packet disappears. Top row: RF margin failure (SNR fell below the demodulation floor) and collision (two nodes transmitted at the same time on the same channel). Bottom row: duty-cycle hold (a node that already transmitted is sitting out its mandatory silence period) and coverage gap (no relay in range to forward the packet)." style="width:100%;height:auto;">
+  <defs>
+    <marker id="spf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
+    </marker>
+  </defs>
+
+  <!-- ── Kicker ── -->
+  <text x="20" y="28" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">FOUR WAYS A PACKET DISAPPEARS</text>
+
+  <!-- ── Grid cells ── -->
+  <rect x="20"  y="44" width="330" height="130" rx="10" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <rect x="370" y="44" width="330" height="130" rx="10" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <rect x="20"  y="194" width="330" height="130" rx="10" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <rect x="370" y="194" width="330" height="130" rx="10" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- CELL 1: RF MARGIN FAILURE -->
+  <rect x="20" y="44" width="330" height="6" rx="10" style="fill: var(--sys-red-400);" opacity="0.6" />
+  <text x="52" y="80" class="viz-label" style="fill: var(--sys-red-400); font-size:18px;">↘</text>
+  <line x1="80" y1="78" x2="118" y2="78" style="stroke: var(--sys-red-400);" stroke-width="1.5" stroke-dasharray="3 2" />
+  <text x="124" y="83" class="viz-label" style="fill: var(--sys-red-400); font-size:9px;">FLOOR</text>
+  <text x="52" y="112" class="viz-label" style="fill: var(--text-primary); font-size:11px; font-weight:600;">RF MARGIN FAILURE</text>
+  <text x="52" y="128" class="viz-label" style="fill: var(--text-muted);">SNR fell below the demodulation</text>
+  <text x="52" y="143" class="viz-label" style="fill: var(--text-muted);">floor — the receiver heard noise,</text>
+  <text x="52" y="158" class="viz-label" style="fill: var(--text-muted);">not signal. No decode possible.</text>
+
+  <!-- CELL 2: COLLISION -->
+  <rect x="370" y="44" width="330" height="6" rx="10" style="fill: var(--sys-orangeyellow-600);" opacity="0.7" />
+  <line x1="395" y1="72" x2="440" y2="90" style="stroke: var(--border-hover);" stroke-width="2" marker-end="url(#spf-arrow)" />
+  <line x1="490" y1="72" x2="445" y2="90" style="stroke: var(--border-hover);" stroke-width="2" marker-end="url(#spf-arrow)" />
+  <text x="432" y="108" class="viz-label" style="fill: var(--sys-orangeyellow-600); font-size:18px; font-weight:700;">✕</text>
+  <text x="400" y="112" class="viz-label" style="fill: var(--text-primary); font-size:11px; font-weight:600;">COLLISION</text>
+  <text x="400" y="128" class="viz-label" style="fill: var(--text-muted);">Two nodes transmitted on the</text>
+  <text x="400" y="143" class="viz-label" style="fill: var(--text-muted);">same channel at the same time.</text>
+  <text x="400" y="158" class="viz-label" style="fill: var(--text-muted);">Neither packet survives intact.</text>
+
+  <!-- CELL 3: DUTY-CYCLE HOLD -->
+  <rect x="20" y="194" width="330" height="6" rx="10" style="fill: var(--text-tertiary);" opacity="0.5" />
+  <text x="48" y="246" style="font-size:22px;" aria-hidden="true">⏸</text>
+  <text x="52" y="262" class="viz-label" style="fill: var(--text-primary); font-size:11px; font-weight:600;">DUTY-CYCLE HOLD</text>
+  <text x="52" y="278" class="viz-label" style="fill: var(--text-muted);">A relay already transmitted and is</text>
+  <text x="52" y="293" class="viz-label" style="fill: var(--text-muted);">sitting out its mandatory silence.</text>
+  <text x="52" y="308" class="viz-label" style="fill: var(--text-muted);">The packet arrives at a quiet node.</text>
+
+  <!-- CELL 4: COVERAGE GAP -->
+  <rect x="370" y="194" width="330" height="6" rx="10" style="fill: var(--text-tertiary);" opacity="0.5" />
+  <line x1="395" y1="232" x2="470" y2="232" style="stroke: var(--border-hover);" stroke-width="2" marker-end="url(#spf-arrow)" />
+  <text x="478" y="238" class="viz-label" style="fill: var(--text-muted); font-size:22px;">∅</text>
+  <text x="400" y="262" class="viz-label" style="fill: var(--text-primary); font-size:11px; font-weight:600;">COVERAGE GAP</text>
+  <text x="400" y="278" class="viz-label" style="fill: var(--text-muted);">No relay sits between sender</text>
+  <text x="400" y="293" class="viz-label" style="fill: var(--text-muted);">and observer. The packet travels</text>
+  <text x="400" y="308" class="viz-label" style="fill: var(--text-muted);">but lands nowhere.</text>
+
+  <!-- Grid dividers -->
+  <line x1="355" y1="50" x2="355" y2="318" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <line x1="20" y1="180" x2="700" y2="180" style="stroke: var(--border-subtle);" stroke-width="1" />
+</svg>

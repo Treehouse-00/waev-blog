@@ -1,0 +1,90 @@
+---
+title: "Why Mesh Packets Disappear"
+description: "Four reasons a LoRa mesh packet silently fails to arrive — RF margin, collision, duty-cycle holds, and coverage gaps — and how to tell them apart in Live Packets."
+date: 2026-10-06
+tags: ["signal", "deep-dive"]
+hero:
+  src: "/hero-why-mesh-packets-disappear.jpg"
+  alt: "A hand-painted close-up of two paper envelopes meeting head-on inside a warm-toned copper pipe cross-section: one continues forward, one tumbles away crumpled. Earthy workshop palette, calm painterly texture."
+faq:
+  - q: "Why do LoRa mesh packets disappear without any error message?"
+    a: "LoRa mesh uses unacknowledged flooding by default — packets are sent without any delivery confirmation. When a packet is lost, the sender never learns about it. Loss can result from SNR falling below the demodulation floor, two nodes transmitting at the same instant on the same channel, a relay node sitting out its duty-cycle silence period, or a coverage gap with no relay in range. All four look identical from the sender's perspective: silence."
+  - q: "What is a LoRa collision and why does it cause packet loss?"
+    a: "A collision occurs when two nodes transmit on the same frequency channel at the same time. LoRa uses an uncoordinated ALOHA-style channel access — there is no listening-before-transmitting. If the two overlapping signals are similar in strength, neither is decoded cleanly. The capture effect can save one packet if it is roughly 6 dB or more stronger than the other, but this is not reliable for close or similar-power nodes."
+  - q: "What is the LoRa duty cycle and how does it cause silent packet gaps?"
+    a: "Duty-cycle limits restrict how much time a node can spend transmitting in any given period. After forwarding packets, a relay must stay quiet for a defined silence window before it can transmit again. If the next packet arrives during that window, the relay cannot forward it — the packet is silently dropped. Higher spreading factors have longer time-on-air and therefore drain the duty-cycle budget faster."
+  - q: "How do I distinguish RF margin failure from a coverage gap in my mesh?"
+    a: "If a node was previously heard at marginal SNR (near zero to +3 dB) and then goes silent, suspect RF margin failure — conditions pushed the link below the demodulation floor. If a node disappears entirely while its neighbors remain active, and its last-seen SNR was reasonable, suspect a coverage gap. Waev's Live Packets shows hop count and SNR per observation; together they almost always identify the cause."
+  - q: "Does spreading factor affect collision probability?"
+    a: "Yes, directly. Higher spreading factors produce longer time-on-air per packet, which increases the probability that another transmission will overlap. An SF12 packet at 125 kHz bandwidth occupies the channel for roughly 2 seconds versus about 50 ms for SF7. The same traffic load that rarely causes collisions at SF7 can cause frequent collisions at SF12."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalPacketFate from "../../components/viz/signal-PacketFate.astro";
+import SignalHopChain from "../../components/viz/signal-HopChain.astro";
+
+You're watching Live Packets and a node goes quiet. It was active an hour ago. The other nodes around it are still reporting normally. No alarm fired, no error message appeared. The node is simply gone.
+
+This is the signature of silent packet loss — the most common and most misdiagnosed problem in a LoRa mesh. Understanding why packets disappear, and which of the four possible causes is responsible, is what separates a network you're watching from one you actually understand.
+
+<div class="callout">
+<p><strong>In short.</strong> LoRa mesh packets disappear for four reasons: the SNR on a hop fell below the demodulation floor, two nodes transmitted simultaneously (collision), a relay was in its duty-cycle silence window when the packet arrived, or no relay existed in range to forward it. All four produce identical silence at the sender. Waev's Live Packets and Network Stats surface the clues that distinguish them.</p>
+</div>
+
+## How LoRa mesh delivers — and loses — packets
+
+MeshCore uses flood routing: every node that hears a new packet and hasn't already forwarded it retransmits it. There is no delivery acknowledgment at the mesh layer. A packet either arrives at an observer and shows up in Live Packets, or it doesn't. There is no failure signal.
+
+This means the only way to detect packet loss is to notice absence: a node that was reporting 30 packets per hour drops to zero, a path that showed 2 hops now shows nothing, a link that read +4 dB SNR last week doesn't appear at all.
+
+<Figure caption="<b>Four failure modes.</b> All four look identical at the sender — silence. The diagnostic clues live in what Waev recorded before the silence began.">
+  <SignalPacketFate />
+</Figure>
+
+## Failure mode 1: RF margin
+
+The most common cause. LoRa uses chirp spread spectrum, which lets it decode signals below the noise floor. But that capability has a floor of its own: at typical MeshCore spreading factors and bandwidths, there is a minimum SNR below which the receiver simply cannot decode. According to Semtech's specifications, the demodulation floor for SF9 (a common MeshCore setting) is approximately −12.5 dB SNR; for SF10 it's −15 dB. A link running at +3 dB SNR may appear healthy but has limited margin above the demodulation floor.
+
+When a weather change, seasonal vegetation, a misaligned antenna, or increased local interference erodes those margins, the link falls silent. Packets arrive at the antenna and disappear.
+
+**The diagnostic clue:** check whether the node's last-seen SNR was marginal — below +5 dB in Waev's Network Stats or Live Packets. If the final observations showed +1 to +4 dB, RF margin failure is the most likely cause. The fix is almost always a path improvement: a higher relay site, a better antenna, or an additional repeater positioned to provide a stronger intermediate hop.
+
+## Failure mode 2: collision
+
+LoRa mesh nodes transmit without listening first. When two nodes transmit on the same channel at the same time, their signals overlap at any receiver that hears both. In most cases, neither packet survives.
+
+The exception is the capture effect: if one signal is substantially stronger than the other — typically 6 dB or more stronger at the receiver — the stronger packet can be decoded despite the interference. However, this requires a consistent power difference and does not reliably apply to nearby nodes transmitting with similar power levels.
+
+Collision probability is proportional to traffic density and to spreading factor. At SF10, an SF10 packet occupies the channel for roughly eight times as long as an SF7 packet over the same payload. A network carrying moderate traffic at SF12 handles far more collisions than the same network at SF7 with equivalent link margins.
+
+**The diagnostic clue:** collision losses are usually intermittent, not permanent. A node losing packets to collisions typically shows strong SNR when it does arrive — the RF path is fine — but erratic packet rates. In Waev's Network Stats, the pattern is variable delivery rate on a path that otherwise looks healthy.
+
+## Failure mode 3: duty-cycle hold
+
+LoRa operates in unlicensed ISM bands that carry regulatory duty-cycle limits. MeshCore firmware respects these limits: after transmitting, a node or relay must stay quiet for a silence window proportional to the time it just spent transmitting. If a packet arrives during that window, the relay cannot forward it — the packet is silently dropped.
+
+Higher spreading factors amplify this effect. At SF12, each packet takes far longer to transmit, so the post-transmission silence window is correspondingly longer. A relay forwarding high-volume traffic at SF12 may spend most of its time in the duty-cycle window, dropping most of the packets it should be forwarding.
+
+**The diagnostic clue:** duty-cycle losses cluster. You'll see a burst of normal activity followed by a gap — the relay transmits, then goes quiet, then transmits again. If a node's arrival pattern in Live Packets shows regular burst-and-gap rhythms that align with the forwarding activity of a specific relay, you have found a duty-cycle bottleneck. Reducing the spreading factor (and thus time-on-air) on that path is the most effective fix.
+
+<Figure caption="Hop count and SNR together identify the failure mode. A node that vanished after showing stable 2-hop paths at +8 dB has a different problem than one that was always at 4 hops and +2 dB.">
+  <SignalHopChain />
+</Figure>
+
+## Failure mode 4: coverage gap
+
+No relay exists where one is needed. The transmitting node cannot reach an observer or the next relay on any path — not because the link failed, but because no link was ever there.
+
+Coverage gaps appear when a network expands geographically, when a relay goes offline permanently, or when a node is placed at a location assumed to be in range but isn't. They differ from the other three failure modes in being structural: there is no RF path to improve, only a physical gap to fill.
+
+**The diagnostic clue:** nodes lost to a coverage gap go completely silent — no transmissions, no forwarded traffic, no topology edges in Waev's Live Map. The gap is visible as an isolated node or cluster with no connections to the main network. The post on [repeater placement and coverage gaps](/blog/where-to-put-your-next-repeater/) covers the decision: whether to add a relay or improve an antenna at an existing site.
+
+## Reading the four modes together
+
+Most real-world packet loss involves a combination. A marginally in-range path is susceptible to RF margin failure when conditions degrade, and the high spreading factor that compensates for weak SNR simultaneously increases collision probability and duty-cycle hold frequency.
+
+The post on [reading SNR and hop count](/blog/reading-the-signal/) covers the path-quality numbers in depth. The post on [network health baselines and single points of failure](/blog/when-the-grid-goes-down/) shows how topology structure makes these failure modes worse. Together, SNR readings and topology structure give you most of what you need to diagnose a silent loss — because none of these failure modes are truly silent once you know what to look for.
+
+Questions about a silent node or erratic link? [Tell us what you're seeing](mailto:admin@waev.app) — real deployment patterns are the most useful input we get.
+
+{/* ILLUSTRATION PROMPT: A hand-painted close-up of two paper envelopes meeting head-on inside a warm-lit copper pipe cross-section: one continues forward intact, one tumbles away crumpled. The pipe interior uses earthy oranges and warm ochres with calm painterly texture — no digital elements, no glowing tech, no mesh overlays. The single metaphor is physical collision: a message that made it through and one that didn't. Mood: grounded and matter-of-fact. Thumbnail-readable. */}
