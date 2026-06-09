@@ -411,7 +411,7 @@ posts:
     series: neighborhood-watch
     primary_keyword: "block by block neighborhood mesh buildout"
     secondary_keyword: "growing a neighborhood mesh street by street"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-27
