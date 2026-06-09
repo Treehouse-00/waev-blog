@@ -90,8 +90,12 @@ Body requirements (AGENT.md "Authoring a post" + `../VOICE.md`):
 - First element after imports: the AEO hook callout, verbatim structure
   `<div class="callout"><p><strong>In short.</strong> …</p></div>` — one or two
   sentences answering the post's core question for the `primary_keyword`.
-- Voice: measured, technical, no hype, NO byline or signoff (AGENT.md
-  Invariant 5). Match `../VOICE.md`.
+- Voice and messaging: `../VOICE.md` is the BINDING law — obey it as written; do
+  not paraphrase or soften it here. In particular, run its "Median copy vs.
+  waev-grade" test (and the "Titles and keywords" rule) against the title, the
+  `In short.` callout, and every paragraph before you ship a line. Structural
+  invariant: the post carries NO byline and NO signoff (AGENT.md Invariant 5;
+  also a VOICE.md checklist MUST).
 - Include ≥ 1 viz component via `<Figure caption="…"><SomeViz /></Figure>`.
   Reuse an existing component from `../../src/components/viz/` when one fits the
   topic (families: `byob-*`, `fieldday-*`, `gridgone-*`, `hiw-*`, `privacy-*`,

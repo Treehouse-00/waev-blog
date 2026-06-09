@@ -403,13 +403,16 @@ Existing posts (slugs for cross-linking): `bring-your-own-broker`,
   - Scope: `dist/llms.txt` (the `## Key facts` section).
   - Check: the built file contains ALL of these exact substrings (case-sensitive),
     each encoding one canon fact:
-    1. `⛔ 🛑 🚫` and `never stored, mapped, or counted` and
+    1. `real-time analytics platform for MeshCore mesh radio networks` and
+       `mesh network intelligence` (platform definition — this is the fact
+       SD-05's Organization `description` must stay consistent with);
+    2. `⛔ 🛑 🚫` and `never stored, mapped, or counted` and
        `identity-scrubbed at the ingest edge` (privacy by default);
-    2. `enrolled observers` and `authenticated repeaters` and
+    3. `enrolled observers` and `authenticated repeaters` and
        `Spoofed or inferred prefixes are rejected` (evidence-based topology);
-    3. `bring-your-own-broker` and `operators host their own MQTT broker`
+    4. `bring-your-own-broker` and `operators host their own MQTT broker`
        (data ownership);
-    4. `admin@waev.app` (contact).
+    5. `admin@waev.app` (contact).
   - PASS: every listed substring is present in `dist/llms.txt`.
   - Fix: `src/pages/llms.txt.ts` — this file IS the canon; a missing/altered
     substring is a regression. Any intended change to a fact is a
