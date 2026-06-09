@@ -248,7 +248,7 @@ posts:
     series: bench-notes
     primary_keyword: "LoRa dev board comparison for MeshCore"
     secondary_keyword: "Heltec vs RAK mesh node"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-24
