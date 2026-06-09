@@ -1,6 +1,6 @@
 ---
 title: "Before the Storm Makes Landfall"
-description: "How to verify your mesh network's hurricane season readiness six weeks before you need it — because a baseline built on a routine Tuesday is worth more than any last-minute check."
+description: "Hurricane season mesh network prep begins six weeks out. Build a health data baseline now — it reveals marginal links while there's still time to fix them."
 date: 2026-09-03
 tags: ["resilience", "operations"]
 hero:
@@ -39,7 +39,7 @@ The baseline you need before hurricane season is built by enrolling observers ea
 
 Three numbers are worth knowing for every node you consider critical:
 
-**SNR on the link to backbone.** A working MeshCore link generally holds above +5 dB in typical conditions. A node holding at +1 or +2 dB is technically alive but operating on borrowed margin. Any weather event, increased traffic, or minor power fluctuation can tip it over. Pull the time series in Outpost and look for whether that degradation is constant or shows a pattern — certain hours, certain conditions.
+**SNR on the link to backbone.** A working MeshCore link generally holds above +7 dB in typical conditions. A node holding at +1 or +2 dB is technically alive but operating on borrowed margin. Any weather event, increased traffic, or minor power fluctuation can tip it over. Pull the time series in Outpost and look for whether that degradation is constant or shows a pattern — certain hours, certain conditions.
 
 **Hop count to your enrolled observer.** A node that was reaching backbone in two hops at initial deployment and now shows three or four hasn't physically moved. Something in the preferred path degraded, and the mesh quietly rerouted. That reroute happened without any alarm. Network Stats shows you the hop count trend over time.
 
@@ -71,7 +71,7 @@ Look for three structural conditions during this review:
 
 Six weeks before peak season:
 
-- Review 30-day Network Stats for every critical node. Flag any with watchlist periods, hop-count growth, or SNR below +5 dB consistently.
+- Review 30-day Network Stats for every critical node. Flag any with watchlist periods, hop-count growth, or SNR below +7 dB consistently.
 - Run the topology review on the Live Map. Document every SPOF and every long-hop path.
 - Check power supply at every remote repeater. Solar panels need clean surfaces and correct orientation. Battery capacity fades over months; a repeater that ran on solar all spring may be undersized heading into a cloudy storm week.
 - Verify your enrolled observers are actually enrolled and reporting. An observer that stopped connecting to your broker six weeks ago means six weeks of health data you do not have.
