@@ -1,0 +1,88 @@
+---
+title: "When the Towers Are Already Gone"
+description: "How to build a wildfire evacuation mesh communication plan before fire season — because a mesh that doesn't exist before the fire doesn't exist when you need it."
+date: 2026-09-17
+tags: ["resilience", "operations"]
+hero:
+  src: "/hero-when-the-towers-are-already-gone.jpg"
+  alt: "A hand-painted close-up of a weathered paper topo map pinned to a wooden fence post at the edge of a dry summer field, a small LoRa node attached nearby in warm afternoon light."
+faq:
+  - q: "How does a mesh network work when cell towers fail during a wildfire?"
+    a: "A LoRa mesh network operates completely independently of cell towers, internet infrastructure, and the power grid. Each node communicates by radio directly with other nodes in range. Messages hop from node to node across a chain of repeaters. Because each node needs only milliwatts of power, a small battery or solar panel keeps it running for days after grid power fails. There is no tower to go dark, no backhaul to sever, no provider to restore."
+  - q: "Where should I place repeaters for wildfire evacuation coverage?"
+    a: "Prioritize the evacuation routes, not just the neighborhoods. People move along roads and trails during an evacuation; the path those routes take — through drainages, over ridgelines, past single-point road junctions — is where communication gaps hurt most. Place repeaters at elevation points with line-of-sight to as much of the evacuation corridor as possible, and site them outside the likely burn perimeter for any credible fire scenario in your area."
+  - q: "What should a wildfire mesh communication plan include?"
+    a: "At minimum: a map of which nodes cover which evacuation routes; power resilience specs for each remote repeater; a list of who checks what channels and when; a fallback plan if the primary repeater in a coverage zone fails; and verification that the plan was tested against actual coverage, not assumed coverage. A plan that was never tested is a document, not a capability."
+  - q: "How do I verify my mesh is ready before wildfire season?"
+    a: "Do a drive survey of your primary evacuation routes with a companion device and note where packets stop arriving. Cross-reference that with Waev's Live Map coverage: areas where the map is silent are either genuine dead zones or observer coverage gaps. Either way, you need to know before the fire. A coverage check done on a clear June day is worth more than any assumption made in July."
+  - q: "Do I need a license to operate a mesh radio during an emergency?"
+    a: "In the United States, LoRa mesh devices operating in the 915 MHz ISM band under Part 15 FCC regulations do not require a license, provided the device meets power and certification requirements. Licensed amateur radio operators can operate on adjacent amateur frequencies with higher power. Check applicable regulations for your jurisdiction before deployment; rules vary outside the US."
+---
+
+import Figure from "../../components/Figure.astro";
+import PlaybookCoverageGap from "../../components/viz/PlaybookCoverageGap.astro";
+import GridgoneCriticalPath from "../../components/viz/gridgone-CriticalPath.astro";
+
+The infrastructure failure sequence during a fast-moving wildfire is well-documented and predictable. Cell towers near the fire zone lose power or are destroyed. Most towers carry between eight and twelve hours of battery backup once grid power fails — after that, any phone call or text message that depends on them fails too. In a rapidly expanding fire scenario, that window can close before many residents know they need it.
+
+A mesh communication network built before fire season operates on a completely different set of dependencies. No cell tower. No internet backhaul. No power grid. Just radio, battery, and the repeaters you placed when conditions let you place them carefully.
+
+<div class="callout">
+<p><strong>In short.</strong> A wildfire evacuation mesh communication plan is built before fire season or not at all. The repeaters need to be sited, tested, and verified on a routine day — on the evacuation routes people will actually use, powered independently of the grid, positioned outside the burn perimeter. There is no last-minute setup window during a fast-moving fire. The mesh either exists when the towers go dark, or it doesn't.</p>
+</div>
+
+## What the coverage plan actually needs to cover
+
+The most common mistake in mesh planning for wildfire scenarios is planning for neighborhoods instead of evacuation routes.
+
+When a fire moves fast, people are moving — on roads, not in houses. The communication gaps that hurt most are not in backyards. They are on the mountain road between the subdivision and the highway, in the drainage where the canyon narrows, at the junction where the route decision matters. If someone loses contact with their group while moving along an evacuation corridor, they need to know whether to turn back or continue.
+
+<Figure caption="<b>Coverage frontier along an evacuation corridor.</b> Left: backbone coverage zone. Middle: the intermittent edge — reachable under good conditions, not under others. Right: the silent zone — no packets, no data. Coverage that doesn't follow the evacuation route doesn't cover the evacuation.">
+  <PlaybookCoverageGap />
+</Figure>
+
+Before fire season, walk or drive your primary evacuation routes with a companion device and note where packets stop arriving. That boundary — where your map transitions from connected to silent — is where coverage planning starts. The question is not whether the map looks good in the neighborhood; it is whether a message from the back of the evacuation column can reach someone in the front.
+
+## Repeater placement for fire scenarios
+
+Two constraints are specific to wildfire that do not apply to general mesh planning.
+
+**Place outside the likely burn perimeter.** A repeater that burns in the first hour of a fire provides no coverage. For your area, identify the most probable fire corridors based on terrain, vegetation, and historical patterns — not the worst-case scenario, but the credible-scenario perimeter for a typical fire. Repeaters that fall inside that perimeter should be treated as conditional: available in ordinary conditions, not available when most needed.
+
+For coverage on evacuation routes that pass through fire-risk terrain, the repeater has to be close enough to cover the route but high enough and far enough from the fuels to have a reasonable chance of surviving. A ridge point above the chaparral, a rocky summit above the timber line, or a metal structure (water tower, communications mast) in a cleared area — these are the sites that are still there when the route is in use.
+
+**Power for the duration.** A repeater with eight hours of battery provides no more coverage than a cell tower during a multi-day fire event. Remote repeaters should have solar panels sized for cloudy conditions plus enough battery storage to carry through periods when panels produce little. The specific sizing depends on device power consumption and your climate; an ESP32-based repeater drawing 100–200 mA continuous is a different calculation than a nRF52-based repeater at much lower draw. What matters is that the power budget includes a realistic worst-case, not an optimistic best-case.
+
+<Figure caption="<b>Repeater coverage in a SPOF configuration.</b> If the single repeater covering this corridor goes down — from fire, from power loss, from hardware failure — the entire route beyond it loses coverage. A second repeater at an alternative site creates a redundant path. Redundancy is more important in fire scenarios than in any other context.">
+  <GridgoneCriticalPath />
+</Figure>
+
+Fire scenarios amplify every single point of failure. A SPOF in a hurricane deployment is a reliability risk. A SPOF in a wildfire deployment, where the repeater itself may be in the affected zone, is a near-certain failure. For every segment of your evacuation coverage, ask: if this repeater fails, what coverage remains? If the answer is "none," that is the planning priority before fire season.
+
+## Testing before you need it
+
+A coverage map that was never tested against reality is a planning assumption, not a plan.
+
+The verification process is the same as any mesh coverage check: take a companion device on the evacuation routes you plan to cover, note where you can and cannot reach the network, and cross-reference that against what Waev's Live Map shows from enrolled observers. The areas where the map is silent are either dead zones you need to address with additional repeaters, or observer coverage gaps that mean your health data for that zone is incomplete. Either finding is worth knowing in June.
+
+After placement, watch the Network Stats for your new repeaters for at least two weeks before fire season. A repeater whose SNR trend is degrading from its first week is already showing a problem — marginal power, sub-optimal antenna orientation, interference. Find it while there is still time to fix it. For detailed guidance on reading that health data, see [When the Grid Goes Down](/blog/when-the-grid-goes-down/).
+
+For repeater placement methodology — how to identify coverage gaps in existing mesh data and pick a candidate site — see [Where Your Network Ends](/blog/where-to-put-your-next-repeater/).
+
+## The plan document
+
+A fire-season mesh communication plan should answer, in writing:
+
+- Which nodes cover which evacuation routes, verified by field test
+- Power specs for every remote repeater, including worst-case scenario
+- Who monitors which channels and what protocols they follow
+- What the fallback is if a given repeater fails
+- When the plan was last tested and what was found
+
+The document is not the capability. The tested, operational mesh is the capability. The document tells you what you verified, when, and what you need to fix before you can rely on it.
+
+---
+
+The mesh either exists when the towers go dark or it doesn't. Building it on a quiet day in late spring is the only prep window that exists.
+
+{/* ILLUSTRATION PROMPT: Hand-painted warm illustration, close-up view at human height. A weathered paper topographic map is pinned to a rough wooden fence post at the edge of a dry summer field — dry grasses in the foreground, a pale warm sky. A small LoRa node in a simple housing is zip-tied to the same post just below the map, its indicator light barely visible. No mountains dominating the scene, no fire, no smoke — the feeling is quiet preparation on an ordinary summer day before anything has happened. Warm afternoon light, painterly, calm. */}
