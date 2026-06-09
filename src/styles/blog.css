@@ -78,8 +78,6 @@
   gap: var(--sp-3);
   align-content: start;
   padding: var(--card-pad-hero);
-  /* Clip the full-bleed cover to the card's rounded corners. */
-  overflow: hidden;
   color: inherit;
   transition: transform var(--dur-short-3) var(--ease-standard),
     box-shadow var(--dur-short-3) var(--ease-standard),
@@ -118,18 +116,19 @@
   z-index: 1;
 }
 
-/* Cover artwork — full-bleed banner pulled out to the card edges so the card
-   surface never frames it (keeps alignment identical across dim/dark/light).
-   The card's overflow:hidden + radius clips the top corners. */
+/* Cover artwork — the container is the sized box (16:7) with rounded corners;
+   the image fills it edge-to-edge via object-fit: cover. */
 .post-card-cover {
-  margin: calc(-1 * var(--card-pad-hero)) calc(-1 * var(--card-pad-hero)) 0;
+  aspect-ratio: 16 / 7;
+  border-radius: var(--shape-lg);
+  overflow: hidden;
   background: var(--surface-sunken);
 }
 
 .post-card-cover img {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 7;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -727,16 +726,17 @@ a.tag:hover {
   height: auto;
 }
 
-/* Photo hero fills the panel edge-to-edge — no inner gray frame. */
+/* Photo hero: same recipe — sized rounded container, image fills edge-to-edge. */
 .featured-visual--photo {
   padding: 0;
   border: none;
+  aspect-ratio: 16 / 7;
 }
 
 .featured-visual--photo img {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 7;
+  height: 100%;
   object-fit: cover;
 }
 
