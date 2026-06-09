@@ -376,7 +376,7 @@ posts:
     series: readiness
     primary_keyword: "running a mesh network tabletop exercise"
     secondary_keyword: "comms failure tabletop scenario"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-20
