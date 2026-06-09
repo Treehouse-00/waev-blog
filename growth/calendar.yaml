@@ -481,7 +481,7 @@ posts:
     series: why-we
     primary_keyword: "privacy first mesh monitoring"
     secondary_keyword: "why a mesh tool should collect less data"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-10

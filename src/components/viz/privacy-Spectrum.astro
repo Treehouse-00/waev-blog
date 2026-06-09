@@ -1,0 +1,65 @@
+---
+/**
+ * privacy-Spectrum — a horizontal spectrum from "collect everything" to
+ * "collect minimum," showing four categories of data a mesh analytics tool
+ * might keep or refuse. Waev's position (minimum) is marked with an accent
+ * indicator. Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 200" role="img" aria-label="Data collection spectrum from 'collect everything' on the left to 'collect minimum' on the right. Four data categories are shown: identity and location (refused), history and retention (refused), signal metadata SNR hops timing (kept), and verified topology edges (kept)." style="width:100%;height:auto;">
+  <defs>
+    <marker id="ps-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+  </defs>
+
+  <!-- Spectrum bar gradient: red on left, accent on right -->
+  <rect x="40" y="66" width="640" height="10" rx="5" style="fill: var(--border-subtle);" />
+  <!-- Red segment (collect everything zone) -->
+  <rect x="40" y="66" width="200" height="10" rx="5" style="fill: var(--sys-red-400); opacity: 0.5;" />
+  <!-- Accent segment (collect minimum zone) -->
+  <rect x="540" y="66" width="140" height="10" rx="5" style="fill: var(--accent); opacity: 0.6;" />
+
+  <!-- Left label -->
+  <text x="40" y="56" class="viz-label" style="fill: var(--sys-red-400); opacity:0.8;">collect everything</text>
+  <!-- Right label -->
+  <text x="680" y="56" text-anchor="end" class="viz-label" style="fill: var(--accent-light);">collect minimum</text>
+
+  <!-- Waev position marker -->
+  <line x1="610" y1="50" x2="610" y2="82" style="stroke: var(--accent-light);" stroke-width="2" />
+  <text x="610" y="44" text-anchor="middle" class="viz-label" style="fill: var(--accent-light); font-size:10px;">Waev</text>
+
+  <!-- Data categories -->
+  <!-- Category 1: Identity + location — refused (left zone, crossed out) -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="140" height="50" rx="8" style="fill: transparent; stroke: var(--sys-red-400); opacity:0.5;" stroke-width="1" stroke-dasharray="4 3" />
+    <text x="70" y="16" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:10px;">identity · location</text>
+    <text x="70" y="32" text-anchor="middle" style="fill: var(--sys-red-400); font-family: var(--mono); font-size: 11px; font-weight: 600;">refused</text>
+    <text x="70" y="46" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px; font-style:italic;">never written</text>
+  </g>
+
+  <!-- Category 2: History + retention — refused -->
+  <g transform="translate(210, 100)">
+    <rect x="0" y="0" width="140" height="50" rx="8" style="fill: transparent; stroke: var(--sys-red-400); opacity:0.4;" stroke-width="1" stroke-dasharray="4 3" />
+    <text x="70" y="16" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:10px;">name · device type</text>
+    <text x="70" y="32" text-anchor="middle" style="fill: var(--sys-red-400); font-family: var(--mono); font-size: 11px; font-weight: 600;">refused</text>
+    <text x="70" y="46" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px; font-style:italic;">scrubbed at ingest</text>
+  </g>
+
+  <!-- Category 3: Signal metadata — kept -->
+  <g transform="translate(390, 100)">
+    <rect x="0" y="0" width="140" height="50" rx="8" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="1" />
+    <text x="70" y="16" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:10px;">SNR · hops · timing</text>
+    <text x="70" y="32" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11px; font-weight: 600;">kept</text>
+    <text x="70" y="46" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px; font-style:italic;">anonymous signal</text>
+  </g>
+
+  <!-- Category 4: Topology edges — kept -->
+  <g transform="translate(550, 100)">
+    <rect x="0" y="0" width="140" height="50" rx="8" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="1" />
+    <text x="70" y="16" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:10px;">topology edges</text>
+    <text x="70" y="32" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11px; font-weight: 600;">kept</text>
+    <text x="70" y="46" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px; font-style:italic;">verified source only</text>
+  </g>
+</svg>
