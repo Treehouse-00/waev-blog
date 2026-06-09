@@ -1,6 +1,6 @@
 ---
 title: "Your Off-Grid Mesh Buildout"
-description: "An off-grid mesh network buildout doesn't have to start large — a homestead or rural property can be covered with three or four well-placed nodes, one observer, and a broker you own."
+description: "An off-grid mesh network buildout can start small — a homestead can be covered with three or four well-placed nodes, one observer, and a broker you own."
 date: 2026-06-09
 tags: ["off-grid", "field-notes"]
 hero:
@@ -67,7 +67,7 @@ One well-placed observer, typically at the main house or whichever site has the 
 
 The MQTT broker is the part of this stack that you own completely. Mosquitto on a Raspberry Pi or a small VPS — or any other standard MQTT server — is all you need. Your observer sends to it; Waev subscribes to it read-only. If you stop using Waev, the broker keeps running and the data stays yours. If your internet connection goes down, the mesh keeps routing packets — it just doesn't update Waev until the connection comes back.
 
-This architecture is deliberate. [Waev's bring-your-own-broker model](/blog/bring-your-own-broker/) means the data never leaves infrastructure you control. You hold the keys, and what goes onto the map is what your observer actually heard — not an estimate, not a guess, not topology inferred from node names. [Evidence-based topology](/blog/how-waev-reads-your-mesh/) means the Live Map shows you only what can be verified from your enrolled observer.
+This architecture is deliberate. [Waev's bring-your-own-broker model](/blog/setting-up-mosquitto-for-meshcore/) means the data never leaves infrastructure you control. You hold the keys, and what goes onto the map is what your observer actually heard — not an estimate, not a guess, not topology inferred from node names. [Evidence-based topology](/blog/how-waev-reads-your-mesh/) means the Live Map shows you only what can be verified from your enrolled observer.
 
 ## What to expect from your first week
 

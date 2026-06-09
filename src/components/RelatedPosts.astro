@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+---
+
+{posts.length >= 2 && (
+  <section class="related" aria-labelledby="related-title">
+    <h2 class="related-title" id="related-title">Related posts</h2>
+    <ul class="related-list">
+      {posts.map((p) => (
+        <li class="related-item">
+          <a class="related-link" href={`/blog/${p.id}/`}>{p.data.title}</a>
+          <time class="related-meta" datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

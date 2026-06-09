@@ -1,6 +1,6 @@
 ---
 title: "Dedicated MeshCore Gateway or Shared?"
-description: "Should your MeshCore MQTT gateway be a dedicated node or shared with a repeater? The answer depends on where your gateway needs to be — not on how many devices you own."
+description: "Should your MeshCore gateway be a dedicated node or shared with a repeater? The answer depends on where it needs to be — not on how many devices you own."
 date: 2026-06-09
 tags: ["how-it-works", "field-notes"]
 hero:
@@ -63,7 +63,7 @@ Separation becomes worth considering when you're optimizing for coverage and rel
 
 ## The data flow either way
 
-Whether the gateway is dedicated or shared, the data path is the same: the gateway node publishes MQTT records to [your broker](/blog/bring-your-own-broker/), Waev subscribes, and the map is built from what enrolled observers report.
+Whether the gateway is dedicated or shared, the data path is the same: the gateway node publishes MQTT records to [your broker](/blog/setting-up-mosquitto-for-meshcore/), Waev subscribes, and the map is built from what enrolled observers report.
 
 <Figure caption="Data lineage: whether gateway and repeater are one node or two, the observation path to your MQTT broker stays the same. The broker is always yours; Waev subscribes read-only.">
   <ByobDataFlow />

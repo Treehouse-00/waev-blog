@@ -59,12 +59,12 @@ When Waev connects to your broker, it subscribes to the topics your observer pub
 
 Waev's analytics pipeline reads the stream. It does not publish back to the mesh, does not write to broker topics, and has no mechanism for sending messages through your broker to your mesh nodes. There is no design reason for it to do so — analytics is a read operation.
 
-The [bring-your-own-broker model](/blog/bring-your-own-broker/) makes this concrete: you own the broker, you issue the credentials, and Waev subscribes to a read-only copy. The ownership is structural. The read-only constraint is structural.
+The [bring-your-own-broker model](/blog/setting-up-mosquitto-for-meshcore/) makes this concrete: you own the broker, you issue the credentials, and Waev subscribes to a read-only copy. The ownership is structural. The read-only constraint is structural.
 
 ## What the constraint does not cover
 
 This constraint applies to Waev's relationship with your MQTT broker. It does not speak to what your observer publishes, what other clients on your broker can do, or how your mesh firmware behaves. Those are separate questions governed by your own configuration.
 
-If you want to understand the full picture of what Waev stores about your mesh and what it deliberately does not collect, [what we choose not to know](/blog/what-we-choose-not-to-know/) covers the ingest-edge data model in detail.
+If you want to understand the full picture of what Waev stores about your mesh and what it deliberately does not collect, [what we choose not to know](/blog/what-a-mesh-monitor-refuses/) covers the ingest-edge data model in detail.
 
 {/* ILLUSTRATION PROMPT: A warm flat illustration of a copper or brass one-way valve or check valve, cross-section view showing the flapper open in one direction, closed in the other. Simple mechanical diagram feel. Warm industrial palette, soft background. */}

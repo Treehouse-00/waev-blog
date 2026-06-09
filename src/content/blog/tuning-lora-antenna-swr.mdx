@@ -1,6 +1,6 @@
 ---
 title: "Tuning a LoRa Antenna with a NanoVNA"
-description: "How to measure and interpret SWR at 915 MHz using a NanoVNA — what the numbers mean, what a well-matched LoRa antenna looks like, and what to do when the dip is at the wrong frequency."
+description: "How to measure SWR at 915 MHz using a NanoVNA: what the numbers mean, what a well-matched LoRa antenna looks like, and what to do when the dip is wrong."
 date: 2026-06-09
 tags: ["signal", "deep-dive"]
 hero:
@@ -76,7 +76,7 @@ The NanoVNA measures match (SWR) and impedance, not gain. A perfectly matched an
 
 Two antennas can both show SWR 1.3 at 915 MHz and have completely different gain, radiation patterns, and real-world range. The NanoVNA confirms electrical match; a field test or drive test confirms actual coverage.
 
-For diagnosing range problems: if SWR is below 2.0, the antenna match is not your issue. Look at [path loss, SNR, and link margin](/blog/reading-the-signal/) instead.
+For diagnosing range problems: if SWR is below 2.0, the antenna match is not your issue. Look at [path loss, SNR, and link margin](/blog/what-is-snr-lora/) instead.
 
 Questions about antenna testing at your site? [Tell us what you're measuring](mailto:admin@waev.app).
 

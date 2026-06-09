@@ -36,7 +36,7 @@ Before anyone buys a node, the group needs to agree on one thing: who holds the 
 
 The wrong answer is "the service handles it" — meaning a vendor you don't control holds your network data on infrastructure you can't access, query, or delete. This is how most SaaS tools work, and it is the wrong model for a community network. The people whose packets cross your mesh haven't opted into a vendor relationship. The infrastructure belongs to the neighborhood, not to a company.
 
-The right answer is that someone in the group runs the MQTT broker — on a server they control, with credentials the group documents, in a setup that at least two people understand. [Waev's bring-your-own-broker model](/blog/bring-your-own-broker/) is built for this: you run the broker, the data stays with you, and Waev connects as a read-only subscriber. If you stop using Waev, the broker keeps running and the data remains yours.
+The right answer is that someone in the group runs the MQTT broker — on a server they control, with credentials the group documents, in a setup that at least two people understand. [Waev's bring-your-own-broker model](/blog/setting-up-mosquitto-for-meshcore/) is built for this: you run the broker, the data stays with you, and Waev connects as a read-only subscriber. If you stop using Waev, the broker keeps running and the data remains yours.
 
 That conversation — "who runs the broker, and what happens when they move?" — is worth having before the first node goes up, not after.
 
@@ -60,7 +60,7 @@ Once the observer is connected and the broker is running, Waev gives everyone wi
 
 That shared view is what makes the group function as a group rather than a collection of individuals with nodes. When something goes quiet, everyone can see it. When a new node joins, everyone can see it. When a link degrades, someone can investigate without relying on the one person who set up the network to interpret what they're seeing.
 
-[Reading signal quality metrics like SNR](/blog/reading-the-signal/) gives the group a common language for talking about link health. A node that shows up in Live Packets but never with SNR above –5 dB is a node on a weak link. That's a conversation the group can have using the data, rather than relying on whoever set up the node to report how it feels.
+[Reading signal quality metrics like SNR](/blog/what-is-snr-lora/) gives the group a common language for talking about link health. A node that shows up in Live Packets but never with SNR above –5 dB is a node on a weak link. That's a conversation the group can have using the data, rather than relying on whoever set up the node to report how it feels.
 
 ## The social infrastructure that sustains it
 

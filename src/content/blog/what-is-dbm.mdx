@@ -80,7 +80,7 @@ On a LoRa mesh, these units appear in a few specific places:
 
 **Receiver sensitivity.** LoRa radios can decode signals at deeply negative levels — approximately −100 to −137 dBm depending on the spreading factor, bandwidth, and coding rate (source: LoRa radio datasheets and modulation specification). This sensitivity is why LoRa achieves such long range even at low transmit power.
 
-**SNR.** The SNR value you see in Live Packets and Network Stats is measured in plain dB — it is the ratio between the received signal level (in dBm) and the noise floor (also in dBm). A signal at −85 dBm arriving against a noise floor of −95 dBm shows an SNR of +10 dB. Understanding dBm is what lets you interpret why that +10 dB matters — and what it means when the noise floor rises or the signal weakens. The full treatment of SNR as a practical diagnostic is in [Reading the Signal](/blog/reading-the-signal/).
+**SNR.** The SNR value you see in Live Packets and Network Stats is measured in plain dB — it is the ratio between the received signal level (in dBm) and the noise floor (also in dBm). A signal at −85 dBm arriving against a noise floor of −95 dBm shows an SNR of +10 dB. Understanding dBm is what lets you interpret why that +10 dB matters — and what it means when the noise floor rises or the signal weakens. The full treatment of SNR as a practical diagnostic is in [Reading the Signal](/blog/what-is-snr-lora/).
 
 **Antenna gain.** Antenna gain is typically quoted in dBi (decibels relative to an isotropic radiator) or dBd (relative to a dipole). These are relative gains — dB values — which you add to or subtract from the transmit power (dBm) and cable losses (dB) to compute effective radiated power.
 

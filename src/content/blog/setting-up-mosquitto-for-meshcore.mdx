@@ -124,7 +124,7 @@ A completed TLS handshake confirms the listener is up. Then verify authenticatio
 
 To update a password: run `mosquitto_passwd /etc/mosquitto/passwd username` with the new password, then `systemctl restart mosquitto`. Waev's connection drops and will reconnect once you provide the updated credentials. To revoke access entirely, remove the user from the password file and ACL, then restart. Neither operation requires contacting Waev.
 
-This is the operating meaning of the [bring-your-own-broker model](/blog/bring-your-own-broker/): the credentials governing who can read your mesh data live on your infrastructure, and the actions that matter — issue, rotate, revoke — are yours to take without coordination.
+This is the operating meaning of the [bring-your-own-broker model](/blog/setting-up-mosquitto-for-meshcore/): the credentials governing who can read your mesh data live on your infrastructure, and the actions that matter — issue, rotate, revoke — are yours to take without coordination.
 
 For the broader picture of how a MeshCore observer feeds data from the radio mesh to your broker and on to Waev, see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/).
 

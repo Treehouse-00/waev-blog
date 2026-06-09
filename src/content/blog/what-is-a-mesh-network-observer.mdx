@@ -57,6 +57,6 @@ The practical consequence is that observer placement matters. A single observer 
 
 An observer is a listener. It hears RF packets from nearby nodes and publishes them to MQTT. It does not transmit instructions back to the mesh, does not modify routing tables, and does not send commands to other nodes. The traffic flow is one-directional: mesh to observer, observer to broker, broker to Waev.
 
-This is structurally consistent with the broader model. Waev holds read-only credentials on your broker; Waev's subscriber session cannot write back to the mesh through the broker. The observer itself publishes to the broker, but its role is to carry the ambient packet stream — not to direct it. The [bring-your-own-broker model](/blog/bring-your-own-broker/) keeps your infrastructure as the canonical store; the observer is just the source of the stream.
+This is structurally consistent with the broader model. Waev holds read-only credentials on your broker; Waev's subscriber session cannot write back to the mesh through the broker. The observer itself publishes to the broker, but its role is to carry the ambient packet stream — not to direct it. The [bring-your-own-broker model](/blog/setting-up-mosquitto-for-meshcore/) keeps your infrastructure as the canonical store; the observer is just the source of the stream.
 
 {/* ILLUSTRATION PROMPT: A warm flat illustration of an old brass ear trumpet (hearing aid) leaning against a window sill, morning light coming through. The device listens; it has no mouth. Warm amber light, cream plaster wall, no tech elements. */}

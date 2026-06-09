@@ -1,6 +1,6 @@
 ---
 title: "Do You Need an Observer on Every Node?"
-description: "The question of how many mesh observers to enroll comes down to placement, not count. One well-sited observer can give you visibility into an entire network; a dozen poorly placed ones can still leave gaps."
+description: "How many mesh observers to enroll comes down to placement, not count. One well-placed observer can cover a whole network; poorly placed ones still leave gaps."
 date: 2026-06-09
 tags: ["off-grid", "field-notes"]
 hero:
@@ -49,7 +49,7 @@ One well-sited observer outperforms five poorly sited ones in visibility. The re
 What to prioritize when siting an observer:
 - **Height above the terrain.** A rooftop, a ridge, or the upper floor of a building gives more radio horizon than a ground-level placement.
 - **Proximity to backbone repeaters.** The observer doesn't need to hear every leaf node directly; if it hears the backbone, it sees what the backbone sees.
-- **Internet connectivity.** The observer needs a reliable internet connection to push data to [your MQTT broker](/blog/bring-your-own-broker/). A location with unreliable Wi-Fi produces an observer that drops out intermittently and leaves gaps in your monitoring record.
+- **Internet connectivity.** The observer needs a reliable internet connection to push data to [your MQTT broker](/blog/setting-up-mosquitto-for-meshcore/). A location with unreliable Wi-Fi produces an observer that drops out intermittently and leaves gaps in your monitoring record.
 
 ## When one observer is enough
 

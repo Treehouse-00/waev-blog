@@ -66,7 +66,7 @@ What would indicate a real flooding problem: the same packet appearing many time
 
 A practical check: look at the packet types in a recent window. A healthy mesh in normal operation shows a mix of `ADVERT`, `ACK`, and occasional `MSG` or `GRP_TXT`. If `GRP_TXT` dominates the stream — and especially if they all show different hop counts for the same originating node — the public channel is generating heavy flood traffic. This is expected during active operations but is a sign to watch if you see it at low-activity times.
 
-SNR trends matter here too. If the overall SNR in Live Packets starts degrading across unrelated links without any changes in node configuration or position, channel congestion is a candidate cause: the channel is busy enough that reception quality is suffering. This is where [Reading the Signal](/blog/reading-the-signal/) and the per-link stats in Network Stats help you separate a coverage problem from a congestion problem.
+SNR trends matter here too. If the overall SNR in Live Packets starts degrading across unrelated links without any changes in node configuration or position, channel congestion is a candidate cause: the channel is busy enough that reception quality is suffering. This is where [Reading the Signal](/blog/what-is-snr-lora/) and the per-link stats in Network Stats help you separate a coverage problem from a congestion problem.
 
 ## The repeater siting connection
 

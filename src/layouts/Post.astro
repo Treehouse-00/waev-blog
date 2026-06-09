@@ -1,5 +1,7 @@
 ---
 import Base from "./Base.astro";
+import RelatedPosts from "../components/RelatedPosts.astro";
+import type { CollectionEntry } from "astro:content";
 
 interface Props {
   title: string;
@@ -12,6 +14,7 @@ interface Props {
   ogImage?: string;
   faq?: { q: string; a: string }[];
   hero?: { src: string; alt: string };
+  relatedPosts?: CollectionEntry<"blog">[];
 }
 
 const {
@@ -25,6 +28,7 @@ const {
   ogImage,
   faq = [],
   hero,
+  relatedPosts = [],
 } = Astro.props;
 
 // Social image precedence: explicit ogImage → hero illustration → default.
@@ -67,7 +71,30 @@ const faqPage =
         })),
       }
     : null;
-const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
+// ── BreadcrumbList (SD-09) ──
+const breadcrumbList = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Waev Blog",
+      item: new URL("/", Astro.site).href,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: title,
+      item: pageUrl,
+    },
+  ],
+};
+const jsonLd = [
+  blogPosting,
+  ...(faqPage ? [faqPage] : []),
+  breadcrumbList,
+];
 ---
 
 <Base
@@ -75,6 +102,9 @@ const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
   description={description}
   type="article"
   publishedTime={date.toISOString()}
+  modifiedTime={updated?.toISOString()}
+  author={author}
+  tags={tags}
   image={socialImage}
   jsonLd={jsonLd}
 >
@@ -134,6 +164,8 @@ const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
           Last updated {fmt(updated)}
         </p>
       )}
+
+      <RelatedPosts posts={relatedPosts} />
     </div>
   </article>
 </Base>

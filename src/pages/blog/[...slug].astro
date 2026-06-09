@@ -1,5 +1,6 @@
 ---
 import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import { getPublishedPosts } from "../../lib/posts";
 import Post from "../../layouts/Post.astro";
 
@@ -17,6 +18,24 @@ const { Content, remarkPluginFrontmatter } = await render(post);
 // Reading time estimated by the remark plugin (see astro.config / README),
 // falls back gracefully when absent.
 const readingMinutes = remarkPluginFrontmatter?.minutesRead as number | undefined;
+
+// Related posts for IL-01: by shared tags (newest first), then padded with
+// recent posts if needed, always 2–4 links, never the current post.
+const allPosts = await getPublishedPosts();
+let related: CollectionEntry<"blog">[] = allPosts
+  .filter(
+    (p) =>
+      p.id !== post.id &&
+      p.data.tags.some((t) => post.data.tags.includes(t)),
+  )
+  .slice(0, 4);
+if (related.length < 2) {
+  const extra = allPosts
+    .filter((p) => p.id !== post.id && !related.some((r) => r.id === p.id))
+    .slice(0, 2 - related.length);
+  related = [...related, ...extra];
+}
+const relatedPosts = related.slice(0, 4);
 ---
 
 <Post
@@ -30,6 +49,7 @@ const readingMinutes = remarkPluginFrontmatter?.minutesRead as number | undefine
   ogImage={post.data.ogImage}
   faq={post.data.faq}
   hero={post.data.hero}
+  relatedPosts={relatedPosts}
 >
   <Content />
 </Post>

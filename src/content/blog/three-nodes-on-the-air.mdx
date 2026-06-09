@@ -1,6 +1,6 @@
 ---
 title: "Three Nodes on the Air"
-description: "A LoRa mesh network setup tutorial for your first three MeshCore nodes — flash firmware, configure radio settings, and confirm packets are flowing in under an hour."
+description: "A LoRa mesh network setup tutorial for your first three MeshCore nodes — flash firmware, configure radio settings, and confirm packets in under an hour."
 date: 2026-06-09
 tags: ["primer", "meshcore"]
 hero:
@@ -84,6 +84,6 @@ This is the first working mesh topology: two endpoints and one relay. It's exact
 
 The SNR reading that appears in the app on every received packet is the link quality signal. Higher is cleaner; lower is marginal. The threshold for a reliable link — the one worth building your network around — is roughly +5 dB or better in typical conditions. Below +3 dB, the link works most of the time; below 0 dB, count on occasional failures.
 
-If you have Waev connected with an enrolled observer, those same SNR readings appear in Live Packets with timestamps and a persistent per-link history. That history is what lets you distinguish a transient interference event from a structurally weak link. [Reading the Signal](/blog/reading-the-signal/) covers how to interpret what you're seeing.
+If you have Waev connected with an enrolled observer, those same SNR readings appear in Live Packets with timestamps and a persistent per-link history. That history is what lets you distinguish a transient interference event from a structurally weak link. [Reading the Signal](/blog/what-is-snr-lora/) covers how to interpret what you're seeing.
 
 {/* ILLUSTRATION PROMPT: A warm, hand-painted top-down macro illustration of a single LoRa development board resting on a warm wooden workbench surface — the component texture visible under soft raking side-light, a USB-C cable curling in from the lower-left corner. No hands, no figure, no screen. The board is centered with breathing room around it; the wood grain of the table is gently visible. Earthy warm tones with one small accent of green on the board's indicator LED. Painterly texture, calm and unhurried. */}
