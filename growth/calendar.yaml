@@ -584,7 +584,7 @@ posts:
     theme: ready-before-it-matters
     primary_keyword: "grid-down communications planning"
     secondary_keyword: "preparing comms for grid failure"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-12-01
