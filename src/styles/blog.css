@@ -625,8 +625,9 @@ a.tag:hover {
   display: block;
   padding: var(--card-pad-hero);
   border-radius: var(--shape-xl);
-  background: var(--container-bg);
-  border: var(--container-border);
+  /* Flat brand hero color (replaces the --container-bg gradient). */
+  background: var(--sys-purpleblue-300);
+  border: 1px solid color-mix(in srgb, var(--sys-zinc-100) 14%, transparent);
   box-shadow: var(--shadow-container);
   margin-block: var(--sp-2) var(--sp-12);
   color: inherit;
@@ -637,6 +638,32 @@ a.tag:hover {
 .featured:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-container), 0 10px 36px rgba(62, 62, 150, 0.2);
+}
+
+/* In-card text shifts to light tints so it stays legible on the color fill. */
+.featured-title,
+.featured-cta {
+  color: var(--sys-zinc-100);
+}
+.featured-desc {
+  color: color-mix(in srgb, var(--sys-zinc-100) 82%, transparent);
+}
+.featured .featured-meta {
+  color: color-mix(in srgb, var(--sys-zinc-100) 72%, transparent);
+}
+.featured .featured-eyebrow {
+  background: color-mix(in srgb, var(--sys-zinc-100) 18%, transparent);
+  color: var(--sys-zinc-100);
+  border-color: color-mix(in srgb, var(--sys-zinc-100) 26%, transparent);
+}
+.featured .tag {
+  background: color-mix(in srgb, var(--sys-zinc-100) 14%, transparent);
+  color: var(--sys-zinc-100);
+  border-color: color-mix(in srgb, var(--sys-zinc-100) 24%, transparent);
+}
+.featured .tag:hover {
+  background: color-mix(in srgb, var(--sys-zinc-100) 26%, transparent);
+  color: var(--sys-zinc-100);
 }
 
 /* Stretched title link (same pattern as .post-card) */
