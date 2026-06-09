@@ -284,7 +284,7 @@ posts:
     series: mesh-pollution
     primary_keyword: "diagnosing a chatty node on a LoRa mesh"
     secondary_keyword: "node sending too many adverts"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-01

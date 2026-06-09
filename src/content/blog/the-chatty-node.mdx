@@ -1,0 +1,105 @@
+---
+title: "The Chatty Node"
+description: "How to spot and fix a chatty node on a LoRa mesh — diagnosing too-frequent adverts in Live Packets, identifying the source node, and the CLI fix."
+date: 2026-09-29
+tags: ["signal", "diagnostics"]
+hero:
+  src: "/hero-the-chatty-node.jpg"
+  alt: "A warm hand-painted close-up of an old analog radio dial with the needle pushed into the red zone, warm studio light, the rest of the radio soft in the background."
+faq:
+  - q: "What is a chatty node on a LoRa mesh?"
+    a: "A chatty node is a MeshCore repeater or sensor that sends flood advertisement packets far more frequently than the intended interval — often every few minutes instead of the default 47 hours (firmware v1.16.0+). Every advert floods through all relay neighbors, consuming shared channel time and pushing useful traffic out."
+  - q: "What is the default flood advert interval in MeshCore?"
+    a: "Since firmware v1.16.0, the default flood.advert.interval for repeaters is 47 hours. Earlier firmware versions defaulted to 12 hours. A node sending adverts every few minutes has either a misconfigured interval or is running significantly older firmware with a lower default."
+  - q: "How do I find a chatty node in Waev's Live Packets?"
+    a: "Filter or sort Live Packets by source node. A chatty node appears as a long vertical stripe of repeated rows — the same node name appearing dozens of times in a short window while healthy nodes appear rarely. Look for a node whose packet rate per hour is an order of magnitude higher than its neighbors."
+  - q: "How do I fix a chatty repeater node in MeshCore?"
+    a: "Connect to the repeater via USB serial or via the companion app using its admin password. Run the command: set flood.advert.interval 47. This sets the flood advert interval to 47 hours. Run reboot to apply. Alternatively, set flood.max.advert to a low value (such as 4 or 5) on nearby relay nodes to cap how far that node's adverts propagate while you repair it."
+  - q: "Can a chatty node damage my mesh?"
+    a: "It degrades it. A node sending flood adverts every few minutes consumes channel airtime that would otherwise carry messages. LoRa is a shared medium with a duty cycle limit; excessive adverts crowd out message packets and increase collision probability. On a busy mesh, one misconfigured node can measurably reduce delivery rates across the entire network."
+---
+
+import Figure from "../../components/Figure.astro";
+import MeshAdvertTimeline from "../../components/viz/mesh-AdvertTimeline.astro";
+
+Something is wrong with the mesh, but nothing is obviously broken. Messages still get through — mostly. Live Packets is busier than usual. You scan the stream and notice: one node name is appearing over and over, a new entry every few minutes, while everyone else shows up once every hour or two.
+
+That's the chatty node. Here's how to confirm what you're seeing, find which node it is, and fix it.
+
+<div class="callout">
+<p><strong>In short.</strong> Diagnosing a chatty node on a LoRa mesh starts with Live Packets: look for a source node that appears far more often than its neighbors. A MeshCore repeater should send flood adverts roughly every 47 hours by default (firmware v1.16.0+). If a node is advertising every few minutes, it's either misconfigured or running old firmware. The fix is one CLI command: <code>set flood.advert.interval 47</code>, followed by <code>reboot</code>.</p>
+</div>
+
+## What an advert is and why the interval matters
+
+A MeshCore repeater announces its presence to the network by sending periodic flood advertisement packets. These adverts travel through relay neighbors and let the mesh learn about newly available routes and nodes. They're necessary — but infrequent by design.
+
+Since firmware v1.16.0 (released June 2026), the default `flood.advert.interval` on a MeshCore repeater is 47 hours. Older firmware defaulted to 12 hours. Either way: adverts are measured in hours, not minutes.
+
+When a node sends flood adverts every 2 to 5 minutes instead of every 47 hours, every relay within range relays that advert outward — consuming channel airtime on a shared medium. LoRa has a practical duty cycle limit; a node that floods adverts at that rate is filling a meaningful fraction of the available airtime with housekeeping packets instead of messages.
+
+<Figure caption="Two rows in the same 4-hour Live Packets window. Top: a normal repeater with the default 47-hour flood.advert.interval — no adverts visible in this window. Bottom: a chatty node sending every few minutes — a dense red stripe of repeated adverts across the full window.">
+  <MeshAdvertTimeline />
+</Figure>
+
+## Spotting the symptom in Live Packets
+
+Open Live Packets and watch the stream for a few minutes. Most nodes appear infrequently — an advert occasionally, messages when they're sent. A chatty node appears on nearly every scroll of the screen.
+
+The tell: sort or filter by source node name and count appearances per hour. A healthy repeater shows up in Live Packets maybe once or twice across a 4-hour window from a single advert. A chatty node at a 5-minute interval shows up 48 times in that same window.
+
+The secondary symptom is Network Stats. If a node's packet-per-hour rate is an order of magnitude higher than its neighbors — say, 45/h when everything else shows 1–3/h — it's not delivering more messages, it's flooding adverts.
+
+Waev's Live Packets view tags each packet with its source node, hop count, and type. Look for the pattern, not just a single spike.
+
+## Identifying which node is the source
+
+If the chatty node is your own repeater: you already know which one, and the fix is below.
+
+If you're looking at a community mesh where you don't control all the hardware: compare the node name in Live Packets against your enrolled nodes in Waev. If it's a node you don't recognize, it may be a visiting node within range, or it may be a community node with a misconfigured owner.
+
+On your own repeaters, you can check the current flood advert interval directly:
+
+```
+get flood.advert.interval
+```
+
+Connect via USB serial or through a companion node that has admin rights on the repeater. If the response is a small number — 1, 2, 3 — that's minutes or hours on old firmware. If the response is 47, the node is correctly configured. If the response is 0, the interval is disabled and the node is sending on its own logic.
+
+You can also check from the MeshCore companion app: open the Repeater Hub, log in with the admin password, and send the `get flood.advert.interval` command from there.
+
+## The fix
+
+For a misconfigured repeater you control: connect to it and run:
+
+```
+set flood.advert.interval 47
+reboot
+```
+
+This sets the flood advert interval to 47 hours and reboots to apply the change. After reboot, that node's flood adverts will appear at the expected rate. The channel time it was consuming returns to useful traffic.
+
+For a repeater running firmware older than v1.16.0 where the default was 12 hours and the node is at its default: the same command applies. Set it to 47 explicitly, or update the firmware.
+
+## Limiting propagation while you wait
+
+If you can't immediately access the chatty node but want to reduce its impact on nearby infrastructure: connect to the repeater nodes closest to the chatty source and set:
+
+```
+set flood.max.advert 4
+reboot
+```
+
+The `flood.max.advert` parameter (introduced in v1.16.0) drops advert packets that have already been relayed more than the specified number of hops. The default is 8. Setting it to 3 or 4 on your nearby relays limits how far the chatty node's adverts propagate into the rest of your network, buying time while you arrange access to the source node.
+
+This is a mitigation, not a fix. The chatty node is still consuming airtime in its immediate neighborhood. But it stops the problem from rippling across your entire mesh.
+
+## After the fix
+
+Once the interval is corrected, go back to Live Packets. The node that was appearing every few minutes should now appear once every day or two — or not at all in a normal 4-hour watch window. The packet-per-hour count in Network Stats should drop to match its neighbors.
+
+If the node was elevated in hop count before the fix (because the extra adverts were competing with routing traffic and causing retransmissions), you may see hop counts stabilize over the next few hours as the mesh re-learns optimal paths.
+
+The [how-waev-reads-your-mesh](/blog/how-waev-reads-your-mesh/) post covers what the observer sees at the MQTT level — useful context if you're trying to understand why the advert flood was visible across a wide area despite the node being in one location. The short version: every relay that hears an advert rebroadcasts it, and with 8 hops as the default `flood.max.advert` cap, a well-connected mesh spreads adverts far. For a broader picture of what SNR and hop count tell you about a link, see [Reading the Signal](/blog/reading-the-signal/).
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted close-up illustration of an old analog radio tuner dial — the needle sitting visibly in the red zone at the far right of the scale. Warm studio light from one side, the rest of the radio body soft and out of focus behind. Earthy warm tones with a single muted red accent on the needle and the edge of the red zone. No figures, no glow effects, no screen. The mood: something is misconfigured but fixable. Calm, intimate, vintage. Painterly texture. */}
