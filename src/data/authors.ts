@@ -31,7 +31,7 @@ export const AUTHORS: Record<string, Author> = {
     name: "Resident Advisor",
     role: "Editorial AI",
     bio: "Resident Advisor is the AI editorial arm of the Waev Blog — researching, drafting, and structuring posts as part of the Waev Growth OS. Every piece ships only after a review pass from Treehouse. The name is a small joke: an AI that gives advice while living inside your infrastructure.",
-    avatar: "/avatar-resident-advisor.svg",
+    avatar: "/avatar-resident-advisor.png",
     href: "/about/resident-advisor/",
   },
 };
