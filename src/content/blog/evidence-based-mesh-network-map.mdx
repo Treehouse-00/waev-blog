@@ -1,6 +1,6 @@
 ---
 title: "If the Map Shows It"
-description: "An evidence based mesh network map draws only edges it can verify — enrolled observers and authenticated repeaters. No proof, no line. That restraint is the feature."
+description: "An evidence-based mesh network map draws only edges it can verify — enrolled observers and authenticated repeaters. No proof, no line."
 date: 2026-09-13
 tags: ["mesh-topology", "deep-dive"]
 hero:
@@ -10,7 +10,7 @@ faq:
   - q: "What makes a mesh network map evidence-based?"
     a: "An evidence-based mesh network map draws topology edges only from verified observations — packets relayed through enrolled observers over MQTT and authenticated repeater reports. If the system cannot produce a verifiable source for an edge, it does not draw the edge. The map reflects what the network did, not what the system infers or guesses it might have done."
   - q: "Why would a mesh map show connections that don't actually exist?"
-    a: "Most LoRa mesh nodes broadcast ADVERT packets that include information about their neighbors. A naive mapping tool can draw edges from those neighbor lists without verifying that the claimed link is current, functional, or even real. Nodes can also carry stale neighbor tables or be deliberately misconfigured. An evidence-based approach ignores claimed neighbor relationships and draws only from direct RF observations made by enrolled observers."
+    a: "Most LoRa mesh nodes broadcast ADVERT packets to announce their presence to nearby nodes. A naive mapping tool infers a neighbor graph from these — if Node A has recently heard Node B, it draws an edge between them. But that inference ignores whether the link is current, functional, or real. Nodes can carry stale data or be misconfigured. An evidence-based approach draws only from direct RF observations made by enrolled observers, not from inferred neighbor relationships."
   - q: "What happens to inferred or spoofed edges in Waev?"
     a: "They are rejected and not drawn. When a topology source cannot be verified against an enrolled observer or authenticated repeater, Waev does not add the edge to the Live Map. The edge simply does not appear. This is not a failure to collect data — it is a deliberate decision to report nothing rather than report something unverified."
   - q: "Does an evidence-based map show fewer nodes than my network has?"
