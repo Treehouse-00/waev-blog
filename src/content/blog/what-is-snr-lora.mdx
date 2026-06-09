@@ -1,0 +1,92 @@
+---
+title: "What Is SNR in LoRa Radio?"
+description: "SNR — Signal-to-Noise Ratio — is the dB margin above the noise floor. This covers what the values mean for LoRa and why negative SNR still decodes in MeshCore."
+date: 2026-10-13
+tags: ["signal", "deep-dive"]
+hero:
+  src: "/hero-what-is-snr-lora.jpg"
+  alt: "A hand-painted close-up of an analog meter dial, its needle rising above a fuzzy band that represents the noise zone, lit by warm workshop light. Earthy tones, painterly texture, no digital elements."
+faq:
+  - q: "What is SNR in LoRa radio?"
+    a: "SNR stands for Signal-to-Noise Ratio. It is the difference, in decibels, between the power of the received signal and the background noise floor at the receiver. A positive dB value means the signal is stronger than the noise. A negative dB value means the signal is weaker than the noise — yet LoRa can still decode it, because chirp spread spectrum encoding lets the receiver correlate a known pattern out of the noise."
+  - q: "Can LoRa decode packets below the noise floor?"
+    a: "Yes. LoRa's chirp spread spectrum modulation is designed specifically for this. By spreading each bit across a wide bandwidth using a frequency-chirp pattern, the receiver can correlate the signal out of noise using processing gain. According to Semtech's specifications, the minimum decodable SNR for SF12 is approximately −20 dB and for SF7 is approximately −7.5 dB. This is the demodulation floor — the absolute minimum, not a reliable operating target."
+  - q: "What is a good SNR for a LoRa mesh link?"
+    a: "+7 dB or above is a reliable working target for a MeshCore link in typical conditions. Links between 0 and +7 dB are marginal — they work in good conditions but are susceptible to weather, vegetation, and interference. Negative SNR links are at or below the demodulation floor depending on the spreading factor and may not decode reliably at all. These are rules of thumb; your specific spreading factor, terrain, and antenna affect where the usable threshold falls."
+  - q: "What is the difference between SNR and RSSI in LoRa?"
+    a: "RSSI (Received Signal Strength Indicator) measures the absolute power of the received signal in dBm. SNR measures the relative margin between the signal and the noise floor. For LoRa, which can operate below the noise floor, SNR is the more diagnostically useful number. A high RSSI but low SNR means a noisy local RF environment is raising the floor. A low RSSI but positive SNR means the signal is weak but the environment is quiet enough that it decodes cleanly."
+  - q: "Why does the SNR number change between observations of the same node?"
+    a: "SNR varies because the noise floor is dynamic, not fixed. Local interference sources — nearby electronics, other radios, power supplies — raise or lower it over time. Multipath fading, where reflections of the same signal arrive slightly out of phase and partly cancel each other, can also shift SNR on a link that hasn't physically changed. What matters for mesh reliability is the typical SNR on a path, not a single reading."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalSNRScale from "../../components/viz/signal-SNRScale.astro";
+
+Every packet observation Waev records includes an SNR reading. That number shows up in Live Packets, Network Stats, and Outpost — but what is it actually measuring? This entry in the signal glossary covers the definition from first principles.
+
+<div class="callout">
+<p><strong>In short.</strong> SNR in LoRa radio is the difference in decibels between the received signal power and the background noise floor. Higher is better. LoRa's chirp spread spectrum modulation can decode signals even when SNR is negative — below the noise floor — but reliable mesh operation generally needs +7 dB or more in typical conditions.</p>
+</div>
+
+## The basic definition
+
+Signal-to-Noise Ratio is a ratio expressed in decibels:
+
+**SNR (dB) = signal power (dBm) − noise floor (dBm)**
+
+If your receiver hears a signal at −115 dBm and its noise floor is −120 dBm, the SNR is +5 dB — the signal is 5 dB stronger than the noise. If the signal is at −122 dBm and the noise floor is still −120 dBm, the SNR is −2 dB — the signal is actually below the noise.
+
+The noise floor isn't something you control directly. It's the sum of thermal noise at the receiver's operating temperature plus any local interference sources: nearby electronics, other radios transmitting on adjacent channels, switching power supplies. In a quiet rural environment the noise floor might be at −125 dBm. In a city with dense wireless equipment nearby it might be −110 dBm or higher.
+
+## Why LoRa can decode at negative SNR
+
+Most radio modulations need a positive SNR to decode. LoRa is different. It uses chirp spread spectrum (CSS) — a modulation developed by Semtech where each symbol is encoded as a frequency sweep (a "chirp") across the full channel bandwidth. The receiver knows the exact shape of a valid LoRa chirp and uses correlation to detect it even when the received signal is weaker than the noise.
+
+This is why LoRa achieves the range it does: it's not transmitting more power, it's using a modulation that extracts signal from noise that would defeat simpler approaches.
+
+The minimum decodable SNR depends on the spreading factor (SF). Higher spreading factors use more chips per symbol — more processing gain — and can therefore decode at lower SNR. From Semtech's specifications, the minimum SNR thresholds are approximately:
+
+| Spreading Factor | Minimum decodable SNR |
+|---|---|
+| SF7 | −7.5 dB |
+| SF8 | −10 dB |
+| SF9 | −12.5 dB |
+| SF10 | −15 dB |
+| SF11 | −17.5 dB |
+| SF12 | −20 dB |
+
+These are the absolute decoding floor values, not the targets you want for reliable operation. At or near the floor, a small change in local noise conditions will drop the link below threshold. MeshCore typically operates at SF9 or SF10 depending on configuration; at those spreading factors, the decoding floor is around −12.5 to −15 dB SNR.
+
+## The practical operating zones
+
+<Figure caption="<b>Five SNR zones</b> as rules of thumb for MeshCore LoRa links. The exact transition points shift with terrain, antenna, and spreading factor. Read these as guidance, not specification.">
+  <SignalSNRScale />
+</Figure>
+
+The zone boundaries in the diagram are practical rules of thumb, not hard physical limits:
+
+- **Strong (+13 dB and above):** Dependable link with margin to spare. You're not close to any failure mode in typical conditions.
+- **Comfortable (+7 to +13 dB):** The target range. Reliable under normal weather and terrain; has room to absorb interference events.
+- **Marginal (0 to +7 dB):** Works when conditions are good. Will degrade with weather, vegetation, or increased interference. Not a link to count on.
+- **Unreliable (−5 to 0 dB):** Only functions in ideal conditions. Treat as intermittent.
+- **At the noise floor (below −5 dB):** The radio may decode it occasionally, but the mesh should not route through it.
+
+The +7 dB figure as a working target appears in Waev's Network Stats watchlist logic: paths consistently below +7 dB get flagged as marginal. It's the same figure used in the [Reading the Signal](/blog/reading-the-signal/) post, which covers how to use SNR alongside hop count to assess overall path quality.
+
+## SNR vs. RSSI: which number to use
+
+Both RSSI and SNR appear in LoRa observations, and both are worth knowing.
+
+**RSSI** is the raw received signal strength in dBm. It tells you how much power is arriving at the antenna. It doesn't tell you anything about the noise environment.
+
+**SNR** tells you the margin above the noise floor. It is directly relevant to whether the signal will decode.
+
+The combination that confounds new operators: high RSSI, negative SNR. This happens when your node is relatively close to the transmitter (so the signal is strong) but you're in a high-noise environment (so the noise floor is also elevated). The signal arrives with plenty of power but can't be distinguished from the noise. The link may not decode at all.
+
+The reverse — low RSSI, positive SNR — is LoRa's sweet spot. A signal at −128 dBm with a −133 dBm noise floor has +5 dB SNR. The link is weak by absolute power but functional because the RF environment is quiet.
+
+For diagnosing mesh health, SNR is the more useful number. RSSI helps explain why SNR is what it is — but SNR is what determines whether the packet arrives.
+
+[When the grid goes down](/blog/when-the-grid-goes-down/) covers the practical work of using SNR trends to build a pre-event network health baseline.
+
+{/* ILLUSTRATION PROMPT: A hand-painted close-up of an analog meter dial in warm workshop light. The needle points upward, rising above a softly textured fuzzy band that represents the noise zone — rendered as a blurred warm-ochre region near the bottom of the dial face. The dial background is cream or off-white, the needle warm orange, the whole scene intimate and workbench-scale. No mesh overlays, no digital elements, no LEDs. One simple metaphor: a signal rising above background noise, rendered as a measurement instrument. House style: painterly, earthy, calm. */}
