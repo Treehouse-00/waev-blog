@@ -1,0 +1,71 @@
+---
+title: "Keeping Control of Your Mesh Network"
+description: "When an off-grid community builds a mesh network, keeping control of the data is as important as keeping the radios powered. Here is how BYOB makes that possible."
+date: 2026-10-11
+tags: ["data-ownership", "philosophy"]
+hero:
+  src: "/hero-keeping-control-of-your-mesh-network.jpg"
+  alt: "A warm hand-painted illustration of a cast-iron hand pump at a rural well, water flowing steadily from the spout into a wooden bucket in golden morning light."
+faq:
+  - q: "What does keeping control of a mesh network's data actually mean?"
+    a: "It means the infrastructure that processes, routes, and stores the network's packets belongs to the operators, not a third-party vendor. For MeshCore, that means self-hosting the MQTT broker so that the community retains full administrative control over who connects and what data is kept."
+  - q: "Why is self-hosting an MQTT broker important for an off-grid mesh?"
+    a: "If a community relies on a SaaS provider's MQTT broker, the network breaks if the provider goes offline, changes pricing, or alters its terms of service. Self-hosting the broker ensures the network remains operational and the data remains private, exactly as the community intended."
+  - q: "Can I use an analytics tool like Waev if I keep control of my broker?"
+    a: "Yes. Waev uses a bring-your-own-broker (BYOB) architecture. You host your own MQTT broker and own the data. You grant Waev read-only subscriber access. Waev can observe the packets to draw the live map and calculate network stats, but it cannot alter or delete anything on your server."
+  - q: "What happens to my mesh data if the analytics vendor shuts down?"
+    a: "With a BYOB model, your network doesn't notice. Because you own the MQTT broker, your repeaters and companion nodes continue communicating normally. The analytics dashboard stops updating, but your mesh data and routing infrastructure remain entirely under your control."
+---
+
+import Figure from "../../components/Figure.astro";
+import BrokerCopy from "../../components/viz/BrokerCopy.astro";
+
+An off-grid community mesh network usually starts with a simple goal: communication when everything else fails. A few neighbors buy Heltec or RAK boards, flash them with MeshCore firmware, and suddenly they can text each other across the valley without a cell tower. 
+
+It feels like autonomy. But as the network grows from two nodes to twenty, it often needs an MQTT gateway to bridge different RF islands or to connect an analytics dashboard so operators can see where the coverage gaps are. That is the moment the autonomy usually slips. The easiest path is to point the gateway at a cloud vendor's server. Suddenly, the off-grid network isn't off-grid anymore — it is dependent on someone else's infrastructure.
+
+<div class="callout">
+<p><strong>In short.</strong> Keeping control of an off-grid mesh network means owning the infrastructure that handles the data. If you hand your MQTT broker to a third-party vendor, you surrender that control. Waev is built on a bring-your-own-broker (BYOB) model: you host the broker, you hold the keys, and the analytics layer is just a read-only subscriber.</p>
+</div>
+
+## The cost of the easy path
+
+When a community mesh decides to add analytics or bridging, the standard industry model is a data-grab. The vendor provides a slick dashboard, but the price of admission is pointing your network's MQTT uplink directly at their servers. 
+
+They own the broker. They hold the data. They decide how long to keep it, who has access to it, and what happens if their servers go down.
+
+For a network built specifically for resilience, that architecture is a single point of failure that exists outside the community's control. If the vendor shuts down, pivots to a new business model, or simply suffers an outage, the community's routing breaks. [What you choose not to know](/blog/what-we-choose-not-to-know/) about your own network becomes what a third party chooses to know about it.
+
+## The Bring-Your-Own-Broker architecture
+
+Waev takes a deliberately inverted approach. [Bring your own broker (BYOB)](/blog/bring-your-own-broker/) isn't just a configuration option; it is the only way Waev operates. 
+
+You stand up an MQTT broker — Mosquitto running on a Raspberry Pi in a barn, or a small virtual private server (VPS) you rent yourself. Your MeshCore observers point to *your* broker. You create a specific, read-only credential for Waev. Waev connects as a subscriber, reading the packet stream to build the Live Map and calculate Network Stats.
+
+<Figure caption="<b>The BYOB data flow.</b> The community's observers report to the community's broker. Waev connects as a read-only subscriber. The data ownership never leaves the operator's hands.">
+  <BrokerCopy />
+</Figure>
+
+The distinction is mechanical, but the outcome is philosophical. Because Waev is a read-only subscriber, it cannot alter your network configuration, it cannot delete your data, and it cannot lock you out. 
+
+## Resilience through ownership
+
+When you keep control of the broker, you keep control of the network's destiny. 
+
+Consider the worst-case scenario for an analytics platform: the company behind it folds overnight. If your network's MQTT traffic was flowing through their servers, your network is now broken. The gateways have nowhere to report; bridged RF islands are severed. You have to scramble to rebuild your infrastructure during the outage.
+
+Under the BYOB model, if the analytics platform goes away, your network doesn't even blink. Your repeaters keep repeating. Your companion nodes keep messaging. Your observers keep reporting to your broker. The dashboard goes dark, but the communications infrastructure — the part that actually matters — remains exactly as you built it. You retain the freedom to connect a different tool, build your own, or simply run the mesh as-is.
+
+## The work required
+
+Autonomy is rarely the path of least resistance. Standing up your own MQTT broker requires an afternoon of work. You have to configure the server, secure it (preferably with TLS), create credentials, and maintain it. 
+
+But for an off-grid or preparedness community, that work is the point. An infrastructure you don't understand is an infrastructure you can't fix when it breaks. By building the broker yourself, you earn the competence to maintain it. 
+
+The mesh belongs to the people who build it. The data should, too.
+
+---
+
+If you are setting up your first community broker and have questions about securing it or connecting your observers, [reach out to us](mailto:admin@waev.app).
+
+{/* ILLUSTRATION PROMPT: A warm hand-painted illustration of a cast-iron hand pump at a rural well, water beginning to flow from the spout into a worn wooden bucket set on a stone surface. The pump stands alone against a simple earthy landscape, lit by soft golden morning light. No figures, no technology, no screens. The subject is the pump itself — the physical act of drawing from something you own. Medium: hand-painted flat illustration with warm painterly texture. Palette: warm amber, muted sage green, stone grey, with one pale copper accent on the pump handle. */}
