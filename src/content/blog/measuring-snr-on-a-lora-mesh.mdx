@@ -1,0 +1,84 @@
+---
+title: "Measuring SNR on a LoRa Mesh"
+description: "How to measure SNR on a LoRa mesh: what the number means, where Waev surfaces it per observed link, and how to use it to find links worth fixing."
+date: 2026-09-15
+tags: ["signal", "mesh-measurement"]
+hero:
+  src: "/hero-measuring-snr-on-a-lora-mesh.jpg"
+  alt: "A warm hand-painted close-up of a drafting compass open mid-measurement on a worn paper notebook, warm raking light from one side — the act of precise measurement."
+faq:
+  - q: "What is SNR and why does it matter on a LoRa mesh?"
+    a: "SNR is Signal-to-Noise Ratio — the difference in decibels between the received signal and the background noise floor. LoRa can decode signals below the noise floor, which enables long range, but links closer to zero become unreliable under real-world conditions. Measuring SNR tells you which links are solid and which are marginal before you need to depend on them."
+  - q: "Where does Waev show SNR per link?"
+    a: "SNR appears in three places. Live Packets tags each incoming observation with the SNR recorded at the observer. Network Stats shows per-node SNR alongside hop count in the path-quality view. Outpost shows per-node SNR history over hours and days."
+  - q: "What SNR should I target for a reliable MeshCore link?"
+    a: "A working target for reliable operation in typical conditions is roughly plus 5 to plus 7 dB or above. Links between plus 3 and plus 5 dB work most of the time but become unreliable under adverse conditions such as weather fronts, antenna misalignment, or increased interference. Below plus 3 dB, plan for intermittency."
+  - q: "How do I measure SNR per link in practice?"
+    a: "Enroll an observer on your mesh and connect it to Waev. As packets arrive, Live Packets shows the SNR for each one in real time. For a specific link, filter or watch for the source node you want to evaluate. Network Stats gives you the aggregated view sorted by path quality."
+  - q: "My mesh works fine but SNR on one link is low. Should I fix it?"
+    a: "Low SNR on an active link means your margin against failure is smaller than it looks. A link at plus 2 dB may deliver reliably on a calm day and fail during a weather event, a busy traffic hour, or after a small antenna shift. Whether to fix it depends on what that link carries and whether it has a redundant path. If it is a single path to an important node, fix it."
+---
+
+import Figure from "../../components/Figure.astro";
+import MeasureLivePackets from "../../components/viz/measure-LivePackets.astro";
+import PlaybookLinkTable from "../../components/viz/PlaybookLinkTable.astro";
+
+The number appears on every packet: `+9 dB`, `+4 dB`, `–1 dB`. When you first start watching Live Packets, it's background noise — just another column in the stream. But SNR is the one number that tells you, for each link, whether your network can be depended on.
+
+How to measure SNR on a LoRa mesh is not a complicated question, but it has layers. Here's what the number means, where to read it, and what to do with it.
+
+<div class="callout">
+<p><strong>In short.</strong> How to measure SNR on a LoRa mesh: enroll a Waev observer, then read the SNR column in Live Packets — it appears on every observed packet in real time. Network Stats aggregates those readings by node into a path-quality view sorted by health. A link at +7 dB or above is your solid-ground baseline; a link at or below +3 dB is a candidate for improvement before it becomes a problem.</p>
+</div>
+
+## What SNR measures
+
+Signal-to-Noise Ratio is the difference, in decibels, between the signal your observer's receiver hears and the background noise floor at that location. A +10 dB reading means the signal arrived 10 dB stronger than the noise. At +2 dB, it's barely above it.
+
+LoRa uses spread-spectrum encoding that allows it to decode signals below the noise floor — this is the engineering that makes MeshCore links work at distances that look improbable on paper. But "the radio can decode it" and "this path is reliable for community infrastructure" are different standards. As SNR approaches zero, decode reliability becomes conditional: the link works eight times out of ten, then six, then varies unpredictably with conditions.
+
+The practical target for a link you want to depend on: **+5 to +7 dB or above in typical conditions**. Below that is working territory, not reliable territory.
+
+## Where Waev surfaces SNR
+
+Three surfaces, each with a different purpose.
+
+<Figure caption="Live Packets in real time: every incoming observation tagged with its source node, hop count, and SNR. The four rows show the full range — from a healthy direct link at +11 dB to a degraded four-hop path at –2 dB. This is where you measure SNR as it happens.">
+  <MeasureLivePackets />
+</Figure>
+
+**Live Packets** shows the raw observation stream as it arrives. Each row is one packet: timestamp, source node, hop count, and SNR at the enrolled observer. This is where you measure SNR per link in real time — scroll back a few minutes to see the variance on a given link over a short window.
+
+**Network Stats** aggregates the data into a path-quality view. Instead of individual packets, you see a row per node with its typical hop count, average recent SNR, and a status flag (healthy / watchlist / degraded). This is the faster way to find which links in your network are underperforming — one scan of the table reveals the candidates.
+
+<Figure caption="Network Stats path-quality view: four nodes sorted by health. relay-main and relay-north are solid. relay-east at 3 hops and +3 dB is on the watchlist — it's working but marginal. relay-ridge at 4 hops and –3 dB is degraded: intermittent delivery, not a link to plan around.">
+  <PlaybookLinkTable />
+</Figure>
+
+**Outpost** is the per-node detail: SNR history over time for a single node, including the heard-by log showing which observers recorded it and when. When a node's behavior is inconsistent, Outpost is where you diagnose whether the pattern is tied to time of day, weather correlation, or a specific relay going offline.
+
+## Reading the measurements
+
+A single SNR reading is a snapshot. What you want is a pattern. Here's how to read it:
+
+**Consistent high SNR (>+7 dB) with stable hop count:** solid link. You don't need to touch this one.
+
+**Consistent low SNR (+3 to +5 dB):** marginal link. It works under normal conditions. A weather event, a nearby interference source, or a small shift in antenna angle can push it into failure territory. If this is a critical path, improve the margin; if it has a redundant path, monitor it.
+
+**Hop count higher than expected:** the mesh rerouted around something. If a node was reaching your observer in 2 hops last month and now shows 4, a link in the shorter path degraded or disappeared. The hop count didn't grow because you changed something; it grew because something changed.
+
+**Inconsistent SNR on the same link:** usually means intermittent obstruction (vegetation in wind, weather fronts), an antenna that shifted, or a power issue on the relay. Use Outpost's time-series view to see if the variation has a pattern.
+
+## Turning the measurement into action
+
+The measurement is only useful if it leads somewhere. Here's the decision chain:
+
+A link that consistently reads below +5 dB and carries important traffic needs improvement. The options: raise the antenna on either end, reduce the path length by adding a closer relay, or check for nearby interference with `stats-radio` from the node's serial CLI.
+
+A link that developed higher hop count than expected needs investigation. Look at the previous shorter path: which relay is no longer heard? Check that relay's power, placement, and recent Live Packets history.
+
+A link at negative SNR that was positive six months ago is the one to prioritize. That's structural degradation — something in the environment changed — and it doesn't self-correct. The change in [Reading the Signal](/blog/reading-the-signal/) gives the full SNR interpretation framework; this series entry is specifically about the measurement method and where the numbers live in Waev.
+
+For acting on what you find — whether the answer is a new relay, a better antenna, or a smarter placement — [repeater placement](/blog/where-to-put-your-next-repeater/) starts from the same signal data.
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted close-up illustration of a drafting compass open mid-measurement on a worn paper notebook page — the compass legs touching two points, the hinge in focus. Raking warm side-light from the left casts a gentle shadow. The notebook page has faint pencil grid lines. No other objects. Earthy warm tones, one muted blue accent on the compass metal. Painterly texture. The mood: precise, unhurried measurement. */}
