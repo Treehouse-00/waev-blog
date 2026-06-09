@@ -1,0 +1,99 @@
+---
+title: "Before the Storm Makes Landfall"
+description: "How to verify your mesh network's hurricane season readiness six weeks before you need it — because a baseline built on a routine Tuesday is worth more than any last-minute check."
+date: 2026-09-03
+tags: ["resilience", "operations"]
+hero:
+  src: "/hero-before-the-storm-makes-landfall.jpg"
+  alt: "A hand-painted close-up of a pair of hands pressing the rubber gasket seal on a weatherproof outdoor node enclosure, a brass barometer softly visible in warm morning light behind them."
+faq:
+  - q: "How far in advance should I test my mesh before hurricane season?"
+    a: "At least four to six weeks before peak season. That window gives you time to find marginal links, repair remote nodes with failing batteries, and establish the baseline you need to read against during an event. Testing a week before landfall tells you where things stand; testing two months before tells you what you still have time to fix."
+  - q: "What does mesh readiness actually mean?"
+    a: "A mesh is ready when you know what normal looks like — the typical SNR on your critical links, the usual hop count to remote nodes, and the packet rate you expect from sentinel relays on a quiet day. Readiness is a data baseline, not an uptime percentage. You cannot call a network ready if you do not have weeks of health history to compare against."
+  - q: "How do I find single points of failure in my mesh before an event?"
+    a: "On the Live Map, look for relay nodes whose failure would isolate a downstream cluster with no confirmed alternative path. A SPOF appears as a branch that hangs entirely from one relay with no redundant edges. Mark every one you find and either add a redundant path or prioritize keeping that node maintained through the season."
+  - q: "My mesh worked at the last exercise. Is that enough?"
+    a: "Not as a substitute for current data. A last-exercise result tells you the network was working then. It does not tell you whether relay-ridge has drifted toward marginally-acceptable SNR since that exercise, or whether the battery at your hilltop repeater is holding charge through the night. A baseline built over weeks shows the current trend — which is what matters before a storm."
+  - q: "What is the single most useful Waev check before hurricane season?"
+    a: "Pull the 30-day health history for every node you consider critical and look for any that have had watchlist periods, increasing hop counts, or degrading SNR. Those nodes will fail first under event stress. One afternoon reviewing that data produces a short repair list that is worth more than any last-minute scramble the week before a storm."
+---
+
+import Figure from "../../components/Figure.astro";
+import GridgoneHealthBaseline from "../../components/viz/gridgone-HealthBaseline.astro";
+import GridgoneCriticalPath from "../../components/viz/gridgone-CriticalPath.astro";
+
+Atlantic hurricane season peaks in August and September. For CERT teams and emergency communications groups, that means the real prep window is June and July — long before any watch is posted, and well before the mesh gets its first serious load test.
+
+The failure pattern is consistent. Teams spend August assuming the network is ready because it worked at the June exercise. When activation comes, they discover the marginal link that had been silently degrading for six weeks. By then there is no repair window. There is only triage.
+
+<div class="callout">
+<p><strong>In short.</strong> Hurricane season mesh network prep happens in the six weeks before peak season, not the six hours before landfall. The work is building a baseline — weeks of health data that tell you exactly where your network stands — and using that baseline to find the marginal links before the storm finds them for you. Waev gives you this visibility continuously; the decision to look at it is yours.</p>
+</div>
+
+## The baseline is the prep work
+
+Readiness is not uptime. A network that was working at the last exercise may have three marginal links that have been slowly degrading since then. Without continuous health data, you have no way to know.
+
+The baseline you need before hurricane season is built by enrolling observers early and letting them accumulate data. Thirty days of Network Stats on your critical nodes gives you a clear picture: which links hold consistent SNR through the day and the night, which nodes have had watchlist periods, which relay has been creeping from two hops to three. That picture is the difference between a repair list built in July and a surprise discovered during Friday night landfall.
+
+Three numbers are worth knowing for every node you consider critical:
+
+**SNR on the link to backbone.** A working MeshCore link generally holds above +5 dB in typical conditions. A node holding at +1 or +2 dB is technically alive but operating on borrowed margin. Any weather event, increased traffic, or minor power fluctuation can tip it over. Pull the time series in Outpost and look for whether that degradation is constant or shows a pattern — certain hours, certain conditions.
+
+**Hop count to your enrolled observer.** A node that was reaching backbone in two hops at initial deployment and now shows three or four hasn't physically moved. Something in the preferred path degraded, and the mesh quietly rerouted. That reroute happened without any alarm. Network Stats shows you the hop count trend over time.
+
+**Packet rate from sentinel relays.** Fixed repeaters that transmit periodically just to prove they're alive — sentinel nodes — should show a consistent packet rate during their operating hours. A sentinel that was logging 30 packets per hour all month and drops to zero for two days isn't necessarily down; compare with its neighbors. If neighbors are active and the sentinel is silent, that is a node-specific issue with a repair window. Find it before the season does.
+
+<Figure caption="<b>30-day health history for three nodes.</b> backbone-main is solid and consistent. relay-ridge and relay-east both show watchlist periods before going silent — the warning was in the data weeks before it mattered.">
+  <GridgoneHealthBaseline />
+</Figure>
+
+## The topology review
+
+Once you have a baseline, the second piece of pre-season prep is a deliberate topology review: looking at the Live Map not to confirm that nodes are up, but to find the structural risks.
+
+The most actionable finding is a single point of failure — a relay node that is the only path for a downstream cluster. If that node goes down, every node behind it goes silent simultaneously. SPOFs are visible in the Live Map topology: a branch that hangs entirely from one relay with no confirmed redundant edges. Identifying them now means you have time to add a redundant path, improve power resilience at that node, or at minimum put it on the priority maintenance list before season.
+
+<Figure caption="<b>relay-ridge as a SPOF:</b> three cluster nodes sit behind it with no confirmed alternative path. A second repeater at an adjacent high point would add redundancy; failing that, relay-ridge needs priority maintenance heading into hurricane season.">
+  <GridgoneCriticalPath />
+</Figure>
+
+Look for three structural conditions during this review:
+
+**The SPOF branch.** Any cluster reachable only through a single relay. Note the node and its current health trend.
+
+**The long-hop path.** Nodes reaching backbone at four or more hops, especially if that hop count has grown from a lower baseline. A four-hop path that was two hops in March is routing around something.
+
+**The uncovered zone.** Areas where you have members or volunteers operating but the map shows nothing. That could be a genuine dead zone or an observer coverage gap. Either one needs resolution before season.
+
+## The pre-season checklist
+
+Six weeks before peak season:
+
+- Review 30-day Network Stats for every critical node. Flag any with watchlist periods, hop-count growth, or SNR below +5 dB consistently.
+- Run the topology review on the Live Map. Document every SPOF and every long-hop path.
+- Check power supply at every remote repeater. Solar panels need clean surfaces and correct orientation. Battery capacity fades over months; a repeater that ran on solar all spring may be undersized heading into a cloudy storm week.
+- Verify your enrolled observers are actually enrolled and reporting. An observer that stopped connecting to your broker six weeks ago means six weeks of health data you do not have.
+
+Two weeks out:
+
+- Address the repair list from the six-week review. Marginal links do not improve on their own; act on the data.
+- Run a tabletop scenario: what does activation look like if relay-ridge fails during the first operational period? If the answer is "we lose three clusters," that is a finding, not an assumption.
+
+One week out:
+
+- Confirm that every critical node has reported within the last 24 hours. A node that has been silent for a week may have a power issue that is easier to address now than at 2 a.m. during a watch.
+- Note the current hop counts and SNR on critical links as your pre-event baseline. That is the number you compare against during the activation.
+
+## What this looks like during an event
+
+The prep work pays out during activation in a specific way: you already know what normal looks like for every node, so "is this unusual?" is answerable in seconds instead of minutes. A node that gained hops during the event is rerouting around something. A node that went silent while its neighbors are active has a node-specific issue. Those distinctions are only visible against a baseline.
+
+For a detailed guide to reading your mesh during and after an event — Live Packets, hop-count changes, and after-action review in Packet Search — see [When the Grid Goes Down](/blog/when-the-grid-goes-down/). For coverage gap analysis and repeater placement decisions, see [Where Your Network Ends](/blog/where-to-put-your-next-repeater/).
+
+---
+
+The storms that reveal infrastructure failures are rarely the ones that gave you a prep window. The prep window is now, in the weeks before peak season, when the mesh is quiet and the repair list is still achievable. Use it.
+
+{/* ILLUSTRATION PROMPT: Hand-painted warm illustration, close-up still life. A pair of careful hands pressing the rubber gasket seal around the rim of an open weatherproof outdoor enclosure — the hands are deliberate, checking the seal before closing it. A small brass barometer is softly visible on the workbench behind, slightly out of focus. The enclosure has a small circuit board visible inside. Warm amber morning workshop light, painterly texture, no mountains, no starry sky, no person shown above the wrists. The mood: methodical readiness. Calm, human, intimate scale. */}
