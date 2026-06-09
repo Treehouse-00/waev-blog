@@ -1,0 +1,91 @@
+---
+/**
+ * observer-CoverageModel — two scenarios side by side:
+ *   LEFT:  One well-placed observer hears 5 nodes (good coverage).
+ *   RIGHT: One poorly-placed observer hears only 2 of 5 nodes (coverage gap).
+ * Teaches that observer placement matters more than observer count.
+ * Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 240" role="img" aria-label="Two observer placement scenarios. Left: one observer on high ground hears all five mesh nodes — all have solid lines to the observer. Right: one observer in a low location hears only two of five nodes — three nodes have dashed weak lines and are shown faded." style="width:100%;height:auto;">
+  <defs>
+    <marker id="oc-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+    <marker id="oc-arrow-dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+    </marker>
+  </defs>
+
+  <!-- ── LEFT: Good placement (high ground observer) ── -->
+  <text x="160" y="22" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">WELL-PLACED · 5 of 5 heard</text>
+
+  <!-- Observer (center, elevated visually) -->
+  <circle cx="160" cy="118" r="16" style="fill: var(--accent); opacity:0.9;" />
+  <text x="160" y="122" text-anchor="middle" class="viz-label" style="fill: var(--surface-1); font-size:8px; font-weight:600;">OBS</text>
+  <text x="160" y="140" text-anchor="middle" class="viz-label" style="fill: var(--accent-light); font-size:9px;">high ground</text>
+
+  <!-- 5 nodes around it, solid lines (heard) -->
+  <!-- Node A top-left -->
+  <line x1="95" y1="60" x2="146" y2="106" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#oc-arrow-acc)" />
+  <circle cx="84" cy="52" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="84" y="55" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted);">A</text>
+
+  <!-- Node B top-right -->
+  <line x1="218" y1="62" x2="176" y2="106" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#oc-arrow-acc)" />
+  <circle cx="228" cy="54" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="228" y="57" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted);">B</text>
+
+  <!-- Node C right -->
+  <line x1="264" y1="118" x2="178" y2="118" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#oc-arrow-acc)" />
+  <circle cx="276" cy="118" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="276" y="121" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted);">C</text>
+
+  <!-- Node D bottom-right -->
+  <line x1="218" y1="176" x2="176" y2="132" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#oc-arrow-acc)" />
+  <circle cx="228" cy="184" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="228" y="187" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted);">D</text>
+
+  <!-- Node E bottom-left -->
+  <line x1="98" y1="176" x2="146" y2="132" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#oc-arrow-acc)" />
+  <circle cx="88" cy="184" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="88" y="187" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted);">E</text>
+
+  <!-- ── Divider ── -->
+  <line x1="360" y1="20" x2="360" y2="220" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── RIGHT: Poor placement (low ground observer) ── -->
+  <text x="546" y="22" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.06em;">POORLY PLACED · 2 of 5 heard</text>
+
+  <!-- Observer (center, but low) -->
+  <circle cx="546" cy="160" r="14" style="fill: var(--surface-1); stroke: var(--text-accent);" stroke-width="1.75" />
+  <text x="546" y="164" text-anchor="middle" class="viz-label" style="fill: var(--text-accent); font-size:8px; font-weight:600;">OBS</text>
+  <text x="546" y="182" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); font-size:9px;">low ground</text>
+
+  <!-- Node F top-left (NOT heard) -->
+  <line x1="466" y1="58" x2="535" y2="150" style="stroke: var(--text-tertiary);" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#oc-arrow-dim)" />
+  <circle cx="456" cy="50" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary); opacity:0.5;" stroke-width="1.25" />
+  <text x="456" y="53" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted); opacity:0.5;">F</text>
+  <text x="434" y="40" class="viz-label" style="font-size:9px; fill: var(--text-muted); opacity:0.6;">not heard</text>
+
+  <!-- Node G top-right (NOT heard) -->
+  <line x1="618" y1="60" x2="558" y2="150" style="stroke: var(--text-tertiary);" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#oc-arrow-dim)" />
+  <circle cx="628" cy="52" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary); opacity:0.5;" stroke-width="1.25" />
+  <text x="628" y="55" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted); opacity:0.5;">G</text>
+
+  <!-- Node H right (NOT heard) -->
+  <line x1="658" y1="120" x2="562" y2="158" style="stroke: var(--text-tertiary);" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#oc-arrow-dim)" />
+  <circle cx="668" cy="118" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary); opacity:0.5;" stroke-width="1.25" />
+  <text x="668" y="121" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted); opacity:0.5;">H</text>
+
+  <!-- Node I bottom-right (HEARD) -->
+  <line x1="618" y1="184" x2="562" y2="168" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#oc-arrow-acc)" />
+  <circle cx="628" cy="192" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="628" y="195" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted);">I</text>
+
+  <!-- Node J bottom-left (HEARD) -->
+  <line x1="468" y1="184" x2="533" y2="168" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#oc-arrow-acc)" />
+  <circle cx="458" cy="192" r="10" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="458" y="195" text-anchor="middle" class="viz-label" style="font-size:8px; fill: var(--text-muted);">J</text>
+</svg>
