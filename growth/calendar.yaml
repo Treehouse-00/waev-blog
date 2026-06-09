@@ -179,7 +179,7 @@ posts:
     series: first-light
     primary_keyword: "LoRa mesh network setup tutorial"
     secondary_keyword: "your first three MeshCore nodes"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-10
