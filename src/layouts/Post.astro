@@ -98,7 +98,7 @@ const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
         <p class="post-lead">{description}</p>
         {tags.length > 0 && (
           <div class="post-meta" style="gap: var(--sp-2);">
-            {tags.map((t) => <span class="tag">{t}</span>)}
+            {tags.map((t) => <a href={`/tags/${t}/`} class="tag">{t}</a>)}
           </div>
         )}
       </header>
