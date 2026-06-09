@@ -1,0 +1,78 @@
+---
+title: "How MeshCore Packets Become a Live Map"
+description: "How a raw MeshCore packet turns into a verified edge on Waev's Live Map: MQTT ingest, hop record parsing, and topology drawing explained."
+date: 2026-10-08
+tags: ["deep-dive", "how-it-works"]
+hero:
+  src: "/hero-how-meshcore-packets-become-a-live-map.jpg"
+  alt: "A close-up of a hand drawing deliberate pencil lines between dots on cartography paper, connecting observations into a map with careful, measured marks."
+faq:
+  - q: "What information does Waev extract from a MeshCore packet?"
+    a: "Waev extracts the source node identifier, the list of nodes the packet passed through (the hop path), the SNR measured at each hop, and the packet timestamp. Identity fields for companion devices are scrubbed before storage."
+  - q: "Why doesn't every packet produce a map edge?"
+    a: "A packet only produces a verified topology edge if it arrived through an enrolled observer or authenticated repeater and carries a complete, traceable hop path. Packets from unverified sources, or with incomplete hop records, do not draw lines."
+  - q: "How quickly does the Live Map update?"
+    a: "The map updates as observations arrive. There is no polling interval — new packets from an enrolled observer trigger a map update in near real time."
+  - q: "What happens to a map edge when a link goes quiet?"
+    a: "Edges age rather than disappear immediately. When observations for a given link stop arriving, the edge is marked stale and eventually removed. The map does not retain connections it can no longer verify."
+  - q: "How is this different from a map that infers connections?"
+    a: "An inferred map draws edges based on which nodes claim to have heard each other. Waev draws edges only from observations made by enrolled observers — nodes you connected to your MQTT broker. A claimed connection with no verifiable observation produces no edge."
+---
+
+import Figure from "../../components/Figure.astro";
+import HiwTopologyDraw from "../../components/viz/hiw-TopologyDraw.astro";
+import SignalHopChain from "../../components/viz/signal-HopChain.astro";
+
+A MeshCore packet leaves a node's antenna as a burst of radio energy. By the time it appears as a line on Waev's Live Map, it has traveled through several transformations: from RF to IP, from a raw MQTT record to a parsed observation, from an observation to a verified edge. Each step either advances the packet toward the map or discards it. Understanding those steps is what lets you read the map honestly — and diagnose it when something's missing.
+
+<div class="callout">
+<p><strong>In short.</strong> How MeshCore packets become a live map: an enrolled observer hears the packet, publishes a record to your MQTT broker, Waev parses the hop path to identify which nodes the packet traversed, verifies those observations against known sources, and draws only the edges it can prove. The map is the subset of your mesh that enrolled observers have actually seen.</p>
+</div>
+
+## What a MeshCore advertisement packet contains
+
+MeshCore nodes periodically broadcast advertisement packets to announce their presence and maintain mesh routing. Each packet carries enough information to reconstruct the path it took: the originating node's identifier, and a record of the nodes it passed through — each hop appending evidence of what it heard and at what signal quality.
+
+When the packet reaches an enrolled observer, the observer captures this path record and publishes it to your MQTT broker as a structured JSON document. That published record is what Waev receives.
+
+<Figure caption="A packet traversing two hops. Node A originates; Node B relays; the enrolled Observer hears it and publishes the full path to your broker. The SNR values travel with the record.">
+  <SignalHopChain />
+</Figure>
+
+The path record is the key artifact. It tells Waev not just that a packet arrived, but which nodes it passed through and what the signal quality was at each step. That's the raw material for topology — a list of claimed edges, each needing verification.
+
+## From a hop record to a claimed edge list
+
+When Waev receives the published record from your observer, the first step is parsing the hop path into a set of candidate edges.
+
+If a packet traveled from Node A to Node B to Node C (where C is the enrolled observer), the hop record contains two edges: A→B and B→C. The SNR reported at each hop is the signal quality as measured by the receiving node — Node B's SNR for the A→B link, and the observer's SNR for the B→C link.
+
+Each candidate edge is now a claim: "Node A heard Node B at SNR −12 dB." Before that claim becomes a map line, Waev needs to verify it.
+
+## The verification step
+
+Claimed edges from the hop record only become map edges if they pass Waev's source verification check. The rule is straightforward: an observation is trusted if and only if it came from an enrolled observer or an authenticated repeater.
+
+An enrolled observer is a node you've connected to your MQTT broker — one you've explicitly linked to Waev. An authenticated repeater is a node whose identity Waev can trace back through the enrolled observer's record.
+
+<Figure caption="Left: the packet path as observed. Right: the edges Waev draws — exactly two, backed by the observer's report. The SNR numbers are evidence, not decoration.">
+  <HiwTopologyDraw />
+</Figure>
+
+A packet that reaches Waev through an unverified path — one that didn't come from an enrolled observer — doesn't produce edges, even if the hop record is complete and plausible. Waev does not draw inferred connections. If it can't prove the observation came from a trusted source, it doesn't draw the line.
+
+This is the check that makes the map honest rather than optimistic. A node that announces it heard another node is making a claim. The map only records claims that were witnessed by sources you trust.
+
+## Why some nodes don't appear on the map
+
+The most common reason a node is on your mesh but absent from the Live Map: no enrolled observer has seen it. If all your observers are on one side of the mesh and a node is on the other, that node's packets may be flowing through the mesh without ever reaching an observer that reports to Waev.
+
+The Live Packets view is useful here. Live Packets shows all observations that cleared the privacy gate — including packets heard by enrolled observers from nodes that didn't produce map edges. If a node shows up in Live Packets but not on the map, the hop record was incomplete or the observation didn't trace back to a verifiable source.
+
+The map shows exactly what enrolled observers have seen. It is neither pessimistic nor optimistic — it's a direct record of verified observations. A blank spot on the map means one of two things: no observation, or an observation that couldn't be verified. Both are honest answers. Either way, the path to resolving it is adding an observer that can see that part of the network.
+
+---
+
+The [full five-stage pipeline](/blog/how-waev-reads-your-mesh/) covers the end-to-end flow from radio to browser. This post focused on the topology-drawing step specifically — the part where observations become edges. For the data that does reach the map, [what Waev actually stores](/blog/what-data-a-mesh-analytics-tool-stores/) is the signal metadata those observations produced: SNR per link, hop count, timing.
+
+{/* ILLUSTRATION PROMPT: A warm, painterly close-up of a hand drawing deliberate pencil lines between small dots on a piece of cartography grid paper — connecting observations into a map with careful, measured strokes. The paper has a worn, slightly yellowed quality; the hand is relaxed and purposeful. Soft, indirect light from the side. Warm earthy tones; the pencil lines are the only subject. No screen, no UI, no nodes, no map overlay — just the act of careful connection on paper. */}
