@@ -50,3 +50,4 @@ Format: `- <slug> | <bucket>/<theme> | concept: <one line> | motifs: <2–4 moti
 - when-the-grid-goes-down | field-manual/ready-before-it-matters | concept: a figure at a folding desk on a dark hillside studying a mesh map, city lights below | motifs: figure, folding desk, hillside, starry sky, city lights
 - where-to-put-your-next-repeater | field-manual/ready-before-it-matters | concept: an operator on a green hilltop at sunset with handheld radio, hills dotted with nodes | motifs: operator, hilltop, sunset, handheld radio, nodes
 - your-mesh-on-field-day | dispatch/networks-of-people | concept: a portable radio station on a folding table under a swirling painterly sky | motifs: portable station, folding table, painterly sky
+- every-node-heard-it-twice | signal/knowing-over-guessing | concept: two identical folded paper notes side by side on a warm wooden desk, one slightly overlapping the other | motifs: paper notes, duplication, warm desk, soft shadow
