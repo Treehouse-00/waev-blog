@@ -1,0 +1,70 @@
+---
+title: "Can Waev Write to Your Broker?"
+description: "Waev subscribes to your MQTT broker with read-only credentials — a mesh analytics service write to your broker is structurally impossible. Your ACL enforces that limit."
+date: 2026-11-12
+tags: ["how-it-works", "data-ownership"]
+hero:
+  src: "/hero-can-waev-write-to-your-broker.jpg"
+  alt: "A warm flat illustration of a copper one-way check valve in cross-section, the flapper open in one direction and closed in the other, on a warm industrial background."
+faq:
+  - q: "Can Waev publish messages to my MQTT broker?"
+    a: "No. Waev's credentials are issued by you with read (subscribe) access only. The MQTT ACL on your broker enforces this mechanically — no publish permission means no messages originate from Waev, regardless of anything else."
+  - q: "What MQTT operations does Waev's subscriber account perform?"
+    a: "Waev subscribes to the topics you configure, receives packets from your observer, and maintains a derived read-only copy for analytics. It does not publish, does not create or delete topics, and has no broker administration access."
+  - q: "How is the read-only restriction enforced?"
+    a: "The restriction is enforced in your ACL file with a `topic read #` entry for Waev's username. Mosquitto evaluates this before any message is sent; a publish attempt from an account with only read permission is rejected at the broker, not by Waev's software."
+  - q: "What happens if I accidentally give Waev readwrite access instead of read?"
+    a: "Correct the ACL file to `topic read #` for Waev's username and restart Mosquitto. The change takes effect immediately on reconnect. Waev's own analytics pipeline does not publish to broker topics, so the risk is structural misconfiguration on your side rather than intentional writes from Waev."
+  - q: "Can Waev access topics outside what my observer publishes to?"
+    a: "Only if your ACL allows it. If you scope Waev's account to a specific topic prefix, it cannot subscribe to anything outside that prefix. The ACL you write determines the boundary; Waev operates within it."
+---
+
+import Figure from "../../components/Figure.astro";
+import ByobCredentials from "../../components/viz/byob-Credentials.astro";
+
+The question comes up early when evaluating any analytics service that connects to your broker: what access does it actually have, and can it do anything beyond read? With Waev, the answer is structural rather than policy-based. It is not that Waev promises not to write to your broker — it is that the credential you issue gives it no permission to do so.
+
+<div class="callout">
+<p><strong>In short.</strong> A mesh analytics service cannot write to your broker if you issue it read-only subscriber credentials and your ACL enforces read access only. Waev connects with exactly those credentials: no publish permission, no topic management, no broker administration. The constraint is in your ACL file, not in a terms-of-service clause.</p>
+</div>
+
+## How MQTT access control works
+
+MQTT brokers like Mosquitto separate authentication (who are you) from authorization (what can you do). Authentication checks username and password. Authorization — controlled by an ACL file — determines which topics a given user can publish to, subscribe to, or both.
+
+The relevant ACL entry for a read-only subscriber looks like this:
+
+```
+user waev
+topic read #
+```
+
+The `read` keyword grants subscribe access only. A user with this entry can receive messages on matching topics, but any attempt to publish is rejected at the broker. The rejection happens before the message reaches any subscriber — it is not a filter applied later; it is a gate at the point of ingress.
+
+A user with `readwrite` or `write` access could publish. That is not the access Waev is given.
+
+## The credential you issue determines what Waev can do
+
+When you connect Waev to your broker, you create a subscriber account on your broker, set a password, and provide those credentials to Waev. Waev does not ask for anything beyond that. The scope of those credentials — the topics they cover, the access level they carry — is defined entirely by your ACL file.
+
+<Figure caption="Your broker's credential panel. Waev's account carries read-only access. The operator controls — add, rotate, revoke — are all on your infrastructure. No action requires contacting Waev.">
+  <ByobCredentials />
+</Figure>
+
+If you issue Waev an account with `topic read #`, that is all it can do: subscribe and receive. If you later want to tighten the scope further — to a specific topic prefix, for instance — edit the ACL, restart Mosquitto, and the change takes effect on the next connection. If you want to end Waev's access entirely, remove the account from the password file and ACL and restart. None of these actions require asking Waev for anything.
+
+## What Waev's subscriber session actually does
+
+When Waev connects to your broker, it subscribes to the topics your observer publishes to, receives the packet stream, and maintains a derived copy for building the analytics surfaces: the Live Map, Network Stats, and packet search. That is the extent of what the subscription is used for.
+
+Waev's analytics pipeline reads the stream. It does not publish back to the mesh, does not write to broker topics, and has no mechanism for sending messages through your broker to your mesh nodes. There is no design reason for it to do so — analytics is a read operation.
+
+The [bring-your-own-broker model](/blog/bring-your-own-broker/) makes this concrete: you own the broker, you issue the credentials, and Waev subscribes to a read-only copy. The ownership is structural. The read-only constraint is structural.
+
+## What the constraint does not cover
+
+This constraint applies to Waev's relationship with your MQTT broker. It does not speak to what your observer publishes, what other clients on your broker can do, or how your mesh firmware behaves. Those are separate questions governed by your own configuration.
+
+If you want to understand the full picture of what Waev stores about your mesh and what it deliberately does not collect, [what we choose not to know](/blog/what-we-choose-not-to-know/) covers the ingest-edge data model in detail.
+
+{/* ILLUSTRATION PROMPT: A warm flat illustration of a copper or brass one-way valve or check valve, cross-section view showing the flapper open in one direction, closed in the other. Simple mechanical diagram feel. Warm industrial palette, soft background. */}
