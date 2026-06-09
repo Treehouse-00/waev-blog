@@ -260,7 +260,7 @@ posts:
     series: the-honest-comparison
     primary_keyword: "MeshCore vs Meshtastic"
     secondary_keyword: "MeshCore vs Meshtastic for emergency use"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-27

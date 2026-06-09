@@ -1,0 +1,150 @@
+---
+/**
+ * comparison-RoutingModels — two panels contrasting:
+ *   Left: Flood routing (Meshtastic model) — all nodes relay outward
+ *   Right: Source routing (MeshCore model) — flood once to find path,
+ *          then route directly along the learned path.
+ * Inline SVG, no client JS, theme-aware CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 310" role="img" aria-label="Two routing models side by side: flood routing where all nodes relay to all neighbors, versus source routing where a path is learned once and traffic is directed along it." style="width:100%;height:auto;">
+  <defs>
+    <marker id="crm-arrow-acc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
+    </marker>
+    <marker id="crm-arrow-dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-tertiary);" />
+    </marker>
+    <marker id="crm-arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill: var(--text-muted);" />
+    </marker>
+  </defs>
+
+  <!-- ═══════ LEFT PANEL: Flood Routing ═══════ -->
+  <!-- Background -->
+  <rect x="4" y="4" width="342" height="302" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Label -->
+  <text x="175" y="30" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase;">Flood Routing</text>
+  <text x="175" y="48" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 11px;">every node relays to all neighbors</text>
+
+  <!-- Origin node A -->
+  <circle cx="100" cy="145" r="14" style="fill: var(--accent); stroke: none;" />
+  <text x="100" y="149" text-anchor="middle" style="fill: var(--surface-0); font-family: var(--mono); font-size: 10px; font-weight: 700;">A</text>
+
+  <!-- Hop 1 nodes -->
+  <circle cx="188" cy="100" r="11" style="fill: var(--surface-1); stroke: var(--accent-light);" stroke-width="1.5" />
+  <text x="188" y="104" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">R1</text>
+
+  <circle cx="188" cy="145" r="11" style="fill: var(--surface-1); stroke: var(--accent-light);" stroke-width="1.5" />
+  <text x="188" y="149" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">R2</text>
+
+  <circle cx="188" cy="190" r="11" style="fill: var(--surface-1); stroke: var(--accent-light);" stroke-width="1.5" />
+  <text x="188" y="194" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">R3</text>
+
+  <!-- A → Hop1 arrows -->
+  <line x1="114" y1="139" x2="176" y2="107" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#crm-arrow-acc)" />
+  <line x1="114" y1="145" x2="176" y2="145" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#crm-arrow-acc)" />
+  <line x1="114" y1="151" x2="176" y2="184" style="stroke: var(--accent-light);" stroke-width="1.5" marker-end="url(#crm-arrow-acc)" />
+
+  <!-- Hop 2 nodes (dimmer — secondary cascades) -->
+  <circle cx="272" cy="80" r="9" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="272" y="84" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">N</text>
+
+  <circle cx="272" cy="118" r="9" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="272" y="122" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">N</text>
+
+  <circle cx="272" cy="155" r="9" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="272" y="159" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">N</text>
+
+  <circle cx="272" cy="192" r="9" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="272" y="196" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">N</text>
+
+  <circle cx="272" cy="228" r="9" style="fill: var(--surface-1); stroke: var(--text-tertiary);" stroke-width="1.25" />
+  <text x="272" y="232" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">N</text>
+
+  <!-- R1 → hop2 -->
+  <line x1="199" y1="97" x2="261" y2="84" style="stroke: var(--text-tertiary);" stroke-width="1" marker-end="url(#crm-arrow-dim)" />
+  <line x1="199" y1="103" x2="263" y2="116" style="stroke: var(--text-tertiary);" stroke-width="1" marker-end="url(#crm-arrow-dim)" />
+
+  <!-- R2 → hop2 -->
+  <line x1="199" y1="142" x2="262" y2="120" style="stroke: var(--text-tertiary);" stroke-width="1" marker-end="url(#crm-arrow-dim)" />
+  <line x1="199" y1="148" x2="262" y2="152" style="stroke: var(--text-tertiary);" stroke-width="1" marker-end="url(#crm-arrow-dim)" />
+
+  <!-- R3 → hop2 -->
+  <line x1="199" y1="187" x2="262" y2="189" style="stroke: var(--text-tertiary);" stroke-width="1" marker-end="url(#crm-arrow-dim)" />
+  <line x1="199" y1="193" x2="262" y2="225" style="stroke: var(--text-tertiary);" stroke-width="1" marker-end="url(#crm-arrow-dim)" />
+
+  <!-- Hop limit label -->
+  <text x="310" y="275" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 10px;">hop limit</text>
+  <text x="310" y="290" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px; font-weight: 600;">3 – 7 max</text>
+
+  <!-- ═══════ DIVIDER ═══════ -->
+  <line x1="360" y1="20" x2="360" y2="290" style="stroke: var(--border-subtle);" stroke-width="1" stroke-dasharray="5 4" />
+
+  <!-- ═══════ RIGHT PANEL: Source Routing ═══════ -->
+  <!-- Background -->
+  <rect x="374" y="4" width="342" height="302" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Label -->
+  <text x="545" y="30" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase;">Source Routing</text>
+  <text x="545" y="48" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 11px;">flood once · route directly after</text>
+
+  <!-- Step labels -->
+  <text x="392" y="84" class="viz-label" style="fill: var(--text-tertiary); font-size: 10px;">① discovery flood</text>
+  <text x="392" y="170" class="viz-label" style="fill: var(--text-accent); font-size: 10px;">② path learned</text>
+  <text x="392" y="252" class="viz-label" style="fill: var(--accent-light); font-size: 10px;">③ all messages</text>
+  <text x="392" y="266" class="viz-label" style="fill: var(--accent-light); font-size: 10px;">   route directly</text>
+
+  <!-- ① Discovery flood (dashed) -->
+  <!-- Node A -->
+  <circle cx="420" cy="100" r="12" style="fill: var(--accent); stroke: none;" />
+  <text x="420" y="104" text-anchor="middle" style="fill: var(--surface-0); font-family: var(--mono); font-size: 10px; font-weight: 700;">A</text>
+
+  <!-- Repeaters along path -->
+  <rect x="468" y="91" width="22" height="18" rx="5" style="fill: var(--surface-1); stroke: var(--text-muted);" stroke-width="1.5" />
+  <text x="479" y="104" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">R1</text>
+
+  <rect x="528" y="91" width="22" height="18" rx="5" style="fill: var(--surface-1); stroke: var(--text-muted);" stroke-width="1.5" />
+  <text x="539" y="104" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">R2</text>
+
+  <!-- Destination B -->
+  <circle cx="598" cy="100" r="12" style="fill: var(--surface-1); stroke: var(--text-muted);" stroke-width="1.5" />
+  <text x="598" y="104" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">B</text>
+
+  <!-- Flood arrows (dashed) -->
+  <line x1="433" y1="100" x2="466" y2="100" style="stroke: var(--text-muted);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#crm-arrow-muted)" />
+  <line x1="490" y1="100" x2="526" y2="100" style="stroke: var(--text-muted);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#crm-arrow-muted)" />
+  <line x1="550" y1="100" x2="584" y2="100" style="stroke: var(--text-muted);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#crm-arrow-muted)" />
+
+  <!-- Return path acknowledgment arrow (curved, going back) -->
+  <path d="M586 107 C 570 128 500 130 434 107" fill="none" style="stroke: var(--text-accent);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#crm-arrow-dim)" />
+  <text x="510" y="140" text-anchor="middle" style="fill: var(--text-accent); font-family: var(--mono); font-size: 10px;">path: A→R1→R2→B</text>
+
+  <!-- ③ Direct route (solid, accent) -->
+  <!-- Node A -->
+  <circle cx="420" cy="200" r="12" style="fill: var(--accent); stroke: none;" />
+  <text x="420" y="204" text-anchor="middle" style="fill: var(--surface-0); font-family: var(--mono); font-size: 10px; font-weight: 700;">A</text>
+
+  <rect x="468" y="191" width="22" height="18" rx="5" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="1.5" />
+  <text x="479" y="204" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 9px;">R1</text>
+
+  <rect x="528" y="191" width="22" height="18" rx="5" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="1.5" />
+  <text x="539" y="204" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 9px;">R2</text>
+
+  <circle cx="598" cy="200" r="12" style="fill: var(--surface-1); stroke: var(--accent-light);" stroke-width="1.75" />
+  <text x="598" y="204" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">B</text>
+
+  <!-- Direct route arrows (solid) -->
+  <line x1="433" y1="200" x2="466" y2="200" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#crm-arrow-acc)" />
+  <line x1="490" y1="200" x2="526" y2="200" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#crm-arrow-acc)" />
+  <line x1="550" y1="200" x2="584" y2="200" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#crm-arrow-acc)" />
+
+  <!-- "only path repeaters forward" note -->
+  <text x="479" y="218" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 9px;">only R1, R2 forward</text>
+
+  <!-- Hop limit label -->
+  <text x="545" y="275" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 10px;">hop limit</text>
+  <text x="545" y="290" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px; font-weight: 600;">up to 64</text>
+</svg>
