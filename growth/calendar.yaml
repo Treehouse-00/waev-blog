@@ -318,7 +318,7 @@ posts:
     theme: knowing-over-guessing
     primary_keyword: "why mesh packets disappear"
     secondary_keyword: "silent packet loss LoRa mesh"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-08
