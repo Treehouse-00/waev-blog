@@ -1,0 +1,78 @@
+---
+title: "Plan Your Grid-Down Comms Now"
+description: "Grid-down communications planning requires verification, not just hardware. Check your mesh, find single points of failure, and rehearse before the incident."
+date: 2026-11-29
+tags: ["cert-emcomm", "community"]
+hero:
+  src: "/hero-plan-your-grid-down-comms-now.jpg"
+  alt: "A hand-painted close-up of a binder on a shelf — tabbed sections visible, a sticky note on the cover with a handwritten date, the spine worn from regular use."
+faq:
+  - q: "What is grid-down communications planning?"
+    a: "Grid-down communications planning is the process of identifying, deploying, testing, and documenting the communication systems that will function when normal infrastructure — phone networks, internet, power — is unavailable. For CERT teams and emergency communicators, it includes selecting the right technology, verifying it works, and rehearsing its use before an incident."
+  - q: "What makes a mesh network a good choice for grid-down communications?"
+    a: "A mesh network built on LoRa radio operates without internet or cellular infrastructure — nodes communicate with each other over radio frequencies. With solar or battery power, a MeshCore mesh can run indefinitely off-grid. The network routes around damaged or unavailable nodes, and message delivery doesn't require a central server."
+  - q: "How do I verify my mesh network is ready before an incident?"
+    a: "Use your monitoring tools during routine weeks, not just before activations. Check that all nodes appear in Live Packets, that link SNR values are healthy, and that no single node is carrying all the traffic. Identify any single points of failure in your topology and either add redundancy or document the workaround. Verify the broker and observer connection is healthy."
+  - q: "What is a single point of failure in a mesh network?"
+    a: "A single point of failure (SPOF) is any node whose loss would partition the network or cut off a group of nodes from the rest. In mesh topology terms, it is a node that all paths between two parts of the network must pass through. The Live Map shows you this: if removing one node from the diagram would disconnect a cluster, that node is a SPOF."
+  - q: "What should a grid-down communications plan include?"
+    a: "A practical plan should identify who operates each node and who can replace them, the credentials and location of the MQTT broker, how to verify the network is healthy before an activation, any known single points of failure and the workaround if they fail, and the communication path to the served agency during an incident."
+---
+
+import Figure from "../../components/Figure.astro";
+import GridgoneCriticalPath from "../../components/viz/gridgone-CriticalPath.astro";
+
+There is a version of grid-down communications planning that consists of buying a radio, reading the manual once, and putting it in a drawer. That version is common. It is also not a plan.
+
+A plan has been tested. The people who use it have practiced it. The failure modes have been identified and documented. The parts of the system most likely to break have been verified to have a backup or a workaround. The person responsible for maintaining it isn't the only person who knows the password.
+
+What most CERT teams and emergency communicators discover when they build out a MeshCore mesh is that the technical barrier is genuinely low — nodes go up, packets route, coverage extends. The harder work is what comes after: verifying that the network is reliable enough to stake an activation on, knowing where the gaps are, and building the documentation that lets someone else take over if the person who set it up isn't available.
+
+<div class="callout">
+<p><strong>In short.</strong> Grid-down communications planning means verifying your mesh works on a routine Tuesday, not discovering it doesn't on the day you need it. That means checking live link health, identifying single points of failure in your topology, and documenting the setup well enough that your plan survives the absence of the person who made it.</p>
+</div>
+
+## The verification problem
+
+The most common failure mode in emergency communications isn't hardware. It's assumption. "I set it up last year and it worked then" is not a readiness check. Networks change: nodes go offline, power supplies fail silently, antennas shift. The mesh that worked during the last tabletop might have a broken link today.
+
+Verification is the practice of checking the actual state of the network against the expected state, on a schedule that makes gaps visible before they matter. In practical terms, this means:
+
+- Checking that all enrolled nodes appear in Live Packets on a regular basis
+- Looking at link SNR values in Network Stats and noting any that have degraded
+- Confirming the observer is connected and the broker is reachable
+- Checking that the map topology hasn't changed in ways you didn't expect
+
+This is not intensive work. The data is there; it just needs to be read. An irregular node that appears on most days but goes silent every third Wednesday is telling you something specific — probably about power cycling or a solar panel that's partially shaded in the afternoon. You want to know that on a Tuesday, not during an activation.
+
+## Single points of failure are the planning problem
+
+Most mesh networks, honestly mapped, have at least one. A node in a particularly good location that all paths through the network must pass through. A repeater on a rooftop that connects two otherwise-isolated clusters. A backbone link that carries 80% of the traffic because it's the only clear path between two neighborhoods.
+
+<Figure caption="A single point of failure (SPOF) in a network topology. If relay-ridge fails, cluster nodes A, B, and C are unreachable — the only fallback is a marginal 4-hop path at +3 dB that may not hold under load. The SPOF is visible in the topology before the failure; the time to address it is when the network is healthy.">
+  <GridgoneCriticalPath />
+</Figure>
+
+A single point of failure isn't a reason to panic. It's information. You can address it by adding a redundant path, by deploying a second node that can bridge the gap, or by documenting the known degraded mode: "if relay-ridge goes down, clusters A and C can communicate through the direct path at reduced reliability." That documentation is part of the plan. The served agency needs to know what degrades and how.
+
+Waev's Live Map makes SPOFs visible: a node that all paths pass through will appear as the sole connection between clusters. [The topology diagram shows you exactly which links are evidence-backed](/blog/how-waev-reads-your-mesh/) — which paths exist because real packets traversed them, not because a node claimed they should exist. If you remove a node from the diagram in your head and the network falls apart, you've found your SPOF.
+
+## The documentation that survives turnover
+
+CERT teams rotate. Volunteers move. The person who deployed the mesh gets a new job and moves to another city. That is not a failure of the organization; it is the normal operating condition of volunteer community groups. The plan that depends on one person's institutional memory is already failing.
+
+What makes a plan durable:
+- The MQTT broker credentials are documented somewhere at least two members can access
+- The observer setup is documented well enough that someone who didn't do the original install can restore it
+- The served agency knows which contact to reach for mesh issues — not just a name, but a role that will be filled when the named person is unavailable
+- The network health check is a defined procedure, not "ask the person who set it up"
+
+[When the grid actually goes down](/blog/when-the-grid-goes-down/), there isn't time to onboard a replacement. The time to make the plan robust is now, when the network is healthy and the calendar isn't constrained by an incident timeline.
+
+## The mesh as a readiness signal
+
+A mesh network that is monitored continuously tells you something useful even when nothing is wrong: it tells you the network is healthy. That is not a trivial statement for a served agency. A team that can show a month of consistent Live Packets data, healthy SNR on all backbone links, and a topology map that matches expectations is a team that can say "our comms net is ready" with evidence instead of hope.
+
+The plan is not the hardware. The plan is the process — the regular verification, the known failure modes, the documented workarounds, the shared credentials, the rehearsed procedures. The hardware is what makes the plan possible; the process is what makes it reliable.
+
+{/* ILLUSTRATION PROMPT: A hand-painted close-up of a three-ring binder or folder resting on a shelf or table — multiple tabbed sections visible at the edges, a sticky note on the front cover with a handwritten date in pen, the spine worn from regular use suggesting it has been opened and updated many times. No screens, no figures, no hardware. The mood is practical and well-maintained, like a document that's actually used rather than filed away. House style: warm flat illustration, painterly texture, warm indirect light. */}
