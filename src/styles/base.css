@@ -13,15 +13,22 @@
      unavailable. This is the blog's signature type move — technical,
      precise, unmistakably Waev. */
   --font-display: "Google Sans Code", ui-monospace, "DM Mono", monospace;
+}
 
-  /* ── Blog brand accent ──
-     The blog's hero color is purpleblue-300 (#4564a3). Re-point the semantic
-     accent tokens (which the app vendors as the bluepurple family) onto the
-     purpleblue primitives so the logo, headline, badges, tags, kickers, and
-     links all key off one brand color. Only the --sys-purpleblue-* primitives
-     are referenced, so this survives a tokens.css re-sync. */
+/* ── Blog brand accent ──
+   The blog's hero color is purpleblue-300 (#4564a3). Re-point the semantic
+   accent tokens onto the purpleblue primitives so the ENTIRE blog accent —
+   logo, headline, badges, tags, kickers, links, focus, glow — is one brand
+   color. Listed against every theme root so it overrides the vendored
+   per-theme accent definitions (matching specificity + later source order).
+   Only the --sys-purpleblue-* primitives are referenced, so this survives a
+   tokens.css re-sync. */
+:root,
+:root[data-theme="dim"],
+:root[data-theme="dark"],
+:root[data-theme="light"] {
   --accent: var(--sys-purpleblue-300);
-  --accent-light: var(--sys-purpleblue-200);
+  --accent-light: var(--sys-purpleblue-300);
   --accent-dark: var(--sys-purpleblue-500);
   --accent-subtle: var(--sys-purpleblue-500-12);
   --border-accent: var(--sys-purpleblue-500-12);
@@ -112,7 +119,7 @@ pre {
 }
 
 ::selection {
-  background: var(--sys-bluepurple-500-20);
+  background: color-mix(in srgb, var(--sys-purpleblue-500) 20%, transparent);
   color: var(--text);
 }
 

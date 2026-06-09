@@ -63,7 +63,7 @@
 }
 
 /* Mono badge pill — same chrome as the app's BETA pill, re-anchored onto
-   the accent (bluepurple) family so it reads as a section marker. */
+   the accent (purpleblue) family so it reads as a section marker. */
 .nav-badge {
   display: inline-flex;
   align-items: center;
