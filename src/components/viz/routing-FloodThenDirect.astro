@@ -1,0 +1,66 @@
+---
+/**
+ * routing-FloodThenDirect — three-phase routing diagram for MeshCore.
+ * Phase 1: Flood discovery. Phase 2: Path return. Phase 3: Cached direct.
+ * No client JS. Theme-aware via CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 290" role="img" aria-label="Three-phase MeshCore routing diagram. Phase 1: flood fans out through relays A, B, C. Phase 2: destination returns learned path via relay B. Phase 3: direct messages use relay B only, A and C stay silent." style="width:100%;height:auto;">
+  <text x="8" y="60" class="viz-label" style="fill:var(--text-accent);letter-spacing:0.06em;">PHASE 1</text>
+  <text x="8" y="74" class="viz-label" style="fill:var(--text-muted);">FLOOD</text>
+  <text x="8" y="148" class="viz-label" style="fill:var(--text-accent);letter-spacing:0.06em;">PHASE 2</text>
+  <text x="8" y="162" class="viz-label" style="fill:var(--text-muted);">PATH</text>
+  <text x="8" y="174" class="viz-label" style="fill:var(--text-muted);">RETURN</text>
+  <text x="8" y="240" class="viz-label" style="fill:var(--text-accent);letter-spacing:0.06em;">PHASE 3</text>
+  <text x="8" y="254" class="viz-label" style="fill:var(--text-muted);">DIRECT</text>
+  <line x1="68" y1="105" x2="712" y2="105" style="stroke:var(--border-subtle);" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="68" y1="195" x2="712" y2="195" style="stroke:var(--border-subtle);" stroke-width="1" stroke-dasharray="4 3"/>
+  <defs>
+    <marker id="rfd-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--text-muted);"/></marker>
+    <marker id="rfd-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--accent-light);"/></marker>
+    <marker id="rfd-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--sys-orangeyellow-600);"/></marker>
+  </defs>
+  <!-- P1 nodes -->
+  <circle cx="90" cy="64" r="14" style="fill:var(--surface-1);stroke:var(--accent-light);" stroke-width="1.75"/>
+  <text x="90" y="68" text-anchor="middle" class="viz-label" style="fill:var(--accent-light);font-size:8px;">SRC</text>
+  <rect x="237" y="50" width="26" height="26" rx="5" style="fill:var(--surface-1);stroke:var(--text-muted);" stroke-width="1.5"/>
+  <text x="250" y="67" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-size:8px;">A</text>
+  <rect x="377" y="50" width="26" height="26" rx="5" style="fill:var(--surface-1);stroke:var(--text-muted);" stroke-width="1.5"/>
+  <text x="390" y="67" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-size:8px;">B</text>
+  <rect x="517" y="50" width="26" height="26" rx="5" style="fill:var(--surface-1);stroke:var(--text-muted);" stroke-width="1.5"/>
+  <text x="530" y="67" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-size:8px;">C</text>
+  <circle cx="660" cy="64" r="14" style="fill:var(--surface-1);stroke:var(--text-tertiary);" stroke-width="1.75"/>
+  <text x="660" y="68" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-size:8px;">DST</text>
+  <line x1="105" y1="64" x2="236" y2="64" style="stroke:var(--text-muted);" stroke-width="1.5" marker-end="url(#rfd-a)"/>
+  <path d="M105,59 Q248,32 376,59" fill="none" style="stroke:var(--text-muted);" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#rfd-a)"/>
+  <line x1="263" y1="64" x2="376" y2="64" style="stroke:var(--text-muted);" stroke-width="1.5" marker-end="url(#rfd-a)"/>
+  <line x1="263" y1="68" x2="516" y2="70" style="stroke:var(--text-muted);" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#rfd-a)"/>
+  <line x1="403" y1="64" x2="645" y2="64" style="stroke:var(--text-muted);" stroke-width="1.5" marker-end="url(#rfd-a)"/>
+  <line x1="543" y1="64" x2="645" y2="68" style="stroke:var(--text-muted);" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#rfd-a)"/>
+  <text x="660" y="86" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-style:italic;">path recorded</text>
+  <!-- P2 nodes -->
+  <circle cx="90" cy="152" r="14" style="fill:var(--surface-1);stroke:var(--accent-light);" stroke-width="1.75"/>
+  <text x="90" y="156" text-anchor="middle" class="viz-label" style="fill:var(--accent-light);font-size:8px;">SRC</text>
+  <rect x="377" y="138" width="26" height="26" rx="5" style="fill:var(--surface-1);stroke:var(--sys-orangeyellow-600);" stroke-width="1.5"/>
+  <text x="390" y="155" text-anchor="middle" class="viz-label" style="fill:var(--sys-orangeyellow-600);font-size:8px;">B</text>
+  <circle cx="660" cy="152" r="14" style="fill:var(--surface-1);stroke:var(--text-tertiary);" stroke-width="1.75"/>
+  <text x="660" y="156" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-size:8px;">DST</text>
+  <text x="375" y="130" text-anchor="middle" class="viz-label" style="fill:var(--sys-orangeyellow-600);">learned path: SRC &#x2192; B &#x2192; DST</text>
+  <line x1="645" y1="152" x2="404" y2="152" style="stroke:var(--sys-orangeyellow-600);" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#rfd-c)"/>
+  <line x1="377" y1="152" x2="105" y2="152" style="stroke:var(--sys-orangeyellow-600);" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#rfd-c)"/>
+  <!-- P3 nodes -->
+  <circle cx="90" cy="242" r="14" style="fill:var(--surface-1);stroke:var(--accent-light);" stroke-width="1.75"/>
+  <text x="90" y="246" text-anchor="middle" class="viz-label" style="fill:var(--accent-light);font-size:8px;">SRC</text>
+  <rect x="237" y="228" width="26" height="26" rx="5" style="fill:var(--surface-0);stroke:var(--border-subtle);" stroke-width="1" opacity="0.35"/>
+  <text x="250" y="245" text-anchor="middle" class="viz-label" style="fill:var(--text-tertiary);font-size:8px;opacity:0.35;">A</text>
+  <rect x="377" y="228" width="26" height="26" rx="5" style="fill:var(--accent-subtle);stroke:var(--accent-light);" stroke-width="1.75"/>
+  <text x="390" y="245" text-anchor="middle" class="viz-label" style="fill:var(--accent-light);font-size:8px;">B</text>
+  <rect x="517" y="228" width="26" height="26" rx="5" style="fill:var(--surface-0);stroke:var(--border-subtle);" stroke-width="1" opacity="0.35"/>
+  <text x="530" y="245" text-anchor="middle" class="viz-label" style="fill:var(--text-tertiary);font-size:8px;opacity:0.35;">C</text>
+  <circle cx="660" cy="242" r="14" style="fill:var(--surface-1);stroke:var(--text-tertiary);" stroke-width="1.75"/>
+  <text x="660" y="246" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-size:8px;">DST</text>
+  <line x1="105" y1="242" x2="376" y2="242" style="stroke:var(--accent-light);" stroke-width="2" marker-end="url(#rfd-b)"/>
+  <line x1="403" y1="242" x2="645" y2="242" style="stroke:var(--accent-light);" stroke-width="2" marker-end="url(#rfd-b)"/>
+  <text x="375" y="276" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);font-style:italic;">only the path nodes handle the packet &#x2014; relays A and C stay silent</text>
+</svg>
