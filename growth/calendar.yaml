@@ -527,7 +527,7 @@ posts:
     series: mesh-pollution
     primary_keyword: "duplicate packet floods in a LoRa mesh"
     secondary_keyword: "duplicate flooding wastes airtime"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-19
