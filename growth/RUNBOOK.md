@@ -116,6 +116,16 @@ oz schedule create \
   --prompt "Read growth/briefs/content-writer.md and execute it." \
   --environment <ENV_ID>
 
+# Editorial review — Sun/Tue/Thu 18:00 UTC, ~4h after drafting (CADENCE §3.10).
+# The internal review cycle: independently fact-checks + revises each draft post
+# PR and flips it draft→ready, so the human gate is a cursory gut-check + the
+# hero-image pass only. Runs after content-writer on the same days.
+oz schedule create \
+  --name "waev-editor" \
+  --cron "0 18 * * 0,2,4" \
+  --prompt "Read growth/briefs/editor.md and execute it." \
+  --environment <ENV_ID>
+
 # Weekly SEO link & crawl sweep — Tuesdays 14:00 UTC (CADENCE §3.3).
 oz schedule create \
   --name "waev-seo-auditor" \
