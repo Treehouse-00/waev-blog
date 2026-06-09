@@ -78,15 +78,15 @@
   line-height: 1;
   white-space: nowrap;
   text-transform: uppercase;
-  background: var(--sys-bluepurple-500-12);
-  color: var(--sys-bluepurple-300);
+  background: var(--sys-purpleblue-500-12);
+  color: var(--sys-purpleblue-300);
   user-select: none;
   text-decoration: none;
 }
 
 .nav-badge:hover {
   text-decoration: none;
-  color: var(--sys-bluepurple-300);
+  color: var(--sys-purpleblue-300);
 }
 
 /* Trailing text link (→ waev.app) — mono, muted, understated. */
