@@ -1,6 +1,6 @@
 ---
 title: "Every Node Heard It Twice"
-description: "Duplicate packet floods in a LoRa mesh waste airtime and hide real problems. Here is what causes them, how MeshCore suppresses them, and how to spot the difference in Live Packets."
+description: "Duplicate packet floods in a LoRa mesh waste airtime and hide real problems. What causes them, how MeshCore suppresses them, and how to read Live Packets."
 date: 2026-11-17
 tags: ["signal", "deep-dive"]
 hero:
@@ -32,7 +32,7 @@ Knowing the difference is what this post is about.
 
 Flooding is not an accident. It is the answer to a genuine problem: in a mesh network with no pre-configured routing table, how does a packet find its destination?
 
-MeshCore's answer: the first message to a new destination floods through every repeater until it arrives. Each repeater appends its identifier to the path field. The destination reverses the path and sends it back. From that point, all direct messages between those two contacts travel along the cached route — and only the repeaters on that route handle the packet. This is the flood-once-then-direct model described in [Flood First, Then Direct](/blog/flood-first-then-direct/).
+MeshCore's answer: the first message to a new destination floods through every repeater until it arrives. Each repeater appends its identifier to the path field. The destination reverses the path and sends it back. From that point, all direct messages between those two contacts travel along the cached route — and only the repeaters on that route handle the packet. This is the flood-once-then-direct model.
 
 Group channel messages are different: they always flood, every time. There is no single destination to cache a path toward, so every repeater in range forwards every channel message. This is by design, not a flaw.
 
@@ -72,6 +72,6 @@ SNR trends matter here too. If the overall SNR in Live Packets starts degrading 
 
 A repeater placed where it can hear everything — a high hilltop with wide coverage, no `txdelay` tuning — amplifies flood traffic. It retransmits every flood packet it hears to everyone in range, creating a large flood zone. This is not inherently wrong; it is what backbone repeaters are supposed to do. But a backbone repeater that is also at low altitude in a dense neighborhood can produce redundant retransmissions to nodes that would have been better served by a closer relay.
 
-The principle: flood behavior follows topology. Understanding that channel messages always flood is the reason repeater placement and `txdelay` configuration matter — not as theoretical optimizations, but as practical controls on how much of the channel your infrastructure consumes.
+The principle: flood behavior follows topology. Understanding that channel messages always flood is the reason [repeater placement](/blog/where-to-put-your-next-repeater/) and `txdelay` configuration matter — not as theoretical optimizations, but as practical controls on how much of the channel your infrastructure consumes.
 
 {/* ILLUSTRATION PROMPT: A warm flat hand-painted close-up of a wooden desk surface with two identical small folded paper notes lying side by side, one slightly overlapping the other, casting a soft shadow. The duplication is the subject — two of the same thing, unexpected. Warm amber light from above, a quiet surface. No text visible on the notes. Palette: warm ochre desk, off-white paper, soft shadow. */}
