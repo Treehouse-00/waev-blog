@@ -573,7 +573,7 @@ posts:
     series: under-the-hood
     primary_keyword: "what is a mesh network observer"
     secondary_keyword: "enrolled observer vs repeater data"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-29
