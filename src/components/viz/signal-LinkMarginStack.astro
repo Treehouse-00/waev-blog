@@ -1,0 +1,80 @@
+---
+/**
+ * signal-LinkMarginStack — waterfall-style link budget diagram.
+ * Shows the components that build up a LoRa link margin: transmit power,
+ * antenna gains, minus path loss, with the resulting SNR margin above
+ * the demodulation floor. Theme-aware via CSS custom properties. No client JS.
+ */
+---
+
+<svg viewBox="0 0 720 310" role="img" aria-label="Link margin waterfall diagram. Starting from transmit power (20 dBm), adding transmit antenna gain (2 dBi), subtracting cable losses (minus 1 dB), subtracting path loss (minus 120 dB), adding receive antenna gain (3 dBi) yields a received power of minus 96 dBm. The receiver sensitivity at SF9 is minus 129 dBm. The total link budget is 33 dB. Subtracting a fade margin of 15 dB leaves a usable link margin of 18 dB." style="width:100%;height:auto;">
+
+  <!-- ── Kicker ── -->
+  <text x="20" y="28" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">LINK MARGIN — EXAMPLE CALCULATION (US 915 MHz, SF9)</text>
+
+  <!-- ── Waterfall bars ── -->
+  <!-- Tx Power bar -->
+  <rect x="20" y="48" width="140" height="26" rx="5" style="fill: var(--accent-light);" opacity="0.5" />
+  <text x="170" y="64" class="viz-label" style="fill: var(--text-primary);">Tx Power</text>
+  <text x="420" y="64" style="font-family: var(--mono); font-size:12px; fill: var(--accent-light);">+20 dBm</text>
+  <text x="520" y="64" class="viz-label" style="fill: var(--text-muted);">at SMA connector (typical LoRa node)</text>
+
+  <!-- Tx Antenna Gain -->
+  <rect x="20" y="80" width="70" height="26" rx="5" style="fill: var(--accent-light);" opacity="0.3" />
+  <text x="170" y="96" class="viz-label" style="fill: var(--text-primary);">Tx Antenna Gain</text>
+  <text x="420" y="96" style="font-family: var(--mono); font-size:12px; fill: var(--accent-light);">+2 dBi</text>
+  <text x="520" y="96" class="viz-label" style="fill: var(--text-muted);">typical stub/whip antenna</text>
+
+  <!-- Cable/Connector Loss -->
+  <rect x="20" y="112" width="18" height="26" rx="5" style="fill: var(--sys-red-400);" opacity="0.5" />
+  <text x="170" y="128" class="viz-label" style="fill: var(--text-primary);">Cable &amp; Connector Loss</text>
+  <text x="420" y="128" style="font-family: var(--mono); font-size:12px; fill: var(--sys-red-400);">−1 dB</text>
+  <text x="520" y="128" class="viz-label" style="fill: var(--text-muted);">short pigtail + 1 connector</text>
+
+  <!-- Path Loss -->
+  <rect x="20" y="144" width="300" height="26" rx="5" style="fill: var(--sys-red-400);" opacity="0.5" />
+  <text x="170" y="160" class="viz-label" style="fill: var(--text-primary);">Path Loss</text>
+  <text x="420" y="160" style="font-family: var(--mono); font-size:12px; fill: var(--sys-red-400);">−120 dB</text>
+  <text x="520" y="160" class="viz-label" style="fill: var(--text-muted);">free-space + terrain (≈ 3 km)</text>
+
+  <!-- Rx Antenna Gain -->
+  <rect x="20" y="176" width="84" height="26" rx="5" style="fill: var(--accent-light);" opacity="0.3" />
+  <text x="170" y="192" class="viz-label" style="fill: var(--text-primary);">Rx Antenna Gain</text>
+  <text x="420" y="192" style="font-family: var(--mono); font-size:12px; fill: var(--accent-light);">+3 dBi</text>
+  <text x="520" y="192" class="viz-label" style="fill: var(--text-muted);">repeater or observer antenna</text>
+
+  <!-- Divider -->
+  <line x1="20" y1="212" x2="700" y2="212" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Received Power -->
+  <text x="170" y="230" class="viz-label" style="fill: var(--text-muted);">= Received Power</text>
+  <text x="420" y="230" style="font-family: var(--mono); font-size:12px; fill: var(--text-primary);">−96 dBm</text>
+
+  <!-- Rx Sensitivity -->
+  <text x="170" y="248" class="viz-label" style="fill: var(--text-muted);">− Sensitivity (SF9)</text>
+  <text x="420" y="248" style="font-family: var(--mono); font-size:12px; fill: var(--text-primary);">−129 dBm</text>
+  <text x="520" y="248" class="viz-label" style="fill: var(--text-muted);">Semtech spec: min −12.5 dB SNR</text>
+
+  <!-- Double divider -->
+  <line x1="20" y1="261" x2="700" y2="261" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <line x1="20" y1="264" x2="700" y2="264" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Link Margin result -->
+  <text x="170" y="283" class="viz-label" style="fill: var(--text-accent); font-weight:600;">= Link Budget</text>
+  <text x="420" y="283" style="font-family: var(--mono); font-size:14px; font-weight:700; fill: var(--accent-light);">33 dB</text>
+
+  <!-- Margin vs fade -->
+  <text x="170" y="300" class="viz-label" style="fill: var(--text-muted);">  15 dB fade margin → usable margin</text>
+  <text x="490" y="300" style="font-family: var(--mono); font-size:13px; font-weight:600; fill: var(--sys-orangeyellow-600);">18 dB</text>
+
+  <!-- Left column header labels -->
+  <text x="20" y="42" class="viz-label" style="fill: var(--text-muted); font-size:8px; letter-spacing:0.04em;">GAIN/LOSS (PROPORTIONAL WIDTH)</text>
+  <text x="170" y="42" class="viz-label" style="fill: var(--text-muted); font-size:8px; letter-spacing:0.04em;">COMPONENT</text>
+  <text x="420" y="42" class="viz-label" style="fill: var(--text-muted); font-size:8px; letter-spacing:0.04em;">VALUE</text>
+  <text x="520" y="42" class="viz-label" style="fill: var(--text-muted); font-size:8px; letter-spacing:0.04em;">NOTE</text>
+
+  <!-- Column dividers -->
+  <line x1="165" y1="34" x2="165" y2="290" style="stroke: var(--border-subtle);" stroke-width="1" stroke-dasharray="2 2" />
+  <line x1="415" y1="34" x2="415" y2="290" style="stroke: var(--border-subtle);" stroke-width="1" stroke-dasharray="2 2" />
+  <line x1="515" y1="34" x2="515" y2="290" style="stroke: var(--border-subtle);" stroke-width="1" stroke-dasharray="2 2" />
+</svg>
