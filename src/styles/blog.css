@@ -847,3 +847,140 @@ a.tag:hover {
   font-weight: 500;
   letter-spacing: -0.02em;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Author chips — "Edited by ⬤ Name  ⬤ Name" byline in post header
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.post-byline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.post-byline-label {
+  color: var(--text-tertiary);
+  font-family: var(--mono);
+  font-size: var(--fs-label-md);
+  letter-spacing: var(--ls-label-md);
+}
+
+.author-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  text-decoration: none;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: var(--fs-label-md);
+  letter-spacing: var(--ls-label-md);
+  transition: color var(--dur-short-2) var(--ease-standard);
+}
+
+.author-chip:hover {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+.author-chip-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--shape-full);
+  object-fit: cover;
+  border: 1.5px solid var(--border-subtle);
+  flex-shrink: 0;
+  transition: border-color var(--dur-short-2) var(--ease-standard);
+}
+
+.author-chip:hover .author-chip-avatar {
+  border-color: var(--border-accent);
+}
+
+.author-chip-name {
+  /* name hidden on very narrow viewports, avatar alone is enough */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   About pages — author profile layout
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.about-page {
+  padding-block: var(--sp-10) var(--sp-15);
+  max-width: 62ch;
+}
+
+.about-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+  margin-block: var(--sp-8) var(--sp-10);
+}
+
+.about-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--shape-full);
+  object-fit: cover;
+  border: 2px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.about-identity {
+  display: grid;
+  gap: var(--sp-1);
+}
+
+.about-name {
+  font-size: clamp(var(--fs-headline-sm), 3vw, var(--fs-headline-lg));
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.about-role {
+  font-family: var(--mono);
+  font-size: var(--fs-label-md);
+  letter-spacing: var(--ls-label-md);
+  color: var(--text-accent);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.about-body {
+  margin-bottom: var(--sp-10);
+}
+
+.about-disclaimer {
+  font-size: var(--fs-body-sm) !important;
+  color: var(--text-tertiary) !important;
+  margin-top: var(--sp-8) !important;
+}
+
+.about-footer {
+  padding-top: var(--sp-8);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.about-chip-link {
+  font-family: var(--mono);
+  font-size: var(--fs-label-lg);
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+.about-chip-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 599px) {
+  .about-profile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-4);
+  }
+  .about-avatar {
+    width: 80px;
+    height: 80px;
+  }
+}

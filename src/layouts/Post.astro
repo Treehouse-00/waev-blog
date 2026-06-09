@@ -1,5 +1,7 @@
 ---
 import Base from "./Base.astro";
+import AuthorChip from "../components/AuthorChip.astro";
+import { BYLINE_AUTHORS } from "../data/authors";
 
 interface Props {
   title: string;
@@ -92,7 +94,10 @@ const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
             </>
           )}
           <span class="footer-sep">·</span>
-          <span>{author}</span>
+          <span class="post-byline">
+            <span class="post-byline-label">Edited by</span>
+            {BYLINE_AUTHORS.map((a) => <AuthorChip author={a} />)}
+          </span>
         </div>
         <h1 class="post-title">{title}</h1>
         <p class="post-lead">{description}</p>

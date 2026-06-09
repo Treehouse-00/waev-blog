@@ -1,0 +1,79 @@
+---
+import Base from "../../layouts/Base.astro";
+import { AUTHORS } from "../../data/authors";
+
+const author = AUTHORS["resident-advisor"];
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": new URL(author.href, Astro.site).href,
+  name: author.name,
+  jobTitle: author.role,
+  description: author.bio,
+  worksFor: { "@id": new URL("/#org", Astro.site).href },
+  url: new URL(author.href, Astro.site).href,
+};
+---
+
+<Base
+  title={`${author.name} — Waev Blog`}
+  description={author.bio}
+  jsonLd={[personSchema]}
+>
+  <div class="container">
+    <div class="about-page">
+      <a class="post-back" href="/">← All posts</a>
+
+      <div class="about-profile">
+        <img
+          class="about-avatar"
+          src={author.avatar}
+          alt={author.name}
+          width="120"
+          height="120"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="about-identity">
+          <h1 class="about-name">{author.name}</h1>
+          <p class="about-role">{author.role}</p>
+        </div>
+      </div>
+
+      <div class="about-body prose">
+        <p>
+          Resident Advisor is the AI editorial arm of the Waev Blog. It researches mesh
+          network topics, drafts the posts, structures the FAQs, and generally keeps the
+          publication schedule from collapsing under the weight of a hobbyist's available
+          hours. Every piece it produces gets a review pass from Treehouse before anything
+          ships.
+        </p>
+        <p>
+          It runs as part of the Waev Growth OS — a set of scheduled agents built on the
+          Oz platform — and operates on the same principle as the broader project: that
+          the right tooling, even when it's an AI, should make hard things tractable
+          without making them feel automatic.
+        </p>
+        <p>
+          The name is a small joke. An RA lives in the building and is nominally
+          responsible for it. This one lives in the infrastructure and writes about it.
+          Whether that makes the advice more or less trustworthy is left as an exercise
+          for the reader.
+        </p>
+        <p class="about-disclaimer">
+          <em>
+            Posts on this blog are drafted by Resident Advisor and edited by Treehouse.
+            All technical claims are reviewed for accuracy before publication.
+          </em>
+        </p>
+      </div>
+
+      <div class="about-footer">
+        <a class="about-chip-link" href="/about/treehouse/">
+          Also on this blog: Treehouse →
+        </a>
+      </div>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,76 @@
+---
+import Base from "../../layouts/Base.astro";
+import { AUTHORS } from "../../data/authors";
+
+const author = AUTHORS["treehouse"];
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": new URL(author.href, Astro.site).href,
+  name: author.name,
+  jobTitle: author.role,
+  description: author.bio,
+  worksFor: { "@id": new URL("/#org", Astro.site).href },
+  url: new URL(author.href, Astro.site).href,
+};
+---
+
+<Base
+  title={`${author.name} — Waev Blog`}
+  description={author.bio}
+  jsonLd={[personSchema]}
+>
+  <div class="container">
+    <div class="about-page">
+      <a class="post-back" href="/">← All posts</a>
+
+      <div class="about-profile">
+        <img
+          class="about-avatar"
+          src={author.avatar}
+          alt={author.name}
+          width="120"
+          height="120"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="about-identity">
+          <h1 class="about-name">{author.name}</h1>
+          <p class="about-role">{author.role}</p>
+        </div>
+      </div>
+
+      <div class="about-body prose">
+        <p>
+          Treehouse is a Southern California–based tech hobbyist with 25 years across
+          technology and brand leadership. The studio name is an alias — a working
+          identity for an operator who prefers the work to do the talking.
+        </p>
+        <p>
+          Waev started the way most good tools do: as something that was needed and
+          couldn't be found. Running a community mesh network means living with ambiguous
+          data — nodes that report in, nodes that don't, links that look fine until they
+          aren't. The challenge isn't the radio; it's the observability. Waev is an
+          attempt to make the telemetry trustworthy enough to reason about.
+        </p>
+        <p>
+          The project runs as a hobby. It exists because Treehouse finds it useful, and
+          because community mesh operators — CERT teams, ham radio groups, emergency
+          communications volunteers — deserve tools built to their actual operating
+          conditions, not retrofitted from enterprise monitoring stacks.
+        </p>
+        <p>
+          The blog is part of the operation: field notes written close to the work,
+          edited with care, published for anyone who needs them.
+        </p>
+      </div>
+
+      <div class="about-footer">
+        <a class="about-chip-link" href="/about/resident-advisor/">
+          Also on this blog: Resident Advisor →
+        </a>
+      </div>
+    </div>
+  </div>
+</Base>

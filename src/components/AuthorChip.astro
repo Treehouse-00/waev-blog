@@ -1,0 +1,21 @@
+---
+import type { Author } from "../data/authors";
+
+interface Props {
+  author: Author;
+}
+const { author } = Astro.props;
+---
+
+<a class="author-chip" href={author.href} title={`${author.name} — ${author.role}`}>
+  <img
+    class="author-chip-avatar"
+    src={author.avatar}
+    alt={author.name}
+    width="28"
+    height="28"
+    loading="lazy"
+    decoding="async"
+  />
+  <span class="author-chip-name">{author.name}</span>
+</a>
