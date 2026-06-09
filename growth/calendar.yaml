@@ -205,7 +205,7 @@ posts:
     status: drafted
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-09-15
+  - slot_date: 2026-06-09
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -450,7 +450,7 @@ posts:
     status: drafted
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-11-03
+  - slot_date: 2026-06-11
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -587,7 +587,7 @@ posts:
     status: drafted
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-01
+  - slot_date: 2026-06-14
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -599,7 +599,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-03
+  - slot_date: 2026-06-16
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -611,7 +611,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-06
+  - slot_date: 2026-06-18
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -623,7 +623,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-08
+  - slot_date: 2026-06-21
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -634,7 +634,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-10
+  - slot_date: 2026-06-23
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -645,7 +645,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-13
+  - slot_date: 2026-06-25
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -657,7 +657,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-15
+  - slot_date: 2026-06-28
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -669,7 +669,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-17
+  - slot_date: 2026-06-30
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -681,7 +681,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-20
+  - slot_date: 2026-07-02
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -692,7 +692,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-22
+  - slot_date: 2026-07-05
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -703,7 +703,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-24
+  - slot_date: 2026-07-07
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -714,7 +714,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-27
+  - slot_date: 2026-07-09
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -725,7 +725,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-29
+  - slot_date: 2026-07-12
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -737,7 +737,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-12-31
+  - slot_date: 2026-07-14
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -748,7 +748,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-03
+  - slot_date: 2026-07-16
     type: post
     segment: ham
     funnel_stage: awareness
@@ -760,7 +760,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-05
+  - slot_date: 2026-07-19
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -772,7 +772,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-07
+  - slot_date: 2026-07-21
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -783,7 +783,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-10
+  - slot_date: 2026-07-23
     type: post
     segment: off-grid
     funnel_stage: adoption
@@ -795,7 +795,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-12
+  - slot_date: 2026-07-26
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -807,7 +807,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-14
+  - slot_date: 2026-07-28
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -818,7 +818,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-17
+  - slot_date: 2026-07-30
     type: post
     segment: off-grid
     funnel_stage: awareness
@@ -830,7 +830,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-19
+  - slot_date: 2026-08-02
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -842,7 +842,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-21
+  - slot_date: 2026-08-04
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -854,7 +854,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-24
+  - slot_date: 2026-08-06
     type: post
     segment: off-grid
     funnel_stage: awareness
@@ -865,7 +865,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-26
+  - slot_date: 2026-08-09
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -877,7 +877,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-28
+  - slot_date: 2026-08-11
     type: post
     segment: ham
     funnel_stage: adoption
@@ -888,7 +888,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-01-31
+  - slot_date: 2026-08-13
     type: post
     segment: off-grid
     funnel_stage: awareness
@@ -899,7 +899,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-02
+  - slot_date: 2026-08-16
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -911,7 +911,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-04
+  - slot_date: 2026-08-18
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -923,7 +923,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-07
+  - slot_date: 2026-08-20
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -935,7 +935,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-09
+  - slot_date: 2026-08-23
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -946,7 +946,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-11
+  - slot_date: 2026-08-25
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -957,7 +957,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-14
+  - slot_date: 2026-08-27
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -969,7 +969,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-16
+  - slot_date: 2026-08-30
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -981,7 +981,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-18
+  - slot_date: 2026-09-01
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -992,7 +992,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-21
+  - slot_date: 2026-09-03
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1004,7 +1004,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-23
+  - slot_date: 2026-09-06
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1016,7 +1016,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-25
+  - slot_date: 2026-09-08
     type: post
     segment: off-grid
     funnel_stage: awareness
@@ -1028,7 +1028,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-02-28
+  - slot_date: 2026-09-10
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1039,7 +1039,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-02
+  - slot_date: 2026-09-13
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1051,7 +1051,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-04
+  - slot_date: 2026-09-15
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1062,7 +1062,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-07
+  - slot_date: 2026-09-17
     type: post
     segment: off-grid
     funnel_stage: awareness
@@ -1074,7 +1074,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-09
+  - slot_date: 2026-09-20
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1086,7 +1086,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-11
+  - slot_date: 2026-09-22
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -1098,7 +1098,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-14
+  - slot_date: 2026-09-24
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1110,7 +1110,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-16
+  - slot_date: 2026-09-27
     type: post
     segment: off-grid
     funnel_stage: adoption
@@ -1122,7 +1122,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-18
+  - slot_date: 2026-09-29
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1133,7 +1133,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-21
+  - slot_date: 2026-10-01
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1144,7 +1144,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-23
+  - slot_date: 2026-10-04
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1155,7 +1155,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-25
+  - slot_date: 2026-10-06
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1166,7 +1166,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-28
+  - slot_date: 2026-10-08
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1178,7 +1178,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-03-30
+  - slot_date: 2026-10-11
     type: post
     segment: ham
     funnel_stage: awareness
@@ -1190,7 +1190,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-01
+  - slot_date: 2026-10-13
     type: post
     segment: off-grid
     funnel_stage: awareness
@@ -1202,7 +1202,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-04
+  - slot_date: 2026-10-15
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1214,7 +1214,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-06
+  - slot_date: 2026-10-18
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1226,7 +1226,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-08
+  - slot_date: 2026-10-20
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1237,7 +1237,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-11
+  - slot_date: 2026-10-22
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1248,7 +1248,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-13
+  - slot_date: 2026-10-25
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1260,7 +1260,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-15
+  - slot_date: 2026-10-27
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1271,7 +1271,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-18
+  - slot_date: 2026-10-29
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1283,7 +1283,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-20
+  - slot_date: 2026-11-01
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -1294,7 +1294,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-22
+  - slot_date: 2026-11-03
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1306,7 +1306,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-25
+  - slot_date: 2026-11-05
     type: post
     segment: cert-emcomm
     funnel_stage: awareness
@@ -1317,7 +1317,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-27
+  - slot_date: 2026-11-08
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -1329,7 +1329,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-04-29
+  - slot_date: 2026-11-10
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1340,7 +1340,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-02
+  - slot_date: 2026-11-12
     type: post
     segment: ham
     funnel_stage: awareness
@@ -1352,7 +1352,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-04
+  - slot_date: 2026-11-15
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1363,7 +1363,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-06
+  - slot_date: 2026-11-17
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1375,7 +1375,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-09
+  - slot_date: 2026-11-19
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -1387,7 +1387,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-11
+  - slot_date: 2026-11-22
     type: post
     segment: ham
     funnel_stage: awareness
@@ -1399,7 +1399,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-13
+  - slot_date: 2026-11-24
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1410,7 +1410,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-16
+  - slot_date: 2026-11-26
     type: post
     segment: off-grid
     funnel_stage: adoption
@@ -1421,7 +1421,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-18
+  - slot_date: 2026-11-29
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -1433,7 +1433,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-20
+  - slot_date: 2026-12-01
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1444,7 +1444,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-23
+  - slot_date: 2026-12-03
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1455,7 +1455,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-25
+  - slot_date: 2026-12-06
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1467,7 +1467,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-27
+  - slot_date: 2026-12-08
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1478,7 +1478,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-05-30
+  - slot_date: 2026-12-10
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1489,7 +1489,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-01
+  - slot_date: 2026-12-13
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1501,7 +1501,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-03
+  - slot_date: 2026-12-15
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -1513,7 +1513,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-06
+  - slot_date: 2026-12-17
     type: post
     segment: ham
     funnel_stage: adoption
@@ -1525,7 +1525,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-08
+  - slot_date: 2026-12-20
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1536,7 +1536,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-10
+  - slot_date: 2026-12-22
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1547,7 +1547,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-13
+  - slot_date: 2026-12-24
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1559,7 +1559,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-15
+  - slot_date: 2026-12-27
     type: post
     segment: ham
     funnel_stage: adoption
@@ -1571,7 +1571,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-17
+  - slot_date: 2026-12-29
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1582,7 +1582,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-20
+  - slot_date: 2026-12-31
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -1593,7 +1593,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-22
+  - slot_date: 2027-01-03
     type: post
     segment: ham
     funnel_stage: adoption
@@ -1604,7 +1604,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-24
+  - slot_date: 2027-01-05
     type: post
     segment: ham
     funnel_stage: adoption
@@ -1615,7 +1615,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-27
+  - slot_date: 2027-01-07
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1626,7 +1626,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-06-29
+  - slot_date: 2027-01-10
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -1638,7 +1638,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-01
+  - slot_date: 2027-01-12
     type: post
     segment: ham
     funnel_stage: evaluation
@@ -1650,7 +1650,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-04
+  - slot_date: 2027-01-14
     type: post
     segment: ham
     funnel_stage: adoption
@@ -1662,7 +1662,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-06
+  - slot_date: 2027-01-17
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1674,7 +1674,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-08
+  - slot_date: 2027-01-19
     type: post
     segment: off-grid
     funnel_stage: adoption
@@ -1685,7 +1685,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-11
+  - slot_date: 2027-01-21
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1697,7 +1697,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-13
+  - slot_date: 2027-01-24
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1709,7 +1709,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-15
+  - slot_date: 2027-01-26
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -1721,7 +1721,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-18
+  - slot_date: 2027-01-28
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1732,7 +1732,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-20
+  - slot_date: 2027-01-31
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -1744,7 +1744,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-22
+  - slot_date: 2027-02-02
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1755,7 +1755,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-25
+  - slot_date: 2027-02-04
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1766,7 +1766,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-27
+  - slot_date: 2027-02-07
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1777,7 +1777,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-07-29
+  - slot_date: 2027-02-09
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1789,7 +1789,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-01
+  - slot_date: 2027-02-11
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1801,7 +1801,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-03
+  - slot_date: 2027-02-14
     type: post
     segment: ham
     funnel_stage: adoption
@@ -1813,7 +1813,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-05
+  - slot_date: 2027-02-16
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1824,7 +1824,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-08
+  - slot_date: 2027-02-18
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1835,7 +1835,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-10
+  - slot_date: 2027-02-21
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1847,7 +1847,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-12
+  - slot_date: 2027-02-23
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1858,7 +1858,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-15
+  - slot_date: 2027-02-25
     type: post
     segment: cert-emcomm
     funnel_stage: adoption
@@ -1870,7 +1870,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-17
+  - slot_date: 2027-02-28
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1882,7 +1882,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-19
+  - slot_date: 2027-03-02
     type: post
     segment: off-grid
     funnel_stage: evaluation
@@ -1893,7 +1893,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-22
+  - slot_date: 2027-03-04
     type: post
     segment: tinkerer
     funnel_stage: evaluation
@@ -1904,7 +1904,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-24
+  - slot_date: 2027-03-07
     type: post
     segment: tinkerer
     funnel_stage: awareness
@@ -1915,7 +1915,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-26
+  - slot_date: 2027-03-09
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1926,7 +1926,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2027-08-29
+  - slot_date: 2027-03-11
     type: post
     segment: cert-emcomm
     funnel_stage: awareness
