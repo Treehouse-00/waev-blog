@@ -295,7 +295,7 @@ posts:
     theme: power-of-refusal
     primary_keyword: "what data a mesh analytics tool stores"
     secondary_keyword: "anonymous signal metadata SNR hops timing"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-04
