@@ -1,0 +1,90 @@
+---
+/**
+ * readiness-CommStack — a layered diagram of the communications stack for a
+ * CERT / ARES / RACES deployment. Three layers, each shown as a horizontal
+ * band with the key properties of that layer:
+ *   Layer 1 (bottom): VHF/UHF voice — interoperable, human, command net
+ *   Layer 2 (middle): MeshCore LoRa data — digital messaging, node status
+ *   Layer 3 (top):    Waev analytics — topology visibility, health baseline, live map
+ * Purpose: show that these layers are complementary, not competing.
+ * Theme-aware via CSS custom properties. No client JS.
+ */
+---
+
+<svg viewBox="0 0 720 300" role="img" aria-label="Three-layer communications stack for CERT and ARES EMCOMM deployments. Bottom layer: VHF and UHF voice for interoperable command net. Middle layer: MeshCore LoRa data mesh for digital messaging and node status. Top layer: Waev analytics for topology visibility and health baseline." style="width:100%;height:auto;">
+
+  <!-- ── Kicker ── -->
+  <text x="18" y="22" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">EMCOMM COMMUNICATIONS STACK</text>
+
+  <!-- ══════════════════════════════════════════════
+       Layer 1 — VHF/UHF Voice (bottom)
+       ══════════════════════════════════════════════ -->
+  <rect x="10" y="222" width="700" height="62" rx="10" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Layer label -->
+  <text x="28" y="246" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.04em;">LAYER 1  ·  VHF/UHF VOICE</text>
+
+  <!-- Properties -->
+  <text x="28" y="265" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">Interoperable with EOC · ARES/RACES nets · Human voice command</text>
+
+  <!-- Radio icon -->
+  <rect x="656" y="232" width="44" height="32" rx="6" style="fill: var(--surface-sunken); stroke: var(--border-hover);" stroke-width="1.25" />
+  <line x1="678" y1="232" x2="678" y2="226" style="stroke: var(--text-muted);" stroke-width="1.5" stroke-linecap="round" />
+  <text x="678" y="253" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">VHF/UHF</text>
+  <text x="678" y="264" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 9px;">voice</text>
+
+  <!-- ══════════════════════════════════════════════
+       Layer 2 — MeshCore LoRa Data (middle)
+       ══════════════════════════════════════════════ -->
+  <rect x="10" y="144" width="700" height="68" rx="10" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <text x="28" y="168" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.04em;">LAYER 2  ·  MESHCORE DATA MESH</text>
+
+  <text x="28" y="186" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">LoRa 915 MHz · digital messaging · node status · position reports</text>
+  <text x="28" y="200" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">Works independently of internet · no license required to receive</text>
+
+  <!-- Node icons -->
+  <circle cx="648" cy="168" r="7" style="fill: var(--text-accent);" />
+  <circle cx="668" cy="180" r="7" style="fill: var(--text-accent); opacity:0.7;" />
+  <circle cx="688" cy="164" r="7" style="fill: var(--text-accent); opacity:0.5;" />
+  <line x1="655" y1="168" x2="661" y2="177" style="stroke: var(--border-hover);" stroke-width="1.25" />
+  <line x1="675" y1="178" x2="681" y2="166" style="stroke: var(--border-hover);" stroke-width="1.25" />
+
+  <!-- ══════════════════════════════════════════════
+       Layer 3 — Waev Analytics (top)
+       ══════════════════════════════════════════════ -->
+  <rect x="10" y="36" width="700" height="96" rx="10" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="1" />
+
+  <text x="28" y="60" class="viz-label" style="fill: var(--accent-light); letter-spacing:0.04em;">LAYER 3  ·  WAEV ANALYTICS</text>
+
+  <!-- Three columns of capabilities -->
+  <!-- Col A: Pre-event -->
+  <text x="28" y="84" class="viz-label" style="fill: var(--text-muted);">PRE-EVENT</text>
+  <text x="28" y="100" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">health baseline</text>
+  <text x="28" y="114" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">SPOF review</text>
+
+  <line x1="240" y1="70" x2="240" y2="122" style="stroke: var(--border-accent); opacity:0.4;" stroke-width="1" />
+
+  <!-- Col B: During event -->
+  <text x="258" y="84" class="viz-label" style="fill: var(--text-muted);">DURING EVENT</text>
+  <text x="258" y="100" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">live topology map</text>
+  <text x="258" y="114" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">hop-count alerts</text>
+
+  <line x1="486" y1="70" x2="486" y2="122" style="stroke: var(--border-accent); opacity:0.4;" stroke-width="1" />
+
+  <!-- Col C: After -->
+  <text x="504" y="84" class="viz-label" style="fill: var(--text-muted);">AFTER-ACTION</text>
+  <text x="504" y="100" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">packet history</text>
+  <text x="504" y="114" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">link-health report</text>
+
+  <!-- ══════════════════════════════════════════════
+       Connectors between layers
+       ══════════════════════════════════════════════ -->
+  <!-- Layer 2 → Layer 3 connector (observer MQTT arrow) -->
+  <line x1="100" y1="144" x2="100" y2="132" style="stroke: var(--accent-light);" stroke-width="1.5" stroke-dasharray="4 3" />
+  <text x="105" y="140" class="viz-label" style="font-size: 9px; fill: var(--text-accent);">observer → MQTT → Waev</text>
+
+  <!-- Layer 1 / Layer 2 separator label -->
+  <text x="18" y="218" class="viz-label" style="font-size: 9px; fill: var(--text-muted);">Both layers can run simultaneously and independently. Neither replaces the other.</text>
+
+</svg>
