@@ -1,0 +1,108 @@
+---
+title: "Measuring Your LoRa Link Margin"
+description: "Measure LoRa link margin from SNR data. Target 15–20 dB above the demodulation floor for outdoor mesh. Track trends to catch margin erosion before failure."
+date: 2026-10-20
+tags: ["signal", "deep-dive"]
+hero:
+  src: "/hero-measuring-lora-link-margin.jpg"
+  alt: "A hand-painted still life of a craftsman's spirit level held against a wall, the bubble showing clear margin between minimum and center — warm workshop interior, earthy tones, painterly texture."
+faq:
+  - q: "What is link margin in LoRa?"
+    a: "Link margin is the difference between the received signal level and the minimum signal level the receiver needs to decode. A positive link margin means the signal is stronger than required — you have headroom. A zero margin means the link is exactly at its decoding threshold. Negative margin means the link should not be working at all, though the receiver may still decode occasional packets due to noise variation."
+  - q: "How much link margin do I need for a LoRa mesh link?"
+    a: "For a static outdoor LoRa mesh deployment, 15 dB of link margin above the demodulation floor is a practical minimum for reliable operation. 20 dB or more is preferable for paths you depend on. Links with less than 10 dB of margin will experience intermittent failures during weather events, seasonal vegetation changes, or increased local interference. These are rules of thumb — your specific environment will shift where the threshold falls."
+  - q: "Can I measure link margin from SNR readings?"
+    a: "Yes, with the spreading factor in hand. Link margin (in dB) = measured SNR − minimum decodable SNR for the current spreading factor. For SF9, the minimum SNR is approximately −12.5 dB per Semtech's specifications, so a measured SNR of +5 dB represents 17.5 dB of margin. For SF10, minimum SNR is −15 dB, so +5 dB measured represents 20 dB of margin. Waev's Live Packets and Network Stats show SNR per observation."
+  - q: "What is fade margin and how is it different from link margin?"
+    a: "Fade margin is the portion of link margin you deliberately hold in reserve to absorb real-world variability: weather, vegetation, multipath fading, equipment drift. Link margin is the raw gap between received signal and sensitivity threshold. Fade margin is the part of that gap you're explicitly designating as insurance. A link with 25 dB total margin and a 15 dB fade margin has 10 dB of operational headroom for everyday variation."
+  - q: "What reduces my LoRa link margin without me changing anything?"
+    a: "Seasonal foliage (leaves attenuate sub-GHz signals), precipitation, multipath fading from new reflectors (a parked vehicle, a new building), local interference from new devices, and connector or cable degradation over time. Any of these can quietly consume margin that was previously available. This is why watching SNR trends over time, rather than snapshot readings, gives you early warning of margin erosion before it becomes a link failure."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalLinkMarginStack from "../../components/viz/signal-LinkMarginStack.astro";
+import SignalSNRScale from "../../components/viz/signal-SNRScale.astro";
+
+Part 3 of the *measure your mesh* series. Earlier installments covered [SNR and hop count](/blog/reading-the-signal/) and [why packets disappear](/blog/why-mesh-packets-disappear/). This one covers link margin: the number that tells you how much headroom you actually have.
+
+<div class="callout">
+<p><strong>In short.</strong> Link margin is the difference between your received signal level and the minimum your receiver needs to decode. You can estimate it from your SNR reading plus the spreading factor's demodulation floor. For a LoRa mesh link you plan to depend on, target 15–20 dB of margin above the demodulation floor. Below 10 dB, the link is weather-dependent.</p>
+</div>
+
+## What link margin actually is
+
+A link budget accounts for every gain and loss between your transmitter and receiver:
+
+**Link budget (dB) = Tx power + Tx antenna gain − cable losses − path loss + Rx antenna gain − receiver sensitivity**
+
+The result tells you how much stronger the received signal is than the minimum the receiver can decode. That difference is the link margin.
+
+A link margin of +20 dB means the signal arrives 20 dB stronger than required. You have 20 dB of headroom before the link fails. A margin of 0 dB means you're exactly at the threshold — any degradation in path conditions will drop packets.
+
+<Figure caption="A worked example for a US 915 MHz deployment at SF9. Total link budget is 33 dB. After reserving a 15 dB fade margin, the usable operational margin is 18 dB.">
+  <SignalLinkMarginStack />
+</Figure>
+
+The diagram shows a typical outdoor deployment. Path loss is the dominant term — it dwarfs every other component combined. This is why antenna placement matters so much: a 3 dB improvement in either antenna position (height, clear line of sight, fewer obstructions) translates to a 3 dB improvement in link margin. Conversely, a connector in bad condition consuming an extra 2 dB matters.
+
+## Reading margin from your SNR data
+
+You don't always have the full link budget available. But if you know your SNR and your spreading factor, you can estimate the margin above the demodulation floor:
+
+**Margin above floor (dB) = Measured SNR − Minimum decodable SNR for this SF**
+
+From Semtech's specifications, the minimum decodable SNR values are:
+
+| SF | Min decodable SNR | So at SNR = +5 dB |
+|---|---|---|
+| SF7 | −7.5 dB | 12.5 dB margin |
+| SF8 | −10 dB | 15 dB margin |
+| SF9 | −12.5 dB | 17.5 dB margin |
+| SF10 | −15 dB | 20 dB margin |
+| SF12 | −20 dB | 25 dB margin |
+
+A link running at +5 dB SNR on SF9 has 17.5 dB of margin above the absolute demodulation floor. Whether that 17.5 dB is "enough" depends on what you're protecting against.
+
+<Figure caption="<b>SNR zones as a margin reference.</b> At SF9, a +7 dB SNR reading represents approximately 19.5 dB of margin above the demodulation floor. At SF10, the same reading is 22 dB of margin.">
+  <SignalSNRScale />
+</Figure>
+
+## How much margin is enough?
+
+This depends on what you're protecting against. Three reference points:
+
+**10 dB (absolute floor for static deployments).** A link with 10 dB above the demodulation floor should work in dry, clear conditions. It will be inconsistent during heavy rain, fog, or when seasonal foliage thickens. If this is an indoor-only link in a stable RF environment, 10 dB may be workable. For outdoor mesh — no.
+
+**15 dB (working minimum for outdoor static links).** This is the practical minimum for a link you intend to rely on. It accommodates normal weather variation, moderate seasonal change, and typical multipath fading. Consistent with recommendations from LoRa deployment literature — 15 dB is frequently cited as the lower bound for outdoor static deployments.
+
+**20 dB (target for critical paths).** For a relay that multiple downstream nodes depend on — a single point of failure in your topology — 20 dB gives you meaningful resilience. This is the level where a link survives the kinds of degradation events (a weather front, a new obstruction, equipment aging) that would drop a 15 dB link.
+
+These are rules of thumb, not specifications. Your actual failure threshold depends on your RF environment, spreading factor, and local interference floor.
+
+## Where margin disappears without warning
+
+Most link failures aren't sudden. They're the result of margin that was always thin getting eroded over time:
+
+- **Seasonal foliage.** Sub-GHz signals are attenuated by leaves and branches. A link that cleared 18 dB margin in winter may be at 12 dB in midsummer with the same equipment.
+- **Weather.** Precipitation adds absorption. A heavy rain event can cost several decibels on marginal paths.
+- **New reflectors.** Multipath fading from nearby objects — a parked truck, a new outbuilding, a fence — can shift the interference pattern and either improve or degrade links you weren't planning to touch.
+- **Connector degradation.** A connector that's been outdoors for two years in freeze-thaw cycles may have significantly higher insertion loss than when it was installed.
+
+This is why SNR history matters. A link showing +8 dB SNR consistently over six months is very different from one that has been trending from +14 dB down to +8 dB over the same period. The trend is the signal; the snapshot is just a reading.
+
+Waev's Outpost view shows per-node SNR history over days and weeks. The [baseline work described in the grid-down post](/blog/when-the-grid-goes-down/) is about building enough history to see these trends before they become failures.
+
+## A practical measurement workflow
+
+If you want to assess a specific path in your network:
+
+1. Pull the last 30 days of SNR readings from Waev's Outpost or Network Stats for the path you're evaluating.
+2. Note the median (typical operating condition) and the minimum (worst observed). The minimum matters more — your link needs to survive its worst days, not its average ones.
+3. Translate to margin above the demodulation floor using the table above.
+4. Compare against the thresholds: if your minimum SNR is in the "marginal" zone (+0 to +7 dB), you have less margin than you might think.
+
+The path that has been consistently at +9 dB on SF9 has approximately 21.5 dB of margin above the floor. Healthy. The path that's at +1 dB on SF10 has 16 dB — technically within the working minimum, but a single bad weather event can push it below threshold.
+
+Questions about a specific link you're trying to evaluate? [Tell us what you're seeing](mailto:admin@waev.app).
+
+{/* ILLUSTRATION PROMPT: A hand-painted still life of a craftsman's spirit level held against a wall by two hands. The bubble inside the glass tube sits clearly to one side of center, with visible space between it and the level line — that gap represents margin. The level body is well-worn wood with metal end caps, the wall behind it is off-white plaster. Warm workshop interior light from the left. Earthy tones, no digital elements, no glowing tech. The metaphor is measurement and margin: the physical act of checking how level something is. House style: painterly, warm, intimate workbench scale. */}
