@@ -79,6 +79,9 @@
   align-content: start;
   padding: 0;
   overflow: hidden;
+  /* New stacking context so the rounded overflow clip is applied to
+     positioned descendants (incl. the absolute cover img) in WebKit. */
+  isolation: isolate;
   color: inherit;
   transition: transform var(--dur-short-3) var(--ease-standard),
     box-shadow var(--dur-short-3) var(--ease-standard),
@@ -120,12 +123,17 @@
 
 /* Cover artwork — the container is the sized rounded box (16:7); the image is
    pinned to all four edges so it fills completely, top-to-bottom and side-to-
-   side, regardless of the image's intrinsic ratio. */
+   side, regardless of the image's intrinsic ratio. The cover is the image's
+   containing block, so rounding ITS top corners reliably clips the image to
+   match the card's rounded top (a grandparent overflow clip is not dependable
+   for absolutely-positioned children). The card body carries the bottom. */
 .post-card-cover {
   position: relative;
   aspect-ratio: 16 / 7;
   overflow: hidden;
   background: var(--surface-sunken);
+  border-top-left-radius: var(--shape-xl);
+  border-top-right-radius: var(--shape-xl);
 }
 
 .post-card-cover img {
