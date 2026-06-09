@@ -330,7 +330,7 @@ posts:
     series: under-the-hood
     primary_keyword: "how MeshCore packets become a live map"
     secondary_keyword: "MQTT ingest pipeline for a mesh network"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-11
