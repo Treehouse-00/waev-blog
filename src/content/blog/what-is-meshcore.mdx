@@ -1,0 +1,71 @@
+---
+title: "What Is MeshCore?"
+description: "What is MeshCore? It's open-source LoRa firmware for building decentralized off-grid mesh networks from low-cost hardware — here's how it works and how to start."
+date: 2026-09-01
+tags: ["primer", "meshcore"]
+hero:
+  src: "/hero-what-is-meshcore.jpg"
+  alt: "A warm hand-painted bird's-eye illustration of a small neighborhood, three rooftops glowing softly with gentle arcs connecting them in the afternoon light."
+faq:
+  - q: "What is MeshCore?"
+    a: "MeshCore is open-source firmware (MIT license) for LoRa radio hardware that creates a multi-hop mesh network for off-grid messaging and data relay, with no internet or cellular infrastructure required."
+  - q: "What hardware runs MeshCore?"
+    a: "MeshCore runs on popular LoRa development boards including the Heltec V3, RAK WisBlock 4631, LilyGo T-Beam, and Wio Tracker L1 Pro. Flash the firmware using the web flasher at meshcore.io/flasher — no compiler required."
+  - q: "What are the MeshCore node types?"
+    a: "There are three: Companion (the personal radio you pair with the app), Repeater (a fixed node that relays packets to extend range), and Room Server (stores group messages so members receive them when they return to range)."
+  - q: "What frequency does MeshCore use?"
+    a: "In the US, MeshCore operates on the 915 MHz ISM band. European hardware uses 868 MHz. Both bands are license-free at standard power levels and do not require an amateur radio license."
+  - q: "How is MeshCore different from Meshtastic?"
+    a: "Both run on LoRa hardware and form mesh networks. Meshtastic uses flood routing for most traffic; MeshCore uses a hybrid approach that discovers and reuses direct paths, reducing channel congestion. Hardware that supports one often supports the other."
+---
+
+import Figure from "../../components/Figure.astro";
+import PrimerNodeRoles from "../../components/viz/primer-NodeRoles.astro";
+
+There's a small LoRa board on your bench. Maybe a Heltec V3, maybe a RAK WisBlock. You've seen MeshCore mentioned in a Discord thread, or on GitHub, and the claim is something like: "flash this, and you have an off-grid radio mesh." You want to know what that actually means before you flash anything.
+
+This is the short version.
+
+<div class="callout">
+<p><strong>In short.</strong> What is MeshCore? It's open-source LoRa firmware that turns a low-cost radio board into a node in a decentralized, multi-hop mesh network. Messages are end-to-end encrypted and hop from node to node without any internet or cellular infrastructure. You flash it, pair the companion app, and send.</p>
+</div>
+
+## The mesh in two sentences
+
+LoRa (Long Range) is a spread-spectrum radio modulation that sends small packets far and slowly, using very little power. MeshCore runs on top of LoRa hardware and handles the networking: when you send a message, nearby nodes relay it outward until it reaches the destination. Each relay is a hop, and packets can travel through a chain of them across a city or a hillside.
+
+The network is fully decentralized. There's no central server, no account to create, no internet path. Every node you deploy makes the coverage better for everyone nearby.
+
+## Three firmware roles
+
+Not every node does the same job. MeshCore has three firmware types, each with a specific role:
+
+<Figure caption="The three MeshCore firmware roles and how they connect. Companions pair with the app via BLE. Repeaters extend range by relaying packets. Room Servers store group messages for members who are temporarily out of range.">
+  <PrimerNodeRoles />
+</Figure>
+
+**Companion** is the firmware you run on the radio you carry. It connects to the MeshCore companion app on your phone via Bluetooth Low Energy, letting you send and receive messages. Companion nodes do not relay packets — their job is to be your radio interface, not the network's backbone.
+
+**Repeater** is a fixed node placed somewhere with line-of-sight — a rooftop, a ridgeline, a water tower. It hears everything in range and relays it onward. The higher you mount it, the more range it contributes. Repeaters are the backbone of any real MeshCore deployment; two or three well-placed repeaters can cover a neighborhood or a small town.
+
+**Room Server** stores group messages. If a member is out of range when a group message is sent, the Room Server holds it. When they come back in range and sync, they get the message. This is useful for any scenario where people move in and out of coverage — field teams, neighborhoods, club nets.
+
+## Encryption, out of the box
+
+Messages on MeshCore are end-to-end encrypted using AES-256. Direct messages between two contacts use a shared key derived from their cryptographic handshake. Public channels use a channel key. The radio traffic that travels over the air is ciphertext — repeaters relay it without decrypting.
+
+That encryption is not a feature you configure. It's the default state from the first packet you send.
+
+## Getting on the mesh
+
+The practical minimum is one Companion node. Two lets you confirm you're actually reaching another node. A Repeater in a good location converts a bench experiment into a usable network.
+
+Flash firmware using the [MeshCore web flasher](https://meshcore.io/flasher) — it runs in Chrome and supports most popular boards without requiring a local toolchain. Select your board, select Companion or Repeater, flash. The whole process takes about five minutes.
+
+From there, SNR readings in the companion app and in Waev's Live Packets view tell you whether your links are solid or marginal. That's covered in [Reading the Signal](/blog/reading-the-signal/), and when your mesh outgrows the bench and needs permanent nodes, [repeater placement](/blog/where-to-put-your-next-repeater/) is where the real engineering starts.
+
+## What Waev adds
+
+Waev is a separate analytics layer, not a replacement for MeshCore firmware or the companion app. Where MeshCore handles the radio and the messages, Waev subscribes to the MQTT stream from enrolled observers and surfaces the data — live packet feeds, per-link SNR, network topology, node history. If you're building a community mesh or running infrastructure other people depend on, the analytics layer is where you verify that the network is doing what you think it's doing.
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted flat illustration showing an aerial view of a small neighborhood from above — three different rooftops, each with a tiny glowing node, connected by gentle curved arcs in a muted blue. Warm afternoon light, earthy amber and terracotta palette with the blue arcs as the single accent. Painterly texture. Breathing room around the subject. The subject is the mesh as neighborhood phenomenon — human and grounded, nothing hi-tech or neon. */}
