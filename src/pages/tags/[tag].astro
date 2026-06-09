@@ -1,0 +1,89 @@
+---
+import { getPublishedPosts } from "../../lib/posts";
+import Base from "../../layouts/Base.astro";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+
+// Human-readable label for the tag
+const label = tag.replace(/-/g, " ");
+
+const title = `${label.charAt(0).toUpperCase() + label.slice(1)} — Waev Blog`;
+const description = `Posts tagged "${label}" on the Waev Blog — field notes on MeshCore mesh network analytics, privacy-by-default, and operator tools.`;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const collectionPage = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": pageUrl,
+  name: title,
+  description,
+  url: pageUrl,
+  inLanguage: "en",
+  hasPart: posts.map((p) => ({
+    "@type": "BlogPosting",
+    headline: p.data.title,
+    url: new URL(`/blog/${p.id}/`, Astro.site).href,
+    datePublished: p.data.date.toISOString(),
+  })),
+};
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={[collectionPage]}
+>
+  <div class="container">
+    <header class="tag-page-header">
+      <a class="post-back" href="/">← All posts</a>
+      <div class="tag-page-kicker">
+        <span class="kicker">Topic</span>
+      </div>
+      <h1 class="tag-page-title">{label}</h1>
+      <p class="tag-page-count">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+    </header>
+
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li>
+          <a class="card post-card" href={`/blog/${post.id}/`}>
+            {post.data.hero && (
+              <div class="post-card-cover">
+                <img src={post.data.hero.src} alt="" loading="lazy" decoding="async" />
+              </div>
+            )}
+            <div class="post-card-body">
+              <div class="post-card-meta">
+                <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+                {post.data.tags.map((t) => (
+                  <a href={`/tags/${t}/`} class="tag">{t}</a>
+                ))}
+              </div>
+              <h2 class="post-card-title">{post.data.title}</h2>
+              <p class="post-card-desc">{post.data.description}</p>
+              <span class="post-card-more">Read →</span>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

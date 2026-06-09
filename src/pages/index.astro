@@ -6,6 +6,24 @@ import MeshField from "../components/viz/MeshField.astro";
 const posts = await getPublishedPosts();
 const [featured, ...rest] = posts;
 
+// Topic clusters: tag → human label, ordered by post count
+const TOPICS = [
+  { tag: "signal",       label: "Signal" },
+  { tag: "how-it-works", label: "How it works" },
+  { tag: "operations",   label: "Operations" },
+  { tag: "privacy",      label: "Privacy" },
+  { tag: "resilience",   label: "Resilience" },
+  { tag: "community",    label: "Community" },
+  { tag: "primer",       label: "Primers" },
+  { tag: "hardware",     label: "Hardware" },
+];
+
+// Count per tag for the "N posts" label on the topic bar
+const tagCounts = posts.reduce<Record<string, number>>((acc, p) => {
+  p.data.tags.forEach((t) => { acc[t] = (acc[t] ?? 0) + 1; });
+  return acc;
+}, {});
+
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-US", {
     year: "numeric",
@@ -13,9 +31,31 @@ const fmt = (d: Date) =>
     day: "numeric",
     timeZone: "UTC",
   });
+
+// Blog schema for the index page
+const blogSchema = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "@id": new URL("/", Astro.site).href,
+  name: "Waev Blog",
+  description: "Field notes on MeshCore mesh network analytics — SNR, coverage, data ownership, and privacy-by-default for ham radio operators, CERT teams, and emergency networks.",
+  url: new URL("/", Astro.site).href,
+  inLanguage: "en",
+  publisher: { "@id": new URL("/#org", Astro.site).href },
+  blogPost: posts.slice(0, 20).map((p) => ({
+    "@type": "BlogPosting",
+    headline: p.data.title,
+    url: new URL(`/blog/${p.id}/`, Astro.site).href,
+    datePublished: p.data.date.toISOString(),
+  })),
+};
 ---
 
-<Base title="Waev Blog — News, updates & philosophy">
+<Base
+  title="Waev Blog — MeshCore Mesh Network Analytics & Operations"
+  description="Field notes on MeshCore mesh network analytics — SNR, coverage, data ownership, and privacy-by-default for ham radio operators, CERT teams, and emergency networks."
+  jsonLd={[blogSchema]}
+>
   <div class="container">
     <header class="masthead">
       <span class="kicker">The Waev Blog</span>
@@ -24,10 +64,25 @@ const fmt = (d: Date) =>
         <span class="masthead-gradient">mesh intelligence.</span>
       </h1>
       <p class="masthead-subtitle">
-        News, updates, and the thinking behind <span class="waev-brand">Waev</span> —
-        what we're building for MeshCore operators, and why.
+        MeshCore analytics, SNR, coverage, data ownership, and privacy-by-default
+        — for the people who run the mesh.
       </p>
     </header>
+
+    {/* Topic browse bar */}
+    <nav class="topic-bar" aria-label="Browse by topic">
+      <span class="topic-bar-label">Browse:</span>
+      <ul class="topic-list">
+        {TOPICS.filter((t) => tagCounts[t.tag] > 0).map((t) => (
+          <li>
+            <a href={`/tags/${t.tag}/`} class="topic-chip">
+              {t.label}
+              <span class="topic-chip-count">{tagCounts[t.tag]}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
 
     {featured && (
       <a class="featured" href={`/blog/${featured.id}/`}>
@@ -36,7 +91,7 @@ const fmt = (d: Date) =>
             <span class="featured-eyebrow">Latest</span>
             <time datetime={featured.data.date.toISOString()}>{fmt(featured.data.date)}</time>
             {featured.data.tags.slice(0, 2).map((t) => (
-              <span class="tag">{t}</span>
+              <a href={`/tags/${t}/`} class="tag" onclick="event.stopPropagation()">{t}</a>
             ))}
           </div>
           <h2 class="featured-title">{featured.data.title}</h2>
@@ -58,8 +113,11 @@ const fmt = (d: Date) =>
 
     {rest.length > 0 && (
       <section class="more">
-        <h2 class="more-title">More posts</h2>
-        <ul class="post-list">
+        <div class="more-header">
+          <h2 class="more-title">All posts</h2>
+          <span class="more-count">{posts.length} total</span>
+        </div>
+        <ul class="post-list post-list--grid">
           {rest.map((post) => (
             <li>
               <a class="card post-card" href={`/blog/${post.id}/`}>
@@ -72,7 +130,7 @@ const fmt = (d: Date) =>
                   <div class="post-card-meta">
                     <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
                     {post.data.tags.slice(0, 2).map((t) => (
-                      <span class="tag">{t}</span>
+                      <a href={`/tags/${t}/`} class="tag" onclick="event.stopPropagation()">{t}</a>
                     ))}
                   </div>
                   <h3 class="post-card-title">{post.data.title}</h3>
