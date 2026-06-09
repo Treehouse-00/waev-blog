@@ -515,7 +515,7 @@ posts:
     theme: networks-of-people
     primary_keyword: "community mesh network group"
     secondary_keyword: "building a local mesh network group"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-17

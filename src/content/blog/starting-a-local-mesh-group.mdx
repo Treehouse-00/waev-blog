@@ -1,0 +1,73 @@
+---
+title: "Starting a Local Mesh Group"
+description: "A community mesh network group starts with two or three neighbors and a shared question — and the first decision isn't technical: it's who holds the data."
+date: 2026-11-15
+tags: ["community", "off-grid"]
+hero:
+  src: "/hero-starting-a-local-mesh-group.jpg"
+  alt: "A hand-painted view of a kitchen table in late afternoon light — a paper map with hand-drawn circles and notes, a pencil, two cups of tea, and an open notebook."
+faq:
+  - q: "What is a community mesh network group?"
+    a: "A community mesh network group is a local organization — as informal as two neighbors or as structured as a neighborhood association — that collectively deploys and maintains a MeshCore mesh network for shared communication. The group owns the infrastructure, holds the data, and decides how it grows."
+  - q: "How many people do you need to start a community mesh?"
+    a: "Two is enough to start. A community mesh network can begin with two people on neighboring properties who each run a node, share a broker, and agree on how the network will grow. The social infrastructure — who makes decisions, who maintains the broker — matters as much as the technical one."
+  - q: "Who should own the MQTT broker in a community mesh?"
+    a: "The group should own it, not any single vendor. The simplest arrangement is a single technically capable member running the broker on a local server or a small VPS. More durable is a shared approach where at least two members can maintain it and access is documented. What to avoid is a setup where only a vendor knows the credentials."
+  - q: "What happens to our mesh data if a group member leaves?"
+    a: "If the group uses a self-hosted broker with shared credentials and documentation, a member leaving does not mean the data is lost. The broker stays wherever it is hosted; the new operator connects to it with the same credentials. This is why documenting the broker setup matters from the start, not after the first person threatens to leave."
+  - q: "Can Waev support a shared community mesh where multiple people contribute nodes?"
+    a: "Yes. Multiple operators can run nodes and repeaters on the same MeshCore mesh, and a single enrolled observer reports all of their traffic to the shared broker. Waev subscribes to that broker and gives everyone with access to the Live Map a shared view of the network. Data ownership stays with whoever runs the broker."
+---
+
+import Figure from "../../components/Figure.astro";
+import HiwObserverBridge from "../../components/viz/hiw-ObserverBridge.astro";
+
+A community mesh network doesn't start with hardware. It starts with a question someone asks over a fence or at a neighborhood meeting: *what would it take for us to be able to communicate if the phones are down?*
+
+The question is practical and the answer is tractable, but neither the question nor the answer is fundamentally technical. The technology exists, it works, and it doesn't require much expertise to deploy. What requires care — and what shapes whether the network is still running in three years — is the social layer: who owns the data, who maintains the infrastructure, and what happens when the person who set it all up moves away.
+
+<div class="callout">
+<p><strong>In short.</strong> Starting a community mesh network group means starting with two or three people, a shared agreement about data ownership, and a willingness to document the setup before you need someone else to maintain it. The technical barrier is low. The organizational barrier is real but solvable.</p>
+</div>
+
+## The first conversation isn't about hardware
+
+Before anyone buys a node, the group needs to agree on one thing: who holds the data? For a community mesh, that question has a right answer and a wrong one.
+
+The wrong answer is "the service handles it" — meaning a vendor you don't control holds your network data on infrastructure you can't access, query, or delete. This is how most SaaS tools work, and it is the wrong model for a community network. The people whose packets cross your mesh haven't opted into a vendor relationship. The infrastructure belongs to the neighborhood, not to a company.
+
+The right answer is that someone in the group runs the MQTT broker — on a server they control, with credentials the group documents, in a setup that at least two people understand. [Waev's bring-your-own-broker model](/blog/bring-your-own-broker/) is built for this: you run the broker, the data stays with you, and Waev connects as a read-only subscriber. If you stop using Waev, the broker keeps running and the data remains yours.
+
+That conversation — "who runs the broker, and what happens when they move?" — is worth having before the first node goes up, not after.
+
+## The technical setup is the easy part
+
+Once the ownership question is settled, the technical questions are straightforward. A community mesh network needs:
+
+**Nodes.** MeshCore runs on off-the-shelf LoRa hardware. Three or four nodes covering the core of the neighborhood, with at least one on high ground to serve as a repeater, gives most small groups reliable coverage to start. Starting small and expanding based on what the network actually shows you is better than deploying two dozen nodes on a guess.
+
+**An observer.** The observer is the node that reports to your MQTT broker. It should be at the most internet-accessible location — the person who runs the broker, or whoever has the most reliable internet connection. One observer is enough for most groups to start; [placement matters more than count](/blog/where-to-put-your-next-repeater/).
+
+**A broker.** Mosquitto on a Raspberry Pi or a low-cost VPS is all you need. The broker doesn't do computation; it stores and forwards MQTT messages. What matters is that it's accessible to the observer (via internet) and that the credentials are documented somewhere at least two group members can find.
+
+<Figure caption="The community mesh architecture: nodes and repeaters communicate over LoRa RF; the observer bridges the RF side to the internet and pushes what it hears to the group's self-hosted MQTT broker. Waev subscribes to the broker read-only. The data stays with the group.">
+  <HiwObserverBridge />
+</Figure>
+
+## What the group actually sees
+
+Once the observer is connected and the broker is running, Waev gives everyone with broker access a shared view of the network. The Live Map shows which nodes are connected to which, based on what the observer actually heard. Live Packets shows traffic as it arrives. Network Stats shows patterns over time.
+
+That shared view is what makes the group function as a group rather than a collection of individuals with nodes. When something goes quiet, everyone can see it. When a new node joins, everyone can see it. When a link degrades, someone can investigate without relying on the one person who set up the network to interpret what they're seeing.
+
+[Reading signal quality metrics like SNR](/blog/reading-the-signal/) gives the group a common language for talking about link health. A node that shows up in Live Packets but never with SNR above –5 dB is a node on a weak link. That's a conversation the group can have using the data, rather than relying on whoever set up the node to report how it feels.
+
+## The social infrastructure that sustains it
+
+A community mesh network fails not because the hardware fails, but because the person who set it up leaves and nobody else knows how to maintain it. That failure mode is predictable and preventable.
+
+What prevents it: documentation and shared access from day one. The broker credentials in a shared password manager. A simple README that explains how to restart the broker service. At least two people who have logged into the broker server. A recurring check-in — quarterly, annual, whatever the group can sustain — where someone confirms the broker is running and the observer is connected.
+
+The network's resilience mirrors the group's resilience. A mesh network that depends on one person is one resignation away from going dark. A mesh network with shared documentation and shared access survives the turnover that any real community organization will experience over time.
+
+{/* ILLUSTRATION PROMPT: A hand-painted scene of a kitchen or dining table in late afternoon light — a paper map with hand-drawn coverage circles and shorthand notes, a pencil, two cups of tea suggesting a shared conversation, and an open notebook with a few written lines. No screens, no hardware, no devices. The mood is unhurried and collegial, like the beginning of a project people care about. House style: warm flat illustration, painterly texture, warm interior light. */}
