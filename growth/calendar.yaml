@@ -493,7 +493,7 @@ posts:
     series: first-light
     primary_keyword: "see your first MeshCore packet"
     secondary_keyword: "first packet on the live packets view"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-12
