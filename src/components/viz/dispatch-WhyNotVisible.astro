@@ -1,0 +1,113 @@
+---
+/**
+ * dispatch-WhyNotVisible — four scenarios explaining why a node does not appear
+ * on the Live Map. Each card shows the cause and the diagnostic signal.
+ *   1. No observer in range — node is transmitting but no enrolled observer hears it.
+ *   2. Node offline — the node is not transmitting.
+ *   3. Opted-out — privacy marker; packets discarded at the ingest edge.
+ *   4. Observer not publishing — observer is connected to the mesh but not to the broker.
+ * Theme-aware via CSS custom properties. Used in "Why the Map Comes Up Short."
+ */
+---
+
+<svg viewBox="0 0 720 290" role="img" aria-label="Four reasons a node may not appear on the Live Map: no observer in range, node offline, opted out via privacy marker, or observer not connected to the broker." style="width:100%;height:auto;">
+
+  <!-- ── Kicker ── -->
+  <text x="18" y="22" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">FOUR REASONS A NODE DOESN'T APPEAR</text>
+
+  <!-- ── Card backgrounds ── -->
+  <!-- Card 1: No observer -->
+  <rect x="10" y="32" width="162" height="240" rx="12" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <!-- Card 2: Offline -->
+  <rect x="184" y="32" width="162" height="240" rx="12" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <!-- Card 3: Opted-out -->
+  <rect x="358" y="32" width="162" height="240" rx="12" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <!-- Card 4: Observer down -->
+  <rect x="532" y="32" width="178" height="240" rx="12" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ═══════════════════════════════════════════
+       CARD 1 — No observer in range
+       ═══════════════════════════════════════════ -->
+  <text x="91" y="56" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.04em;">NO OBSERVER IN RANGE</text>
+
+  <!-- Node transmitting (signal rings) -->
+  <circle cx="91" cy="114" r="8" style="fill: var(--text-accent);" />
+  <circle cx="91" cy="114" r="18" fill="none" style="stroke: var(--text-accent); opacity:0.25;" stroke-width="1.5" />
+  <circle cx="91" cy="114" r="30" fill="none" style="stroke: var(--text-accent); opacity:0.12;" stroke-width="1" />
+  <text x="91" y="152" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">node-alpha</text>
+  <text x="91" y="164" text-anchor="middle" style="fill: var(--text-accent); font-family: var(--mono); font-size: 10px;">tx · active</text>
+
+  <!-- No observer icon (dashed circle + X) -->
+  <circle cx="91" cy="204" r="10" fill="none" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-dasharray="3 3" />
+  <line x1="84" y1="197" x2="98" y2="211" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-linecap="round" />
+  <line x1="98" y1="197" x2="84" y2="211" style="stroke: var(--text-tertiary);" stroke-width="1.5" stroke-linecap="round" />
+  <text x="91" y="228" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">no observer</text>
+
+  <text x="18" y="254" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">Transmitting, but nothing</text>
+  <text x="18" y="265" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">enrolled heard it.</text>
+
+  <!-- ═══════════════════════════════════════════
+       CARD 2 — Node offline
+       ═══════════════════════════════════════════ -->
+  <text x="265" y="56" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.04em;">NODE OFFLINE</text>
+
+  <!-- Node not transmitting (dim, no rings) -->
+  <circle cx="265" cy="114" r="8" style="fill: var(--text-tertiary); opacity:0.4;" />
+  <text x="265" y="152" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">node-beta</text>
+  <text x="265" y="164" text-anchor="middle" style="fill: var(--sys-red-400); font-family: var(--mono); font-size: 10px;">no tx · silent</text>
+
+  <!-- Observer present but silent -->
+  <rect x="247" y="188" width="36" height="22" rx="5" style="fill: var(--surface-1); stroke: var(--text-tertiary); opacity:0.5;" stroke-width="1.25" />
+  <line x1="265" y1="188" x2="265" y2="182" style="stroke: var(--text-tertiary); opacity:0.5;" stroke-width="1.25" />
+  <text x="265" y="228" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">observer hears</text>
+  <text x="265" y="240" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">nothing</text>
+
+  <text x="191" y="254" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">Power, firmware, hardware.</text>
+  <text x="191" y="265" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">Last packet was how long ago?</text>
+
+  <!-- ═══════════════════════════════════════════
+       CARD 3 — Opted-out
+       ═══════════════════════════════════════════ -->
+  <text x="439" y="56" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.04em;">OPTED OUT</text>
+
+  <!-- Node with privacy emoji -->
+  <circle cx="439" cy="114" r="8" style="fill: var(--text-accent);" />
+  <circle cx="439" cy="114" r="18" fill="none" style="stroke: var(--text-accent); opacity:0.25;" stroke-width="1.5" />
+  <text x="439" y="152" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">node⛔gamma</text>
+  <text x="439" y="164" text-anchor="middle" style="fill: var(--text-accent); font-family: var(--mono); font-size: 10px;">tx · privacy marker</text>
+
+  <!-- Dropped-at-ingest icon -->
+  <rect x="416" y="185" width="46" height="22" rx="5" style="fill: var(--surface-sunken); stroke: var(--border-hover);" stroke-width="1" stroke-dasharray="3 3" />
+  <text x="439" y="200" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">dropped</text>
+  <text x="439" y="228" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">ingest drops it</text>
+  <text x="439" y="240" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">before any write</text>
+
+  <text x="365" y="254" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">Privacy marker in node name.</text>
+  <text x="365" y="265" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">Working as intended.</text>
+
+  <!-- ═══════════════════════════════════════════
+       CARD 4 — Observer not connected to broker
+       ═══════════════════════════════════════════ -->
+  <text x="621" y="56" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing:0.04em;">OBSERVER DISCONNECTED</text>
+
+  <!-- Node transmitting -->
+  <circle cx="588" cy="114" r="8" style="fill: var(--text-accent);" />
+  <circle cx="588" cy="114" r="18" fill="none" style="stroke: var(--text-accent); opacity:0.25;" stroke-width="1.5" />
+  <text x="588" y="152" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">node-delta</text>
+  <text x="588" y="164" text-anchor="middle" style="fill: var(--text-accent); font-family: var(--mono); font-size: 10px;">tx · active</text>
+
+  <!-- Observer (RF connected, broker broken) -->
+  <rect x="648" y="100" width="40" height="26" rx="6" style="fill: var(--surface-1); stroke: var(--text-accent);" stroke-width="1.5" />
+  <line x1="668" y1="100" x2="668" y2="94" style="stroke: var(--text-accent);" stroke-width="1.5" stroke-linecap="round" />
+  <line x1="596" y1="114" x2="648" y2="114" style="stroke: var(--text-accent); opacity:0.3;" stroke-width="1.5" stroke-dasharray="4 3" />
+  <text x="668" y="150" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">observer</text>
+  <!-- Broken broker link -->
+  <line x1="668" y1="128" x2="668" y2="152" style="stroke: var(--sys-red-400); opacity:0.5;" stroke-width="1.5" stroke-dasharray="3 4" />
+  <line x1="660" y1="160" x2="676" y2="160" style="stroke: var(--sys-red-400); opacity:0.5;" stroke-width="2" stroke-linecap="round" />
+  <text x="668" y="180" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">broker link</text>
+  <text x="668" y="192" text-anchor="middle" style="fill: var(--sys-red-400); font-family: var(--mono); font-size: 10px;">down</text>
+
+  <text x="538" y="254" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">Observer hears RF, but can't</text>
+  <text x="538" y="265" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">publish. Check internet/MQTT.</text>
+
+</svg>
