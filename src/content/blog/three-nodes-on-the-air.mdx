@@ -1,0 +1,89 @@
+---
+title: "Three Nodes on the Air"
+description: "A LoRa mesh network setup tutorial for your first three MeshCore nodes — flash firmware, configure radio settings, and confirm packets are flowing in under an hour."
+date: 2026-09-08
+tags: ["primer", "meshcore"]
+hero:
+  src: "/hero-three-nodes-on-the-air.jpg"
+  alt: "A warm hand-painted top-down close-up of a single LoRa dev board on a wooden workbench surface, side-lit to show component texture, a USB-C cable curling into frame from one corner."
+faq:
+  - q: "How many nodes do I need to start a MeshCore mesh?"
+    a: "Two is the practical minimum — one to send, one to receive, so you can confirm the link works. A third node flashed as a Repeater converts a two-node bench test into the beginning of a real network."
+  - q: "What radio settings should I use for MeshCore in the US?"
+    a: "The community-coordinated setting for North America is 915 MHz, and MeshCore's default settings on most boards use this band. Nodes must share the same frequency, bandwidth, spreading factor, and coding rate to hear each other — match settings before you test range."
+  - q: "How do I flash MeshCore firmware without a compiler?"
+    a: "Use the web flasher at meshcore.io/flasher in a Chromium-based browser. Connect your board via USB, select the board type and firmware role (Companion or Repeater), and flash. The whole process takes about five minutes and requires no local toolchain."
+  - q: "My two nodes are on and I do not see a link in the app. What should I check?"
+    a: "First confirm both boards are flashed with the same firmware version and share the same radio settings. Then check physical proximity — start within 5 meters indoors to eliminate range as a factor. If the boards are too close, some receivers clip on the strong signal; 2 to 5 meters is a reliable test distance. Finally check that neither node name contains a privacy marker."
+  - q: "How do I know a MeshCore link is healthy?"
+    a: "Watch the SNR reading in the companion app when a node's advert arrives. A healthy indoor test link at short range should show +5 dB or above. Below 0 dB outdoors at distance, expect intermittent delivery. Waev's Live Packets view shows the same readings with a persistent history for every observed link."
+---
+
+import Figure from "../../components/Figure.astro";
+import PrimerSetupFlow from "../../components/viz/primer-SetupFlow.astro";
+
+You have two LoRa boards. They arrived this week, you've read enough to know what MeshCore does, and now you want to see packets move. This post is the LoRa mesh network setup tutorial that gets you to a working three-node mesh — one you can feel confident about, not just hope is working.
+
+The whole process takes less than an hour.
+
+<div class="callout">
+<p><strong>In short.</strong> A LoRa mesh network setup tutorial for MeshCore: flash two Companion nodes using the web flasher, pair them to the app, and confirm the link by watching for SNR readings. Then flash a third board as a Repeater and place it to extend your range. Four steps, no compiler required.</p>
+</div>
+
+## What you need
+
+**Hardware:** Two LoRa boards to start, three if you want to test a relay hop. Any supported board works — Heltec V3, RAK WisBlock 4631, LilyGo T-Beam, or Wio Tracker L1 Pro. The boards don't need to match. A USB-C cable and a phone or computer to run the companion app.
+
+**Firmware:** No toolchain. Use [meshcore.io/flasher](https://meshcore.io/flasher) in Chrome or Edge. It runs entirely in the browser and directly flashes the board over USB.
+
+**App:** The MeshCore companion app for Android, iOS, or the web app at app.meshcore.nz.
+
+<Figure caption="The four steps from an unflashed board to a confirmed MeshCore link. Step 1 is the only one that touches a computer. Steps 2–4 are done on your phone.">
+  <PrimerSetupFlow />
+</Figure>
+
+## Step 1: Flash both boards
+
+Connect each board one at a time. Open [meshcore.io/flasher](https://meshcore.io/flasher), select your board model, and choose **Companion** firmware. Flash. Repeat for the second board.
+
+If you're flashing a third board for a Repeater, return to the flasher and select **Repeater** firmware for that one. The hardware is identical; the firmware role is what determines behavior.
+
+Firmware version doesn't need to match between boards for basic operation, but keeping them on the same release reduces variables when you're troubleshooting. You can check the version from each board's serial output or via the companion app's node info screen.
+
+## Step 2: Configure name and radio settings
+
+For Companion nodes: pair the board to your phone via Bluetooth and open the app. Set a node name — something you'll recognize — and verify the radio frequency matches your region. In the US, this is 915 MHz. Boards shipped for the US are pre-configured for 915 MHz, but confirm it.
+
+For a Repeater: connect via USB and open [config.meshcore.io](https://config.meshcore.io) in a browser to set the node name and verify frequency. Repeaters are configured via the web config tool or directly over serial — not via the companion app.
+
+The critical rule: **nodes must share frequency, bandwidth, spreading factor, and coding rate to hear each other.** If you're starting with fresh firmware on both boards, the defaults will match. If one board was previously configured for a different region, check before you wonder why they can't hear each other.
+
+## Step 3: Power on both nodes — start close
+
+Put both nodes within 5 meters of each other. Not because that's the real range (it isn't), but because at close range you eliminate RF and placement variables entirely. You want to confirm the software is working before you test the physics.
+
+Power on both Companion nodes and open the app on your phone, paired to one of them. Wait about 60 seconds.
+
+## Step 4: Confirm the link
+
+In the MeshCore companion app, open the Contacts list. You should see the other node appear as a new contact within the first minute — MeshCore nodes broadcast periodic advertisement packets, and your companion picks them up. Tap the contact and check the SNR reading on the most recent advert.
+
+Any positive SNR at 5 meters indoors is the right answer. At that distance you're looking at +10 to +15 dB on a clear bench — the physics have no way to produce a weak signal that close. If you're seeing a negative number or no contact at all, there's a configuration issue: re-check frequency match, re-check that both boards are powered and running the right firmware.
+
+Once you see the contact and a positive SNR, send a message. Watch it arrive. That's your first working MeshCore link. The bench test is done.
+
+## Adding the Repeater
+
+Move one Companion node to a different room or the other end of the space. Leave the other where it is. Power on your Repeater and place it roughly between them, elevated if possible (on a shelf, not on the floor).
+
+Watch what happens in the app. Messages that previously needed direct range now route through the Repeater. In the contacts view, the hop count on packets from the far node will show 2 instead of 1 when the Repeater relays them.
+
+This is the first working mesh topology: two endpoints and one relay. It's exactly the same structure as a neighborhood-scale network — just smaller. [Repeater placement](/blog/where-to-put-your-next-repeater/) is where the engineering of larger networks starts, but at this scale the logic is already visible.
+
+## Reading the numbers
+
+The SNR reading that appears in the app on every received packet is the link quality signal. Higher is cleaner; lower is marginal. The threshold for a reliable link — the one worth building your network around — is roughly +5 dB or better in typical conditions. Below +3 dB, the link works most of the time; below 0 dB, count on occasional failures.
+
+If you have Waev connected with an enrolled observer, those same SNR readings appear in Live Packets with timestamps and a persistent per-link history. That history is what lets you distinguish a transient interference event from a structurally weak link. [Reading the Signal](/blog/reading-the-signal/) covers how to interpret what you're seeing.
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted top-down macro illustration of a single LoRa development board resting on a warm wooden workbench surface — the component texture visible under soft raking side-light, a USB-C cable curling in from the lower-left corner. No hands, no figure, no screen. The board is centered with breathing room around it; the wood grain of the table is gently visible. Earthy warm tones with one small accent of green on the board's indicator LED. Painterly texture, calm and unhurried. */}
