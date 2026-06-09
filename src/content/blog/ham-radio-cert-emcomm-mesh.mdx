@@ -1,0 +1,96 @@
+---
+title: "Mesh Radio in Your CERT EMCOMM Kit"
+description: "Ham radio CERT EMCOMM mesh integration adds a data layer alongside VHF voice — digital messaging and node-status visibility that voice alone cannot provide, verified before the activation."
+date: 2026-09-27
+tags: ["cert-emcomm", "operations", "resilience"]
+hero:
+  src: "/hero-ham-radio-cert-emcomm-mesh.jpg"
+  alt: "A hand-painted close-up of a tabletop with two radios — a VHF HT and a small LoRa node — side by side on a wooden surface, warm overhead light, matter-of-fact and ready."
+faq:
+  - q: "What is the role of a mesh radio network in a CERT or ARES EMCOMM deployment?"
+    a: "A MeshCore mesh provides a digital data layer alongside voice communications. It carries structured information that voice cannot efficiently relay: node status reports, digital messaging between field teams and the EOC, and position data. Voice (VHF/UHF) handles command and coordination; the mesh handles data that needs to be accurate, logged, and not subject to the errors of verbal relay."
+  - q: "Do CERT volunteers need an amateur radio license to use a MeshCore mesh?"
+    a: "MeshCore nodes transmit on the 915 MHz ISM band in the United States, which does not require an amateur radio license. CERT volunteers can deploy and use MeshCore mesh nodes without a ham license. Licensed operators (ARES/RACES members) can also use the mesh alongside their licensed VHF/UHF voice operations. Both can run simultaneously."
+  - q: "How does Waev support ARES or RACES emergency activations?"
+    a: "Waev provides three capabilities relevant to an ARES/RACES activation: a pre-event health baseline showing which nodes are active, which links are marginal, and where the topology has single points of failure; a live map and packet view during the activation showing node status and hop-count changes in real time; and post-event packet history for after-action review. A served agency that asks about network health gets data, not an estimate."
+  - q: "What is the minimum kit for a CERT mesh go-kit?"
+    a: "A minimal CERT mesh go-kit for a single deployment point includes: one or more MeshCore nodes for field operations; one observer node (a MeshCore device with MQTT gateway firmware, or equivalent) with internet connectivity at the operations center; an MQTT broker (self-hosted or third-party) for the observer to publish to; and a Waev account connected to the broker. The observer is the critical component — without it, the mesh operates but is not visible on the Live Map."
+  - q: "How do I verify the mesh is ready before an activation?"
+    a: "Run a readiness check in the two weeks before an activation. Pull the 30-day health baseline in Network Stats: are all expected nodes in healthy status? Are any in watchlist or silent? Review the Live Map topology for single points of failure — relay nodes that are the sole path for a cluster. Check Outpost for sentinel relay packet rates. If you've been watching the network continuously, these checks take minutes. If you're checking for the first time before an activation, that's the problem."
+---
+
+import Figure from "../../components/Figure.astro";
+import ReadinessCommStack from "../../components/viz/readiness-CommStack.astro";
+import GridgoneHealthBaseline from "../../components/viz/gridgone-HealthBaseline.astro";
+
+You already have a comms plan. It covers your VHF voice net, your ARES/RACES frequencies, your ICS 205 form, and the EOC contact number. The question isn't whether to add a MeshCore mesh — it's where a data mesh fits in what you're already doing, and what it can do that voice can't.
+
+<div class="callout">
+<p><strong>In short.</strong> Ham radio CERT EMCOMM mesh integration adds a data layer that works alongside — not instead of — VHF and UHF voice. The mesh carries digital messages, node status, and position data that voice cannot efficiently relay. Waev closes the verification gap: it shows what the mesh is doing before, during, and after an activation, in a form you can hand to a served agency.</p>
+</div>
+
+## Two layers, two jobs
+
+The stack most CERT and ARES/RACES teams already run has voice as its backbone. VHF and UHF voice — ARES nets, simplex tactical channels, the EOC contact frequency — is interoperable, familiar, and required for coordination with first responders and served agencies. It doesn't go away.
+
+A MeshCore data mesh adds a parallel layer. It runs on 915 MHz in the US, does not require an amateur license to operate, and carries structured data: digital messages between field teams and the EOC, periodic node status reports, and GPS position packets from nodes that carry location data. What it does not do is replace voice. A field team can't call for help on a mesh; they can report their status on one.
+
+<Figure caption="The three-layer EMCOMM stack. Layer 1 (voice): VHF/UHF interoperable with the EOC and served agencies. Layer 2 (data): MeshCore LoRa mesh, independent of internet. Layer 3 (analytics): Waev observes and verifies the data layer before, during, and after the activation.">
+  <ReadinessCommStack />
+</Figure>
+
+Running both layers simultaneously is straightforward. Voice traffic happens on its own frequencies; mesh traffic happens on the LoRa channel. Neither blocks the other. Operators who hold amateur licenses can work both. CERT volunteers without licenses can operate the mesh hardware (ISM band, no license required to transmit in the US on 915 MHz under Part 15 rules) and contribute field data without touching the licensed voice net.
+
+## What the mesh adds
+
+**Digital messaging.** Text messages between nodes don't need to compete for airtime on the voice net, don't require a relay operator to transcribe them accurately, and don't get lost in radio noise. For status reports, resource requests, or damage assessments moving between field teams and a logistics function at the operations center, a digital channel is more reliable for structured data than voice.
+
+**Node status and position.** A MeshCore node that transmits periodically sends signal quality and hop-count data that an observer can publish to the broker. From there, Waev shows which nodes are active, whether any have gone silent, and whether hop counts have changed — meaning paths have changed. During an activation, this is a live picture of your data infrastructure's health.
+
+**A record.** Voice communications are ephemeral unless someone is logging. Digital messages and Waev's packet history are timestamped and searchable after the event. That's the after-action review: which nodes were active at which times, where path changes occurred, and what the link quality looked like at the moment a team reported trouble.
+
+## The ARES/RACES fit
+
+ARES (the ARRL's Amateur Radio Emergency Service) and RACES (Radio Amateur Civil Emergency Service) are both structures for licensed amateurs serving emergency management. They operate on amateur frequencies under Part 97 rules and are activated by different authorities — ARES by the ARRL Emergency Coordinator, RACES by a government official.
+
+A MeshCore mesh sits outside both structures in one sense: it's not a licensed amateur operation. It's an ISM-band data network operating under Part 15. A licensed ARES or RACES operator can run the mesh alongside their licensed operations without any conflict — two separate systems, two separate frequency allocations, each doing a distinct job.
+
+What the mesh adds to an ARES/RACES deployment is the data layer that typical voice-only EmComm infrastructure lacks. An ARES net can pass formal traffic and coordinate field operations. A mesh can carry position data and node health telemetry that the voice net isn't designed to handle efficiently.
+
+## The verification gap
+
+Served agencies — EOCs, Red Cross chapters, local emergency management — increasingly ask about network health. "Is your mesh up?" deserves a better answer than "we think so." That gap is what Waev fills.
+
+A baseline built over 30 days before an activation gives you:
+
+<Figure caption="<b>30-day baseline before activation.</b> A network observed continuously surfaces degradation weeks before an event. backbone-main is solid; relay-ridge and relay-east both show watchlist periods before the event window. The pre-event period is when repairs happen.">
+  <GridgoneHealthBaseline />
+</Figure>
+
+The baseline answers the served agency's question with data: these nodes were active as of yesterday, these links are healthy at +11 dB, this relay's packet rate is 45/hour and has been stable for three weeks. That's a health report you can hand to a served agency, not an estimate. For more on building and reading a 30-day baseline, see [what to watch when the grid goes down](/blog/when-the-grid-goes-down/).
+
+## What to add to your go-kit
+
+For a CERT or ARES EMCOMM go-kit with Waev integration, the minimum additions to existing voice equipment:
+
+**One or more MeshCore field nodes.** These are the mesh radios that field teams carry or deploy. Each node can relay packets, send messages, and broadcast status. No internet connection required at the field level.
+
+**One observer node.** This is a MeshCore-compatible device running gateway firmware that connects to your MQTT broker over TCP/IP. Positioned at your operations center, where internet access is available. This is the bridge between the radio mesh and the Live Map. Without it, the mesh operates but is not visible.
+
+**A broker.** Self-hosted (Mosquitto on a Raspberry Pi or a VPS) or third-party. The observer publishes to the broker; Waev subscribes and reads. The data stays with you — [bring-your-own-broker](/blog/bring-your-own-broker/) means you hold the keys. A served agency asking about data custody gets a simple answer: the data is on your broker.
+
+**A Waev account connected to the broker.** This is the analytics layer. Connect it before any exercise and start the baseline. By activation day, you'll have weeks of context.
+
+## The readiness drill
+
+Integrate the mesh into your regular exercises the same way voice is integrated: as a parallel capability that gets tested under realistic conditions.
+
+Before any exercise, run the readiness check: baseline in Network Stats, topology review in Live Map for SPOFs, packet rate from sentinels in Outpost. During the exercise, have the operations center monitor the Live Map while field teams operate. After the exercise, use Packet Search to review the timeline and write up findings.
+
+If the exercise reveals a marginal link or a relay that needs repositioning, that's the finding. It's better as a finding during a drill than as a surprise during an activation.
+
+---
+
+Questions about integrating mesh data into your CERT or ARES EMCOMM kit, or preparing for an upcoming exercise? [Write to us](mailto:admin@waev.app). We're glad to help with pre-exercise reviews.
+
+{/* ILLUSTRATION PROMPT: A hand-painted warm flat illustration — close-up of a wooden worktable top with two radios sitting side by side: a classic VHF handheld transceiver (HT) and a small LoRa/MeshCore node with a stubby antenna. Both look functional and lived-in, not shiny. Warm overhead workshop light, earthy tones. No figures, no screens, no UI. The visual story is two tools side by side, each with a job, the pairing obvious and matter-of-fact. Still life composition. */}
