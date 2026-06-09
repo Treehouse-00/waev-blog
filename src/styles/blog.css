@@ -86,7 +86,7 @@
 
 .post-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-container), 0 8px 30px rgba(62, 62, 150, 0.18);
+  box-shadow: var(--shadow-container), 0 8px 30px rgba(28, 66, 149, 0.18);
 }
 
 /* The title link covers the whole card (stretched link); real links inside
@@ -455,7 +455,7 @@ a.tag:hover {
 /* ── Pull-quote / callout (≡ About's `.about-card--highlight`) ── */
 .prose blockquote,
 .callout {
-  border-left: 3px solid var(--sys-bluepurple-500);
+  border-left: 3px solid var(--sys-purpleblue-500);
   padding: 0 0 0 var(--sp-6);
   margin: var(--sp-8) 0;
   max-width: 64ch;
@@ -634,7 +634,7 @@ a.tag:hover {
 
 .featured:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-container), 0 10px 36px rgba(62, 62, 150, 0.2);
+  box-shadow: var(--shadow-container), 0 10px 36px rgba(28, 66, 149, 0.2);
 }
 
 /* Stretched title link (same pattern as .post-card) */
