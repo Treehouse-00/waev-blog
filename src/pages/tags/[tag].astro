@@ -61,10 +61,10 @@ const collectionPage = {
       <p class="tag-page-count">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
     </header>
 
-    <ul class="post-list">
+    <ul class="post-list post-list--grid">
       {posts.map((post) => (
         <li>
-          <a class="card post-card" href={`/blog/${post.id}/`}>
+          <div class="card post-card">
             {post.data.hero && (
               <div class="post-card-cover">
                 <img src={post.data.hero.src} alt="" loading="lazy" decoding="async" />
@@ -77,11 +77,13 @@ const collectionPage = {
                   <a href={`/tags/${t}/`} class="tag">{t}</a>
                 ))}
               </div>
-              <h2 class="post-card-title">{post.data.title}</h2>
+              <h2 class="post-card-title">
+                <a class="post-card-link" href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h2>
               <p class="post-card-desc">{post.data.description}</p>
               <span class="post-card-more">Read →</span>
             </div>
-          </a>
+          </div>
         </li>
       ))}
     </ul>

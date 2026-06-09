@@ -75,10 +75,11 @@
 }
 
 .post-card {
+  position: relative;
   display: grid;
   gap: var(--sp-3);
+  align-content: start;
   padding: var(--card-pad-hero);
-  text-decoration: none;
   color: inherit;
   transition: transform var(--dur-short-3) var(--ease-standard),
     box-shadow var(--dur-short-3) var(--ease-standard),
@@ -87,8 +88,48 @@
 
 .post-card:hover {
   transform: translateY(-2px);
-  text-decoration: none;
   box-shadow: var(--shadow-container), 0 8px 30px rgba(62, 62, 150, 0.18);
+}
+
+/* The title link covers the whole card (stretched link); real links inside
+   (tags) sit above it via z-index so they remain independently clickable.
+   This avoids invalid nested <a> while keeping the full card clickable. */
+.post-card-body {
+  display: grid;
+  gap: var(--sp-3);
+  align-content: start;
+}
+
+.post-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.post-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--shape-xl);
+}
+
+.post-card .tag {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cover image — fixed aspect so the grid stays even */
+.post-card-cover {
+  border-radius: var(--shape-lg);
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+.post-card-cover img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
 }
 
 .post-card-meta {
@@ -581,6 +622,7 @@ a.tag:hover {
    ═══════════════════════════════════════════════════════════════════════ */
 
 .featured {
+  position: relative;
   display: block;
   padding: var(--card-pad-hero);
   border-radius: var(--shape-xl);
@@ -588,7 +630,6 @@ a.tag:hover {
   border: var(--container-border);
   box-shadow: var(--shadow-container);
   margin-block: var(--sp-2) var(--sp-12);
-  text-decoration: none;
   color: inherit;
   transition: transform var(--dur-short-3) var(--ease-standard),
     box-shadow var(--dur-short-3) var(--ease-standard);
@@ -596,8 +637,26 @@ a.tag:hover {
 
 .featured:hover {
   transform: translateY(-2px);
-  text-decoration: none;
   box-shadow: var(--shadow-container), 0 10px 36px rgba(62, 62, 150, 0.2);
+}
+
+/* Stretched title link (same pattern as .post-card) */
+.featured-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.featured-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--shape-xl);
+}
+
+.featured-meta .tag {
+  position: relative;
+  z-index: 1;
 }
 
 .featured-meta {
