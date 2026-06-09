@@ -55,7 +55,7 @@ ADVERT packets tend to dominate a newly connected observer's stream, because rep
 
 ## The first packet usually says "I'm here"
 
-When your observer first comes online and Waev connects to your broker, the first packets to appear are almost always ADVERTs from nearby repeaters or companion radios. This is expected: repeaters broadcast adverts on a schedule (typically every few hours, or sooner if they have been recently powered on), and the first advert you see from a given node is that node introducing itself to your observer.
+When your observer first comes online and Waev connects to your broker, the first packets to appear are almost always ADVERTs from nearby repeaters or companion radios. This is expected: repeaters broadcast adverts on a schedule (the interval varies by firmware version and node configuration, and nodes also send one sooner after they power on), and the first advert you see from a given node is that node introducing itself to your observer.
 
 If you see an ADVERT from a node you recognize — a repeater you deployed, a club member's radio — it is confirmation the mesh is reaching your observer and the pipeline from radio to Live Packets is working end-to-end. That is the milestone. Everything else is the network doing what it always does; now you can watch it.
 
