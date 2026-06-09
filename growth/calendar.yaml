@@ -504,7 +504,7 @@ posts:
     theme: own-your-ground
     primary_keyword: "can a mesh analytics service write to my broker"
     secondary_keyword: "read-only MQTT subscriber model"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-11-15
