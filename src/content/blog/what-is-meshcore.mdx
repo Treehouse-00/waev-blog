@@ -1,11 +1,11 @@
 ---
 title: "What Is MeshCore?"
-description: "What is MeshCore? It's open-source LoRa firmware for building decentralized off-grid mesh networks from low-cost hardware — here's how it works and how to start."
+description: "What is MeshCore? Open-source LoRa firmware for off-grid multi-hop mesh networks — no internet, no account, end-to-end encrypted."
 date: 2026-09-01
 tags: ["primer", "meshcore"]
 hero:
   src: "/hero-what-is-meshcore.jpg"
-  alt: "A warm hand-painted bird's-eye illustration of a small neighborhood, three rooftops glowing softly with gentle arcs connecting them in the afternoon light."
+  alt: "A warm hand-painted bird's-eye illustration of a small neighborhood, three rooftops each with a small antenna icon, connected by gentle arcs in the afternoon light."
 faq:
   - q: "What is MeshCore?"
     a: "MeshCore is open-source firmware (MIT license) for LoRa radio hardware that creates a multi-hop mesh network for off-grid messaging and data relay, with no internet or cellular infrastructure required."
@@ -38,7 +38,7 @@ The network is fully decentralized. There's no central server, no account to cre
 
 ## Three firmware roles
 
-Not every node does the same job. MeshCore has three firmware types, each with a specific role:
+Not every node does the same job. For everyday mesh use, MeshCore defines three main firmware roles:
 
 <Figure caption="The three MeshCore firmware roles and how they connect. Companions pair with the app via BLE. Repeaters extend range by relaying packets. Room Servers store group messages for members who are temporarily out of range.">
   <PrimerNodeRoles />
@@ -52,7 +52,7 @@ Not every node does the same job. MeshCore has three firmware types, each with a
 
 ## Encryption, out of the box
 
-Messages on MeshCore are end-to-end encrypted using AES-256. Direct messages between two contacts use a shared key derived from their cryptographic handshake. Public channels use a channel key. The radio traffic that travels over the air is ciphertext — repeaters relay it without decrypting.
+Messages on MeshCore are end-to-end encrypted using AES-128. Direct messages between two contacts use a shared key derived from their cryptographic handshake. Public channels use a channel key. The radio traffic that travels over the air is ciphertext — repeaters relay it without decrypting.
 
 That encryption is not a feature you configure. It's the default state from the first packet you send.
 
@@ -68,4 +68,4 @@ From there, SNR readings in the companion app and in Waev's Live Packets view te
 
 Waev is a separate analytics layer, not a replacement for MeshCore firmware or the companion app. Where MeshCore handles the radio and the messages, Waev subscribes to the MQTT stream from enrolled observers and surfaces the data — live packet feeds, per-link SNR, network topology, node history. If you're building a community mesh or running infrastructure other people depend on, the analytics layer is where you verify that the network is doing what you think it's doing.
 
-{/* ILLUSTRATION PROMPT: A warm, hand-painted flat illustration showing an aerial view of a small neighborhood from above — three different rooftops, each with a tiny glowing node, connected by gentle curved arcs in a muted blue. Warm afternoon light, earthy amber and terracotta palette with the blue arcs as the single accent. Painterly texture. Breathing room around the subject. The subject is the mesh as neighborhood phenomenon — human and grounded, nothing hi-tech or neon. */}
+{/* ILLUSTRATION PROMPT: A warm, hand-painted flat illustration showing an aerial view of a small neighborhood from above — three different rooftops, each marked by a small muted radio antenna icon, connected by gentle curved arcs in a warm terracotta-blue. Warm afternoon light, earthy amber and terracotta palette with the arcs as the single accent. Painterly texture. Breathing room around the subject. The subject is the mesh as neighborhood phenomenon — human and grounded, nothing hi-tech or neon. */}
