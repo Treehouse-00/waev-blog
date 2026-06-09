@@ -1,6 +1,6 @@
 ---
 title: "Same Hardware, Different Net"
-description: "MeshCore and Meshtastic run on the same LoRa hardware but make fundamentally different routing choices. Here is what that means in practice — for range, for scale, and for where each fits."
+description: "MeshCore and Meshtastic run on the same LoRa hardware but choose different routing models. Here is what that means for range, scale, and where each fits."
 date: 2026-09-24
 tags: ["operations", "comparison"]
 hero:
@@ -40,7 +40,7 @@ MeshCore uses hybrid source routing. When Node A wants to reach Node B for the f
   <ComparisonRoutingModels />
 </Figure>
 
-The immediate consequence is channel efficiency. In a Meshtastic network with 30 active nodes, a single message generates dozens of rebroadcasts across the network. In an established MeshCore network, a direct message to a known contact generates forwarding events only at the two or three repeaters on the learned path. Meshtastic's documentation notes that network performance begins to degrade around 100 nodes on a single channel due to congestion and hardware memory constraints (source: Meshtastic firmware documentation). MeshCore's design does not have this ceiling in the same way, because the routing overhead scales with path length, not network size.
+The immediate consequence is channel efficiency. In a Meshtastic network with 30 active nodes, a single message generates dozens of rebroadcasts across the network. In an established MeshCore network, a direct message to a known contact generates forwarding events only at the two or three repeaters on the learned path. Meshtastic's firmware applies automatic congestion scaling above 40 active nodes, stretching broadcast intervals to keep the channel manageable — an acknowledgment that flood routing needs active management at scale (source: Meshtastic firmware, `congestionScalingCoefficient` in Default.h). MeshCore's design does not have this ceiling in the same way, because the routing overhead scales with path length, not network size.
 
 ## Node roles
 
