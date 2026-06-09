@@ -167,7 +167,7 @@ posts:
     series: from-the-field
     primary_keyword: "CERT mesh network activation"
     secondary_keyword: "storm response mesh communications"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-08

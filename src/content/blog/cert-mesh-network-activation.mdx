@@ -1,0 +1,102 @@
+---
+title: "Before the Call Comes In"
+description: "A CERT mesh activation succeeds or fails based on work done weeks earlier — baselining, topology review, and SPOF identification before any incident begins."
+date: 2026-09-06
+tags: ["resilience", "cert-emcomm", "operations"]
+hero:
+  src: "/hero-cert-mesh-network-activation.jpg"
+  alt: "A hand-painted still life of a go-kit laid open on a workbench: radios, cables, and a notebook with a hand-drawn network diagram, warm afternoon light, calm and prepared."
+faq:
+  - q: "What is a CERT mesh network activation?"
+    a: "A CERT mesh network activation is the process of bringing a pre-deployed MeshCore mesh into operational status during an emergency — verifying that the expected nodes are online, that critical paths are intact, and that the team's observer is forwarding packets to the broker. The activation itself is brief; the work that makes it reliable happens in the weeks before the call comes in."
+  - q: "How do I know if my CERT mesh is ready before an incident?"
+    a: "Build a baseline. Watch your network's health in Network Stats and Outpost long enough to know what normal looks like — typical SNR on critical links, usual hop count to remote nodes, expected packet rate from sentinel relays. A network that's been observed for 30 days before a storm season gives you a meaningful pre-event picture. A network you haven't looked at since the last exercise gives you only a memory."
+  - q: "What should I check when activating a mesh during a CERT callout?"
+    a: "Three things immediately: which nodes have checked in to the Live Map, whether hop counts match your pre-event baseline, and whether your observer is forwarding packets to the broker. A node that gained hops since your last check found an alternate path, which means its primary path failed. A node that went silent entirely is either offline or physically unreachable. The baseline tells you which of those is unusual."
+  - q: "How does ham radio relate to a CERT mesh network?"
+    a: "They serve different roles. VHF and UHF voice (typically operated by licensed ARES or RACES volunteers) carries tactical communications between team members and served agencies. A MeshCore mesh carries structured data: node status, position reports, digital messaging. Both can run simultaneously; neither replaces the other. If your CERT team includes licensed hams, the mesh and voice nets are complementary layers."
+  - q: "What is a single point of failure in a CERT mesh, and how do I find one?"
+    a: "A single point of failure is a relay node that is the only path for a cluster of downstream nodes. If it fails, everything behind it goes silent. SPOFs appear in the Live Map topology: look for relay nodes whose failure would isolate a branch. Before storm season, identify your SPOFs and either add redundant paths or flag those nodes for priority maintenance and field verification."
+---
+
+import Figure from "../../components/Figure.astro";
+import GridgoneHealthBaseline from "../../components/viz/gridgone-HealthBaseline.astro";
+import GridgoneCriticalPath from "../../components/viz/gridgone-CriticalPath.astro";
+
+The call comes in at 0730. A storm made landfall overnight, cell towers are saturated, and your CERT team is activating to support the local EOC. You pull up your mesh dashboard.
+
+What you see in the next thirty seconds — which nodes are up, which links are holding, where the topology has gaps — determines how useful your mesh is for the next twelve hours. But what you can *interpret* in those thirty seconds was determined three weeks ago, when you last looked at the health baseline.
+
+<div class="callout">
+<p><strong>In short.</strong> A CERT mesh network activation is not a moment; it's the consequence of preparation. The mesh checks out quickly if you know what to expect. You know what to expect if you've been watching it. Thirty days of quiet baseline data is worth more on activation morning than any procedure written in a binder.</p>
+</div>
+
+## The activation is the easy part
+
+Getting nodes online, confirming your observer is publishing to the broker, verifying that the Live Map populates — that takes minutes. What takes weeks is building the context to read it correctly.
+
+When relay-ridge shows four hops instead of two, is that a reroute or a failure? When field-unit-3 goes silent, is it offline or just out of range of the closest observer? When SNR on your backbone link drops from +11 dB to +4 dB overnight, is that antenna degradation, RF interference, or a physical mount issue?
+
+Without a baseline, every one of those is a question. With one, most of them are answers.
+
+The baseline you need isn't complicated. Watch your network in Network Stats and Outpost for 30 days before activation season. Note the typical SNR on each critical link. Record the usual hop count to your most remote nodes. Know your sentinel relay's expected packet rate. That's the whole thing. But it has to be done before you need it.
+
+<Figure caption="<b>30-day baseline for three nodes.</b> backbone-main holds steady. relay-ridge degrades into watchlist two weeks before the event — the repair window was open and visible. relay-east shows the same pattern, shorter. The event-window is too late to fix either; the pre-event period is where the work lives.">
+  <GridgoneHealthBaseline />
+</Figure>
+
+## Topology review: find the SPOFs before the storm does
+
+Before each season of elevated risk — storm season, wildfire season, the weeks before a planned exercise — do one topology review. You're looking for single points of failure.
+
+A SPOF is a relay node that is the only path for a cluster of downstream nodes. If it fails, everything behind it goes silent simultaneously. The Live Map makes SPOFs visible: trace any node back toward your observer, and ask whether any single relay is the sole bridge for a branch. If the answer is yes, that's a SPOF.
+
+Two options when you find one: add a redundant path (a second relay with an overlapping coverage zone), or move it to the priority maintenance list. A SPOF that's on your radar is manageable. One you discover on activation morning is a surprise you don't need.
+
+<Figure caption="<b>relay-ridge is a SPOF.</b> Three cluster nodes sit entirely behind it — if it fails, they go silent. A marginal fallback path exists at +3 dB and 4 hops, but under stress conditions that link won't hold. Find this in a topology review, not during an activation.">
+  <GridgoneCriticalPath />
+</Figure>
+
+The topology review also surfaces marginal links: nodes holding at +2 or +3 dB, paths that require four or five hops where two used to be enough. These are the links that fail first under any additional stress — traffic load, weather, power fluctuation. A link that was +8 dB at initial deployment and is now holding at +3 dB didn't move; something in its path degraded. Waev shows you when that happened.
+
+Siting a second relay to eliminate a SPOF follows the same logic covered in [how to choose where to put your next repeater](/blog/where-to-put-your-next-repeater/) — the question is which coverage zone needs to overlap and at what SNR the overlap path needs to hold.
+
+## Pre-activation checklist
+
+In the days before a forecast event or a scheduled activation, run through this list:
+
+**Confirm your observer is online.** A node publishing to your broker is the only source of topology data. If the observer's internet connection is down, the map won't update. Verify the observer is reachable and publishing before activation day.
+
+**Check packet rates from sentinel relays.** Sentinel relays — those field nodes that transmit periodically to prove they're alive — are your canaries. In Outpost, pull the 7-day packet rate for each sentinel. A sentinel at 30+ packets per hour that's now at five has a problem. That's a field check before activation, not a question during it.
+
+**Review the last 30-day SNR trends for critical links.** Degrading SNR means a degrading link. If the trend is down, know why or flag it.
+
+**Identify any nodes in watchlist or silent status.** These are nodes with reduced or absent packet rates. For each one: is the cause known? Is a repair possible before activation? If not, update your operational picture — that node may not be available.
+
+**Confirm your broker is reachable from the field.** Your observer needs to publish to the broker. Your operations center needs to read from Waev. Both paths need to be verified before activation day, not assumed.
+
+## During the activation
+
+Once the event is underway, the work is triage. Two signals matter most:
+
+**Hop count increases.** A node that gained hops found an alternate path — its primary path failed. The mesh is still connected; the topology changed. Note which node, when it changed, and whether the alternate path is stable enough to hold.
+
+**New silent nodes.** When a node drops off the Live Map, check its neighbors in Live Packets. Neighbors active, node silent: a node-specific issue (power, hardware, antenna). Neighbors also degraded: a path failure upstream. The distinction tells you where to send the field team.
+
+Because you built a baseline, you know what "normal" looks like for each node on your mesh. A hop-count change that was already present before the event isn't an activation-day failure. One that appeared after 0730 is.
+
+For a more detailed breakdown of what to watch in Live Packets during an event and how to read the signs of a developing failure, see [what to do when the grid goes down](/blog/when-the-grid-goes-down/).
+
+## After the activation
+
+Packet Search is where you close the loop. Pull the traffic window for your critical nodes during the activation. Find the inflection points: where packet rate dropped, where hop count changed, where SNR fell below threshold. Write those up as findings. Turn the findings into infrastructure improvements before the next event.
+
+The after-action review isn't optional. It's how the mesh gets better — and better means more nodes ready when the next call comes in.
+
+---
+
+The mesh that activates reliably isn't the one you tested once. It's the one you've been watching. [Start your 30-day baseline at waev.app](https://waev.app) — and see what the network looks like on a quiet Tuesday, before it matters.
+
+Questions before an upcoming activation or exercise? [Write to us](mailto:admin@waev.app).
+
+{/* ILLUSTRATION PROMPT: A hand-painted warm flat illustration of an open go-kit on a workbench — the kit lays flat, showing neatly arranged radios, coiled cables, and a notebook with a hand-drawn network topology diagram. No screens, no UI, no maps-on-screens. The mood is calm and prepared, like a craftsperson's bench before a job, not a crisis. Warm afternoon light, earthy tones with one restrained accent color. No figures, no landscapes. The subject is the kit itself, as still life. */}
