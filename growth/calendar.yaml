@@ -364,7 +364,7 @@ posts:
     theme: knowing-over-guessing
     primary_keyword: "dedicated MeshCore gateway node or shared"
     secondary_keyword: "where to run your mesh MQTT gateway"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-18
