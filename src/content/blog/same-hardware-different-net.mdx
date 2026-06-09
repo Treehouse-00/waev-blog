@@ -1,0 +1,90 @@
+---
+title: "Same Hardware, Different Net"
+description: "MeshCore and Meshtastic run on the same LoRa hardware but make fundamentally different routing choices. Here is what that means in practice — for range, for scale, and for where each fits."
+date: 2026-09-24
+tags: ["operations", "comparison"]
+hero:
+  src: "/hero-same-hardware-different-net.jpg"
+  alt: "A hand-painted illustration of two differently-styled radio antennas mounted side by side on a simple wooden post, identical in height but distinct in form, against an open warm sky."
+faq:
+  - q: "What is the main difference between MeshCore and Meshtastic?"
+    a: "The routing model. Meshtastic uses managed flood routing: when a node sends a message, every node that hears it rebroadcasts it to its neighbors, cascading outward until the hop limit is reached. MeshCore uses hybrid source routing: the first message to a destination floods the mesh to discover a path, then all subsequent messages travel directly along that learned path. The flood-first model is simpler and works well for small ad-hoc groups; the route-first model reduces channel traffic significantly at scale."
+  - q: "Can MeshCore and Meshtastic devices communicate with each other?"
+    a: "No. They use different, incompatible protocols. A device running Meshtastic firmware cannot receive or understand a MeshCore packet, and vice versa, even when using the same hardware and frequency band. They are different digital languages on the same radio hardware."
+  - q: "Which is better for emergency communications, MeshCore or Meshtastic?"
+    a: "Neither is strictly better — they fit different scenarios. For a small, mobile team that needs instant ad-hoc coverage with no infrastructure planning, Meshtastic's zero-setup flood model works well. For a county-scale emergency communications network with fixed hilltop repeaters and dozens or hundreds of nodes, MeshCore's directed routing and 64-hop limit scale better without channel congestion. Many EMCOMM groups run both."
+  - q: "Can the same hardware run both MeshCore and Meshtastic?"
+    a: "Yes, on many common devices — Heltec V3, LilyGO T-Deck, RAK WisBlock platforms, and others support both firmware projects. Switching between them requires reflashing the device. You cannot run both protocols simultaneously on a single device."
+  - q: "Why does MeshCore support 64 hops but Meshtastic caps at 7?"
+    a: "Because MeshCore's directed routing does not amplify traffic at each hop. In flood routing, every hop exponentially increases the number of rebroadcasts, so a hard cap is necessary to prevent network saturation. In MeshCore's source routing, only the specific repeaters on the learned path forward each message — adding more hops does not increase channel load for the rest of the network."
+---
+
+import Figure from "../../components/Figure.astro";
+import ComparisonRoutingModels from "../../components/viz/comparison-RoutingModels.astro";
+
+MeshCore and Meshtastic are both open-source LoRa mesh firmware projects. Both run on the same affordable hardware. Both operate license-free in the 915 MHz ISM band in the US. Both enable off-grid text communication without cell towers or internet infrastructure. They are, to a first approximation, the same idea on the same radio.
+
+Under that surface similarity is a single architectural decision that makes them behave very differently at scale, and understanding that decision is what tells you which one fits your situation.
+
+<div class="callout">
+<p><strong>In short.</strong> MeshCore vs Meshtastic is a routing question. Meshtastic floods every message outward through every available node — which makes it work instantly without planning, but generates network-wide traffic for every message. MeshCore floods once to find a path, then routes all subsequent traffic directly along that path — which requires fixed repeater infrastructure but produces a network that handles scale without channel congestion. Neither is better; each is right for the network it was designed for.</p>
+</div>
+
+## The routing decision
+
+Meshtastic uses managed flood routing. When Node A sends a message, every node within range rebroadcasts it. Each of those nodes rebroadcasts it to their neighbors. The cascade continues until the hop limit is reached (default 3, maximum 7 in the current firmware). Every node participates; no planning required.
+
+MeshCore uses hybrid source routing. When Node A wants to reach Node B for the first time, it sends a discovery packet that floods the mesh — similar to Meshtastic. When that packet reaches Node B, it returns an acknowledgment carrying the complete path it traveled: the ordered sequence of repeater identities from A to B. Node A caches that path and embeds it in the header of all subsequent messages. Repeaters check whether their identity is the designated next hop in the path header; if yes, they forward; if not, they discard the packet. The network-wide broadcast happens once per destination, not once per message.
+
+<Figure caption="<b>Left:</b> Flood routing — every node relays to all neighbors, cascading outward. The hop limit controls the radius. <b>Right:</b> Source routing — a discovery flood finds the path (①), the path is learned and embedded (②), all subsequent messages route directly (③). Only path repeaters forward.">
+  <ComparisonRoutingModels />
+</Figure>
+
+The immediate consequence is channel efficiency. In a Meshtastic network with 30 active nodes, a single message generates dozens of rebroadcasts across the network. In an established MeshCore network, a direct message to a known contact generates forwarding events only at the two or three repeaters on the learned path. Meshtastic's documentation notes that network performance begins to degrade around 100 nodes on a single channel due to congestion and hardware memory constraints (source: Meshtastic firmware documentation). MeshCore's design does not have this ceiling in the same way, because the routing overhead scales with path length, not network size.
+
+## Node roles
+
+This routing difference determines how node roles are structured — which changes what network planning looks like.
+
+In Meshtastic, every node is a potential relay by default. There are role settings (CLIENT, ROUTER, REPEATER, and others) that tune how aggressively a node rebroadcasts, but the base expectation is peer-to-peer equivalence. A Meshtastic network assembles itself from whoever happens to be powered on.
+
+MeshCore separates roles more explicitly. Companion radios — the devices people carry in their pockets, connected to their phones via Bluetooth — do not relay traffic by default. Their job is to send and receive. Dedicated repeaters, running repeater firmware, are the routing infrastructure. They are the nodes that forward packets along learned paths, and they are typically deployed at fixed elevated sites: hilltops, rooftops, water towers. Room servers are a third role: persistent message stores that hold messages for offline users, similar to a store-and-forward email system.
+
+The practical implication: to use MeshCore on a network that spans more than a few kilometers, you need deployed infrastructure — fixed repeaters with power. In exchange, the handheld devices in pockets do not relay traffic, which means their radio duty cycle is lower and battery life is meaningfully longer than a Meshtastic device in relay mode.
+
+## What each fits
+
+Meshtastic is the right choice when:
+- A group needs mesh communication now, with no infrastructure and no planning
+- The network will move (hiking teams, field operations, events)
+- The nodes are fewer than a few dozen in a small geographic area
+- GPS tracking and live position sharing matter — Meshtastic treats location as a first-class feature
+
+MeshCore is the right choice when:
+- The network needs to cover a large area reliably, with dozens to hundreds of nodes
+- Fixed infrastructure is feasible (hilltop repeaters, rooftop nodes)
+- Channel efficiency matters — the network will carry significant traffic volume
+- Long-hop chains are required (regional networks, geographic separation)
+- Message persistence for offline users is useful (Room Server store-and-forward)
+
+Many serious EMCOMM groups run both: Meshtastic for ad-hoc mobile units and tactical teams, MeshCore on the backbone infrastructure where the repeaters are permanently mounted.
+
+## The compatibility question
+
+Meshtastic and MeshCore are not compatible. A device running Meshtastic firmware cannot receive or decode a MeshCore packet, even on the same frequency and hardware. They are different protocols.
+
+This matters for planning: a deployment decision in either direction commits the repeater infrastructure to one protocol. Switching the backend infrastructure is a reflash operation, not a configuration change.
+
+## Where Waev fits
+
+Waev works with MeshCore specifically. Waev's observer model — enrolling MeshCore nodes over MQTT as the data source for topology, Network Stats, and Live Packets — depends on MeshCore's authenticated repeater and MQTT gateway architecture. An enrolled observer publishes the RF packets it hears, and Waev builds a verified topology from those reports. For more on how that pipeline works, see [From Radio to Map](/blog/how-waev-reads-your-mesh/).
+
+The evidence-based topology that Waev builds — edges drawn only from enrolled observers and authenticated repeaters — is a property of MeshCore's architecture: repeaters have cryptographic identities, and the packets they forward carry verifiable signatures. That verification chain does not exist in the same form on Meshtastic, which is why Waev is MeshCore-native. This is not a statement about which protocol is better for any given use case; it is a statement about where Waev plugs in.
+
+For more on signal metrics — SNR, hop count, and what they tell you about link quality — see [Reading the Signal](/blog/reading-the-signal/).
+
+---
+
+Both projects are actively developed by volunteer communities doing real work. Credit to the Meshtastic project and its maintainers for building the ecosystem that made LoRa mesh accessible to the broad community. Credit to the MeshCore project for the routing architecture that makes regional-scale mesh practical. The comparison above describes tradeoffs, not a verdict.
+
+{/* ILLUSTRATION PROMPT: Hand-painted warm illustration, sparse and composed. Two differently-styled radio antennas mounted side by side on a simple plain wooden post — one a straight whip, one a short stub — identical in mounting height but visually distinct in form. Open warm sky behind them, nothing else. No landscape, no figures, no tech details. The mood: two different tools, same family, evaluated on their own terms. Warm cream and earth tones, painterly, thumbnail-readable. */}
