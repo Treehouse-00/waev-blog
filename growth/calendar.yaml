@@ -399,7 +399,7 @@ posts:
     theme: knowing-over-guessing
     primary_keyword: "spoofed node prefix on a mesh map"
     secondary_keyword: "why inferred mesh edges are rejected"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-25
