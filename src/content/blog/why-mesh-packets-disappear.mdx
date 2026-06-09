@@ -1,6 +1,6 @@
 ---
 title: "Why Mesh Packets Disappear"
-description: "Four reasons a LoRa mesh packet silently fails to arrive — RF margin, collision, duty-cycle holds, and coverage gaps — and how to tell them apart in Live Packets."
+description: "Four reasons a LoRa mesh packet disappears — RF margin, collision, duty-cycle hold, and coverage gap — and how to tell them apart in Live Packets."
 date: 2026-10-06
 tags: ["signal", "deep-dive"]
 hero:
@@ -43,7 +43,7 @@ This means the only way to detect packet loss is to notice absence: a node that 
 
 ## Failure mode 1: RF margin
 
-The most common cause. LoRa uses chirp spread spectrum, which lets it decode signals below the noise floor. But that capability has a floor of its own: at typical MeshCore spreading factors and bandwidths, there is a minimum SNR below which the receiver simply cannot decode. According to Semtech's specifications, the demodulation floor for SF9 (a common MeshCore setting) is approximately −12.5 dB SNR; for SF10 it's −15 dB. A link running at +3 dB SNR may appear healthy but has limited margin above the demodulation floor.
+The most common cause. LoRa uses chirp spread spectrum, which lets it decode signals below the noise floor. But that capability has a floor of its own: at typical MeshCore spreading factors and bandwidths, there is a minimum SNR below which the receiver simply cannot decode. According to Semtech's specifications, the demodulation floor for SF9 (a common MeshCore setting) is approximately −12.5 dB SNR; for SF10 it's −15 dB. A link running at +3 dB SNR may appear healthy but sits close to the thermal noise floor — modest SNR variability from weather, vegetation, or local interference can push the received signal below the demodulation threshold.
 
 When a weather change, seasonal vegetation, a misaligned antenna, or increased local interference erodes those margins, the link falls silent. Packets arrive at the antenna and disappear.
 
