@@ -144,7 +144,7 @@ posts:
     series: signal-glossary
     primary_keyword: "what is MeshCore"
     secondary_keyword: "MeshCore mesh radio explained"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-03
@@ -155,7 +155,7 @@ posts:
     theme: ready-before-it-matters
     primary_keyword: "hurricane season mesh network prep"
     secondary_keyword: "comms plan before the storm makes landfall"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-06
@@ -295,7 +295,7 @@ posts:
     theme: power-of-refusal
     primary_keyword: "what data a mesh analytics tool stores"
     secondary_keyword: "anonymous signal metadata SNR hops timing"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-04
@@ -307,7 +307,7 @@ posts:
     series: from-the-field
     primary_keyword: "mesh networking at a hamfest"
     secondary_keyword: "MeshCore hamfest demo"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-10-06
