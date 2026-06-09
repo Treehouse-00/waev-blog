@@ -198,7 +198,6 @@ a.tag:hover {
   gap: var(--sp-3);
   padding-block: var(--sp-4);
   margin-bottom: var(--sp-8);
-  border-bottom: 1px solid var(--border-subtle);
 }
 
 .topic-bar-label {
@@ -687,13 +686,13 @@ a.tag:hover {
 }
 
 .featured-title {
-  font-size: clamp(var(--fs-headline-md), 4vw, var(--fs-display-sm));
-  line-height: 1.08;
-  letter-spacing: var(--ls-display-sm);
+  font-size: clamp(var(--fs-headline-lg), 5vw, var(--fs-display-md));
+  line-height: 1.06;
+  letter-spacing: var(--ls-display-md);
   color: var(--text);
   margin-bottom: var(--sp-4);
-  max-width: 20ch;
-  text-wrap: balance;
+  max-width: none;
+  text-wrap: pretty;
 }
 
 .featured-desc {
