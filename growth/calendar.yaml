@@ -202,7 +202,7 @@ posts:
     series: why-we
     primary_keyword: "evidence based mesh network map"
     secondary_keyword: "why a mesh map should show only what it can prove"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-15
