@@ -1,0 +1,88 @@
+---
+title: "A Mesh That Grows Block by Block"
+description: "A block by block neighborhood mesh buildout works when the mesh solves a real problem for each new household that joins — here is the pattern that holds."
+date: 2026-10-25
+tags: ["community", "field-notes"]
+hero:
+  src: "/hero-block-by-block-neighborhood-mesh-buildout.jpg"
+  alt: "A warm hand-painted aerial view of a few residential blocks at dusk, with small lit nodes visible on a few rooftops and faint connecting lines between them — a mesh that is still growing."
+faq:
+  - q: "What is a block by block neighborhood mesh buildout?"
+    a: "A block by block neighborhood mesh buildout is the process of extending a local MeshCore mesh network progressively through a residential area — one or two households at a time — rather than trying to cover everything at once. Each expansion adds a node where a specific coverage gap exists and a neighbor is willing to host it."
+  - q: "How many nodes do I need to start a neighborhood mesh?"
+    a: "Two nodes on the same street are enough to start. One at your house and one at a willing neighbor's house gives you a first working link, a shared channel, and proof of concept to show the next interested household. The mesh grows as more people join, not as a precondition for it."
+  - q: "What is the biggest challenge in a neighborhood mesh buildout?"
+    a: "The biggest challenge is social, not technical. Convincing a neighbor to host a node is harder than buying and configuring one. The network grows at the pace of trust, not at the pace of hardware purchases. A mesh that expands faster than the community's willingness to maintain it tends to atrophy as nodes go offline and nobody fixes them."
+  - q: "How does Waev help with a neighborhood mesh buildout?"
+    a: "Waev's Live Map shows you exactly where your observer's coverage ends and where the gaps are. Network Stats shows which nodes are reliably active versus intermittent. Together they make the next expansion decision concrete: here is the gap, here is the coverage from a potential node placement, here is the node you need to bring back online."
+  - q: "Who owns the data from a neighborhood mesh network?"
+    a: "Under a bring-your-own-broker (BYOB) architecture, the community that hosts the MQTT broker owns the data. Waev connects as a read-only subscriber and cannot alter or delete anything on the broker. If the community decides to stop using Waev, the data stays on the broker under the community's control."
+---
+
+import Figure from "../../components/Figure.astro";
+import PlaybookCoverageGap from "../../components/viz/PlaybookCoverageGap.astro";
+import PlaybookRepeaterImpact from "../../components/viz/PlaybookRepeaterImpact.astro";
+
+The first question people ask about a neighborhood mesh is usually the wrong one: how many nodes do I need to cover the whole area?
+
+The right question is: who is willing to host the second one?
+
+A block by block neighborhood mesh buildout is a social project that happens to use radio hardware. The topology grows as the community grows, and the community grows as each new participant finds the network genuinely useful. Planning for full coverage before you have two working nodes in place is planning for hardware that sits in a closet.
+
+<div class="callout">
+<p><strong>In short.</strong> A block by block neighborhood mesh buildout starts with two nodes on your block, not twenty nodes across the neighborhood. Expand by solving a coverage problem for a specific household, not by buying hardware in bulk. The mesh holds together long-term because each node is owned and maintained by someone who has a reason to keep it running.</p>
+</div>
+
+## Why block by block
+
+A neighborhood mesh that expands too quickly tends to collapse under its own weight. Nodes that were installed as a project go offline when the person who installed them moves away, loses interest, or never really understood why they were there. The coverage gap those nodes filled returns — except now there's an expectation that the mesh covers that area.
+
+The block-by-block pattern avoids this by matching expansion rate to community investment. You don't expand to the next block until someone on that block wants to be on the network, understands what they're hosting, and is willing to keep a node powered and connected.
+
+That constraint sounds limiting. In practice it's what makes the network resilient. A neighbor who hosts a node because it solves a real problem — messaging without cell service, knowing when the back gate is open, staying in contact during a power outage — is a neighbor who fixes it when it stops working. A node installed as charity tends to stay broken.
+
+## Starting on your block
+
+The minimum viable neighborhood mesh is two nodes. One at your house, one at a neighbor's who has agreed to try it. That gives you a first RF link, a first shared channel, and — if you connect an observer — your first data in the Waev Live Map.
+
+What the map shows at this stage is simple: two nodes, one link, one observable path. But it also shows you the gap. Where does the signal end? What would the coverage look like with a third node on the corner, or a repeater on the highest rooftop on the block?
+
+<Figure caption="A coverage map with two active nodes and a clear gap to the south of the block. The gap defines the next expansion: a node at the corner house covers the unserved cluster. The coverage question becomes a specific conversation with a specific neighbor.">
+  <PlaybookCoverageGap />
+</Figure>
+
+That specificity is useful when you're recruiting the next node host. "The mesh doesn't currently reach your house, but a node at your place would cover the whole south end of the block" is a more convincing pitch than "we're building a neighborhood mesh and we need more nodes."
+
+## Adding the repeater tier
+
+Once you have three or four companion nodes on your block, the next bottleneck usually isn't adding more nodes — it's signal path. Companion nodes by design don't relay traffic for other nodes. That job belongs to a repeater, placed at a height that gives it coverage over a larger area.
+
+A single well-placed repeater on a rooftop or second-floor window can transform a cluster of nodes that can barely reach each other into a reliable connected segment. The improvement is visible immediately in [where your network's signal actually reaches](/blog/where-to-put-your-next-repeater/): the coverage gaps that were edge cases become clearly served, and the paths between previously marginal nodes become confirmed.
+
+<Figure caption="Before and after adding a rooftop repeater at one location. The four companion nodes on the south cluster were connecting intermittently. With the repeater, all four show confirmed paths and SNR above the reliable threshold.">
+  <PlaybookRepeaterImpact />
+</Figure>
+
+The repeater is also the right infrastructure to put on [an observer that reports to your MQTT broker](/blog/how-waev-reads-your-mesh/). A rooftop repeater already has the height advantage and the RF view of the neighborhood. An observer co-located with the repeater gives you the best possible vantage for watching what the mesh is doing.
+
+## Expanding to the next block
+
+Crossing from one block to the next is a topology decision and a social decision at the same time. The topology question: does the signal from your current infrastructure reach the first house on the next block? If not, is there a viable intermediate point — a corner house, a taller structure — that bridges the gap? 
+
+The social question: is there someone on the next block who wants the mesh and is willing to host a node? The topology can be solved with hardware. The social question can only be solved by having a conversation.
+
+The pattern that works: identify the coverage gap on the map, identify the potential node locations that close it, then approach the neighbor at that specific location. The conversation is about solving their problem — staying connected during outages, keeping in touch with nearby family members, adding one link to an emergency communications network the neighborhood is building — not about expanding your project.
+
+## The data layer as the expansion engine
+
+As the mesh grows past five or six nodes, Waev's Network Stats starts to show something useful beyond individual link quality: the relative reliability of different parts of the network. Which nodes have been consistently online for the past thirty days? Which have been intermittent? Which went offline two weeks ago and haven't come back?
+
+The intermittent and offline nodes are the expansion stalls. They represent households where the initial enthusiasm didn't translate into sustained ownership. That's not a failure to fix with a firmware update — it's a signal to revisit the human question: does this person still see value in being on the mesh? Sometimes the answer is yes and the fix is helping them get the node back online. Sometimes the answer is that they've moved or lost interest, and the right response is finding someone else at that location.
+
+A neighborhood mesh buildout is never really finished. It is a continuously tended relationship between the network and the community that maintains it. The topology on the map is the current state of that relationship.
+
+---
+
+Building out your first neighborhood segment and have questions about what observer placement gives you the best coverage view for expansion planning? [Reach out](mailto:admin@waev.app).
+
+{/* ILLUSTRATION PROMPT: A warm hand-painted aerial (bird's eye) view of a few residential blocks at dusk — a grid of streets and small houses seen from directly above, painted in a flat illustrative style with warm amber light. On three or four rooftops, tiny glowing dots indicate LoRa nodes. Between them, thin soft lines trace the RF paths. Some streets are covered; others have visible gaps. The mood is quietly optimistic — a network in progress, a community still growing. Medium: hand-painted flat illustration with warm painterly texture, aerial/plan perspective. Palette: warm amber streetlights, muted earth for rooftops, soft grey streets, small glowing copper node dots. */}
