@@ -1,0 +1,82 @@
+---
+title: "How Waev Names Meshes: The MeshBuilder Logic"
+description: "Waev clusters nodes into meshes and names them using geographic boundaries, IATA codes, and reverse geocoding, backed by hysteresis to prevent naming churn."
+date: 2026-06-15
+tags: ["how-it-works", "mesh-topology"]
+author: "Waev"
+faq:
+  - q: "How does Waev decide what to name a mesh?"
+    a: "MeshBuilder measures the cluster's convex hull area to determine a naming tier, then picks from the highest-priority source that matches: a curated gazetteer polygon for larger clusters, the nearest IATA airport code or Nominatim reverse geocode for local ones, or an admin override. If none of those return a result, the name falls back to a centroid coordinate string."
+  - q: "What happens when a mesh drifts across a geographic boundary?"
+    a: "MeshBuilder applies hysteresis to prevent naming churn. A new name challenger must win consistently for a configured number of consecutive recompute ticks before the committed name changes. A brief border-crossing during off-peak hours does not trigger a rename."
+  - q: "What is the fallback when no place name is found?"
+    a: "MeshBuilder uses the cluster's centroid as a coordinate string. A name like 45.52,-122.68 is unambiguous and pinpoints the cluster even when no gazetteer polygon or reverse-geocode result covers that location."
+  - q: "Can a mesh name be changed manually?"
+    a: "Yes. An admin can set a display name override on any cluster. The override takes precedence over all automatic naming sources and persists until it is cleared."
+---
+
+Your mesh doesn't know its own name. Nodes are identified internally by public keys and UUIDs. That works for the protocol. It doesn't work for a net control operator who needs to say which part of the network is performing well and which part isn't.
+
+<div class="callout">
+<p><strong>In short.</strong> MeshBuilder assigns a human-readable label to every cluster by measuring the hull area to set a naming tier, then selecting a name from the best available source: a curated gazetteer polygon, an IATA airport code, Nominatim reverse geocoding, or a coordinate fallback. Hysteresis prevents the name from changing every time the cluster's footprint briefly crosses a boundary.</p>
+</div>
+
+## What MeshBuilder does
+
+MeshBuilder is the clustering engine that runs on every recompute tick. It groups nodes into clusters by RF channel and geographic proximity, computes a convex hull for each cluster, and assigns a label. That label is what appears on the [Live Map](https://waev.app) alongside node count, observer count, and activity figures.
+
+Names serve a purpose beyond display. A cluster called "Portland Metro" can be referenced in a net control briefing, recorded in an after-action report, and discussed across different operators without ambiguity. A UUID cannot.
+
+<span class="waev-brand">Waev</span> only sees what enrolled observers report. The full ingest path from radio to map is covered in [From Radio to Map](/blog/how-waev-reads-your-mesh/).
+
+## Tiers: naming scope from the hull area
+
+Before picking a name, MeshBuilder measures the cluster's convex hull area in square kilometres. That measurement determines the naming tier:
+
+- **local:** up to 50 km2. A single neighborhood or a small town.
+- **metro:** up to 1,000 km2. A city and its near suburbs.
+- **sub-regional:** up to 50,000 km2. A multi-county or single-state footprint.
+- **regional:** up to 500,000 km2. A multi-state or large-country region.
+- **national:** over 500,000 km2. A full country or continental rollup.
+
+The tier sets the scope of the name. A cluster covering a few city blocks should carry a neighborhood or airport-code name, not a regional one. A cluster spanning several states should not be named after whichever city the centroid happens to fall in on a given day.
+
+## Sources: where the name comes from
+
+MeshBuilder resolves names from four sources, checked in order of preference.
+
+**Gazetteer** covers tiers 2 through 5. The gazetteer is a curated set of named polygons built from Geoboundaries admin boundaries. When the cluster's footprint matches a polygon, MeshBuilder uses the polygon's display name. "Pacific Northwest, USA" is a gazetteer entry. It is maintained, not inferred.
+
+**IATA** covers tier 1 local clusters. MeshBuilder identifies the nearest airport code to the cluster centroid. Codes like SEA or LAX are already familiar to the communities operating mesh networks, and for a small local cluster the nearest major airport is a reliable geographic anchor.
+
+**Nominatim** is the tier 1 fallback. If the cluster lands in an area without a nearby IATA code, MeshBuilder sends the centroid to Nominatim for OpenStreetMap-based reverse geocoding. The result is a place name from the open geographic database rather than a curated entry.
+
+**Override** bypasses all automatic sources. An admin can set a `displayNameOverride` directly on any cluster record. This is how a specific callsign or local landmark gets assigned when the automatic label is not the right fit.
+
+While a name is being resolved asynchronously, the cluster holds a `resolving` state and the name is null. That state is transient. The committed name appears once resolution completes.
+
+## Hysteresis: why the name doesn't flicker
+
+A mesh cluster is not static. Nodes come online as operators power up and drop off when they shut down. The convex hull expands and contracts with membership. When the footprint shifts, the centroid shifts too, sometimes enough to cross a polygon boundary.
+
+Without a mechanism to hold names steady, a cluster near a city boundary could acquire a different name several times in a single day as nodes on the fringe come and go. That would make the label useless as a community identifier.
+
+Two fields on the `MeshStability` record govern this.
+
+`pendingTierTicks` counts how many consecutive recompute ticks the freshly-computed tier has differed from the committed tier. The committed tier only changes when that counter reaches the configured sustain threshold. A cluster does not drop to a lower tier because a few nodes went offline for an hour.
+
+`pendingNameTicks` applies the same logic to names. When a new name challenger appears, meaning a different gazetteer polygon now covers the centroid, MeshBuilder starts counting. The challenger must win for a sustained run of consecutive ticks before the committed name changes. A cluster whose footprint briefly touches a neighboring polygon at midnight does not wake up with a new name.
+
+The result is stable community identity. You can track the signal quality of "Portland Metro" across weeks without the label swapping to "Beaverton" and back. For reading those signal patterns over time, [Reading the Signal](/blog/reading-the-signal/) covers what SNR and link quality tell you about a specific mesh.
+
+## Fallbacks: the cluster at the edge of the map
+
+Some clusters end up where no gazetteer polygon exists, no IATA airport is nearby, and Nominatim returns nothing useful. Ocean clusters, remote wilderness, and areas simply not yet in the curated data all fall into this category.
+
+When all other sources fail, MeshBuilder uses the cluster's centroid coordinates as the name: a string like `45.52,-122.68`. This is the `fallback` source. The name is not a place name, but it is precise. You know exactly where the cluster sits.
+
+A fallback label on the Live Map is the system being honest about what it knows. The cluster exists. The data to name it does not.
+
+---
+
+See your mesh names on the [Live Map](https://waev.app), or check a specific node's cluster assignment in [Outpost](https://waev.app/outpost).
