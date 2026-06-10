@@ -6,6 +6,9 @@ import MeshField from "../components/viz/MeshField.astro";
 const posts = await getPublishedPosts();
 const [featured, ...rest] = posts;
 
+// Share card: use the featured post's hero so the blog card showcases the latest post.
+const ogImage = featured?.data.hero?.src ?? "/og-default.png";
+
 // Topic clusters: tag → human label, ordered by post count
 const TOPICS = [
   { tag: "signal",       label: "Signal" },
@@ -54,6 +57,7 @@ const blogSchema = {
 <Base
   title="Waev Blog — MeshCore Mesh Network Analytics & Operations"
   description="Field notes on MeshCore mesh network analytics — SNR, coverage, data ownership, and privacy-by-default for ham radio operators, CERT teams, and emergency networks."
+  image={ogImage}
   jsonLd={[blogSchema]}
 >
   <div class="container">
