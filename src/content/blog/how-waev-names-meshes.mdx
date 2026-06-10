@@ -4,6 +4,10 @@ description: "Waev clusters nodes into meshes and names them using geographic bo
 date: 2026-06-15
 tags: ["how-it-works", "mesh-topology"]
 author: "Waev"
+ogImage: "/hero-how-waev-names-meshes-og.jpg"
+hero:
+  src: "/hero-how-waev-names-meshes.jpg"
+  alt: "A hand-painted illustration of mesh nodes, colored blobs in red, pink, and white, connected by yellow lines on a blue background."
 faq:
   - q: "How does Waev decide what to name a mesh?"
     a: "MeshBuilder measures the cluster's convex hull area to determine a naming tier, then picks from the highest-priority source that matches: a curated gazetteer polygon for larger clusters, the nearest IATA airport code or Nominatim reverse geocode for local ones, or an admin override. If none of those return a result, the name falls back to a centroid coordinate string."
