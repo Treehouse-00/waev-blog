@@ -2,7 +2,7 @@
 title: "v1.4.0: Walk the Path"
 description: "Waev v1.4.0 ships path-walk for MeshCore paths, a packet archive explorer, a live packet globe, and a topology engine that proves what it draws."
 date: 2026-06-10
-tags: ["how-it-works", "operations"]
+tags: ["how-it-works", "operations", "privacy"]
 hero:
   src: "/hero-waev-v1-4-0-dev-update.jpg"
   alt: "A hand-painted scene of a woman crossing a deep blue creek on flat stepping stones at dusk, green banks and a coral sky behind her."
@@ -22,7 +22,7 @@ import Figure from "../../components/Figure.astro";
 122 commits since v1.3.0. 67 features and 31 fixes. Somewhere in the middle of that span a theme showed up and refused to leave: v1.3 drew the mesh. v1.4 reasons about it. What is provable, what is spoofed, what is private, and what the RF physics actually permit.
 
 <div class="callout">
-<p><strong>In short.</strong> Waev v1.4.0 adds path-walk to the Live Map, a packet archive explorer at /archive, a live packet globe, a physics-checked topology engine, privacy markers for enrolled observers, and Mesh Rewind. 122 commits, 67 features, 31 fixes.</p>
+<p><strong>In short.</strong> Waev v1.4.0 adds path-walk on the Live Map, a packet archive explorer at /archive, a live packet globe, a physics-checked topology engine, privacy markers for enrolled observers, and Mesh Rewind. 122 commits, 67 features, 31 fixes.</p>
 </div>
 
 <Figure caption="The Live Map at this release: 26,985 nodes on the map, 6,090 verified edges globally — shown here over the Los Angeles basin.">
@@ -55,9 +55,9 @@ There is also a spider mascot. It sits in the archive and catches packets. No fu
   <img src="/v140-archive.jpg" alt="The Waev packet archive explorer with search fields for source, destination, path, and sender hashes, and a filter rail on the left." loading="lazy" decoding="async" />
 </Figure>
 
-## The globe
+## The packet globe
 
-The Live Packets page got a PacketGlobe: a stark MapLibre globe with a live `flash()` API. Every packet arrival blinks once at its coordinates. No trails, no heat blobs. Just the mesh breathing in real time.
+The Live Packets page now carries a PacketGlobe — a MapLibre globe that flashes once at each packet's coordinates the moment it arrives. No trails, no heat blobs. Just the mesh breathing in real time.
 
 Scrub the timeline rail and the globe replays the window you pick. The cursor is custom and dodges the readout so nothing hides under your hand, and the canvas is theme-aware, so it looks right in both light and dark.
 
