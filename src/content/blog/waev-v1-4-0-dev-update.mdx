@@ -19,10 +19,10 @@ faq:
 
 import Figure from "../../components/Figure.astro";
 
-122 commits since v1.3.0. 67 features and 31 fixes by the release notes' own count. Somewhere in the middle of that span a theme showed up and refused to leave: v1.3 drew the mesh. v1.4 reasons about it. What is provable, what is spoofed, what is private, and what the RF physics actually permit.
+122 commits since v1.3.0. 67 features and 31 fixes. Somewhere in the middle of that span a theme showed up and refused to leave: v1.3 drew the mesh. v1.4 reasons about it. What is provable, what is spoofed, what is private, and what the RF physics actually permit.
 
 <div class="callout">
-<p><strong>In short.</strong> Waev v1.4.0 adds path-walk to the Live Map, a packet archive explorer at /archive, a live packet globe, a physics-checked topology engine, privacy markers for enrolled observers, and Mesh Rewind. 122 commits, 67 features, 31 fixes. The full changelog is on the GitHub release.</p>
+<p><strong>In short.</strong> Waev v1.4.0 adds path-walk to the Live Map, a packet archive explorer at /archive, a live packet globe, a physics-checked topology engine, privacy markers for enrolled observers, and Mesh Rewind. 122 commits, 67 features, 31 fixes.</p>
 </div>
 
 <Figure caption="The Live Map at this release: 26,985 nodes on the map, 6,090 verified edges globally — shown here over the Los Angeles basin.">
@@ -37,7 +37,7 @@ Type or paste a path into the Live Map search bar. The solver resolves each hash
 
 One byte rarely names exactly one node, and the solver does not pretend otherwise. When more than one chain fits, cycle the alternatives from the keyboard and watch the arcs re-route. cmd/ctrl+A selects the whole path in the input. Copy and paste are cross-compatible with MeshCore path formats in both directions, so a path from a companion app drops straight in, and a path from <span class="waev-brand">Waev</span> pastes back out.
 
-The path-walk sprint spanned PRs #106 through #124. It is the lead feature of the release, and it feels like it.
+It is the lead feature of the release, and it feels like it.
 
 <Figure caption="Path-walk, live: 21,B5,E0 typed into the search bar resolves to a two-hop chain across Puget Sound. Two hops, 10 km, all clear.">
   <img src="/v140-pathwalk.jpg" alt="The Waev Live Map walking a MeshCore path: hop chips for each resolved node, a shelf grading the two-hop chain, and arcs connecting repeaters near Everett, Washington." loading="lazy" decoding="async" />
@@ -45,7 +45,7 @@ The path-walk sprint spanned PRs #106 through #124. It is the lead feature of th
 
 ## Packet Search, in the archive
 
-[/archive](https://waev.app/#/archive) is the new packet explorer (PR #104). Search by hash, node, or channel. Filter by radio and by route. The hash fields work per byte: SRC, DEST, PATH, and SENDER each take their own value, so you can hunt down every packet that crossed one specific hop hash. Signal filters narrow the result set, and flags isolate 0-hop packets, floods, and identity proofs.
+[/archive](https://waev.app/#/archive) is the new packet explorer. Search by hash, node, or channel. Filter by radio and by route. The hash fields work per byte: SRC, DEST, PATH, and SENDER each take their own value, so you can hunt down every packet that crossed one specific hop hash. Signal filters narrow the result set, and flags isolate 0-hop packets, floods, and identity proofs.
 
 This is the after-action tool. Something went quiet on Tuesday? Search the hash, read the route, see which observer heard it last.
 
@@ -103,14 +103,14 @@ The question it answers is one operators actually ask: what did this mesh look l
 The least glamorous work, listed because this audience checks:
 
 - maplibre-gl moved to v6, ESM only, on a custom fork we maintain. The map stack is current again.
-- Dependabot alerts went from 8 to 0, including one critical.
+- Dependency security alerts went from 8 to 0, including one critical.
 - Type errors in the design-system stories went from 52 to 0.
-- Visual regression testing moved to Chromatic, which let us delete 486 committed screenshot baselines from the repo. Clones are faster and reviews no longer include pages of PNG noise.
+- Visual regression testing moved to Chromatic, which let us delete 486 committed screenshot baselines from the codebase. Reviews no longer include pages of PNG noise.
 
 CI got rebuilt along the way, and it earned its war story. Running npm install on macOS would quietly prune a Linux-only package entry from the lockfile. The laptop stayed green, the push went up, and CI on Linux failed with a missing module that nobody had touched. The fix was boring and correct: regenerate the lockfile on Linux and stop letting macOS installs rewrite it. If your project mixes macOS laptops with Linux runners, read your lockfile diffs before you blame the runner.
 
 ## The short version
 
-The full changelog is on the [v1.4.0 release](https://github.com/Treehouse-00/waev/releases/tag/v1.4.0), all 122 commits of it. The short version is the one at the top: the map stopped guessing.
+The short version is the one at the top: the map stopped guessing.
 
 Run an observer? Add a privacy symbol to its name if you want it private, or [get on the map](https://waev.app/#/connect).
