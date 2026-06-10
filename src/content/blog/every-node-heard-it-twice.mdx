@@ -19,6 +19,10 @@ faq:
     a: "On a network with a handful of nodes, flooding overhead is minimal. It becomes a concern as the mesh grows and the channel approaches capacity. For most community deployments, the practical concern is group channel traffic — if the public channel is heavily used, each message produces N retransmissions where N is the number of relays in range."
 ---
 
+<div class="callout">
+<p><strong>TL;DR.</strong> Flooding is how a mesh discovers routes, but it burns airtime. MeshCore solves this by flooding once to find a path, caching it, and sending direct thereafter. The duplicates you see in Waev are rarely network floods. They are usually just your multiple observers all successfully hearing the exact same healthy transmission.</p>
+</div>
+
 import Figure from "../../components/Figure.astro";
 import SignalFloodAirtimeCost from "../../components/viz/signal-FloodAirtimeCost.astro";
 

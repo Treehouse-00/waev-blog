@@ -19,6 +19,10 @@ faq:
     a: "Nodes send adverts periodically, and each transmission creates a new entry in Live Packets. You may also see a node appear from different observers or at different hop counts if the mesh routed around an obstacle. Multiple entries for the same node are normal and give you a record of the node's activity over time."
 ---
 
+<div class="callout">
+<p><strong>TL;DR.</strong> Your first packet will almost certainly be an ADVERT. That is a node shouting its name to the void. If you see it in Waev, your observer caught it. Read the SNR to know if the connection is screaming or whispering. Read the hop count to know how many repeaters it took to get there.</p>
+</div>
+
 import Figure from "../../components/Figure.astro";
 import PrimerLivePacketRow from "../../components/viz/primer-LivePacketRow.astro";
 

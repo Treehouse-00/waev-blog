@@ -19,6 +19,10 @@ faq:
     a: "The clearest signal is SNR improvement on the links that were degraded, followed by hop-count reduction for nodes that were routing around the gap. In the time series, the repeater's commissioning time appears as an inflection where both metrics step up together. If neither moves after 48 hours, the candidate site may not be close enough to the gap, or the anchor node's own path quality needs attention first."
 ---
 
+<div class="callout">
+<p><strong>TL;DR.</strong> Do not guess where coverage drops. Use Waev to prove it. Find the gaps by looking for sharp cut-offs on the Live Map. Confirm the degradation by checking for nose-diving SNR in Network Stats. Then drive the edge of the suspect zone to watch live packets break. Put the mast where the data tells you.</p>
+</div>
+
 import Figure from "../../components/Figure.astro";
 import PlaybookCoverageGap from "../../components/viz/PlaybookCoverageGap.astro";
 import PlaybookLinkTable from "../../components/viz/PlaybookLinkTable.astro";

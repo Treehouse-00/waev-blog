@@ -19,6 +19,10 @@ faq:
     a: "Waev uses SNR (Signal-to-Noise Ratio) as the per-hop signal quality metric in Live Packets and Network Stats. SNR is measured in plain dB — the ratio between the received signal level and the noise floor — but understanding dBm is the foundation for understanding why that ratio matters and what the absolute power levels involved actually are."
 ---
 
+<div class="callout">
+<p><strong>TL;DR.</strong> The "m" stands for milliwatt. 0 dBm is exactly 1 milliwatt of power. Positive numbers are stronger (+30 dBm is a full watt). Negative numbers are weaker (-100 dBm is a whisper). Add 3 to double the power, add 10 to multiply it by ten. If you understand dBm, you understand radio.</p>
+</div>
+
 import Figure from "../../components/Figure.astro";
 import SignalDBmScale from "../../components/viz/signal-DBmScale.astro";
 
