@@ -5,7 +5,7 @@ date: 2026-06-11
 tags: ["primer", "how-it-works"]
 hero:
   src: "/hero-how-lora-mesh-routing-works.jpg"
-  alt: "A warm hand-painted close-up of a worn wooden peg board with two brass pegs connected by a single thread carefully threaded through the holes between them, warm raking afternoon light on the wood grain."
+  alt: "A hand-painted landscape of two wooden fence posts on rolling orange and pink dotted hills, joined by a single white thread running through a hole in each post, under a violet sky."
 faq:
   - q: "How does LoRa mesh routing work in MeshCore?"
     a: "MeshCore uses a two-phase approach. When a node sends to a destination it has not reached before, the packet floods outward through every repeater in range, each forwarder appending its identifier to a growing path record. When the destination receives it, it reverses that path and sends it back. All subsequent messages between those two nodes travel the direct cached route — only the repeaters on the recorded path handle them."
