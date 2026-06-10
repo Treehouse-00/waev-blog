@@ -82,71 +82,38 @@ Each gap below is confirmed absent from all published posts (`src/content/blog/`
 
 ---
 
-### Gap 1 — What "node offline" actually means: raw lastHeard vs. observer evidence
+### Gap 4 — "What does it mean that MeshMonitor can see my MeshCore network?"
 
-**Competitive trigger:** MeshMonitor v4.9.2 (~June 9, 2026) is the first competing tool to ship
-inactive-node alerts for MeshCore sources. The alert fires when `lastHeard` ages past a threshold in
-raw MQTT data. For the ham and cert-emcomm operator who has just seen this feature, the natural
-question is: "is that the same as what Waev would show me?"
+**Competitive trigger:** Since v4.5.0 (May 14), MeshMonitor treats MeshCore as a first-class source.
+By v4.9.2 (June 9), it fires per-node alerts, renders neighbor links on the map, supports per-source
+automations, stores contact paths, and shows telemetry graphs. The tinkerer and off-grid operator
+seeing MeshMonitor's feature list for the first time will reasonably ask: "Is this what I should be
+using? How does it differ from Waev?" This comparison question is not yet answered in Waev's content.
 
-**Waev angle (canon-consistent):** It is not the same. A `lastHeard` timestamp in a raw MQTT stream
-tells you when the broker last received a packet from that node — but not whether that silence means
-the node went down, the observer lost path, or a routing change stopped packets flowing through the
-monitored ingest point. Waev's enrolled observers provide directed evidence: an observer that stops
-receiving a node's packets is a specific link failure, not a global health verdict. A post that
-explains the difference — and why "my analytics tool says node X is silent" needs evidence context —
-is fully within the knowing-over-guessing theme and answerable within canon (Waev draws only what its
-enrolled observers can verify).
+**Waev angle (canon-consistent):** MeshMonitor is a self-hosted raw MQTT ingest tool: it stores
+what the broker delivers, including companion-device identity metadata, inferred map edges from the
+MeshOS or companion app's own path inference, and `lastHeard` timestamps that are not observer-
+validated. This is not a dismissal — MeshMonitor is genuinely useful for operators who want local
+control and deep automation. But the specific epistemic claims it can and cannot make differ from
+Waev's enrolled-observer model. A comparison post explaining these two different models (raw ingest vs.
+evidence-based topology) is fully within canon, extends the "the-honest-comparison" series, and
+directly addresses the tinkerer's decision point that MeshMonitor's v4.5–v4.9 releases have created.
 
 **Not covered by:**
-- Published posts: none address inactive-node alerting or the semantics of "last heard" on a mesh
-- Calendar: "when your MQTT broker goes down" (2026-07-21) covers broker outages, not node inactivity;
-  "trusting your mesh map in an emergency" (2026-09-10) is about topology trust, not alert semantics.
-  No slot compares raw `lastHeard` alerting to observer-evidence-based inactivity detection.
+- Published posts: none compare Waev to MeshMonitor specifically
+- Calendar: "MeshCore self-hosted dashboard vs analytics platform" (proposed 2027-09-07 in prior
+  competitive report, Gap 2) — that gap remains unslotted. This recommendation reinforces its urgency
+  given MeshMonitor's accelerated MeshCore feature cadence since May 14.
 
 ```yaml
-segment: cert-emcomm
+segment: tinkerer
 funnel_stage: evaluation
-bucket: signal
+bucket: dispatch
 theme: knowing-over-guessing
-primary_keyword: "mesh node offline alert false positive"
-secondary_keyword: "what lastHeard means on a mesh network"
-slot_date: 2026-09-18   # first open Fri after current calendar end; keyword-research to slot
-```
-
----
-
-### Gap 2 — Which MeshCore analytics tool survives the brand split?
-
-**Competitive trigger:** The April 2026 MeshCore schism (meshcore.io vs meshcore.co.uk / MeshOS)
-created a trust vacuum for operators who had been following "official" MeshCore channels. Operators
-who relied on Andy Kirby's YouTube or the original Discord are now asking which tools and which
-documentation to trust. Any analytics layer built on top of a specific companion app or branded around
-one side of the dispute inherits that uncertainty. Waev does not.
-
-**Waev angle (canon-consistent):** Waev is an MQTT subscriber: it reads the packets that enrolled
-repeaters and observers produce over the operator's own broker. The packets conform to the MeshCore
-protocol spec as maintained in `github.com/meshcore-dev/MeshCore` — the only "official" in this
-context is the firmware source. A post that explains Waev's independence from app-layer branding
-(no Ripple dependency, no MeshOS dependency, bring-your-own-broker) is answerable within canon and
-maps directly to the "own-your-ground" theme. Waev works because of what the firmware produces, not
-because of which Discord server or website you trust.
-
-**Not covered by:**
-- Published posts: none address the schism or Waev's firmware-agnostic positioning
-- Calendar: "evidence-based mesh topology explained" (2027-03-09) is about topology mechanics;
-  "choosing a mesh tool you can trust" (2027-01-21) is about trustworthy analytics in general.
-  No slot specifically addresses Waev's independence from the MeshCore app ecosystem split.
-
-```yaml
-segment: ham
-funnel_stage: awareness
-bucket: position
-theme: own-your-ground
-series: why-we
-primary_keyword: "MeshCore analytics tool firmware agnostic"
-secondary_keyword: "mesh analytics that works with any MeshCore firmware"
-slot_date: 2026-09-21   # keyword-research to slot
+series: the-honest-comparison
+primary_keyword: "MeshCore self-hosted dashboard vs analytics platform"
+secondary_keyword: "what MeshMonitor shows that Waev doesn't and vice versa"
+slot_date: 2026-09-28   # keyword-research to confirm; acceleration from prior report Gap 2 urgency
 ```
 
 ---
@@ -187,38 +154,71 @@ slot_date: 2026-09-25   # keyword-research to slot; or concretize existing 2026-
 
 ---
 
-### Gap 4 — "What does it mean that MeshMonitor can see my MeshCore network?"
+### Gap 2 — Which MeshCore analytics tool survives the brand split?
 
-**Competitive trigger:** Since v4.5.0 (May 14), MeshMonitor treats MeshCore as a first-class source.
-By v4.9.2 (June 9), it fires per-node alerts, renders neighbor links on the map, supports per-source
-automations, stores contact paths, and shows telemetry graphs. The tinkerer and off-grid operator
-seeing MeshMonitor's feature list for the first time will reasonably ask: "Is this what I should be
-using? How does it differ from Waev?" This comparison question is not yet answered in Waev's content.
+**Competitive trigger:** The April 2026 MeshCore schism (meshcore.io vs meshcore.co.uk / MeshOS)
+created a trust vacuum for operators who had been following "official" MeshCore channels. Operators
+who relied on Andy Kirby's YouTube or the original Discord are now asking which tools and which
+documentation to trust. Any analytics layer built on top of a specific companion app or branded around
+one side of the dispute inherits that uncertainty. Waev does not.
 
-**Waev angle (canon-consistent):** MeshMonitor is a self-hosted raw MQTT ingest tool: it stores
-what the broker delivers, including companion-device identity metadata, inferred map edges from the
-MeshOS or companion app's own path inference, and `lastHeard` timestamps that are not observer-
-validated. This is not a dismissal — MeshMonitor is genuinely useful for operators who want local
-control and deep automation. But the specific epistemic claims it can and cannot make differ from
-Waev's enrolled-observer model. A comparison post explaining these two different models (raw ingest vs.
-evidence-based topology) is fully within canon, extends the "the-honest-comparison" series, and
-directly addresses the tinkerer's decision point that MeshMonitor's v4.5–v4.9 releases have created.
+**Waev angle (canon-consistent):** Waev is an MQTT subscriber: it reads the packets that enrolled
+repeaters and observers produce over the operator's own broker. The packets conform to the MeshCore
+protocol spec as maintained in `github.com/meshcore-dev/MeshCore` — the only "official" in this
+context is the firmware source. A post that explains Waev's independence from app-layer branding
+(no Ripple dependency, no MeshOS dependency, bring-your-own-broker) is answerable within canon and
+maps directly to the "own-your-ground" theme. Waev works because of what the firmware produces, not
+because of which Discord server or website you trust.
 
 **Not covered by:**
-- Published posts: none compare Waev to MeshMonitor specifically
-- Calendar: "MeshCore self-hosted dashboard vs analytics platform" (proposed 2027-09-07 in prior
-  competitive report, Gap 2) — that gap remains unslotted. This recommendation reinforces its urgency
-  given MeshMonitor's accelerated MeshCore feature cadence since May 14.
+- Published posts: none address the schism or Waev's firmware-agnostic positioning
+- Calendar: "evidence-based mesh topology explained" (2027-03-09) is about topology mechanics;
+  "choosing a mesh tool you can trust" (2027-01-21) is about trustworthy analytics in general.
+  No slot specifically addresses Waev's independence from the MeshCore app ecosystem split.
 
 ```yaml
-segment: tinkerer
+segment: ham
+funnel_stage: awareness
+bucket: position
+theme: own-your-ground
+series: why-we
+primary_keyword: "MeshCore analytics tool firmware agnostic"
+secondary_keyword: "mesh analytics that works with any MeshCore firmware"
+slot_date: 2026-09-21   # keyword-research to slot
+```
+
+---
+
+### Gap 1 — What "node offline" actually means: raw lastHeard vs. observer evidence
+
+**Competitive trigger:** MeshMonitor v4.9.2 (~June 9, 2026) is the first competing tool to ship
+inactive-node alerts for MeshCore sources. The alert fires when `lastHeard` ages past a threshold in
+raw MQTT data. For the ham and cert-emcomm operator who has just seen this feature, the natural
+question is: "is that the same as what Waev would show me?"
+
+**Waev angle (canon-consistent):** It is not the same. A `lastHeard` timestamp in a raw MQTT stream
+tells you when the broker last received a packet from that node — but not whether that silence means
+the node went down, the observer lost path, or a routing change stopped packets flowing through the
+monitored ingest point. Waev's enrolled observers provide directed evidence: an observer that stops
+receiving a node's packets is a specific link failure, not a global health verdict. A post that
+explains the difference — and why "my analytics tool says node X is silent" needs evidence context —
+is fully within the knowing-over-guessing theme and answerable within canon (Waev draws only what its
+enrolled observers can verify).
+
+**Not covered by:**
+- Published posts: none address inactive-node alerting or the semantics of "last heard" on a mesh
+- Calendar: "when your MQTT broker goes down" (2026-07-21) covers broker outages, not node inactivity;
+  "trusting your mesh map in an emergency" (2026-09-10) is about topology trust, not alert semantics.
+  No slot compares raw `lastHeard` alerting to observer-evidence-based inactivity detection.
+
+```yaml
+segment: cert-emcomm
 funnel_stage: evaluation
-bucket: dispatch
+bucket: signal
 theme: knowing-over-guessing
-series: the-honest-comparison
-primary_keyword: "MeshCore self-hosted dashboard vs analytics platform"
-secondary_keyword: "what MeshMonitor shows that Waev doesn't and vice versa"
-slot_date: 2026-09-28   # keyword-research to confirm; acceleration from prior report Gap 2 urgency
+primary_keyword: "mesh node offline alert false positive"
+secondary_keyword: "what lastHeard means on a mesh network"
+slot_date: 2026-09-18   # first open Fri after current calendar end; keyword-research to slot
 ```
 
 ---
@@ -233,14 +233,14 @@ Four gaps ready to slot, in priority order:
    position fully hardens is closing. Pairs with and supersedes prior report Gap 2 (same topic, same
    recommended slot area).
 
-2. **Gap 1** (inactive-node alerting semantics) is directly triggered by v4.9.2 and addresses the
-   cert-emcomm conversion core at the evaluation stage — high intent, timely hook.
+2. **Gap 3** (community-scale monitoring) can reinforce or advance the existing 2026-10-27 calendar
+   slot rather than requiring a new insertion.
 
 3. **Gap 2** (firmware-agnostic positioning post-split) is evergreen trust content with a timely
    hook; the schism is still fresh in community memory.
 
-4. **Gap 3** (community-scale monitoring) can reinforce or advance the existing 2026-10-27 calendar
-   slot rather than requiring a new insertion.
+4. **Gap 1** (inactive-node alerting semantics) is directly triggered by v4.9.2 and addresses the
+   cert-emcomm conversion core at the evaluation stage — high intent, timely hook.
 
 All proposed `slot_date` values fall after the current last calendar entry (2027-08-29 approximate)
 except Gap 3 which references or advances an existing 2026-10-27 slot. `keyword-research.md` should
