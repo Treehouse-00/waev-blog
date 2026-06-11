@@ -31,7 +31,7 @@ Part of the *measure your mesh* series. For SNR measurement specifically, see [m
 
 ## What hop count actually measures
 
-When a packet leaves a source node in MeshCore, it does not always travel directly to its destination. Repeaters — dedicated forwarding nodes — carry the packet toward the observer, with each repeater appending its identifier to the packet's path record before retransmitting. By the time the packet reaches your enrolled observer, the path field records exactly which repeaters it passed through and in what order. Hop count is the length of that record.
+When a packet leaves a source node in MeshCore, it does not always travel directly to its destination. Repeaters — dedicated forwarding nodes — carry the packet toward the observer, with each repeater appending its node hash to the packet's path record before retransmitting. By the time the packet reaches your enrolled observer, the path field records exactly which repeaters it passed through and in what order. Hop count is the length of that record.
 
 One hop means the source was in direct radio range of the observer. Two hops means one repeater was involved. Three hops means two repeaters. The count is not estimated; it is a count of the actual relay legs the packet used.
 
