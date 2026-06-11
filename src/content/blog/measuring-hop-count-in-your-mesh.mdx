@@ -1,0 +1,90 @@
+---
+title: "Measuring Hop Count in Your Mesh"
+description: "Measuring hop count in a MeshCore mesh: where to read it in Waev, what one-to-five hops means, and how creep warns you a path is degrading before links fail."
+date: 2026-06-14
+tags: ["signal", "mesh-measurement"]
+hero:
+  src: "/hero-measuring-hop-count-in-your-mesh.jpg"
+  alt: "A warm hand-painted close-up of a wooden folding carpenter's rule, three sections extended and lying flat on a worn workbench in warm directional studio light — each section a counted leg."
+faq:
+  - q: "What does hop count mean in a MeshCore mesh?"
+    a: "Hop count is the number of radio legs a packet traveled from its source node to the observer that recorded it. One hop means the source was heard directly by the observer. Three hops means the packet passed through two relay nodes along the way. Each hop is a separate radio link, and each one must succeed for the packet to arrive."
+  - q: "What hop count should I expect for a healthy MeshCore node?"
+    a: "One or two hops is the comfortable baseline for most nodes. Three to four hops is normal for geographically spread deployments. Five or more hops is workable but adds latency and failure exposure at each additional relay. These are rules of thumb; your network topology determines what is normal for your specific setup."
+  - q: "What is hop count creep and why does it matter?"
+    a: "Hop count creep is when a node's hop count increases over time without a deliberate topology change. If a node that reached your observer in two hops now shows four, the mesh rerouted around something that failed or degraded. The count did not rise by accident; a link in the shorter path is no longer reliable, and the network found a longer way around."
+  - q: "Where does Waev show hop count?"
+    a: "Hop count appears on every observation in Live Packets as the HOPS column. Network Stats shows it alongside SNR in the path-quality view, with status flags for watchlist and degraded paths. Outpost shows per-node hop count history over days and weeks, which is where the creep pattern becomes visible."
+  - q: "My node went from two hops to four hops overnight. What happened?"
+    a: "A relay in the shorter two-hop path stopped being reliably heard, so the mesh rerouted around it through a longer path. Check which relay was previously in the shorter path by reviewing recent Live Packets history for that node. The missing relay is the one that stopped appearing as an intermediate in earlier packet records."
+---
+
+import Figure from "../../components/Figure.astro";
+import MeasureLivePackets from "../../components/viz/measure-LivePackets.astro";
+import MeasureHopHistory from "../../components/viz/measure-HopHistory.astro";
+
+Part of the *measure your mesh* series. For SNR measurement specifically, see [measuring SNR on a LoRa mesh](/blog/measuring-snr-on-a-lora-mesh/).
+
+<div class="callout">
+<p><strong>In short.</strong> Measuring hop count in a MeshCore mesh tells you how many relay legs each packet traveled to reach your observer. One or two hops is the comfortable baseline; three to four is normal in spread networks. What matters most is the trend: a node whose hop count increases over time is routing around something that broke or degraded — and Waev's hop count data is where you see that pattern before the failure arrives.</p>
+</div>
+
+## What hop count actually measures
+
+When a packet leaves a source node in MeshCore, it does not always travel directly to its destination. Repeaters — dedicated forwarding nodes — carry the packet toward the observer, with each repeater appending its identifier to the packet's path record before retransmitting. By the time the packet reaches your enrolled observer, the path field records exactly which repeaters it passed through and in what order. Hop count is the length of that record.
+
+One hop means the source was in direct radio range of the observer. Two hops means one repeater was involved. Three hops means two repeaters. The count is not estimated; it is a count of the actual relay legs the packet used.
+
+Because MeshCore clients do not repeat — forwarding is handled by dedicated repeater nodes — this path record is reliable. A hop count of three means three real radio links, three real nodes that had to receive and retransmit, three independent failure points. The count tells you exactly how much infrastructure each packet depends on.
+
+## Where Waev surfaces hop count
+
+Three surfaces, each for a different question.
+
+**Live Packets** shows the hop count on every individual observation as it arrives. Each row includes the source node, timestamp, hop count, and SNR. If you want to know how many hops a specific node is currently taking — right now, this minute — Live Packets is where you look.
+
+<Figure caption="Live Packets stream showing four recent observations. Hop count ranges from 1 (relay-main, direct reach) to 4 (ridge-relay, far path). The HOPS column and SNR column together describe path quality for each observation — two hops and strong SNR is the standard to hold.">
+  <MeasureLivePackets />
+</Figure>
+
+**Network Stats** aggregates into a path-quality view. Instead of individual packet rows, you see one row per active node with its typical hop count, recent SNR, and a status flag: healthy, watchlist, or degraded. Network Stats is the faster way to triage your entire network. One scan shows which nodes are operating near their baseline and which have drifted into elevated counts or poor SNR.
+
+**Outpost** is the per-node deep-dive: hop count and SNR history over days and weeks. This is where the creep pattern becomes visible. A snapshot tells you where hop count is now; Outpost's trend view tells you where it has been — and that difference is the diagnostic.
+
+## What the numbers mean
+
+Hop count guidance depends on your specific topology, but some reference points apply broadly:
+
+**1–2 hops.** The comfortable baseline. The packet reaches your observer with minimal relay involvement. Few links means fewer places to fail.
+
+**3–4 hops.** Normal for geographically spread networks with multiple infrastructure relays. Three or four hops is not a problem on its own. A node that has always been at this count is not a candidate for action. A node that recently moved there from two hops is.
+
+**5+ hops.** Workable but worth attention. Latency accumulates at each forwarding step, and the probability that at least one hop degrades under adverse conditions rises. If five-plus hops has been stable since initial deployment, the question is whether better relay placement could improve the path. If the count is new, something changed.
+
+The number that matters most is change, not the absolute value. A node consistently at three hops is fine. A node that moved from two hops to four hops is routing around something, and that something is worth finding.
+
+## Hop count creep: reading the trend
+
+Hop count creep is when a node's count increases over time without a deliberate change to the network. It is one of the most reliable early warnings a mesh gives you — not because it announces failure, but because it shows a path becoming less reliable before it actually fails.
+
+The mechanism is straightforward. As a relay's performance degrades — an antenna that shifted, a power supply showing intermittent drops, an RF environment change — the network starts preferring alternative paths. Those alternatives typically route through more hops. The node does not disappear from your observer; it keeps arriving, but over longer routes. The hop count record in Outpost makes this visible days or weeks before the path fails entirely.
+
+<Figure caption="Hop count history for relay-ridge over 30 days. The node holds at 2 hops for the first two weeks. A first departure to 3 hops on day 15 quickly recovers — a transient. From day 18 onward, hop count stabilizes at 3; the mesh is now consistently routing around something. By day 24 it reaches 4 hops. The comfortable zone is highlighted; the elevated region shows the sustained creep pattern.">
+  <MeasureHopHistory />
+</Figure>
+
+The pattern in the chart above is the one to learn: a long stable baseline, followed by a flicker that recovers, followed by a gradual step up that stabilizes at a new level. The first flicker is noise or a transient condition. The sustained elevation is the signal — the network encoding, in hop count data, that a shorter path is no longer reliable.
+
+## Turning the measurement into action
+
+Hop count data tells you that something changed in the routing; it does not automatically tell you what. The next step is finding the relay that was in the shorter path and is no longer being heard reliably.
+
+**When hop count creeps from 2 to 3, or 3 to 4 over days:** open Live Packets history for that node and look at what relays appeared in the earlier, shorter-hop observations. That is the candidate relay — its power supply, antenna, and recent packet activity are where you look next.
+
+**When hop count jumps suddenly in a single day:** the previous path failed abruptly rather than degraded gradually. The relay in the short path stopped being reachable. Check that relay's uptime and connection state first.
+
+**When multiple nodes simultaneously show increased hop count:** a shared relay is almost certainly the cause. Identify which relay was in the normal path for several of the affected nodes — the one that appears most often in earlier Live Packets records for the affected group — and investigate that relay first. A single well-placed relay, restored or replaced, will bring the hop counts back down for all of them.
+
+Both signals together — hop count and SNR — give you the complete path quality picture. If hop count is elevated and SNR on the new longer path is marginal, you have a node at the edge of coverage whose current routing is fragile. That combination is the one worth acting on before it fails at an inconvenient time. The siting decisions that follow belong in [where to put your next repeater](/blog/where-to-put-your-next-repeater/).
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted close-up of a wooden folding carpenter's rule lying partially extended on a worn workbench. Three of the hinged sections are unfolded and laid flat in a line — each one a discrete measured leg. The fourth section folds upward at an angle as if mid-measurement, suggesting a count in progress. Warm directional studio light from the left casts a gentle shadow along the rule's edge. The wood grain is visible on both the rule and the workbench surface. Earthy tones, no digital elements, no tech objects. The mood: methodical counting, one concrete step at a time. House style: hand-painted, warm, intimate workbench scale, painterly texture. */}
