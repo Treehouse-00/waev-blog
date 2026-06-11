@@ -24,7 +24,7 @@ cd "$REPO_ROOT"
 # or be left to wrangler's own auth. Default matches .github/workflows/deploy.yml.
 PAGES_PROJECT="${WAEV_BLOG_PAGES_PROJECT:-waev-blog}"
 SITE_URL="${WAEV_BLOG_SITE_URL:-https://blog.waev.app}"
-CF_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-CLOUDFLARE_ACCOUNT_ID}"
+CF_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-21a39bcbcd9bc56b584615b83ef111ed}"
 # Branch name used for preview deploys. Anything other than the project's
 # production branch (`main`) lands as a *.waev-blog.pages.dev preview URL.
 PREVIEW_BRANCH="${WAEV_BLOG_PREVIEW_BRANCH:-preview}"
