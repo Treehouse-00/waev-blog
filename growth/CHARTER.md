@@ -74,9 +74,13 @@ listed here is fully delegated to agents.
    a post reaches the human it has already been through the internal review cycle.
    The human's role at this gate is therefore minimal and exhaustive: (a) a
    cursory gut-check of an already-reviewed, already-revised post, and (b) the
-   hero-image pass — the content-writer delivers a hero **image prompt**, never
-   the image; a human generates the image and adds `public/hero-<slug>.jpg`
-   before merging. The `Hero asset check` stays red until the asset is present,
+   hero-image pass. The content-writer delivers a hero **image prompt**, never
+   the image. The human GENERATES the image (the creative act) and drops it into
+   a comment on the post's PR — that is the human's whole job here. The Growth OS
+   then does the tactical work: the image-handler loop (`./briefs/image-handler.md`,
+   CADENCE §3.11) downloads the attached image, names + compresses it, and commits
+   `public/hero-<slug>.jpg` to the PR branch. The human does NOT name, process, or
+   commit the file. The `Hero asset check` stays red until that asset is present,
    so a post cannot publish without its human-made hero. No other editorial work
    is expected of the human.
 3. **Approve outbound distribution.** Any post to an external community (forums,

@@ -48,6 +48,11 @@ transition (draft → ready-for-review), not a new `calendar.yaml` status.
 - The editor loop (§3.10) independently reviews and revises that draft PR, then
   flips it to ready-for-review. Only a ready, editor-approved PR should reach the
   human. This is the internal review cycle — no human is involved in it.
+- Between editor-ready and human merge, the image-handler loop (§3.11) places the
+  human-provided hero image onto the PR branch. This is agent-owned tactical work,
+  not a `calendar.yaml` status change: the human's only act is generating the image
+  and attaching it to a PR comment; naming, compressing, and committing the file
+  are delegated to the loop.
 - On human merge, the post file exists in `src/content/blog`; the entry becomes
   `scheduled` (date-gated). The daily publish rebuild makes it `published` once
   `slot_date` arrives.
@@ -97,6 +102,22 @@ The orchestrating run-system reads this section to register jobs.
 - gate: `human-merge` (the human still merges; the editor never merges/deploys).
   This loop makes the human gate a cursory gut-check of an already-reviewed,
   already-revised post — not an editing pass.
+
+### 3.11 Frequent — Hero-image placement (the last-mile asset loop)
+- brief: `./briefs/image-handler.md`
+- cron: `0 */2 * * *`  (every 2 hours, UTC)
+- trigger: each run, find the oldest OPEN `growth/post-*` PR whose hero asset is
+  still missing (`node scripts/check-hero-assets.mjs` flags it) AND that has a
+  human image attached in a PR comment AND whose body lacks the
+  `<!-- hero-handled -->` marker. If none, no-op. One PR per run. The cron only
+  sets the MAX latency between a human attaching the image and the gate clearing;
+  most runs no-op cheaply. A human can also trigger it on demand (RUNBOOK §5).
+- output: `pr` — downloads the attached image, normalizes it to the house hero
+  format (JPEG, ~1600px wide, metadata stripped), commits `public/hero-<slug>.jpg`
+  to the PR branch, and comments confirmation with the `<!-- hero-handled -->`
+  marker. It NEVER generates an image and writes only that one asset.
+- gate: `human-merge` (the human still merges; the loop never merges/deploys and
+  never flips draft→ready — the editor owns that).
 
 ### 3.3 Weekly — Link & crawl sweep
 - brief: `./briefs/seo-auditor.md`
@@ -187,8 +208,10 @@ Human-only (require a gate above):
 - **Per-post (human, cursory):** content PRs reach the human only after the
   editor loop (§3.10) has reviewed and revised them and flipped them to
   ready-for-review. The human's job is a quick gut-check of a vetted post plus
-  the hero-image creation pass (CHARTER gate 2) — not an editing pass. All
-  editorial review and revision cycles are internal to the Growth OS.
+  the hero-image creation pass (CHARTER gate 2): generate the image and drop it
+  into a PR comment — the image-handler loop (§3.11) names, compresses, and
+  commits the file. The human never touches a filename or the terminal for this.
+  All editorial review and revision cycles are internal to the Growth OS.
 - **Weekly triage (human, ~15 min):** skim the ready, editor-approved post PRs
   (§3.2/§3.10) and the week's reports (§3.3, §3.5). Merge or, rarely, send back.
   Merging = scheduling.

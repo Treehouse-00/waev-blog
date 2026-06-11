@@ -115,8 +115,10 @@ Body requirements (AGENT.md "Authoring a post" + `../VOICE.md`):
 
 ## Step 4 — Hero image prompt (the final human handoff)
 This is the engine's LAST automated act before a post can publish (CHARTER
-gate 2). You do not make the image — you write ONE excellent prompt concept, and
-a human generates and provides it. Hold the prompt to the same bar as the prose.
+gate 2). You do not make the image — you write ONE excellent prompt concept; a
+human generates it and drops it into a comment on the post's PR, and the
+image-handler loop (`./image-handler.md`, CADENCE §3.11) names, normalizes, and
+commits the file. Hold the prompt to the same bar as the prose.
 All four criteria are non-negotiable:
 - **Creative:** one fresh idea with a point of view — not a literal screenshot of
   the topic.
@@ -194,9 +196,12 @@ change any other entry. Keep your appended `../image-concepts.md` row.
 - The PR body MUST open with this block, so the human handoff is unmissable:
   `## 🎨 HERO IMAGE — HUMAN ACTION REQUIRED BEFORE MERGE`
   followed by the illustration prompt (verbatim), the target path
-  `public/hero-<slug>.jpg`, and the alt text. State that the `Hero asset check`
-  stays RED until a human generates the image and adds that file, and the PR must
-  not be merged until it is green.
+  `public/hero-<slug>.jpg`, and the alt text. Tell the human their ONLY job is to
+  generate the image and DRAG-AND-DROP it into a comment on this PR — they do not
+  name, resize, or commit anything. The image-handler loop (CADENCE §3.11) then
+  downloads it, normalizes it, and commits `public/hero-<slug>.jpg` to this
+  branch. State that the `Hero asset check` stays RED until that asset lands, and
+  the PR must not be merged until it is green.
 - Below that, list: the slot (date/segment/funnel/`bucket`/`theme`/keywords), one
   sentence on how the piece ladders its niche up to the `theme`, the SEO-PLAYBOOK
   rules you verified, and the internal posts you linked.

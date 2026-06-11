@@ -126,6 +126,20 @@ oz schedule create \
   --prompt "Read growth/briefs/editor.md and execute it." \
   --environment <ENV_ID>
 
+# Hero-image placement — every 2 hours UTC (CADENCE §3.11). The last-mile asset
+# loop: it picks up a hero image a human attached to a draft post PR comment,
+# normalizes it, and commits public/hero-<slug>.jpg to the branch so the
+# `Hero asset check` clears. Most runs no-op; the cron only bounds how long a
+# human waits after attaching. Needs `gh` auth (to read comments + download the
+# attachment) and ImageMagick (`magick`/`convert`) in the environment image for
+# resize/compress — `dev-web:latest-agents` ships it; if a custom image does not,
+# the brief falls back to committing an already-web-sized JPEG verbatim.
+oz schedule create \
+  --name "waev-image-handler" \
+  --cron "0 */2 * * *" \
+  --prompt "Read growth/briefs/image-handler.md and execute it." \
+  --environment <ENV_ID>
+
 # Weekly SEO link & crawl sweep — Tuesdays 14:00 UTC (CADENCE §3.3).
 oz schedule create \
   --name "waev-seo-auditor" \
