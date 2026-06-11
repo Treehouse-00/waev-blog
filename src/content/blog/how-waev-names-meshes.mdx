@@ -19,6 +19,8 @@ faq:
     a: "Yes. An admin can set a display name override on any cluster. The override takes precedence over all automatic naming sources and persists until it is cleared."
 ---
 
+import Figure from "../../components/Figure.astro";
+
 Your mesh doesn't know its own name. Nodes are identified internally by public keys and UUIDs. That works for the protocol. It doesn't work for a net control operator who needs to say which part of the network is performing well and which part isn't.
 
 <div class="callout">
@@ -32,6 +34,11 @@ MeshBuilder is the clustering engine that runs on every recompute tick. It group
 Names serve a purpose beyond display. A cluster called "Portland Metro" can be referenced in a net control briefing, recorded in an after-action report, and discussed across different operators without ambiguity. A UUID cannot.
 
 <span class="waev-brand">Waev</span> only sees what enrolled observers report. The full ingest path from radio to map is covered in [From Radio to Map](/blog/how-waev-reads-your-mesh/).
+
+
+<Figure caption="Meshes are organic. They grow, split, and drift as their observer fleet evolves. The Appalachia, USA mesh anchors its data and identity through a dynamic environment.">
+  <img src="/meshbuilder-appalachia-rewind.gif" alt="A dark interface showing a live map of the Appalachia USA mesh with 803 nodes across a 52,493 sq km area, scrubbing back 18 days in time." loading="lazy" decoding="async" />
+</Figure>
 
 ## Tiers: naming scope from the hull area
 
