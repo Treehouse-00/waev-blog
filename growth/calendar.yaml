@@ -596,7 +596,7 @@ posts:
     series: measure-your-mesh
     primary_keyword: "measuring hop count in a MeshCore mesh"
     secondary_keyword: "how many hops is too many"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-06-16
