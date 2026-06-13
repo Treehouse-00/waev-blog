@@ -114,9 +114,19 @@ source→output size (e.g. `2048×853 PNG 1.2 MB → 1600×666 JPEG 180 KB`). En
 comment with the literal marker on its own line: `<!-- hero-handled -->` (so a
 later run skips this PR unless the human re-attaches a new image).
 Do NOT change the PR's draft/ready state — the editor loop (`./editor.md`) owns
-the draft→ready flip, and the human owns merge. If the PR is still a draft
-awaiting editorial review, leave it a draft. STOP and report the PR number + the
-placed hero path to the orchestrator.
+the draft→ready flip. If the PR is still a draft awaiting editorial review, leave
+it a draft.
+
+Then, for promptness, BEST-EFFORT hand off to the merge-runner (`./merge-runner.md`,
+CADENCE §3.12): placing the hero clears the last gate, so the post is now ready to
+merge if it is also editor-approved. If the `oz` CLI is available in this
+environment, trigger it on demand:
+`oz agent run-cloud --environment "$OZ_ENVIRONMENT_ID" --prompt "Read growth/briefs/merge-runner.md and execute it."`
+If `oz` is not available or the call fails, do NOT error — the hourly merge-runner
+sweep (§3.12) will pick the PR up within the hour. You never merge or deploy
+yourself; you only place the asset and optionally nudge the merge-runner.
+
+STOP and report the PR number + the placed hero path to the orchestrator.
 
 ## Hard constraints
 - Never GENERATE, fabricate, paint, or AI-synthesize a hero image, and never

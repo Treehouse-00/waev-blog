@@ -140,6 +140,19 @@ oz schedule create \
   --prompt "Read growth/briefs/image-handler.md and execute it." \
   --environment <ENV_ID>
 
+# Merge-runner — hourly UTC (CADENCE §3.12). The publish-execution loop: once a
+# human has authorized a post by attaching its hero image and every automated
+# gate is green (editor-approved, hero present, build clean), it brings main in
+# (auto-resolving only the ledger union + own-slot calendar status), re-builds,
+# and merges the PR — the deploy Action + date gate then ship it. It NEVER
+# deploys. Hourly is the backstop; the image-handler also triggers it on demand
+# the moment a hero lands, so most posts merge within minutes. Needs `gh` auth.
+oz schedule create \
+  --name "waev-merge-runner" \
+  --cron "0 * * * *" \
+  --prompt "Read growth/briefs/merge-runner.md and execute it." \
+  --environment <ENV_ID>
+
 # Weekly SEO link & crawl sweep — Tuesdays 14:00 UTC (CADENCE §3.3).
 oz schedule create \
   --name "waev-seo-auditor" \

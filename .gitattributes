@@ -1,0 +1,7 @@
+# Concurrent post PRs each append one row to growth/image-concepts.md (the hero
+# concept ledger). Without help, two branches appending at the file tail collide
+# on every merge. The built-in `union` merge driver resolves this by KEEPING
+# BOTH SIDES' lines instead of conflicting — exactly right for an append-only
+# ledger with unique per-slug rows. GitHub honors this driver on PR merges, so
+# the recurring ledger conflict disappears at the source.
+growth/image-concepts.md merge=union

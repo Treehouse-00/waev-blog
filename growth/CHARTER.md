@@ -63,26 +63,29 @@ listed here is fully delegated to agents.
    and this Charter once before the engine runs in earnest, and again only when
    either materially changes. Until ratified, agents may draft and prepare PRs
    but the positioning is provisional.
-2. **Merge content PRs to publish.** Every post and on-page change reaches
-   production only when a human merges the PR. Merge = publish. The existing
-   date-gate (`src/lib/posts.ts`) + deploy Action then ships it. No agent merges
-   or deploys. (Charter-bound by Invariant 1 below.)
-   Editorial review and revision are NOT part of this human gate — they are
-   agent-owned. The content-writer drafts, then the editor loop
-   (`./briefs/editor.md`, CADENCE §3.10) independently reviews, fact-checks,
-   revises, and only then flips the PR from draft to ready-for-review. By the time
-   a post reaches the human it has already been through the internal review cycle.
-   The human's role at this gate is therefore minimal and exhaustive: (a) a
-   cursory gut-check of an already-reviewed, already-revised post, and (b) the
-   hero-image pass. The content-writer delivers a hero **image prompt**, never
-   the image. The human GENERATES the image (the creative act) and drops it into
-   a comment on the post's PR — that is the human's whole job here. The Growth OS
-   then does the tactical work: the image-handler loop (`./briefs/image-handler.md`,
-   CADENCE §3.11) downloads the attached image, names + compresses it, and commits
-   `public/hero-<slug>.jpg` to the PR branch. The human does NOT name, process, or
-   commit the file. The `Hero asset check` stays red until that asset is present,
-   so a post cannot publish without its human-made hero. No other editorial work
-   is expected of the human.
+2. **Authorize a post to publish by providing its hero image.** A post reaches
+   production only after a human authorizes it — and that authorization IS the
+   hero-image upload, the single human deliverable on a content post. The
+   content-writer delivers a hero **image prompt**, never the image. The human
+   GENERATES the image (the creative act) and drops it into a comment on the
+   post's PR. That act is the publish authorization: by providing the final human
+   deliverable, the human is saying "ship it."
+   Everything around that act is agent-owned. The content-writer drafts; the
+   editor loop (`./briefs/editor.md`, CADENCE §3.10) independently reviews,
+   fact-checks, revises, and flips the PR draft→ready; the image-handler loop
+   (`./briefs/image-handler.md`, CADENCE §3.11) downloads the attached image,
+   names + compresses it, and commits `public/hero-<slug>.jpg` to the branch;
+   and the **merge-runner loop** (`./briefs/merge-runner.md`, CADENCE §3.12) then
+   EXECUTES the merge — but only once every automated gate is green (editor has
+   approved, the `Hero asset check` passes, `npm run build` is clean). The merge
+   is mechanical execution of the human's decision, not a new decision. The
+   `Hero asset check` stays red until the human-made hero is present, so a post
+   can never publish without it.
+   No agent DEPLOYS. The merge-runner only merges to `main`; the existing
+   date-gate (`src/lib/posts.ts`) + the deploy Action ship the merged post. If a
+   human prefers to click merge themselves on a given post, they still can — the
+   merge-runner only acts on already-authorized (hero-present, editor-approved)
+   PRs and no-ops otherwise. (Charter-bound by Invariant 1 below.)
 3. **Approve outbound distribution.** Any post to an external community (forums,
    Discord/Matrix, mailing lists, social, Reddit, ham/CERT channels) is a
    human-approval gate. Agents may draft distribution copy and a target list as
@@ -96,8 +99,11 @@ listed here is fully delegated to agents.
 ## Invariants (inherited, non-negotiable)
 These mirror the repo constitution in `../AGENT.md` and bind every growth agent:
 
-1. Agents propose via PR or report files; they NEVER deploy. Human merge =
-   publish. The date gate + deploy Action ships merged posts.
+1. Agents propose via PR or report files; they NEVER deploy. A human authorizes
+   a post to publish by providing its hero image (gate 2); the merge-runner loop
+   then executes the merge once every automated gate is green. The date gate +
+   deploy Action ship the merged post. Non-post PRs (SEO fixes, `calendar.yaml`,
+   audits) keep the `human-merge` gate — a human still clicks merge on those.
 2. No agent posts to external communities autonomously — distribution is always
    the human-approval gate above.
 3. Never contradict the factual canon in `src/pages/llms.txt.ts`. If a fact must

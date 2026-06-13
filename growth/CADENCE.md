@@ -12,10 +12,16 @@ Read alongside: `./calendar.yaml` (the dated backlog this rhythm draws from),
 (factual canon — never contradict).
 
 ## 0. First principles (non-negotiable)
-1. **Agents propose; humans publish.** Every code/content change lands as a PR
-   or a report file. No agent merges to `main`. No agent deploys. The existing
-   `deploy.yml` (push to `main`) + the `src/lib/posts.ts` date gate are the
-   only path to production.
+1. **Agents propose; the human authorizes; agents never deploy.** Every
+   code/content change lands as a PR or a report file, and **no agent deploys** —
+   `deploy.yml` (push to `main`) + the `src/lib/posts.ts` date gate are the only
+   path to production. For a **content post**, the human authorizes publication
+   by providing its hero image (CHARTER gate 2); once every automated gate is
+   green (editor-approved, hero present, build clean) the **merge-runner loop
+   (§3.12)** executes the merge as mechanical follow-through — it never decides to
+   publish, it only acts on a post the human already authorized. **All other PR
+   classes** (SEO fixes, `calendar.yaml`, audits) keep the `human-merge` gate: a
+   human clicks merge. No agent merges a post that lacks its human-made hero.
 2. **No autonomous external posting.** Any loop that drafts community/social/
    outreach content stops at a `human-approval` gate. Distribution is never
    executed by an agent.
@@ -32,7 +38,13 @@ Read alongside: `./calendar.yaml` (the dated backlog this rhythm draws from),
 - `none` — artifact is informational (a report). It is written to
   `growth/reports/` and needs no approval. It changes nothing in production.
 - `human-merge` — artifact is a PR. A human reviewing and merging the PR is the
-  approval. Merge → (date gate) → deploy. This is the standard content gate.
+  approval. Merge → (date gate) → deploy. Used for non-post PRs (SEO fixes,
+  `calendar.yaml`, audit fixes) where a human still clicks merge.
+- `os-merge` — the **content-post** gate. The human authorizes publication by
+  providing the post's hero image (CHARTER gate 2); the merge-runner loop (§3.12)
+  then executes the merge once editor-approved + hero present + build green. The
+  human makes the decision (the image); the loop performs the mechanical merge.
+  No agent deploys; the date gate + deploy Action still ship the merged post.
 - `human-approval` — artifact is a proposal a human must explicitly sign off on
   **before any further action**, even non-merge action (e.g. posting to a
   community). The agent never proceeds past this gate on its own.
@@ -53,11 +65,13 @@ transition (draft → ready-for-review), not a new `calendar.yaml` status.
   not a `calendar.yaml` status change: the human's only act is generating the image
   and attaching it to a PR comment; naming, compressing, and committing the file
   are delegated to the loop.
-- On human merge, the post file exists in `src/content/blog`; the entry becomes
+- Once the human authorizes via the hero image and the merge-runner (§3.12)
+  merges the PR, the post file exists in `src/content/blog` and the entry becomes
   `scheduled` (date-gated). The daily publish rebuild makes it `published` once
   `slot_date` arrives.
-- Only a human merge advances `drafted → scheduled`. No loop may set
-  `published`; that state is derived from `main` + the date gate.
+- The `drafted → scheduled` advance is triggered by the human's hero-image
+  authorization and executed by the merge-runner. No loop may set `published`;
+  that state is derived from `main` + the date gate. No loop deploys.
 
 ## 3. Recurring loops
 Each loop below is the authoritative spec for one scheduled job. Fields:
@@ -84,7 +98,7 @@ The orchestrating run-system reads this section to register jobs.
 - output: `pr` — a draft post `.mdx` under `src/content/blog/` matching
   `content.config.ts` frontmatter, plus the `status: proposed → drafted` flip in
   `calendar.yaml`, opened as one draft PR.
-- gate: `human-merge` (this is the publish gate).
+- gate: `os-merge` (human authorizes via hero image; merge-runner §3.12 merges).
 
 ### 3.10 Thrice-weekly — Editorial review (the internal review cycle)
 - brief: `./briefs/editor.md`
@@ -99,9 +113,8 @@ The orchestrating run-system reads this section to register jobs.
   -->` marker to the PR body, and flips the PR to ready-for-review (`gh pr
   ready`). If a draft is unsalvageable within scope, it leaves the PR a draft
   with a clear "needs human" note instead.
-- gate: `human-merge` (the human still merges; the editor never merges/deploys).
-  This loop makes the human gate a cursory gut-check of an already-reviewed,
-  already-revised post — not an editing pass.
+- gate: `os-merge` (the editor never merges/deploys; it only flips draft→ready).
+  After the editor approves, the only remaining human act is the hero image.
 
 ### 3.11 Frequent — Hero-image placement (the last-mile asset loop)
 - brief: `./briefs/image-handler.md`
@@ -116,8 +129,30 @@ The orchestrating run-system reads this section to register jobs.
   format (JPEG, ~1600px wide, metadata stripped), commits `public/hero-<slug>.jpg`
   to the PR branch, and comments confirmation with the `<!-- hero-handled -->`
   marker. It NEVER generates an image and writes only that one asset.
-- gate: `human-merge` (the human still merges; the loop never merges/deploys and
-  never flips draft→ready — the editor owns that).
+- gate: `os-merge` (the loop places the asset; it never merges/deploys and never
+  flips draft→ready). Placing the hero clears the last gate before the
+  merge-runner (§3.12) can execute the merge.
+
+### 3.12 Frequent — Merge-runner (the publish-execution loop)
+- brief: `./briefs/merge-runner.md`
+- cron: `0 * * * *`  (hourly, UTC — the backstop; the image-handler also triggers
+  it on demand the moment a hero lands, so most merges happen within minutes)
+- trigger: each run, find the oldest OPEN `growth/post-*` PR that is ready (not
+  draft), carries `<!-- editor-approved -->`, has its hero asset present
+  (`check-hero-assets.mjs` OK), builds green, and lacks `<!-- os-merged -->` /
+  `<!-- merge-blocked -->` / `<!-- editor-escalated -->`. If none, no-op. One PR
+  per run.
+- output: `merge` — brings `origin/main` into the branch (auto-resolving only the
+  two known-safe conflict classes: the `image-concepts.md` ledger via the
+  `merge=union` driver, and a `calendar.yaml` own-slot `status` line), re-runs the
+  build, and merges the PR with `gh pr merge --merge`. It comments the merge SHA
+  + publish date + `<!-- os-merged -->`. Any conflict outside the safe set, a red
+  build, or a missing hero → it comments `<!-- merge-blocked -->` (or no-ops for a
+  missing hero) and stops for a human. It NEVER deploys, force-pushes, squashes,
+  or `--admin`-bypasses checks.
+- gate: `os-merge` (this loop IS the execution half of that gate; the human's
+  hero image is the decision half). Publication still flows only through the
+  merge → date gate → deploy Action path.
 
 ### 3.3 Weekly — Link & crawl sweep
 - brief: `./briefs/seo-auditor.md`
@@ -196,8 +231,12 @@ Autonomous (agent may act without asking, within guardrails):
 - Choosing the next due slot from `calendar.yaml` per §2/§3.2.
 - Writing reports under `growth/reports/`.
 - Proposing `calendar.yaml` edits via PR.
+- **Executing the merge of a content post the human already authorized** by
+  providing its hero image, once all automated gates are green (merge-runner,
+  §3.12). The decision is the human's hero image; the merge is mechanical.
 Human-only (require a gate above):
-- Merging any PR to `main` (= publishing).
+- Authorizing a post to publish — by providing its hero image (gate 2).
+- Merging any NON-post PR to `main` (SEO fixes, `calendar.yaml`, audits).
 - Deploying (never an agent action at all).
 - Any external/community posting or outreach (`human-approval`, §3.7).
 - Changing canon (`llms.txt`), changing this `CADENCE.md`, or changing the
@@ -205,16 +244,19 @@ Human-only (require a gate above):
 - Resolving a flagged canon conflict (§0.3).
 
 ## 5. Review rhythm (the human side of the loop)
-- **Per-post (human, cursory):** content PRs reach the human only after the
-  editor loop (§3.10) has reviewed and revised them and flipped them to
-  ready-for-review. The human's job is a quick gut-check of a vetted post plus
-  the hero-image creation pass (CHARTER gate 2): generate the image and drop it
-  into a PR comment — the image-handler loop (§3.11) names, compresses, and
-  commits the file. The human never touches a filename or the terminal for this.
-  All editorial review and revision cycles are internal to the Growth OS.
-- **Weekly triage (human, ~15 min):** skim the ready, editor-approved post PRs
-  (§3.2/§3.10) and the week's reports (§3.3, §3.5). Merge or, rarely, send back.
-  Merging = scheduling.
+- **Per-post (human, one act):** the human's whole job on a content post is the
+  hero-image pass (CHARTER gate 2): generate the image and drop it into a PR
+  comment. That act IS the publish authorization. Everything else is internal to
+  the Growth OS — the editor (§3.10) reviews/revises and flips draft→ready, the
+  image-handler (§3.11) names/compresses/commits the file, and the merge-runner
+  (§3.12) executes the merge once all gates are green. The human never touches a
+  filename, the terminal, or the merge button. (A human MAY still merge a post
+  manually if they prefer; the merge-runner only acts on hero-present,
+  editor-approved PRs and no-ops otherwise.)
+- **Weekly triage (human, ~5 min):** skim what the OS shipped — the
+  `<!-- os-merged -->` confirmations and any `<!-- merge-blocked -->` PRs that
+  need a human (a real content conflict the merge-runner refused to guess at) —
+  plus the week's reports (§3.3, §3.5). Unblock or send back as needed.
 - **Monthly review (human):** read the monthly analytics report (§3.4), the
   monthly audit (§3.6), and distribution prep (§3.7); approve distribution
   actions; merge the fix and calendar PRs.
@@ -224,7 +266,9 @@ Human-only (require a gate above):
 
 ## 6. Invariants restated for loop authors (checklist)
 A loop run is only valid if ALL hold:
-- [ ] It produced a PR or a report — it did not merge or deploy.
+- [ ] It did not DEPLOY. (Only the merge-runner §3.12 may merge — and only a
+      hero-present, editor-approved `growth/post-*` PR; every other loop produces
+      a PR or a report and merges nothing.)
 - [ ] If it opened a PR, `npm run build` passes on that branch.
 - [ ] It did not post anything to an external community.
 - [ ] It did not contradict `llms.txt`; any factual conflict was flagged, not
