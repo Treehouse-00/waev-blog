@@ -1,11 +1,11 @@
 ---
 title: "Why Radio Speaks in Decibels"
-description: "Understanding dBm from first principles: where the decibel came from, why radio power is logarithmic, and the physics that sets the noise floor every receiver fights."
+description: "Understanding dBm from first principles: where the decibel came from, why radio power is logarithmic, and the physics that sets the noise floor."
 date: 2026-06-13
 tags: ["signal", "deep-dive"]
 hero:
   src: "/hero-why-radio-speaks-in-decibels.jpg"
-  alt: "A hand-painted close-up of a brass slide rule resting on aged engineering graph paper, its logarithmic scales catching warm directional light from one side."
+  alt: "A hand-painted close-up of a chambered nautilus shell in cross-section on a wooden workbench, its chambers spiraling outward in equal ratios, lit warmly from one side."
 faq:
   - q: "Where did the decibel come from?"
     a: "The decibel originated at Bell Telephone Laboratories in the 1920s. Engineers replaced the older 'mile of standard cable' with a logarithmic 'transmission unit' for measuring telephone signal loss, and in 1928 the unit was named the decibel — one tenth of a bel, which honors Alexander Graham Bell. W. H. Martin formally introduced the name in the Bell System Technical Journal in 1929."
@@ -20,7 +20,7 @@ faq:
 import Figure from "../../components/Figure.astro";
 import DecibelSpan from "../../components/viz/signal-DecibelSpan.astro";
 
-<div class="callout"><p><strong>In short.</strong> Understanding dBm starts with understanding why radio is logarithmic at all. The decibel is a hundred-year-old idea from telephone engineering: it compresses the enormous range of radio power — from a transmitter's tenth of a watt down to a received signal a thousand-billion times weaker — into numbers you can add and subtract by hand. dBm anchors that scale to one milliwatt. And the reason received signals sit so deep in the negatives is physics: thermal noise sets a hard floor near −174 dBm per hertz that no receiver can beat.</p></div>
+<div class="callout"><p><strong>In short.</strong> Understanding dBm starts with understanding why radio is logarithmic at all. The decibel is a hundred-year-old idea from telephone engineering: it compresses the enormous range of radio power — from a transmitter's tenth of a watt down to a received signal a hundred billion times weaker — into numbers you can add and subtract by hand. dBm anchors that scale to one milliwatt. And the reason received signals sit so deep in the negatives is physics: thermal noise sets a hard floor near −174 dBm per hertz that no receiver can beat.</p></div>
 
 Open any radio datasheet, signal reading, or link calculation and you are reading decibels. Transmit power in dBm. Antenna gain in dBi. Receiver sensitivity in dBm. Signal-to-noise ratio in dB. It is the native language of every wireless system ever built — and like most languages, it is easier to speak once you know where it came from and why it is shaped the way it is.
 
@@ -28,7 +28,7 @@ This is the general explainer: the decibel from first principles, with citations
 
 ## The problem the decibel solves
 
-Radio covers a staggering range of power. A small LoRa transmitter emits around a tenth of a watt. That same transmission, after kilometers of air, terrain, and buildings, may reach a receiver as roughly a nanowatt — and the receiver can still decode signals weaker than a femtowatt, a quadrillionth of a watt. The ratio between what leaves the antenna and what the receiver can still hear spans more than fourteen orders of magnitude.
+Radio covers a staggering range of power. A small LoRa transmitter emits around a tenth of a watt. That same transmission, after kilometers of air, terrain, and buildings, may reach a receiver as roughly a picowatt — and the receiver can still decode signals weaker than a femtowatt, a quadrillionth of a watt. The ratio between what leaves the antenna and what the receiver can still hear spans more than fourteen orders of magnitude.
 
 You cannot do useful arithmetic on numbers like that. Writing 0.0000000000001 watts is error-prone, and a signal chain multiplies and divides those values at every stage — transmitter, cable, antenna, free space, antenna, cable, receiver. The decibel fixes both problems at once by working in logarithms. A logarithm turns a vast multiplicative range into a compact additive one: every factor of ten in power becomes a simple step of 10 on the scale, and the whole multiply-and-divide chain of a radio link becomes a sequence of additions and subtractions.
 
@@ -40,7 +40,7 @@ You cannot do useful arithmetic on numbers like that. Writing 0.0000000000001 wa
 
 The decibel was not invented for radio. It came out of the telephone network.
 
-In the early 1920s, Bell System engineers needed a way to express how much a telephone signal weakened over a circuit. Their older yardstick — the "mile of standard cable," the loss in one mile of a particular telephone cable — was frequency-dependent and awkward. So in 1923–1924 they replaced it with a clean logarithmic ratio they called the *transmission unit* (W. H. Martin, *The Transmission Unit and Telephone Transmission Reference Systems*, AIEE, 1924). One transmission unit was defined as ten times the base-10 logarithm of a power ratio — the exact definition the decibel still carries today.
+In the early 1920s, Bell System engineers needed a way to express how much a telephone signal weakened over a circuit. Their older yardstick — the "mile of standard cable," the loss in one mile of a particular telephone cable — was frequency-dependent and awkward. So in 1923–1924 they replaced it with a clean logarithmic ratio they called the *transmission unit* (W. H. Martin, *The Transmission Unit and Telephone Transmission Reference Systems*, Bell System Technical Journal, 1924). One transmission unit was defined as ten times the base-10 logarithm of a power ratio — the exact definition the decibel still carries today.
 
 The unit was renamed a few years later. The *bel* — a full factor of ten in power — honors Alexander Graham Bell. The bel proved inconveniently large for everyday work, so engineers used one tenth of it: the *decibel*. W. H. Martin announced the name formally in *Decibel — The Name for the Transmission Unit* (Bell System Technical Journal, vol. 8, no. 1, 1929), the paper that put "dB" into the technical vocabulary.
 
@@ -68,17 +68,17 @@ Two more results complete the picture and explain why the numbers land where the
 
 This is why dBm is worth understanding from the ground up: it is not a radio quirk, it is the shared language of a century of communication engineering, anchored in human perception at one end and thermodynamics at the other. The same −174 dBm floor that limits a deep-space probe limits the LoRa node on your roof.
 
-For people who run [MeshCore](/blog/what-is-meshcore/) mesh networks specifically, these abstractions become daily, practical numbers. Receiver sensitivity in dBm tells you how weak a neighbor's signal can get before the link drops. The noise floor tells you what you are fighting in your local RF environment. And the gap between them — [signal-to-noise ratio](/blog/what-is-snr-lora/), in plain dB — is the single most useful health number a mesh operator can read. Waev surfaces that SNR on every packet in Live Packets and tracks it across your network over time, because the difference between a mesh that "mostly works" and one you can rely on is usually written in a few dB. The practical art of reading those numbers is in [Reading the Signal](/blog/reading-the-signal/).
+For people who run [MeshCore](/blog/what-is-meshcore/) mesh networks specifically, these abstractions become daily, practical numbers. Receiver sensitivity in dBm tells you how weak a neighbor's signal can get before the link drops. The noise floor tells you what you are fighting in your local RF environment. And the gap between them — [signal-to-noise ratio](/blog/what-is-snr-lora/), in plain dB — is the single most useful health number a mesh operator can read. Waev surfaces that SNR on every packet in Live Packets and tracks it across your network over time, because the difference between a mesh that "mostly works" and one you can rely on is usually written in a few dB.
 
 Learn dBm once, from the physics up, and every wireless system you ever touch — including your own mesh — speaks a language you already know.
 
 ## Sources
 
 - W. H. Martin, "Decibel — The Name for the Transmission Unit," *Bell System Technical Journal*, vol. 8, no. 1, pp. 1–2, 1929.
-- W. H. Martin, "The Transmission Unit and Telephone Transmission Reference Systems," *AIEE Transactions*, vol. 43, 1924.
+- W. H. Martin, "The Transmission Unit and Telephone Transmission Reference Systems," *Bell System Technical Journal*, vol. 3, no. 3, pp. 400–408, 1924.
 - J. B. Johnson, "Thermal Agitation of Electricity in Conductors," *Physical Review*, vol. 32, no. 1, pp. 97–109, 1928.
 - H. Nyquist, "Thermal Agitation of Electric Charge in Conductors," *Physical Review*, vol. 32, no. 1, pp. 110–113, 1928.
 - H. T. Friis, "A Note on a Simple Transmission Formula," *Proceedings of the IRE*, vol. 34, no. 5, pp. 254–256, 1946.
 - C. E. Shannon, "A Mathematical Theory of Communication," *Bell System Technical Journal*, vol. 27, pp. 379–423, 623–656, 1948.
 
-{/* ILLUSTRATION PROMPT: A warm flat hand-painted close-up of an old brass-and-ivory slide rule resting at a slight angle on a sheet of aged engineering graph paper, its logarithmic scales and cursor catching warm directional light from one side. The subject is the logarithm made physical — the quiet, precise instrument that turned multiplication into addition. No screens, no radio hardware, no glowing elements. Palette: warm amber paper, aged ivory, brass tone, soft shadow falling to one side. Calm, studious, grounded mood. */}
+{/* ILLUSTRATION PROMPT: A warm flat hand-painted close-up of a chambered nautilus shell cut in cross-section, resting on a bare wooden workbench in soft directional light. Its chambers spiral outward in steadily growing steps — each a fixed ratio larger than the last — the logarithm made physical. One clear subject with quiet breathing room. No screens, no radio hardware, no graph paper, no glowing elements. Palette: warm amber and aged ivory with a restrained mother-of-pearl sheen, soft shadow falling to one side. Calm, studious, grounded mood. */}
