@@ -1,0 +1,84 @@
+---
+title: "Why Radio Speaks in Decibels"
+description: "Understanding dBm from first principles: where the decibel came from, why radio power is logarithmic, and the physics that sets the noise floor."
+date: 2026-06-13
+tags: ["signal", "deep-dive"]
+hero:
+  src: "/hero-why-radio-speaks-in-decibels.jpg"
+  alt: "A hand-painted close-up of a chambered nautilus shell in cross-section on a wooden workbench, its chambers spiraling outward in equal ratios, lit warmly from one side."
+faq:
+  - q: "Where did the decibel come from?"
+    a: "The decibel originated at Bell Telephone Laboratories in the 1920s. Engineers replaced the older 'mile of standard cable' with a logarithmic 'transmission unit' for measuring telephone signal loss, and in 1928 the unit was named the decibel — one tenth of a bel, which honors Alexander Graham Bell. W. H. Martin formally introduced the name in the Bell System Technical Journal in 1929."
+  - q: "Why is radio power measured on a logarithmic scale?"
+    a: "Because radio spans an enormous range of power. A transmitter may put out a tenth of a watt while the same signal arrives at a distant receiver as a fraction of a femtowatt — more than fourteen orders of magnitude weaker. Logarithms compress that range into readable numbers and turn the multiplication of a signal chain into simple addition and subtraction."
+  - q: "Why is the radio noise floor around minus 174 dBm?"
+    a: "Every conductor at a temperature above absolute zero generates thermal noise, a physical phenomenon described by Johnson and Nyquist in 1928. At room temperature (290 K), that noise sets a floor of approximately minus 174 dBm per hertz of bandwidth. It is a hard physical limit: no receiver can hear a signal buried beneath its own thermal noise, which is why deep negative dBm values are normal and expected."
+  - q: "Is dBm used outside radio?"
+    a: "Yes. The decibel is used across acoustics, audio engineering, optics, and telecommunications. dBm specifically — decibels referenced to one milliwatt — is standard wherever absolute electrical or optical power is expressed, from fiber-optic links to Wi-Fi to cellular to LoRa mesh radios."
+---
+
+import Figure from "../../components/Figure.astro";
+import DecibelSpan from "../../components/viz/signal-DecibelSpan.astro";
+
+<div class="callout"><p><strong>In short.</strong> Understanding dBm starts with understanding why radio is logarithmic at all. The decibel is a hundred-year-old idea from telephone engineering: it compresses the enormous range of radio power — from a transmitter's tenth of a watt down to a received signal a hundred billion times weaker — into numbers you can add and subtract by hand. dBm anchors that scale to one milliwatt. And the reason received signals sit so deep in the negatives is physics: thermal noise sets a hard floor near −174 dBm per hertz that no receiver can beat.</p></div>
+
+Open any radio datasheet, signal reading, or link calculation and you are reading decibels. Transmit power in dBm. Antenna gain in dBi. Receiver sensitivity in dBm. Signal-to-noise ratio in dB. It is the native language of every wireless system ever built — and like most languages, it is easier to speak once you know where it came from and why it is shaped the way it is.
+
+This is the general explainer: the decibel from first principles, with citations to the work that defined it. The practical, mesh-specific version — what these numbers mean for a network you operate — is in the companion piece, [What dBm Actually Measures](/blog/what-is-dbm/).
+
+## The problem the decibel solves
+
+Radio covers a staggering range of power. A small LoRa transmitter emits around a tenth of a watt. That same transmission, after kilometers of air, terrain, and buildings, may reach a receiver as roughly a picowatt — and the receiver can still decode signals weaker than a femtowatt, a quadrillionth of a watt. The ratio between what leaves the antenna and what the receiver can still hear spans more than fourteen orders of magnitude.
+
+You cannot do useful arithmetic on numbers like that. Writing 0.0000000000001 watts is error-prone, and a signal chain multiplies and divides those values at every stage — transmitter, cable, antenna, free space, antenna, cable, receiver. The decibel fixes both problems at once by working in logarithms. A logarithm turns a vast multiplicative range into a compact additive one: every factor of ten in power becomes a simple step of 10 on the scale, and the whole multiply-and-divide chain of a radio link becomes a sequence of additions and subtractions.
+
+<Figure caption="The same four radio power levels, twice. In linear watts the span is unmanageable; in dBm it is a tidy, evenly-readable line. That compression is the entire reason the decibel exists.">
+  <DecibelSpan />
+</Figure>
+
+## A hundred-year-old unit from the telephone
+
+The decibel was not invented for radio. It came out of the telephone network.
+
+In the early 1920s, Bell System engineers needed a way to express how much a telephone signal weakened over a circuit. Their older yardstick — the "mile of standard cable," the loss in one mile of a particular telephone cable — was frequency-dependent and awkward. So in 1923–1924 they replaced it with a clean logarithmic ratio they called the *transmission unit* (W. H. Martin, *The Transmission Unit and Telephone Transmission Reference Systems*, Bell System Technical Journal, 1924). One transmission unit was defined as ten times the base-10 logarithm of a power ratio — the exact definition the decibel still carries today.
+
+The unit was renamed a few years later. The *bel* — a full factor of ten in power — honors Alexander Graham Bell. The bel proved inconveniently large for everyday work, so engineers used one tenth of it: the *decibel*. W. H. Martin announced the name formally in *Decibel — The Name for the Transmission Unit* (Bell System Technical Journal, vol. 8, no. 1, 1929), the paper that put "dB" into the technical vocabulary.
+
+There is a human reason the decibel is sized the way it is: roughly one decibel is about the smallest change in loudness a person can reliably detect under good conditions. The unit was scaled to human perception of a telephone call — and a century later it still measures the signal a mesh node hears from a hilltop repeater.
+
+## Relative and absolute: dB versus dBm
+
+The decibel by itself is a *ratio* — it describes a change, not an amount. A cable with 3 dB of loss halves whatever power passes through it, no matter the starting level. That is **dB**: relative, unanchored.
+
+To describe an *absolute* power you need a reference, and that is what the suffix does. **dBm** is decibels referenced to one milliwatt: 0 dBm is exactly 1 mW, +30 dBm is 1 watt, −90 dBm is a thousandth of a billionth of a watt. The "m" is the whole difference between a ratio and a real, measurable quantity.
+
+The arithmetic that follows is the backbone of every link calculation: add a gain or loss (dB) to an absolute level (dBm) and you get a new absolute level (dBm). Transmit power minus cable loss plus antenna gain minus path loss equals the power at the far receiver — all addition and subtraction, exactly as the Bell engineers intended. The full set of rules, with the worked numbers, is in [What dBm Actually Measures](/blog/what-is-dbm/).
+
+## The floor every receiver fights
+
+Here is the part that surprises people new to radio: received signal levels are almost always deeply negative in dBm, and there is a hard physical reason they cannot simply be made stronger at the receiver.
+
+Every electrical conductor at any temperature above absolute zero generates a faint random voltage, because its charge carriers are in constant thermal motion. This is *thermal noise*, and it was pinned down in 1928 in a pair of back-to-back papers in the same volume of *Physical Review*: John B. Johnson measured it experimentally (*Thermal Agitation of Electricity in Conductors*, Phys. Rev. 32, 97, 1928), and Harry Nyquist derived it from thermodynamics (*Thermal Agitation of Electric Charge in Conductors*, Phys. Rev. 32, 110, 1928). Their result is elegant and unforgiving: the available noise power depends only on temperature and bandwidth — not on the circuit, not on the components — and equals *kTB*, where *k* is Boltzmann's constant, *T* is absolute temperature, and *B* is bandwidth.
+
+Put room temperature (290 K) into that formula and you get approximately **−174 dBm per hertz of bandwidth**. That is the noise floor: the quietest a receiver's own physics will ever let it be. A signal weaker than the noise in its band cannot be recovered, no matter how good the radio. This is why a receiver's job is not to be "loud" but to be *quiet* — to add as little noise as possible above that thermal floor — and why deep-space and radio-astronomy receivers are cryogenically cooled to push *T*, and the floor, lower.
+
+Two more results complete the picture and explain why the numbers land where they do. Harald Friis's transmission formula (*A Note on a Simple Transmission Formula*, Proc. IRE, 1946) describes how power falls with distance and frequency in free space — the reason a +20 dBm transmission arrives at −90 dBm or lower. And Claude Shannon's founding paper of information theory (*A Mathematical Theory of Communication*, Bell System Technical Journal, 1948) ties it all together: the rate at which you can move information through a channel is set by its bandwidth and its signal-to-noise ratio. The gap between your signal in dBm and the noise floor in dBm — measured in plain dB — is, quite literally, the budget you have to work with.
+
+## From the physics to your network
+
+This is why dBm is worth understanding from the ground up: it is not a radio quirk, it is the shared language of a century of communication engineering, anchored in human perception at one end and thermodynamics at the other. The same −174 dBm floor that limits a deep-space probe limits the LoRa node on your roof.
+
+For people who run [MeshCore](/blog/what-is-meshcore/) mesh networks specifically, these abstractions become daily, practical numbers. Receiver sensitivity in dBm tells you how weak a neighbor's signal can get before the link drops. The noise floor tells you what you are fighting in your local RF environment. And the gap between them — [signal-to-noise ratio](/blog/what-is-snr-lora/), in plain dB — is the single most useful health number a mesh operator can read. Waev surfaces that SNR on every packet in Live Packets and tracks it across your network over time, because the difference between a mesh that "mostly works" and one you can rely on is usually written in a few dB.
+
+Learn dBm once, from the physics up, and every wireless system you ever touch — including your own mesh — speaks a language you already know.
+
+## Sources
+
+- W. H. Martin, "Decibel — The Name for the Transmission Unit," *Bell System Technical Journal*, vol. 8, no. 1, pp. 1–2, 1929.
+- W. H. Martin, "The Transmission Unit and Telephone Transmission Reference Systems," *Bell System Technical Journal*, vol. 3, no. 3, pp. 400–408, 1924.
+- J. B. Johnson, "Thermal Agitation of Electricity in Conductors," *Physical Review*, vol. 32, no. 1, pp. 97–109, 1928.
+- H. Nyquist, "Thermal Agitation of Electric Charge in Conductors," *Physical Review*, vol. 32, no. 1, pp. 110–113, 1928.
+- H. T. Friis, "A Note on a Simple Transmission Formula," *Proceedings of the IRE*, vol. 34, no. 5, pp. 254–256, 1946.
+- C. E. Shannon, "A Mathematical Theory of Communication," *Bell System Technical Journal*, vol. 27, pp. 379–423, 623–656, 1948.
+
+{/* ILLUSTRATION PROMPT: A warm flat hand-painted close-up of a chambered nautilus shell cut in cross-section, resting on a bare wooden workbench in soft directional light. Its chambers spiral outward in steadily growing steps — each a fixed ratio larger than the last — the logarithm made physical. One clear subject with quiet breathing room. No screens, no radio hardware, no graph paper, no glowing elements. Palette: warm amber and aged ivory with a restrained mother-of-pearl sheen, soft shadow falling to one side. Calm, studious, grounded mood. */}
