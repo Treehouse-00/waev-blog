@@ -1,0 +1,82 @@
+---
+title: "Four Tools, One Mesh"
+description: "How four MeshCore tools — the official Map, MeshMapper, LetsMesh, and Waev — answer different questions, and how to pick the right one for yours."
+date: 2026-06-25
+tags: ["comparison", "operations", "data-ownership"]
+hero:
+  src: "/hero-four-tools-one-mesh.jpg"
+  alt: "A hand-painted scene of an open workshop tool cabinet with painted silhouette outlines for four hand planes, one slot empty and that plane in use on the workbench below, in warm afternoon light."
+faq:
+  - q: "What is the difference between the MeshCore Map and MeshMapper?"
+    a: "The official MeshCore Map is a directory: it shows where infrastructure nodes are located and what radio settings they use, based on positions uploaded from the MeshCore app. MeshMapper shows measured RF coverage instead — drive-tested, GPS-tagged ping results that reveal where the mesh actually reaches and where the dead zones are."
+  - q: "What is LetsMesh used for?"
+    a: "LetsMesh is a packet analyzer and observer network for MeshCore. Community-run observer nodes report the packets they hear over MQTT, and the analyzer lets you inspect packet structure, routing paths, and live traffic across hundreds of regions worldwide."
+  - q: "When does Waev make sense instead of other MeshCore tools?"
+    a: "Waev fits operators who run a mesh and want verified topology, signal analytics, and network health over time on infrastructure they control. You host your own MQTT broker, your community keeps its data, and Waev subscribes with a read-only copy."
+  - q: "Can these MeshCore tools be used together?"
+    a: "Yes. The tools answer different questions, and most serious communities run several at once: the official Map for node reference, MeshMapper for coverage surveys, LetsMesh for packet inspection, and Waev for ongoing analytics on a community-owned broker."
+---
+
+import Figure from "../../components/Figure.astro";
+import ToolQuestions from "../../components/viz/comparison-ToolQuestions.astro";
+
+<div class="callout"><p><strong>In short.</strong> The main MeshCore tools are not four answers to one question — they are four answers to four different questions. The official MeshCore Map tells you where infrastructure is. MeshMapper tells you where coverage actually reaches. LetsMesh tells you what is traveling the mesh right now. Waev tells you whether your mesh is healthy over time, on a broker you own. Pick by the question you are asking.</p></div>
+
+A question that comes up often, and deserves a straight answer: *why Waev, when the MeshCore Map already exists? When MeshMapper already maps coverage? When LetsMesh already analyzes packets?*
+
+The honest answer is that it's the wrong framing. These tools overlap far less than their map-shaped interfaces suggest. Each one was built to answer a different operator question, each answers its question well, and a community that takes its mesh seriously will probably end up using more than one. Here is what each tool actually does, where each one is the right choice, and the specific set of criteria where Waev earns its place.
+
+<Figure caption="Four questions, four tools. The interfaces look similar — the questions they answer are not.">
+  <ToolQuestions />
+</Figure>
+
+## "Where is everything?" — the MeshCore Map
+
+The [official MeshCore Map](https://map.meshcore.io/) is the canonical reference for what exists. Maintained by the MeshCore team, it grew from its first nodes in April 2025 to tens of thousands worldwide. Nodes appear because someone uploaded them — from the MeshCore app directly, or automatically via the map's auto-uploader when a repeater broadcasts an advert.
+
+It is a directory, and a good one. You get each repeater's position, its radio settings, a freshness color code that tells you whether it has been heard from recently, and a QR code that adds the node straight to your contacts. If you are standing up a new node and want to know what infrastructure is around you — or you want other operators to find yours — this is the tool, and nothing else replaces it.
+
+What it deliberately doesn't claim: that a node on the map is reachable from where you stand. A pin is a self-reported position, not a propagation test. The map's own freshness tiers (a node fades from green to black as it goes quiet) are an honest acknowledgment of that gap.
+
+## "Can I reach the mesh from here?" — MeshMapper
+
+[MeshMapper](https://meshmapper.net/), built by members of the Greater Ottawa mesh community, answers the question a pin on a map can't: where does the signal *actually* reach? Operators drive (or walk, or bike) with the open-source MeshMapper app sending GPS-tagged pings through the mesh, and the platform grades each grid square by what happened there — a confirmed two-way link, a transmit that nobody echoed, traffic heard but not reached, or nothing at all.
+
+This is ground truth, and there is no substitute for it. A repeater's theoretical footprint means little next to a grid of squares someone physically tested. If your question is "where are our dead zones" or "did moving that antenna actually help," MeshMapper is the right tool — and the wardriving leaderboards have turned coverage surveying into something communities genuinely enjoy doing together.
+
+The design tradeoff to understand: MeshMapper is a centralized global platform by intent. The wardriving app is open source; the web platform is not, and the project states plainly that it is not a data broker — regions get a keyed, rate-limited coverage API and CSV export rather than raw data access. That is a reasonable choice for a free, volunteer-run global service, and the team is upfront about it. It just means the measurements your community collects live on infrastructure the platform operates, not infrastructure you do.
+
+## "What is traveling the mesh?" — LetsMesh
+
+[LetsMesh](https://letsmesh.net/) is the MeshCore packet analyzer. Community-run observer nodes — MQTT-connected MeshCore devices — report the packets they hear, and the analyzer turns that into an inspectable live feed: packet structure, routing paths, flood versus direct, filterable by region, observer, and type, across hundreds of regions worldwide.
+
+If you want to see the mesh's pulse — watch a packet's hops, decode its structure, confirm your repeater is actually relaying — this is the tool. It's also load-bearing infrastructure for the wider ecosystem: LetsMesh operates community MQTT brokers that other tools build on, and its observer model is how much of the MeshCore world gets its visibility. The ecosystem owes this project a lot.
+
+The shape to understand: LetsMesh is a shared, global lens. Your observers report into the community's analyzer alongside everyone else's. That is exactly right for a public commons. It is a different thing from a private operations console for *your* network, with *your* retention rules, on *your* broker.
+
+## "Is my mesh healthy — and whose data is it?" — Waev
+
+Waev is built for the operator who has moved past *getting on* the mesh and now has to *keep it working*: the club net manager, the CERT communications lead, the person whose name is on the neighborhood buildout. That job needs different answers. Not "where are nodes" but "which links degraded this month." Not "what packets exist" but "what does the evidence prove about my topology — and what can't it prove."
+
+Three design decisions follow from that, and they are the honest answer to "why Waev":
+
+**The map is evidence, not a guess.** Waev draws topology only from [enrolled observers](/blog/what-is-a-mesh-network-observer/) and authenticated repeaters. A spoofed or merely inferred node prefix is rejected, never drawn — and when a link isn't shown, [the map can tell you why](/blog/evidence-based-mesh-network-map/). No proof, no line.
+
+**Refusal is a feature.** A node named with a privacy marker (⛔ 🛑 🚫) is never stored, mapped, or counted. Companion and personal devices are identity-scrubbed at the ingest edge; only anonymous signal metadata — SNR, hops, timing — is retained. What doesn't enter the database can't be breached or misused.
+
+**You hold the keys.** Waev is bring-your-own-broker: your community hosts its own MQTT broker and owns the data on it. Waev subscribes and [keeps a read-only copy](/blog/can-waev-write-to-your-broker/). If you stop using Waev tomorrow, your packet history is still sitting on your hardware, because it never left.
+
+And the honest accounting, because a comparison that only flatters one side is propaganda: Waev does not do drive-tested coverage surveys — MeshMapper does that, and does it well. Waev is not a global node directory — the official Map is, and should stay canonical. And Waev asks more of you up front than the community tools do: you stand up a broker and enroll observers before the first chart draws. If you want zero-infrastructure visibility today, start with the Map and LetsMesh — genuinely.
+
+## How to choose
+
+Match the tool to the question in front of you:
+
+- **You're new, or scouting an area** → the official MeshCore Map. See what exists, add yourself, connect.
+- **You're siting a repeater or hunting dead zones** → MeshMapper. Survey it; trust the grid, not the guess.
+- **You're debugging routing or watching live traffic** → LetsMesh. Inspect the packets themselves.
+- **You operate a mesh others depend on, and you want its history, health, and topology verified — on infrastructure you control** → that's the job Waev was built for.
+
+On any given day your question is probably one of the first three, and those tools will serve you well. But if your mesh has become something people count on — a club net, a CERT activation plan, [a neighborhood that keeps its own keys](/blog/keeping-control-of-your-mesh-network/) — the fourth question eventually arrives on its own. When it does, connect your broker and look around. The map will only show you what it can prove, and the data it draws from will still be yours.
+
+{/* ILLUSTRATION PROMPT: A hand-painted, warm flat illustration with painterly texture: an open wooden wall cabinet in a home workshop, its backboard marked with painted silhouette outlines — a place for each of four distinct hand planes — with three planes hanging in their outlines and one slot empty, that plane down on the workbench below mid-use, fresh wood shavings curling beside it. Soft afternoon light rakes across the bench. The silhouette wall is the subject: every tool has its place, and the place is yours. Warm earthy palette with one restrained accent; calm, grounded, quietly proud mood; no people, no UI, no glowing elements, no text. */}
