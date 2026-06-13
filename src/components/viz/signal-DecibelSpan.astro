@@ -1,0 +1,71 @@
+---
+/**
+ * signal-DecibelSpan — why the decibel exists. Two stacked axes show the
+ * SAME four radio power levels:
+ *   top:    linear watts (unwieldy — spans 14+ orders of magnitude)
+ *   bottom: dBm (the same span compressed to a tidy, evenly-readable line)
+ * Anchors: thermal noise floor, LoRa Rx sensitivity, a received signal,
+ * and transmit power. Inline SVG, no client JS, theme-aware tokens.
+ */
+---
+
+<svg viewBox="0 0 720 300" role="img" aria-label="Two stacked axes showing the same four radio power levels. The top axis labels them in linear watts: the thermal noise floor near a femtowatt, LoRa receiver sensitivity near a tenth of a picowatt, a received signal near a nanowatt, and transmit power at a tenth of a watt — a span of more than fourteen orders of magnitude that is unwieldy in linear units. The bottom axis shows the same four levels in dBm — minus 130, minus 120, minus 90, and plus 20 — evenly spaced and easy to read, demonstrating how the decibel compresses an enormous linear range into a manageable scale." style="width:100%;height:auto;">
+
+  <!-- ═══════ TOP: linear watts (the problem) ═══════ -->
+  <text x="20" y="24" class="viz-label" style="fill:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase;">In linear watts — unwieldy</text>
+
+  <!-- baseline -->
+  <line x1="40" y1="92" x2="700" y2="92" style="stroke:var(--border-subtle);" stroke-width="1.5" />
+
+  <!-- four anchor ticks (positions match the dBm axis below for visual link) -->
+  <!-- noise floor -->
+  <line x1="70" y1="86" x2="70" y2="98" style="stroke:var(--text-tertiary);" stroke-width="1.5" />
+  <text x="70" y="62" text-anchor="middle" style="fill:var(--text-muted);font-family:var(--mono);font-size:10px;">~0.1 fW</text>
+  <text x="70" y="76" text-anchor="middle" style="fill:var(--text-tertiary);font-family:var(--mono);font-size:9px;">noise floor</text>
+
+  <!-- Rx sensitivity -->
+  <line x1="190" y1="86" x2="190" y2="98" style="stroke:var(--text-tertiary);" stroke-width="1.5" />
+  <text x="190" y="62" text-anchor="middle" style="fill:var(--text-muted);font-family:var(--mono);font-size:10px;">~1 fW</text>
+  <text x="190" y="76" text-anchor="middle" style="fill:var(--text-tertiary);font-family:var(--mono);font-size:9px;">Rx limit</text>
+
+  <!-- received signal -->
+  <line x1="420" y1="86" x2="420" y2="98" style="stroke:var(--text-tertiary);" stroke-width="1.5" />
+  <text x="420" y="62" text-anchor="middle" style="fill:var(--text-muted);font-family:var(--mono);font-size:10px;">~1 nW</text>
+  <text x="420" y="76" text-anchor="middle" style="fill:var(--text-tertiary);font-family:var(--mono);font-size:9px;">received</text>
+
+  <!-- transmit -->
+  <line x1="670" y1="86" x2="670" y2="98" style="stroke:var(--sys-orangeyellow-600);" stroke-width="2" />
+  <text x="670" y="62" text-anchor="middle" style="fill:var(--sys-orangeyellow-600);font-family:var(--mono);font-size:10px;">0.1 W</text>
+  <text x="670" y="76" text-anchor="middle" style="fill:var(--sys-orangeyellow-600);font-family:var(--mono);font-size:9px;">transmit</text>
+
+  <!-- span note -->
+  <text x="370" y="120" text-anchor="middle" style="fill:var(--text-tertiary);font-family:var(--mono);font-size:10px;font-style:italic;">more than 14 orders of magnitude — arithmetic on these is error-prone</text>
+
+  <!-- ═══════ connector: the same four levels ═══════ -->
+  <line x1="70"  y1="98" x2="70"  y2="188" style="stroke:var(--border-subtle);" stroke-width="1" stroke-dasharray="3 4" />
+  <line x1="190" y1="98" x2="190" y2="188" style="stroke:var(--border-subtle);" stroke-width="1" stroke-dasharray="3 4" />
+  <line x1="420" y1="98" x2="420" y2="188" style="stroke:var(--border-subtle);" stroke-width="1" stroke-dasharray="3 4" />
+  <line x1="670" y1="98" x2="670" y2="188" style="stroke:var(--border-accent);" stroke-width="1" stroke-dasharray="3 4" />
+
+  <!-- ═══════ BOTTOM: dBm (the solution) ═══════ -->
+  <text x="20" y="212" class="viz-label" style="fill:var(--text-accent);letter-spacing:0.06em;text-transform:uppercase;">In dBm — the same span, made legible</text>
+
+  <!-- ruler bar -->
+  <rect x="40" y="226" width="660" height="22" rx="6" style="fill:var(--surface-1);stroke:var(--border-subtle);" stroke-width="1" />
+
+  <!-- the four anchors -->
+  <line x1="70" y1="220" x2="70" y2="254" style="stroke:var(--text-accent);" stroke-width="2" />
+  <text x="70" y="272" text-anchor="middle" style="fill:var(--text-accent);font-family:var(--mono);font-size:11px;font-weight:600;">−130</text>
+
+  <line x1="190" y1="220" x2="190" y2="254" style="stroke:var(--text-accent);" stroke-width="2" />
+  <text x="190" y="272" text-anchor="middle" style="fill:var(--text-accent);font-family:var(--mono);font-size:11px;font-weight:600;">−120</text>
+
+  <line x1="420" y1="220" x2="420" y2="254" style="stroke:var(--text-accent);" stroke-width="2" />
+  <text x="420" y="272" text-anchor="middle" style="fill:var(--text-accent);font-family:var(--mono);font-size:11px;font-weight:600;">−90</text>
+
+  <line x1="670" y1="220" x2="670" y2="254" style="stroke:var(--sys-orangeyellow-600);" stroke-width="2" />
+  <text x="670" y="272" text-anchor="middle" style="fill:var(--sys-orangeyellow-600);font-family:var(--mono);font-size:11px;font-weight:600;">+20</text>
+
+  <!-- closing note -->
+  <text x="370" y="292" text-anchor="middle" style="fill:var(--text-muted);font-family:var(--mono);font-size:9px;font-style:italic;">logarithms turn the multiply-and-divide of a signal chain into add-and-subtract</text>
+</svg>
