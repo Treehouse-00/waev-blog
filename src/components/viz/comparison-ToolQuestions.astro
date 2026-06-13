@@ -1,0 +1,49 @@
+---
+/**
+ * comparison-ToolQuestions — a 2×2 grid mapping the four questions a mesh
+ * operator asks to the tool built to answer each one:
+ *   "Where is everything?"            → MeshCore Map (official)
+ *   "Can I reach the mesh from here?" → MeshMapper
+ *   "What is traveling the mesh?"     → LetsMesh
+ *   "Is my mesh healthy over time?"   → Waev
+ * Inline SVG, no client JS, theme-aware CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 420" role="img" aria-label="A two-by-two grid mapping four operator questions to four tools: where is everything points to the official MeshCore Map; can I reach the mesh from here points to MeshMapper; what is traveling the mesh points to LetsMesh; is my mesh healthy over time points to Waev." style="width:100%;height:auto;">
+  <!-- ── Quadrant: MeshCore Map ── -->
+  <rect x="4" y="4" width="348" height="198" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="28" y="44" style="fill: var(--text); font-family: var(--mono); font-size: 15px; font-weight: 600;">“Where is everything?”</text>
+  <text x="28" y="74" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.08em; text-transform: uppercase;">MeshCore Map · official</text>
+  <text x="28" y="104" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">node directory + radio settings</text>
+  <text x="28" y="124" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">self-reported positions</text>
+  <text x="28" y="144" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">freshness color-coding</text>
+  <text x="28" y="178" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 10.5px;">reference: what exists</text>
+
+  <!-- ── Quadrant: MeshMapper ── -->
+  <rect x="368" y="4" width="348" height="198" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="392" y="44" style="fill: var(--text); font-family: var(--mono); font-size: 15px; font-weight: 600;">“Can I reach it from here?”</text>
+  <text x="392" y="74" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.08em; text-transform: uppercase;">MeshMapper · community</text>
+  <text x="392" y="104" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">drive-tested RF coverage</text>
+  <text x="392" y="124" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">GPS-tagged pings, graded grid</text>
+  <text x="392" y="144" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">dead zones made visible</text>
+  <text x="392" y="178" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 10.5px;">ground truth: what reaches</text>
+
+  <!-- ── Quadrant: LetsMesh ── -->
+  <rect x="4" y="218" width="348" height="198" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="28" y="258" style="fill: var(--text); font-family: var(--mono); font-size: 15px; font-weight: 600;">“What is on the mesh?”</text>
+  <text x="28" y="288" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.08em; text-transform: uppercase;">LetsMesh · community</text>
+  <text x="28" y="318" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">packet analyzer + observers</text>
+  <text x="28" y="338" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">routes, structure, regions</text>
+  <text x="28" y="358" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">global observer network</text>
+  <text x="28" y="392" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 10.5px;">inspection: what moves</text>
+
+  <!-- ── Quadrant: Waev ── -->
+  <rect x="368" y="218" width="348" height="198" rx="14" style="fill: var(--surface-1); stroke: var(--border-accent);" stroke-width="1.5" />
+  <text x="392" y="258" style="fill: var(--text); font-family: var(--mono); font-size: 15px; font-weight: 600;">“Is my mesh healthy?”</text>
+  <text x="392" y="288" class="viz-label" style="fill: var(--text-accent); letter-spacing: 0.08em; text-transform: uppercase;">Waev · your broker</text>
+  <text x="392" y="318" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">verified topology + analytics</text>
+  <text x="392" y="338" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">SNR, links, health over time</text>
+  <text x="392" y="358" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">your data stays on your broker</text>
+  <text x="392" y="392" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 10.5px;">operations: what holds</text>
+</svg>

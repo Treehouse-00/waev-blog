@@ -1,0 +1,106 @@
+---
+/**
+ * measure-HopHistory — 30-day hop-count history for a single node.
+ * Shows the "hop count creep" diagnostic: a stable baseline (2 hops),
+ * a first flicker on day 15, then sustained elevation through 3 and 4 hops.
+ * Zone bands mark comfortable (1–2), watchlist (3), and degraded (4+).
+ * Theme-aware via CSS custom properties. Pure SVG, no client JS.
+ *
+ * Chart area: x=66–672, y=48–148 (matching signal-OutpostHistory scale).
+ * Y scale: 25 px per hop level. X scale: 606px / 29 days ≈ 20.9 px/day.
+ * Data keypoints (day → x, hop → y):
+ *   Day 1  x=66   2 hops y=123
+ *   Day 7  x=190  2 hops y=123
+ *   Day 13 x=316  2 hops y=123
+ *   Day 15 x=358  3 hops y=98   ← first departure / flicker
+ *   Day 16 x=379  2 hops y=123
+ *   Day 18 x=421  3 hops y=98   ← sustained creep begins
+ *   Day 21 x=484  3 hops y=98
+ *   Day 24 x=547  4 hops y=73   ← second step up
+ *   Day 28 x=630  4 hops y=73
+ *   Day 30 x=672  4 hops y=73   ← current
+ */
+---
+
+<svg viewBox="0 0 720 190" role="img" aria-label="Hop count history over 30 days for relay-ridge. Hop count stays at 2 for the first 13 days, flickers to 3 on day 15 then returns to 2, then rises to 3 hops from day 18 onward. On day 24 it increases to 4 hops and remains there. Zone bands mark comfortable at 1 to 2 hops, watchlist at 3 hops, and degraded at 4 or more hops." style="width:100%;height:auto;">
+
+  <!-- ── Panel chrome ── -->
+  <rect x="18" y="14" width="684" height="166" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── Panel title ── -->
+  <text x="38" y="36" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">HOP COUNT HISTORY · 30 DAYS</text>
+  <text x="682" y="36" text-anchor="end" class="viz-label" style="fill: var(--text-muted);">relay-ridge</text>
+
+  <!-- ────────────────────────────────────────────────
+       Chart area: x=66–672 (606 px), y=48–148 (100 px)
+       Y: 1 hop → y=148, 2 → y=123, 3 → y=98, 4 → y=73, 5+ → y=48
+       X: day 1 → x=66, day 30 → x=672 (20.9 px/day)
+       ──────────────────────────────────────────────── -->
+
+  <!-- ── Zone fills ── -->
+  <!-- Comfortable: 1–2 hops (y=123 to y=148) -->
+  <rect x="66" y="123" width="606" height="25" style="fill: var(--accent-light);" opacity="0.12" />
+  <!-- Watchlist: 3 hops (y=98 to y=123) -->
+  <rect x="66" y="98" width="606" height="25" style="fill: var(--sys-orangeyellow-600);" opacity="0.08" />
+  <!-- Degraded: 4+ hops (y=48 to y=98) -->
+  <rect x="66" y="48" width="606" height="50" style="fill: var(--sys-red-400);" opacity="0.07" />
+
+  <!-- ── Gridlines ── -->
+  <line x1="66" y1="123" x2="672" y2="123" style="stroke: var(--border-subtle); opacity:0.6;" stroke-width="1" />
+  <line x1="66" y1="98"  x2="672" y2="98"  style="stroke: var(--border-subtle); opacity:0.6;" stroke-width="1" />
+  <line x1="66" y1="73"  x2="672" y2="73"  style="stroke: var(--border-subtle); opacity:0.4;" stroke-width="1" />
+  <line x1="66" y1="148" x2="672" y2="148" style="stroke: var(--border-subtle); opacity:0.4;" stroke-width="1" />
+
+  <!-- ── Elevated area highlight (sustained creep, days 18–30) ── -->
+  <!-- Polygon covers the sparkline above the 2-hop baseline -->
+  <polygon
+    points="421,98 484,98 547,73 630,73 672,73 672,123 421,123"
+    style="fill: var(--sys-orangeyellow-600);"
+    opacity="0.13"
+  />
+
+  <!-- ── Hop count sparkline ── -->
+  <polyline
+    points="66,123 190,123 316,123 358,98 379,123 421,98 484,98 547,73 630,73 672,73"
+    fill="none"
+    style="stroke: var(--accent-light);"
+    stroke-width="2"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+
+  <!-- ── Flicker dot (day 15, first departure) ── -->
+  <circle cx="358" cy="98" r="4" style="fill: var(--sys-orangeyellow-600); stroke: var(--surface-1);" stroke-width="1.5" />
+  <!-- Annotation leader line for flicker -->
+  <line x1="358" y1="94" x2="358" y2="78" style="stroke: var(--text-tertiary);" stroke-width="1" stroke-dasharray="2 3" />
+  <text x="364" y="76" class="viz-label" style="fill: var(--sys-orangeyellow-600);">first departure · day 15</text>
+
+  <!-- ── Current position dot (day 30, 4 hops) ── -->
+  <circle cx="672" cy="73" r="4" style="fill: var(--sys-red-400); stroke: var(--surface-1);" stroke-width="1.5" />
+
+  <!-- ── Creep annotation (over elevated region) ── -->
+  <text x="490" y="64" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600);">HOP COUNT CREEP · days 18 – 30</text>
+
+  <!-- ── Y-axis labels ── -->
+  <text x="60" y="52"  text-anchor="end" class="viz-label" style="fill: var(--text-muted);">5+</text>
+  <text x="60" y="77"  text-anchor="end" class="viz-label" style="fill: var(--text-muted);">4</text>
+  <text x="60" y="102" text-anchor="end" class="viz-label" style="fill: var(--text-muted);">3</text>
+  <text x="60" y="127" text-anchor="end" class="viz-label" style="fill: var(--text-muted);">2</text>
+  <text x="60" y="152" text-anchor="end" class="viz-label" style="fill: var(--text-muted);">1</text>
+
+  <!-- ── X-axis labels ── -->
+  <text x="66"  y="164" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">day 1</text>
+  <text x="190" y="164" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">7</text>
+  <text x="338" y="164" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">14</text>
+  <text x="484" y="164" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">21</text>
+  <text x="630" y="164" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">28</text>
+
+  <!-- ── Zone labels (right margin) ── -->
+  <text x="674" y="133" text-anchor="start" class="viz-label" style="fill: var(--accent-light); opacity:0.8;">comfortable</text>
+  <text x="674" y="147" text-anchor="start" class="viz-label" style="fill: var(--accent-light); opacity:0.8;">1–2 hops</text>
+  <text x="674" y="102" text-anchor="start" class="viz-label" style="fill: var(--sys-orangeyellow-600); opacity:0.9;">watchlist</text>
+  <text x="674" y="116" text-anchor="start" class="viz-label" style="fill: var(--sys-orangeyellow-600); opacity:0.9;">3 hops</text>
+  <text x="674" y="74"  text-anchor="start" class="viz-label" style="fill: var(--sys-red-400); opacity:0.9;">degraded</text>
+  <text x="674" y="88"  text-anchor="start" class="viz-label" style="fill: var(--sys-red-400); opacity:0.9;">4+ hops</text>
+
+</svg>
