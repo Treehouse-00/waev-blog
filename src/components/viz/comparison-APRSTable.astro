@@ -1,0 +1,96 @@
+---
+/**
+ * comparison-APRSTable — side-by-side attribute comparison of
+ *   Left:  APRS — 144.390 MHz (2m VHF), 1200 baud Bell 202 AFSK,
+ *           global digipeater + APRS-IS backbone
+ *   Right: MeshCore — 915 MHz ISM (US), LoRa spread-spectrum,
+ *           local mesh you build and own
+ * Six rows: Modulation · Network · Coverage · Data type · Internet · Privacy
+ * Inline SVG, no client JS, theme-aware CSS custom properties.
+ */
+---
+
+<svg viewBox="0 0 720 352" role="img" aria-label="Side-by-side comparison of APRS and MeshCore across six dimensions: modulation, network type, coverage, data type, internet dependency, and privacy model." style="width:100%;height:auto;">
+
+  <!-- ══════════ LEFT PANEL: APRS ══════════ -->
+  <rect x="4" y="4" width="342" height="344" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Header -->
+  <text x="175" y="32" text-anchor="middle" style="fill: var(--text); font-family: var(--mono); font-size: 16px; font-weight: 700;">APRS</text>
+  <text x="175" y="50" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 10.5px;">144.390 MHz · 2m VHF · ham license required</text>
+
+  <!-- Divider under header -->
+  <line x1="24" y1="60" x2="326" y2="60" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Row 1: Modulation -->
+  <text x="24" y="82" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Modulation</text>
+  <text x="24" y="99" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">1200 baud AFSK (Bell 202)</text>
+
+  <!-- Row 2: Network -->
+  <line x1="24" y1="110" x2="326" y2="110" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="24" y="128" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Network</text>
+  <text x="24" y="145" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">Global digipeater + APRS-IS</text>
+
+  <!-- Row 3: Coverage -->
+  <line x1="24" y1="156" x2="326" y2="156" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="24" y="174" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Coverage</text>
+  <text x="24" y="191" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">Where digipeaters are deployed</text>
+
+  <!-- Row 4: Data type -->
+  <line x1="24" y1="202" x2="326" y2="202" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="24" y="220" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Data type</text>
+  <text x="24" y="237" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">Position, weather, text</text>
+
+  <!-- Row 5: Internet -->
+  <line x1="24" y1="248" x2="326" y2="248" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="24" y="266" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Internet</text>
+  <text x="24" y="283" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">Required for wide-area reach</text>
+
+  <!-- Row 6: Privacy -->
+  <line x1="24" y1="294" x2="326" y2="294" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="24" y="312" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Privacy</text>
+  <text x="24" y="329" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11.5px;">Public (visible on aprs.fi)</text>
+
+  <!-- ══════════ DIVIDER ══════════ -->
+  <line x1="360" y1="16" x2="360" y2="336" style="stroke: var(--border-subtle);" stroke-width="1" stroke-dasharray="5 4" />
+
+  <!-- ══════════ RIGHT PANEL: MeshCore ══════════ -->
+  <rect x="374" y="4" width="342" height="344" rx="14" style="fill: var(--surface-1); stroke: var(--border-accent);" stroke-width="1.25" />
+
+  <!-- Header -->
+  <text x="545" y="32" text-anchor="middle" style="fill: var(--text-accent); font-family: var(--mono); font-size: 16px; font-weight: 700;">MeshCore</text>
+  <text x="545" y="50" text-anchor="middle" style="fill: var(--text-tertiary); font-family: var(--mono); font-size: 10.5px;">915 MHz ISM (US) · Part 15 low-power</text>
+
+  <!-- Divider under header -->
+  <line x1="394" y1="60" x2="696" y2="60" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Row 1 -->
+  <text x="394" y="82" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Modulation</text>
+  <text x="394" y="99" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11.5px;">LoRa spread-spectrum</text>
+
+  <!-- Row 2 -->
+  <line x1="394" y1="110" x2="696" y2="110" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="394" y="128" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Network</text>
+  <text x="394" y="145" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11.5px;">Local mesh you build and own</text>
+
+  <!-- Row 3 -->
+  <line x1="394" y1="156" x2="696" y2="156" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="394" y="174" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Coverage</text>
+  <text x="394" y="191" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11.5px;">Where you deploy nodes</text>
+
+  <!-- Row 4 -->
+  <line x1="394" y1="202" x2="696" y2="202" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="394" y="220" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Data type</text>
+  <text x="394" y="237" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11.5px;">Text messages + sensor data</text>
+
+  <!-- Row 5 -->
+  <line x1="394" y1="248" x2="696" y2="248" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="394" y="266" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Internet</text>
+  <text x="394" y="283" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11.5px;">Not required</text>
+
+  <!-- Row 6 -->
+  <line x1="394" y1="294" x2="696" y2="294" style="stroke: var(--border-subtle);" stroke-width="0.5" />
+  <text x="394" y="312" class="viz-label" style="fill: var(--text-tertiary); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em;">Privacy</text>
+  <text x="394" y="329" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11.5px;">Private (your broker, your data)</text>
+
+</svg>

@@ -1,0 +1,95 @@
+---
+title: "APRS and MeshCore: What Each Is For"
+description: "MeshCore vs APRS for emergency messaging: what each digital mode does well, where each fits in EMCOMM planning, and how to choose between them."
+date: 2026-06-16
+tags: ["comparison", "operations"]
+hero:
+  src: "/hero-aprs-and-meshcore-what-each-is-for.jpg"
+  alt: "A close-up of a fired ceramic tile with two halves — the left pressed with a regular grid, the right with a freeform flowing line pattern — warm directional workshop light raking across the clay surface."
+faq:
+  - q: "Do I need a ham license to use MeshCore?"
+    a: "Not in the United States if you operate in the 915 MHz ISM band at legal low-power Part 15 levels. APRS operates on 144.390 MHz, a licensed amateur band in the US, so APRS use requires a valid amateur radio license. MeshCore on 915 MHz ISM does not."
+  - q: "Can APRS and MeshCore run at the same time?"
+    a: "Yes. They operate on different frequencies — APRS on 144.390 MHz in North America and MeshCore typically on 915 MHz ISM in the US — so they do not interfere with each other. Many EMCOMM teams run both simultaneously: APRS for wide-area coordination and MeshCore for local team messaging."
+  - q: "Is MeshCore replacing APRS for emergency communications?"
+    a: "No. They solve different problems. APRS excels at wide-area position tracking and weather reporting over an established global infrastructure. MeshCore excels at local mesh text messaging and data exchange without internet infrastructure. Groups that understand both tend to keep both."
+  - q: "What is APRS-IS?"
+    a: "APRS-IS is the Internet System backbone that links APRS iGates worldwide. An iGate receives local RF APRS packets and forwards them to the APRS-IS servers, where they appear on sites like aprs.fi and become globally visible. This gives APRS a reach far beyond local RF coverage. MeshCore has no equivalent global internet backbone by design."
+  - q: "Where does Waev fit in an APRS and MeshCore deployment?"
+    a: "Waev monitors MeshCore specifically. It connects to your MQTT broker and surfaces your MeshCore network health, verified topology, and per-link signal data over time. APRS has its own monitoring ecosystem including aprs.fi. Waev is not an APRS monitoring tool and does not ingest APRS packets."
+---
+
+import Figure from "../../components/Figure.astro";
+import ComparisonAPRSTable from "../../components/viz/comparison-APRSTable.astro";
+
+APRS and MeshCore both show up in EMCOMM go-bags, county EOC tables, and ARES training weekends. Both are digital radio systems. Both move text data without cell towers. In many deployments, someone is running both at the same time. The question is whether they know why.
+
+<div class="callout">
+<p><strong>In short.</strong> For MeshCore vs APRS for emergency messaging: APRS is a wide-area VHF network built for position tracking, weather reporting, and coordination over a global, decades-old infrastructure on 144.390 MHz — it links to the internet via iGates and requires a ham license. MeshCore is a local LoRa mesh for private, infrastructure-independent text communications in the 915 MHz ISM band — it needs no internet and no external infrastructure to function. Each answers a different question; knowing which question you have determines which tool you reach for.</p>
+</div>
+
+## What APRS does
+
+APRS — the Automatic Packet Reporting System — was developed by Bob Bruninga, WB4APR, beginning in the late 1980s as a real-time tactical digital communications protocol. It operates on a single shared frequency: 144.390 MHz in North America (source: aprs.org). The modulation is 1200 baud Bell 202 AFSK over FM, using the AX.25 packet radio protocol.
+
+The network is built on digipeaters: stations that relay APRS packets outward using configurable paths, typically WIDE1-1 or WIDE2-2. iGates bridge the RF network to the internet, connecting every local APRS station to the global APRS-IS backbone. The result: a packet transmitted by a mobile station or weather sensor can be visible anywhere in the world on aprs.fi within seconds of going on air — assuming it reaches a digipeater with an iGate somewhere in the chain.
+
+That global reach is APRS's defining strength. It was designed for it. Position reporting, weather station data, short messages, and object placement are all first-class features. In emergency communications, APRS is used to track vehicles, map resource positions, share weather data, and coordinate across agencies that share digipeater coverage. The ARES and RACES communities have decades of APRS deployment experience, and the supporting infrastructure in many areas reflects that: coverage maps, digipeater directories, and integration with served-agency tooling are all established.
+
+The tradeoffs are also part of the design. APRS operates on a licensed amateur band — you need a valid ham license to transmit. The 1200 baud data rate is genuinely limited: APRS packets are compact by necessity. And because the network is shared and connected to the internet by default, everything you transmit is public — position, weather readings, messages. That's by design for the interoperability APRS offers, but it means there is no private mode.
+
+Coverage also depends entirely on what's already deployed. If your area has strong digipeater and iGate coverage, APRS is immediately useful. If you're operating in a rural area without infrastructure, APRS stops at the edge of RF range with no path to relay.
+
+## What MeshCore does
+
+MeshCore is a LoRa-based mesh network for local, private, infrastructure-independent communications. In the United States it operates primarily in the 915 MHz ISM band — no amateur license required for low-power Part 15 operation, though it can also run on licensed amateur frequencies. The modulation is LoRa spread-spectrum, which uses wide-bandwidth encoding to decode signals at and below the noise floor, enabling long RF range on modest power.
+
+The routing model matters here. MeshCore uses hybrid source routing: the first message to a destination floods the mesh to discover a path, then subsequent messages route directly along the learned path. Only the designated relay nodes on that path forward each packet, which keeps channel load low as the network scales. For a longer discussion of how this differs from flood routing, see [Same Hardware, Different Net](/blog/same-hardware-different-net/).
+
+Unlike APRS, MeshCore does not have a global internet backbone. There is no equivalent of APRS-IS. By design: MeshCore is built for local, private communications. Your mesh is yours — you deploy the nodes, you set the repeaters, and your data does not automatically leave your RF environment without your deliberate decision to add a gateway. For operators who care about communications that work without internet (and without anyone else's infrastructure), this is the point, not a limitation.
+
+The tradeoffs follow from the architecture. Coverage is exactly where you've deployed nodes. If you need mesh communications in a new area, you bring or build the infrastructure — there is no pre-existing network to fall back on. For emergency communications this means planning: you cannot assume MeshCore coverage the way you might assume APRS coverage in a metro area.
+
+## Six dimensions, side by side
+
+<Figure caption="<b>APRS vs MeshCore</b> across six dimensions. Neither protocol wins on all six — they were designed for different jobs. The useful question is which set of tradeoffs fits your scenario.">
+  <ComparisonAPRSTable />
+</Figure>
+
+The two rows where the protocols diverge most sharply — Internet and Privacy — are also the rows most relevant to emergency communications planning. APRS's internet dependency is its strength (global reach, live maps on aprs.fi) and its single point of failure in a true grid-down event. MeshCore's independence from the internet means it works when everything else is down, and its private-by-default model means your traffic stays within your network.
+
+## What each fits for emergency comms
+
+APRS is the right answer when:
+
+- You need wide-area visibility — tracking vehicles, mapping resource positions, sharing weather data across an operational area with existing digipeater coverage.
+- Interoperability matters — other agencies or served organizations are already using APRS and you need to read the same picture they're reading.
+- The infrastructure holds — you are operating in a scenario where the power grid and internet remain available, and the existing APRS network in your area is functioning.
+
+MeshCore is the right answer when:
+
+- Your communications are local — a team operating in a defined area needs to message each other, share status, or relay sensor data without depending on any external system.
+- Infrastructure is unavailable or unreliable — grid-down scenarios, remote areas without digipeater coverage, or situations where you want to know the network is under your control.
+- Privacy is operational — the communications don't belong on a public network, and keeping them within your RF footprint matters.
+
+Neither replaces the other for the full EMCOMM picture. A county EMCOMM plan that only includes APRS has a local tactical gap when the internet fails. A plan that only includes MeshCore has a wide-area coordination gap when you need to see where resources are across a fifty-mile operational area.
+
+## Where they work together
+
+In practice, the operators running both are getting the most from each. APRS handles the picture that spans multiple agencies, served-agency tracking, and wide-area resource status — the information that needs to be visible across an operational area. MeshCore handles local team messaging, in-field communications, and the private channel that works when the internet doesn't.
+
+The two networks don't talk to each other. They operate on different frequencies with different protocols. But they don't need to: they answer different questions. SNR, hop count, and link quality on your MeshCore network — the data that tells you whether the mesh itself is healthy — is where Waev adds the monitoring layer that APRS has no equivalent for. For how that signal data actually reads in practice, [Reading the Signal](/blog/reading-the-signal/) covers the vocabulary.
+
+## Where Waev fits
+
+Waev monitors MeshCore. It subscribes to your MQTT broker, surfaces verified topology from enrolled observers and authenticated repeaters, and shows you per-link signal data, hop counts, and network health over time. The Live Map shows what Waev can prove — edges drawn only from verified observations — and nothing it can't.
+
+APRS has its own monitoring ecosystem: aprs.fi for the live picture, a range of decoding and logging software, and the APRS-IS infrastructure itself. Waev is not an APRS monitoring tool and does not ingest APRS packets. The data it watches is your MeshCore network, and the question it answers is whether that mesh is healthy — not whether APRS coverage is available in your area.
+
+If you run both protocols, you'll want both ecosystems. Waev for the local mesh picture; aprs.fi for the wide-area one. They are complementary, and neither tool is confused about which network it is watching.
+
+---
+
+APRS is an open protocol developed by Bob Bruninga, WB4APR (SK), maintained by the APRS Working Group, and sustained by a large community of volunteer digipeater and iGate operators who have built the infrastructure over decades. The comparison above describes what each tool was designed for — not a verdict on which is better. Both serve their purpose precisely because they were designed to serve different ones.
+
+{/* ILLUSTRATION PROMPT: Hand-painted warm illustration in the house style. Close-up macro of a fired ceramic tile, viewed at a slight angle, warm raking workshop light from one side. The tile is divided into two halves by a thin impressed line: the left half shows a regular grid pressed into the unfired clay — orderly, structured, repeating squares; the right half shows a freeform flowing line pattern pressed into the same clay — organic, curving, responsive. Same material, same firing, entirely different structure. Warm terracotta and ochre tones, matte clay texture. No other objects. The mood: two equally valid patterns, each suited to its purpose. Thumbnail-readable because of the bold contrast between ordered grid and flowing line. */}

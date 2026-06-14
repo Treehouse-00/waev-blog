@@ -608,7 +608,7 @@ posts:
     series: the-honest-comparison
     primary_keyword: "MeshCore vs APRS for emergency messaging"
     secondary_keyword: "packet radio vs LoRa mesh"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-06-18
