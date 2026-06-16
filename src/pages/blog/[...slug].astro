@@ -4,14 +4,28 @@ import { getPublishedPosts } from "../../lib/posts";
 import Post from "../../layouts/Post.astro";
 
 export async function getStaticPaths() {
-  const posts = await getPublishedPosts();
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: { post },
-  }));
+  const allPosts = await getPublishedPosts();
+  return allPosts.map((post) => {
+    // Select related posts: prefer shared tags, then newest. IL-01.
+    const others = allPosts.filter((p) => p.id !== post.id);
+    const scored = others.map((p) => ({
+      p,
+      score: p.data.tags.filter((t) => post.data.tags.includes(t)).length,
+    }));
+    scored.sort(
+      (a, b) =>
+        b.score - a.score ||
+        b.p.data.date.valueOf() - a.p.data.date.valueOf(),
+    );
+    const related = scored.slice(0, 4).map((x) => x.p);
+    return {
+      params: { slug: post.id },
+      props: { post, related },
+    };
+  });
 }
 
-const { post } = Astro.props;
+const { post, related } = Astro.props;
 const { Content, remarkPluginFrontmatter } = await render(post);
 
 // Reading time estimated by the remark plugin (see astro.config / README),
@@ -30,6 +44,7 @@ const readingMinutes = remarkPluginFrontmatter?.minutesRead as number | undefine
   ogImage={post.data.ogImage}
   faq={post.data.faq}
   hero={post.data.hero}
+  relatedPosts={related}
 >
   <Content />
 </Post>
