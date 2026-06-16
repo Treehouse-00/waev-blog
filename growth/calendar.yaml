@@ -620,7 +620,7 @@ posts:
     series: from-the-field
     primary_keyword: "winter storm mesh communications"
     secondary_keyword: "grid-down winter comms report"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-06-21

@@ -1,0 +1,96 @@
+---
+title: "Your Winter Storm Mesh Debrief"
+description: "How a CERT team's winter storm mesh communications activation revealed three marginal nodes — and what changed before the next event."
+date: 2026-06-18
+tags: ["field-notes", "cert-emcomm", "resilience"]
+hero:
+  src: "/hero-your-winter-storm-mesh-debrief.jpg"
+  alt: "A hand-painted close-up of the inside face of an open outdoor node enclosure lid, frost crystals visible along the seal edge where moisture entered, and a warm amber status LED glowing on the circuit board inside."
+faq:
+  - q: "What happens to battery-powered mesh nodes in freezing temperatures?"
+    a: "Cold temperatures reduce the available capacity of lithium batteries significantly. A LiFePO4 pack rated at full capacity at 25°C may deliver only 70–80% of that near freezing. In a sustained grid-down event during a winter storm, a repeater sized to run 48 hours at room temperature may run only 32–38 hours instead. Size your power budget before winter with cold-weather derating in mind."
+  - q: "What does Waev show during a winter storm activation?"
+    a: "The same data it always shows, but the patterns read differently under stress. A hop-count increase means a primary path failed — in a winter activation that often points to a node with a power problem. A node that goes silent while its neighbors stay active is a node-specific issue; if a whole cluster goes silent, the failure is upstream. The baseline you built before the event is what lets you answer whether a pattern is new or not."
+  - q: "How should I prepare outdoor mesh nodes for winter?"
+    a: "Check three things before the cold season: add at least 20–30% to your power budget to account for reduced battery performance in low temperatures; inspect every outdoor enclosure seal and replace any degraded gasket before first freeze; and pull 30 days of Waev health history for your critical nodes. Nodes that have had watchlist periods in autumn are the ones that fail first under winter stress."
+  - q: "A node failed during our winter storm activation. What should we check first?"
+    a: "In Waev's Packet Search, find when the node went silent and compare its last SNR and hop count to its pre-event baseline — a node on watchlist for weeks is a different problem than one that went silent abruptly. Then check the physical enclosure for moisture intrusion; freeze-thaw cycles force moisture through seals that held fine in summer. Finally, check the battery and whether it ran short from cold-weather capacity reduction."
+---
+
+import Figure from "../../components/Figure.astro";
+import GridgoneLiveRead from "../../components/viz/gridgone-LiveRead.astro";
+import GridgoneDegradationTable from "../../components/viz/gridgone-DegradationTable.astro";
+
+The weather alert came in on a Thursday afternoon: ice accumulation through Friday, with the grid under watch for rolling outages across three counties. For the CERT net coordinator, the question was the same one it always is before an activation: how long until we need this mesh, and what does the mesh look like right now?
+
+The answer was in Waev. What the activation that followed revealed about winter storm mesh communications is the kind of thing that is easier to learn before it matters — which is the only point of a field report.
+
+<div class="callout">
+<p><strong>In short.</strong> Winter storm mesh communications stress three things a routine exercise does not: power margins shrink in the cold, moisture intrusion finds every seal gap that summer missed, and marginal links fail when traffic load or temperature tips the balance. All three show up in Waev before the event as SNR drift, hop-count creep, and irregular packet rates. The team that reads those patterns on a Wednesday has a repair window. The team that finds them at activation does not.</p>
+</div>
+
+## The activation
+
+Grid power went out across a five-kilometer radius at 11:17 p.m. on Friday. Three emergency shelters activated; the ICP stood up at the community center. The mesh had eleven active nodes and three enrolled observers.
+
+By 4:00 a.m., three nodes had issues: one was silent, one was degraded at four hops with negative SNR, and one was running but its packet rate had dropped to roughly half its baseline average.
+
+Forty-eight hours later, when the grid came back and the activation closed, the after-action review started with Packet Search in Waev and the physical inspection of every outdoor enclosure.
+
+## What the baseline had been showing
+
+In the week before the storm, Network Stats had three signals worth noting — none of them alarming on their own, all of them meaningful in hindsight.
+
+**relay-ridge** had been creeping from two hops to three hops over about six weeks. No packet loss, no low SNR — just a quiet route change that meant the preferred two-hop path had degraded and the mesh had rerouted. That reroute left relay-ridge depending on a longer path through relay-east: adequate under normal conditions, but carrying a link that had not been evaluated for activation load.
+
+**field-unit-9** had shown two watchlist periods in the previous month — five-day gaps where its SNR dropped below +5 dB before recovering. Outpost's history showed the pattern correlated with overnight temperature drops. The enclosure had not been inspected.
+
+**backbone-main** was solid throughout — consistent SNR above +10 dB, stable hop count, predictable packet rate. It required no post-activation attention.
+
+The pattern — one trending marginal, one with cold-sensitive SNR episodes, one solid — is what a pre-event baseline is for. The question in the week before a storm is not "is the mesh up?" The question is "which nodes are already at the edge, and what will push them over?"
+
+## What the live feed showed
+
+During the activation, Live Packets was the primary operational surface. The patterns that appeared were exactly what a baseline-equipped reader expects.
+
+<Figure caption="Live Packets during the activation: relay-north and relay-main are solid. field-unit-3 is degraded at 4 hops and +2 dB — routing around a failed path. relay-east has been silent for two minutes; its neighbors are still active, pointing to a node-specific failure, not a path-level one.">
+  <GridgoneLiveRead />
+</Figure>
+
+**field-unit-9 went silent at 02:47 a.m.** Its neighbors were still active. That pattern — silent node, active neighbors — means a node-specific problem: power, hardware, or enclosure. The correct response is to note the failure mode and continue the activation; sending someone to investigate at 3:00 a.m. during an ice storm is not an option. Knowing the failure type is.
+
+**relay-ridge gained a hop at around 04:15 a.m.** It went from three hops to four. The marginal path the mesh had been routing through — the one the six-week creep had put it on — could no longer hold. The cluster behind relay-ridge stayed connected through a longer path. It held, but with less margin than the baseline had shown before the storm.
+
+**field-unit-12's packet rate dropped through the night.** From approximately 28 packets per hour at activation start to 14 by dawn, the pattern was consistent with a battery running low, not silent yet but falling against the baseline.
+
+## The three failures and what caused them
+
+The Packet Search retrospective and the physical inspections, run together, gave clear answers.
+
+<Figure caption="The three degradation signatures that materialized in this activation: hop-count creep on relay-ridge (path lost, routing around it); packet-rate gap on field-unit-12 (battery running short in cold); silent failure on field-unit-9 (moisture intrusion through a failed enclosure seal). All three had pre-event signals in Waev.">
+  <GridgoneDegradationTable />
+</Figure>
+
+**field-unit-9 — moisture intrusion.** The enclosure had a degraded gasket on the cable entry point. Freeze-thaw cycling had widened a gap that had been a slow drip in summer rain and became a failure point when that moisture froze inside. The board was visibly wet. It dried and returned to service a day later, but the enclosure needs a new seal and a desiccant pack before next winter. The SNR episodes that Outpost had been recording were a symptom of this: moisture affecting the RF path before it finally shorted something.
+
+**field-unit-12 — cold-weather power margin.** The battery had been sized for 48 hours of operation at room temperature. At near-freezing ambient conditions during an outdoor winter deployment, a standard LiFePO4 pack delivers roughly 20–30% less usable capacity than its rated spec at 25°C — a well-documented reduction in cold-weather battery performance. The node ran short. It was not a design failure; it was a warm-weather design that had not been re-evaluated before a winter activation. That evaluation is what a power budget review is for.
+
+**relay-ridge — unrepaired path dependency.** The six-week hop-count creep in Network Stats was the visible signature of a degraded link on the preferred route. The mesh had quietly rerouted; relay-ridge ended up on a longer path. That longer path held under normal conditions but ran out of margin under activation-level traffic on a cold night. The failure was not a surprise — it was a known-but-unaddressed finding. The repair window had been open for six weeks.
+
+## What changed before the next exercise
+
+Three categories, three timelines.
+
+**Immediate (before the next storm):** replace the gasket and add a desiccant pack to field-unit-9's enclosure. Every other outdoor enclosure seal was also inspected and documented during the post-activation walkthrough — not just the one that failed.
+
+**Before the next winter season:** re-size field-unit-12's battery with a cold-weather derating factor applied to the power budget. The enclosure will be insulated, which slows the cell temperature drop and extends the effective capacity window.
+
+**Ongoing:** the hop-count trend on relay-ridge is now a tracked metric in Outpost. The decision to restore the original two-hop path or add a relay behind it is on the infrastructure list. In the meantime, the longer path is documented and accounted for in the activation plan.
+
+---
+
+The mesh held through the activation. No shelter lost comms. The failures were manageable because the baseline made them readable: the Packet Search retrospective showed exactly when each node changed and what the pattern looked like in context. The difference between a managed failure and an unmanaged one is usually those weeks of health data — the baseline that lets you say, at 3:00 a.m. in the middle of an activation, what is new and what has been building for weeks.
+
+For the full grid-down monitoring framework — what to build into your baseline and what to watch during an event — see [When the Grid Goes Down](/blog/when-the-grid-goes-down/). For the pre-season preparation equivalent in hurricane season, [Before the Storm Makes Landfall](/blog/before-the-storm-makes-landfall/) covers the same pre-event checklist for summer storm operations.
+
+{/* ILLUSTRATION PROMPT: Hand-painted warm illustration, extreme close-up. The inside face of an open outdoor weatherproof enclosure lid: along the rubber gasket seal at the rim, there is a gap where moisture has entered, and along that gap, tiny frost crystals have formed on the white plastic interior surface. Visible inside the enclosure body is a compact circuit board, still powered — its small amber status LED glows warmly against the cold. The contrast is deliberate: the crystalline failure of the seal against the warm amber proof of a still-running node. Winter cold-morning light, clean and spare. Painterly texture, warm medium. No person, no landscape, no sky. The mood: quiet inspection after a winter night. */}
