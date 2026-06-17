@@ -1,0 +1,482 @@
+{"id": "SD-05", "url": "https://blog.waev.app/", "pass": true, "severity": "blocker", "evidence": "all fields correct: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-07", "url": "https://blog.waev.app/", "pass": true, "severity": "major", "evidence": "publisher.@id ends /#org: True inLanguage=en"}
+{"id": "SD-08", "url": "https://blog.waev.app/", "pass": true, "severity": "major", "evidence": "items=47 expected=47 first_url=https://blog.waev.app/blog/aprs-and-meshcore-what-"}
+{"id": "MT-01", "url": "https://blog.waev.app/", "pass": true, "severity": "blocker", "evidence": "len=56"}
+{"id": "MT-02", "url": "https://blog.waev.app/", "pass": true, "severity": "blocker", "evidence": "len=157"}
+{"id": "MT-03", "url": "https://blog.waev.app/", "pass": true, "severity": "blocker", "evidence": "canonical=https://blog.waev.app/"}
+{"id": "MT-07", "url": "https://blog.waev.app/", "pass": false, "severity": "major", "evidence": "twitter:site=None"}
+{"id": "MT-08", "url": "https://blog.waev.app/", "pass": true, "severity": "major", "evidence": "all 6 OG tags present"}
+{"id": "HP-01", "url": "https://blog.waev.app/", "pass": true, "severity": "major", "evidence": "title='Waev Blog \u2014 MeshCore Mesh Network Analytics & Operations'"}
+{"id": "HP-02", "url": "https://blog.waev.app/", "pass": true, "severity": "major", "evidence": "len=157"}
+{"id": "HP-03", "url": "https://blog.waev.app/", "pass": true, "severity": "major", "evidence": "h1 count=1"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/mesh-map-missing-nodes/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "blocker", "evidence": "len=38 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "blocker", "evidence": "len=150"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "major", "evidence": "article:tag count=3 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/mesh-map-missing-nodes/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/when-the-towers-are-already-gone/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "blocker", "evidence": "len=44 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "blocker", "evidence": "len=143"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/when-the-towers-are-already-gone/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/how-meshcore-repeaters-earn-their"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "blocker", "evidence": "len=51 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "blocker", "evidence": "len=152"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/how-meshcore-repeaters-earn-their-place/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/what-is-meshcore/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "blocker", "evidence": "len=29 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "blocker", "evidence": "len=128"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/what-is-meshcore/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/keeping-control-of-your-mesh-netw"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "blocker", "evidence": "len=48 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "blocker", "evidence": "len=154"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/keeping-control-of-your-mesh-network/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/what-is-dbm/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "blocker", "evidence": "len=38 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "blocker", "evidence": "len=155"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/what-is-dbm/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/how-meshcore-packets-become-a-liv"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "blocker", "evidence": "len=50 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "blocker", "evidence": "len=137"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/how-meshcore-packets-become-a-live-map/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=5"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/three-nodes-on-the-air/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": true, "severity": "blocker", "evidence": "len=34 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": false, "severity": "blocker", "evidence": "len=163"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/three-nodes-on-the-air/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/where-to-put-your-next-repeater/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "blocker", "evidence": "len=35 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "blocker", "evidence": "len=151"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/where-to-put-your-next-repeater/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=4"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "blocker", "evidence": "len=46 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "blocker", "evidence": "len=137"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "major", "evidence": "article:tag count=3 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/ham-radio-cert-emcomm-mesh/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/your-off-grid-mesh-buildout/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": true, "severity": "blocker", "evidence": "len=39 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": false, "severity": "blocker", "evidence": "len=181"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/your-off-grid-mesh-buildout/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/what-is-snr-lora/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "blocker", "evidence": "len=38 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "blocker", "evidence": "len=157"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/what-is-snr-lora/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/evidence-based-mesh-network-map/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "blocker", "evidence": "len=31 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "blocker", "evidence": "len=133"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/evidence-based-mesh-network-map/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/the-chatty-node/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "blocker", "evidence": "len=27 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "blocker", "evidence": "len=144"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/the-chatty-node/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/why-mesh-packets-disappear/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "blocker", "evidence": "len=38 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "blocker", "evidence": "len=140"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/why-mesh-packets-disappear/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=7"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/why-radio-speaks-in-decibels/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "blocker", "evidence": "len=40 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "blocker", "evidence": "len=144"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/why-radio-speaks-in-decibels/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/cert-mesh-network-activation/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "blocker", "evidence": "len=36 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "blocker", "evidence": "len=155"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "major", "evidence": "article:tag count=3 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/cert-mesh-network-activation/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/starting-a-local-mesh-group/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "blocker", "evidence": "len=39 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "blocker", "evidence": "len=149"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/starting-a-local-mesh-group/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=7"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/what-a-mesh-monitor-refuses/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "blocker", "evidence": "len=39 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "blocker", "evidence": "len=149"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/what-a-mesh-monitor-refuses/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/block-by-block-neighborhood-mesh-"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "blocker", "evidence": "len=44 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "blocker", "evidence": "len=152"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/block-by-block-neighborhood-mesh-buildout/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "len=38 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "len=160"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/heltec-vs-rak-for-meshcore/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "blocker", "evidence": "len=44 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "blocker", "evidence": "len=157"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/measuring-hop-count-in-your-mesh/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=5"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/running-a-mesh-network-tabletop-e"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "blocker", "evidence": "len=46 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "blocker", "evidence": "len=117"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/running-a-mesh-network-tabletop-exercise/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=5"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/choosing-a-lora-dev-board-for-mes"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "len=50 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "len=145"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/choosing-a-lora-dev-board-for-meshcore/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/do-you-need-an-observer-on-every-"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": true, "severity": "blocker", "evidence": "len=50 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": false, "severity": "blocker", "evidence": "len=206"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/do-you-need-an-observer-on-every-node/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/how-lora-mesh-routing-works/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "blocker", "evidence": "len=39 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "blocker", "evidence": "len=155"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/how-lora-mesh-routing-works/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=7"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/dedicated-meshcore-gateway-or-sha"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": true, "severity": "blocker", "evidence": "len=49 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": false, "severity": "blocker", "evidence": "len=167"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/dedicated-meshcore-gateway-or-shared/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/what-is-a-mesh-network-observer/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "blocker", "evidence": "len=44 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "blocker", "evidence": "len=154"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "major", "evidence": "article:tag count=1 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/what-is-a-mesh-network-observer/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/the-opinionated-mesh-analyzer/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": true, "severity": "blocker", "evidence": "len=41 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": false, "severity": "blocker", "evidence": "len=205"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/the-opinionated-mesh-analyzer/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=4"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/tuning-lora-antenna-swr/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": true, "severity": "blocker", "evidence": "len=48 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": false, "severity": "blocker", "evidence": "len=183"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/tuning-lora-antenna-swr/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/meshcore-node-naming-privacy-mark"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "blocker", "evidence": "len=46 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "blocker", "evidence": "len=146"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "major", "evidence": "article:tag count=1 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/meshcore-node-naming-privacy-markers/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/seeing-your-first-meshcore-packet"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "blocker", "evidence": "len=45 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "blocker", "evidence": "len=154"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/seeing-your-first-meshcore-packet/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "blocker", "evidence": "len=45 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "blocker", "evidence": "len=159"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/spoofed-node-prefix-on-a-mesh-map/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=5"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/measuring-lora-link-margin/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "blocker", "evidence": "len=43 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "blocker", "evidence": "len=155"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/measuring-lora-link-margin/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=7"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/how-waev-reads-your-mesh/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "blocker", "evidence": "len=29 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "blocker", "evidence": "len=151"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/how-waev-reads-your-mesh/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=4"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-s"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "blocker", "evidence": "len=50 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "blocker", "evidence": "len=151"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/what-data-a-mesh-analytics-tool-stores/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/same-hardware-different-net/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "blocker", "evidence": "len=40 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "blocker", "evidence": "len=153"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/same-hardware-different-net/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "len=45 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "blocker", "evidence": "len=154"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/setting-up-mosquitto-for-meshcore/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "blocker", "evidence": "len=40 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "blocker", "evidence": "len=145"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/measuring-snr-on-a-lora-mesh/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/can-waev-write-to-your-broker/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "blocker", "evidence": "len=42 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "blocker", "evidence": "len=149"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/can-waev-write-to-your-broker/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/mesh-networking-at-a-hamfest/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "blocker", "evidence": "len=40 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "blocker", "evidence": "len=145"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/mesh-networking-at-a-hamfest/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/every-node-heard-it-twice/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "blocker", "evidence": "len=37 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "blocker", "evidence": "len=154"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/every-node-heard-it-twice/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-fo"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "blocker", "evidence": "len=47 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "blocker", "evidence": "len=143"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/aprs-and-meshcore-what-each-is-for/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=5"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/how-waev-names-meshes/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "blocker", "evidence": "len=56 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "blocker", "evidence": "len=156"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/how-waev-names-meshes/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/before-the-storm-makes-landfall/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": true, "severity": "blocker", "evidence": "len=43 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": false, "severity": "blocker", "evidence": "len=170"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/before-the-storm-makes-landfall/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/waev-v1-4-0-dev-update/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "blocker", "evidence": "len=33 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "blocker", "evidence": "len=144"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "major", "evidence": "article:tag count=3 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/waev-v1-4-0-dev-update/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=7"}
+{"id": "SD-01", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "blocker", "evidence": "BlogPosting fields complete: True"}
+{"id": "SD-06", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "blocker", "evidence": "sameAs=None"}
+{"id": "SD-09", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "major", "evidence": "items=2 last_item=https://blog.waev.app/blog/plan-your-grid-down-comms-now/"}
+{"id": "MT-01", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "blocker", "evidence": "len=41 suffix=True"}
+{"id": "MT-02", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "blocker", "evidence": "len=157"}
+{"id": "MT-04", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "major", "evidence": "author=Waev"}
+{"id": "MT-05", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "major", "evidence": "article:tag count=2 (unevaluable without frontmatter access)"}
+{"id": "MT-06", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "major", "evidence": "no updated, modified_time absent: True"}
+{"id": "IL-01", "url": "https://blog.waev.app/blog/plan-your-grid-down-comms-now/", "pass": true, "severity": "major", "evidence": "related_section=True non_self_links=6"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/diagnostics/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"diagnostics\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/diagnostics/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/data-ownership/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"data ownership\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/data-ownership/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/signal/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"signal\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/signal/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/cert-emcomm/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"cert emcomm\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/cert-emcomm/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/mesh-measurement/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"mesh measurement\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/mesh-measurement/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/hardware/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"hardware\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/hardware/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/getting-started/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"getting started\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/getting-started/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/resilience/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"resilience\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/resilience/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/troubleshooting/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"troubleshooting\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/troubleshooting/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/primer/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"primer\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/primer/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/meshcore/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"meshcore\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/meshcore/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/operations/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"operations\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/operations/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/privacy/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"privacy\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/privacy/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/philosophy/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"philosophy\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/philosophy/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/playbook/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"playbook\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/playbook/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/field-notes/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"field notes\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/field-notes/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/comparison/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"comparison\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/comparison/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/community/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"community\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/community/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/off-grid/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"off grid\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/off-grid/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/mesh-topology/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"mesh topology\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/mesh-topology/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/how-it-works/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"how it works\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/how-it-works/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "TG-03", "url": "https://blog.waev.app/tags/deep-dive/", "pass": true, "severity": "major", "evidence": "title='Posts tagged \"deep dive\" \u2014 Waev Blog' desc_has_meshcore=True"}
+{"id": "TG-04", "url": "https://blog.waev.app/tags/deep-dive/", "pass": true, "severity": "major", "evidence": "bare span.tag badges: 0"}
+{"id": "SM-04", "url": "https://blog.waev.app/llms.txt", "pass": true, "severity": "blocker", "evidence": "canon checks=[True, True, True, True]"}
+{"id": "SM-01", "url": "https://blog.waev.app/sitemap-index.xml", "pass": true, "severity": "blocker", "evidence": "exists"}
+{"id": "IL-03", "url": "https://blog.waev.app/", "pass": false, "severity": "blocker", "evidence": "broken_count=47 samples=[('mesh-map-missing-nodes', '/blog/what-we-choose-not-to-know/'), ('when-the-towers-are-already-gone', '/blog/when-the-grid-goes-down/'), ('how-meshcore-repeaters-earn-their-place', '/blog/bring-your-own-broker/')]"}

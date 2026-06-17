@@ -19,6 +19,10 @@ interface Props {
   type?: "website" | "article";
   /** ISO date for articles. */
   publishedTime?: string;
+  /** ISO date for article:modified_time — only set when frontmatter `updated` is present. */
+  modifiedTime?: string;
+  /** Frontmatter author — emits <meta name="author"> on post pages. */
+  author?: string;
   /** Frontmatter tags — used to emit article:tag meta on post pages. */
   tags?: string[];
   /** Extra JSON-LD graphs (e.g. BlogPosting, FAQPage) injected by a page. */
@@ -31,6 +35,8 @@ const {
   image = "/og-default.png",
   type = "website",
   publishedTime,
+  modifiedTime,
+  author,
   tags = [],
   jsonLd = [],
 } = Astro.props;
@@ -53,7 +59,6 @@ const org = {
   description:
     "Real-time analytics platform for MeshCore mesh radio networks.",
   email: "admin@waev.app",
-  sameAs: ["https://github.com/Treehouse-00/waev-blog"],
 };
 const website = {
   "@context": "https://schema.org",
@@ -76,6 +81,7 @@ const graphs = [org, website, ...jsonLd];
     <meta name="theme-color" content="#1b1916" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {author && <meta name="author" content={author} />}
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title="Waev Blog" href="/rss.xml" />
@@ -88,6 +94,7 @@ const graphs = [org, website, ...jsonLd];
     <meta property="og:image" content={ogImage} />
     <meta property="og:site_name" content={siteName} />
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
     {type === "article" && tags.map((t) => <meta property="article:tag" content={t} />)}
 
     <!-- Twitter -->
