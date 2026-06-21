@@ -22,7 +22,7 @@ import SignalGatewayLog from "../../components/viz/signal-GatewayLog.astro";
 
 Every packet that reaches your observer gets recorded. Timestamp, route type, SNR and RSSI at the moment of arrival — a complete receipt for every radio event your bridge node heard. Most operators glance past the log during initial setup and move on to the analytics. That's a reasonable choice. But the log is also the fastest diagnostic surface you have: it shows the raw stream, before deduplication, before verification, before any analytics processing has acted on it.
 
-<div class="callout"><p><strong>In short.</strong> Reading MeshCore gateway logs gives you SNR, RSSI, route type, and hop path for every frame your observer receives — the raw signal feed that flows from your bridge node to your MQTT broker. When something looks off in Waev's Live Packets or Network Stats, the gateway log is the ground-truth layer one step closer to the radio.</p></div>
+<div class="callout"><p><strong>In short.</strong> Reading MeshCore gateway logs gives you SNR, RSSI, and route type for every frame your observer receives, plus the hop path on direct packets — the raw signal feed that flows from your bridge node to your MQTT broker. When something looks off in Waev's Live Packets or Network Stats, the gateway log is the ground-truth layer one step closer to the radio.</p></div>
 
 ## What the gateway log is
 
@@ -46,7 +46,7 @@ Each packet entry is a receipt for one radio event. The fields, in order:
 
 **Route** — `F` (flood) or `D` (direct). Flood packets are broadcast; any node within range may relay them. Direct packets follow a routed path to a specific recipient.
 
-**SNR** — Signal-to-Noise Ratio in decibels at the observer's receiver. Positive values mean the signal arrived above the noise floor. The working target for a link you want to depend on is roughly +5 to +7 dB in typical conditions; below +3 dB, the link is marginal and becomes unreliable under load or adverse RF conditions. SNR is the most directly actionable field in the log.
+**SNR** — Signal-to-Noise Ratio in decibels at the observer's receiver. Positive values mean the signal arrived above the noise floor. The working target for a link you want to depend on is roughly +5 to +7 dB in typical conditions; between +3 and +5 dB, the link is marginal — it works under normal conditions but becomes unreliable with weather, interference, or antenna shift; below +3 dB, plan for intermittency. SNR is the most directly actionable field in the log.
 
 **RSSI** — Received Signal Strength Indicator in dBm. Raw received power at the antenna. A lower (more negative) number means weaker received power. RSSI and SNR often move together, but they can diverge: when RSSI is adequate but SNR is poor, the noise floor near the observer has risen — look for interference sources close to the gateway hardware.
 
@@ -82,6 +82,6 @@ One place the views diverge: Waev's ingest edge applies verification before draw
 
 For the architecture behind that ingest boundary, [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/) traces the full pipeline from radio observation to map edge. For the SNR and hop-count interpretation that makes the log numbers actionable, [Reading the Signal](/blog/reading-the-signal/) gives the framework.
 
-The log is the raw layer. Knowing what it says turns your gateway node from a black box into a diagnostic instrument — the difference between a network you're watching and one you actually understand.
+The log is the raw layer. Knowing what each field reports turns it from a stream you glance past into the fastest evidence you have about what the radio heard.
 
 {/* ILLUSTRATION PROMPT: A warm hand-painted close-up illustration of a coiled ribbon of thermal printout paper, partially unspooled to show two or three rows of printed characters. Amber light from a small off-frame desk lamp falls across the paper from the left, casting a gentle warm shadow. The paper curls naturally at the unspooled end. Background is a bare worn wooden surface, nothing else. No screens, no UI, no human figures. Painterly texture, earthy warm tones, the mood: a machine faithfully recording the world, legible when you know how to read it. */}
