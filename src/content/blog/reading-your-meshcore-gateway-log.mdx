@@ -1,0 +1,87 @@
+---
+title: "Reading Your MeshCore Gateway Log"
+description: "Reading MeshCore gateway logs gives you SNR, RSSI, and route type for every frame your observer hears — the raw signal feed one layer below Live Packets."
+date: 2026-06-21
+tags: ["signal", "how-it-works"]
+hero:
+  src: "/hero-reading-your-meshcore-gateway-log.jpg"
+  alt: "A warm hand-painted close-up of a coiled ribbon of terminal printout paper, partially unspooled to show rows of characters catching amber light from a desk lamp on a bare wooden surface."
+faq:
+  - q: "What does a MeshCore gateway log contain?"
+    a: "A MeshCore gateway log records every packet the observer heard over LoRa, with SNR, RSSI, packet type, route type, payload length, and a unique hash for each frame. It is the raw ingest stream — the same data that flows through your MQTT broker and arrives in Waev Live Packets."
+  - q: "What do the route types F and D mean in a gateway log?"
+    a: "F means a flood packet broadcast to all neighboring nodes. D means a direct packet addressed to a specific recipient. A node that appears only in flood entries and never in a direct-packet path has not yet formed persistent two-way contacts with the nodes it needs to reach."
+  - q: "What does SNR tell me that RSSI doesn't?"
+    a: "RSSI measures raw received power in dBm. SNR separates the signal from the noise floor, making it a more reliable predictor of link reliability. Two packets can arrive at the same RSSI but very different SNR depending on local interference, so SNR is the more actionable number when deciding whether a link will hold under adverse conditions."
+  - q: "Why does a node appear in my gateway log but not in Waev Live Packets?"
+    a: "Waev draws topology only from enrolled observers and authenticated repeaters. If a frame arrives at the MQTT broker from a source that does not match a verified observer, Waev records signal statistics but does not draw a topology edge. The raw frame is visible via a direct broker subscription but filtered at the ingest edge."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalGatewayLog from "../../components/viz/signal-GatewayLog.astro";
+
+Every packet that reaches your observer gets recorded. Timestamp, route type, SNR and RSSI at the moment of arrival — a complete receipt for every radio event your bridge node heard. Most operators glance past the log during initial setup and move on to the analytics. That's a reasonable choice. But the log is also the fastest diagnostic surface you have: it shows the raw stream, before deduplication, before verification, before any analytics processing has acted on it.
+
+<div class="callout"><p><strong>In short.</strong> Reading MeshCore gateway logs gives you SNR, RSSI, route type, and hop path for every frame your observer receives — the raw signal feed that flows from your bridge node to your MQTT broker. When something looks off in Waev's Live Packets or Network Stats, the gateway log is the ground-truth layer one step closer to the radio.</p></div>
+
+## What the gateway log is
+
+A MeshCore gateway is the observer node that bridges your radio mesh to your MQTT broker. On the radio side it hears LoRa packets from nearby nodes. On the network side it publishes a record of each packet — signal data, routing metadata, and a unique hash — to the broker you're running. Both faces are readable: the serial monitor shows what the node heard; a direct subscription to the broker shows what it published.
+
+The log operators refer to is usually one of two things: the serial output of the gateway node itself when connected to a host via USB, or the process log from the bridge software that reads the serial port and forwards data to MQTT. Either way, the underlying stream is the same: a line per packet, each a structured record of a single radio event.
+
+## The packet entry: reading each field
+
+<Figure caption="Two gateway log entries annotated by field. The first is a flood packet received at solid SNR (+9 dB). The second is a direct packet arriving at marginal SNR (+3 dB) over a two-hop path. Every field carries diagnostic weight — none of them is noise.">
+  <SignalGatewayLog />
+</Figure>
+
+Each packet entry is a receipt for one radio event. The fields, in order:
+
+**Time** — when the observer recorded the arrival. Useful for correlating traffic bursts with known events: a test transmission, a node reboot, or a weather front that degraded a link.
+
+**Direction** — `RX` for a packet the observer received from the mesh; `TX` for one it transmitted. In a logging-only setup you see mostly `RX` — the observer is listening, not initiating.
+
+**Length and type** — raw byte count and a numeric packet type. The type number encodes the frame's role in the mesh protocol: adverts, direct messages, routing events, and acknowledgments each carry a distinct value. You learn the common ones quickly from watching the stream; the route field (below) confirms the frame's class without needing to memorize the type table.
+
+**Route** — `F` (flood) or `D` (direct). Flood packets are broadcast; any node within range may relay them. Direct packets follow a routed path to a specific recipient.
+
+**SNR** — Signal-to-Noise Ratio in decibels at the observer's receiver. Positive values mean the signal arrived above the noise floor. The working target for a link you want to depend on is roughly +5 to +7 dB in typical conditions; below +3 dB, the link is marginal and becomes unreliable under load or adverse RF conditions. SNR is the most directly actionable field in the log.
+
+**RSSI** — Received Signal Strength Indicator in dBm. Raw received power at the antenna. A lower (more negative) number means weaker received power. RSSI and SNR often move together, but they can diverge: when RSSI is adequate but SNR is poor, the noise floor near the observer has risen — look for interference sources close to the gateway hardware.
+
+**Hash** — a short identifier unique to the packet. In multi-hop meshes, the same packet may be heard by the observer more than once via different relay paths. The hash confirms when two log entries describe the same original transmission rather than two separate events. Tracking a hash across logs from multiple observers traces a specific message through the network path it actually traveled.
+
+**Path** — appears on direct packets that crossed multiple hops. `relay-north → relay-main` means the packet left its source, was forwarded by `relay-north`, forwarded again by `relay-main`, and reached the observer. A longer path than expected for a familiar pair of nodes is an early indicator that a shorter route degraded and the mesh rerouted around it.
+
+## Route type: what F and D tell you
+
+The route field is more than a label. The mix of F and D packets from a given node tells you about its place in the mesh.
+
+A node sending flood advertisements continuously but never appearing in a direct-packet path has not formed persistent two-way contacts. Flood adverts are how MeshCore nodes discover each other; once contacts form, direct traffic flows on dedicated routes. If you see a node flooding but not appearing in any direct paths, it may be operating at the edge of coverage, or contact establishment may have failed.
+
+A node appearing in the path field of another node's direct packets — `relay-north → relay-main` in the example above — is confirmed to be relaying successfully. The path field is the log's most direct evidence that a specific relay is active and routing correctly.
+
+A change in route pattern is worth pausing on. A node that used to appear in direct-packet paths and now shows only flood entries may have lost its contacts — perhaps after a reboot, or because the direct path it was using degraded below usable SNR.
+
+## Connection events and silence
+
+Two things the log tells you that packet counts alone don't: connection events and silence.
+
+**Connection events** appear as status entries when the bridge software connects to or disconnects from your MQTT broker. Repeated disconnects and reconnects indicate an unstable MQTT session — check network stability between the host and the broker, credential expiry, or keepalive configuration. A single connect at startup followed by continuous operation is the healthy pattern.
+
+**Silence** is information. A node you expect to see that stops appearing in the log may have gone offline, lost power, or drifted out of RF range. The distinction matters: if all nodes go silent at once, the gateway itself is the problem. If one specific node stops appearing while others continue, the issue is that node or its RF path to the observer. The log makes that distinction immediate; analytics surfaces take time to surface the pattern.
+
+This is where the gateway log earns its place alongside Waev's analytics. Network Stats detects degraded nodes and hop-count creep, but detection depends on observations reaching the ingest edge. The log shows you what arrived — or didn't — before any analytics processing has a chance to interpret it.
+
+## What the log shows versus what Waev shows
+
+The frame in the gateway log and the packet in Live Packets describe the same radio event. The SNR, RSSI, source node, and hash are the same; what Waev shows is the same data organized for analysis rather than raw ingest.
+
+One place the views diverge: Waev's ingest edge applies verification before drawing topology. A frame that arrives from a source Waev cannot verify as an enrolled observer or authenticated repeater appears in the raw broker subscription but does not produce a topology edge on the Live Map. Understanding this boundary — between what the broker received and what the ingest edge verified — is what reading both views together teaches you.
+
+For the architecture behind that ingest boundary, [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/) traces the full pipeline from radio observation to map edge. For the SNR and hop-count interpretation that makes the log numbers actionable, [Reading the Signal](/blog/reading-the-signal/) gives the framework.
+
+The log is the raw layer. Knowing what it says turns your gateway node from a black box into a diagnostic instrument — the difference between a network you're watching and one you actually understand.
+
+{/* ILLUSTRATION PROMPT: A warm hand-painted close-up illustration of a coiled ribbon of thermal printout paper, partially unspooled to show two or three rows of printed characters. Amber light from a small off-frame desk lamp falls across the paper from the left, casting a gentle warm shadow. The paper curls naturally at the unspooled end. Background is a bare worn wooden surface, nothing else. No screens, no UI, no human figures. Painterly texture, earthy warm tones, the mood: a machine faithfully recording the world, legible when you know how to read it. */}

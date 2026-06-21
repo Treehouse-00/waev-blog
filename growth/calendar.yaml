@@ -631,7 +631,7 @@ posts:
     theme: earned-competence
     primary_keyword: "reading MeshCore gateway logs"
     secondary_keyword: "what your MQTT gateway log tells you"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-06-23

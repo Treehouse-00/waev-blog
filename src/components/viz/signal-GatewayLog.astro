@@ -1,0 +1,171 @@
+---
+// Gateway Log Annotated — static viz (no client JS)
+// Shows two example gateway log lines with field callouts.
+---
+<div class="gl-wrap" aria-label="Annotated MeshCore gateway log entries">
+  <div class="gl-header">Gateway log · observer node</div>
+
+  <!-- Entry 1: flood packet -->
+  <div class="gl-entry" aria-label="Flood packet log entry">
+    <div class="gl-line">
+      <span class="gl-field gl-time">10:14:32</span
+      ><span class="gl-sep"> · </span
+      ><span class="gl-field gl-dir">RX</span
+      ><span class="gl-sep">, len=87 (type=</span
+      ><span class="gl-field gl-ptype">5</span
+      ><span class="gl-sep">, route=</span
+      ><span class="gl-field gl-route gl-flood">F</span
+      ><span class="gl-sep">, payload_len=83) SNR=</span
+      ><span class="gl-field gl-snr">+9</span
+      ><span class="gl-sep"> RSSI=</span
+      ><span class="gl-field gl-rssi">-78</span
+      ><span class="gl-sep"> hash=</span
+      ><span class="gl-field gl-hash">AC9D2D</span>
+    </div>
+    <div class="gl-labels">
+      <span class="gl-label gl-label-dir">received</span>
+      <span class="gl-label gl-label-route">flood — broadcast</span>
+      <span class="gl-label gl-label-snr">SNR +9 dB · solid</span>
+      <span class="gl-label gl-label-rssi">RSSI −78 dBm</span>
+      <span class="gl-label gl-label-hash">packet ID</span>
+    </div>
+  </div>
+
+  <!-- Entry 2: direct packet, lower SNR, multi-hop path -->
+  <div class="gl-entry" aria-label="Direct packet log entry with path">
+    <div class="gl-line">
+      <span class="gl-field gl-time">10:14:44</span
+      ><span class="gl-sep"> · </span
+      ><span class="gl-field gl-dir">RX</span
+      ><span class="gl-sep">, len=22 (type=</span
+      ><span class="gl-field gl-ptype">2</span
+      ><span class="gl-sep">, route=</span
+      ><span class="gl-field gl-route gl-direct">D</span
+      ><span class="gl-sep">, payload_len=20) SNR=</span
+      ><span class="gl-field gl-snr gl-snr-low">+3</span
+      ><span class="gl-sep"> RSSI=</span
+      ><span class="gl-field gl-rssi">-96</span
+      ><span class="gl-sep"> hash=</span
+      ><span class="gl-field gl-hash">890BFA</span
+      ><span class="gl-sep gl-path"> [relay-north → relay-main]</span>
+    </div>
+    <div class="gl-labels">
+      <span class="gl-label gl-label-dir">received</span>
+      <span class="gl-label gl-label-route gl-label-direct">direct — addressed</span>
+      <span class="gl-label gl-label-snr gl-label-snr-low">SNR +3 dB · marginal</span>
+      <span class="gl-label gl-label-rssi">RSSI −96 dBm</span>
+      <span class="gl-label gl-label-hash">packet ID</span>
+    </div>
+  </div>
+
+  <!-- Status line -->
+  <div class="gl-status">
+    <span class="gl-status-dot"></span>
+    <span class="gl-status-text">broker connected · 2 observers enrolled</span>
+  </div>
+</div>
+
+<style>
+  .gl-wrap {
+    font-family: ui-monospace, "Cascadia Code", "Fira Mono", monospace;
+    font-size: 0.78rem;
+    background: var(--surface-2, #f8f5f0);
+    border: 1px solid var(--border, #d9d0c4);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .gl-header {
+    background: var(--surface-1, #fff);
+    border-bottom: 1px solid var(--border, #d9d0c4);
+    padding: 0.45rem 1rem;
+    font-size: 0.72rem;
+    font-family: inherit;
+    color: var(--text-muted, #7a6f62);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .gl-entry {
+    padding: 0.6rem 1rem 0.5rem;
+    border-bottom: 1px solid var(--border, #d9d0c4);
+  }
+
+  .gl-line {
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 1.6;
+    color: var(--text, #2d2620);
+  }
+
+  .gl-sep {
+    color: var(--text-muted, #7a6f62);
+  }
+
+  .gl-path {
+    color: var(--text-muted, #7a6f62);
+    font-style: italic;
+  }
+
+  /* Field colours */
+  .gl-time   { color: var(--text-muted, #7a6f62); }
+  .gl-dir    { color: #2c6e3f; font-weight: 700; } /* RX = green */
+  .gl-ptype  { color: #5a4d3a; }
+  .gl-route  { font-weight: 700; }
+  .gl-flood  { color: #7a5c1e; }  /* F = amber */
+  .gl-direct { color: #4a3a8c; }  /* D = purple */
+  .gl-snr    { color: #2c6e3f; font-weight: 600; }
+  .gl-snr-low { color: #a05000; font-weight: 600; }
+  .gl-rssi   { color: #5a4d3a; }
+  .gl-hash   { color: var(--text-muted, #9a8f82); font-size: 0.73rem; }
+
+  /* Label row */
+  .gl-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+  }
+
+  .gl-label {
+    font-family: system-ui, sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    background: var(--surface-1, #fff);
+    border: 1px solid var(--border, #d9d0c4);
+    color: var(--text-muted, #5a4d3a);
+    white-space: nowrap;
+  }
+
+  .gl-label-dir    { border-color: #2c6e3f; color: #2c6e3f; }
+  .gl-label-route  { border-color: #7a5c1e; color: #7a5c1e; }
+  .gl-label-direct { border-color: #4a3a8c; color: #4a3a8c; }
+  .gl-label-snr    { border-color: #2c6e3f; color: #2c6e3f; }
+  .gl-label-snr-low { border-color: #a05000; color: #a05000; }
+  .gl-label-rssi   { border-color: var(--border, #d9d0c4); }
+  .gl-label-hash   { border-color: var(--border, #d9d0c4); }
+
+  /* Status bar */
+  .gl-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    background: var(--surface-1, #fff);
+    font-family: system-ui, sans-serif;
+    font-size: 0.72rem;
+    color: var(--text-muted, #7a6f62);
+  }
+
+  .gl-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2c6e3f;
+    flex-shrink: 0;
+  }
+</style>
