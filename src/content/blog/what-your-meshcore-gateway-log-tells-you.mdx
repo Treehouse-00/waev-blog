@@ -53,7 +53,7 @@ Not every packet type is equally interesting for network monitoring. Knowing whi
 
 The ADVERT (type `4`) is the heartbeat of identity on the mesh. Every node broadcasts it periodically, announcing its name, public key prefix, and node type (chat client, repeater, room server). These advertisements are the primary input Waev uses to build the node list. An ADVERT received by an enrolled observer over MQTT is the evidence Waev requires before it will draw a node or a topology edge — not an inference, and not a claim the node makes about itself to the map, but a packet your own gateway observed. This is what [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/) means by evidence-based topology: the edge exists in the map because the ADVERT arrived at a verified observer.
 
-The PATH (type `8`) is the result of a trace — a packet that reports the sequence of node prefixes a message traveled through. Waev uses PATH packets to validate direct-routing relationships. Combined with ADVERT data, this is how the topology engine can draw an edge with confidence rather than guessing at connectivity.
+The PATH (type `8`) is the result of a trace — a packet that reports the sequence of node prefixes a message traveled through. Where ADVERT packets establish that a node exists and is being heard, a PATH record shows the specific sequence of nodes a message actually traversed. That is concrete evidence of routing, not an inference from signal strength alone.
 
 Messages (types `2` and `5`) flow through the log too. Waev does not retain message content — only the metadata attached to delivery (origin, SNR, hop count, timestamp). That metadata is what populates the Live Packets stream and the per-node activity history.
 
