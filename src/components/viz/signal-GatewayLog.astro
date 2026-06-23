@@ -1,0 +1,73 @@
+---
+/**
+ * signal-GatewayLog — an annotated MQTT packet payload showing the six
+ * key fields a MeshCore gateway publishes per received packet, with plain-
+ * language labels explaining what each field means.
+ * Theme-aware via CSS custom properties. Pure SVG, no client JS.
+ */
+---
+
+<svg viewBox="0 0 720 268" role="img" aria-label="MQTT packet payload table with six rows. Columns: Field, Example Value, and Meaning. Fields shown: origin (relay-main — which gateway received the packet), packet_type (4 — ADVERT, node announcing itself), route (F — flood-routed), SNR (plus 8 dB above noise floor), RSSI (minus 87 dBm received power), and hash (AC9D2D unique packet fingerprint)." style="width:100%;height:auto;">
+
+  <!-- Panel chrome -->
+  <rect x="18" y="14" width="684" height="242" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Panel title row -->
+  <text x="38" y="38" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">MQTT PACKET</text>
+  <text x="156" y="38" class="viz-label" style="fill: var(--text-muted);">meshcore / SEA / &#123;PUBLIC_KEY&#125; / packets</text>
+
+  <!-- Header row background -->
+  <rect x="19" y="46" width="682" height="30" rx="0" style="fill: var(--surface-sunken); opacity:0.7;" />
+  <line x1="18" y1="46" x2="702" y2="46" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Column headers -->
+  <text x="38"  y="66" class="viz-label" style="fill: var(--text-muted);">FIELD</text>
+  <text x="228" y="66" class="viz-label" style="fill: var(--text-muted);">VALUE</text>
+  <text x="388" y="66" class="viz-label" style="fill: var(--text-muted);">WHAT IT MEANS</text>
+
+  <!-- Column dividers -->
+  <line x1="218" y1="46" x2="218" y2="256" style="stroke: var(--border-subtle); opacity:0.6;" stroke-width="1" />
+  <line x1="378" y1="46" x2="378" y2="256" style="stroke: var(--border-subtle); opacity:0.6;" stroke-width="1" />
+  <line x1="18"  y1="76" x2="702" y2="76"  style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Row 1: origin -->
+  <text x="38"  y="100" style="font-family: var(--mono); font-size: 13px; fill: var(--text-accent);">origin</text>
+  <text x="228" y="100" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">relay-main</text>
+  <text x="388" y="100" style="font-family: var(--font); font-size: 12px; fill: var(--text-muted);">which gateway received this packet</text>
+
+  <!-- Row 2 alt bg -->
+  <rect x="19" y="107" width="682" height="30" style="fill: var(--surface-sunken); opacity:0.45;" />
+  <!-- packet_type -->
+  <text x="38"  y="127" style="font-family: var(--mono); font-size: 13px; fill: var(--text-accent);">packet_type</text>
+  <text x="228" y="127" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">4</text>
+  <text x="388" y="127" style="font-family: var(--font); font-size: 12px; fill: var(--text-muted);">ADVERT — node announcing itself</text>
+
+  <!-- Row 3: route -->
+  <line x1="18" y1="137" x2="702" y2="137" style="stroke: var(--border-subtle); opacity:0.4;" stroke-width="1" />
+  <text x="38"  y="157" style="font-family: var(--mono); font-size: 13px; fill: var(--text-accent);">route</text>
+  <text x="228" y="157" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">F</text>
+  <text x="388" y="157" style="font-family: var(--font); font-size: 12px; fill: var(--text-muted);">flood-routed (D = direct, targeted)</text>
+
+  <!-- Row 4 alt bg -->
+  <rect x="19" y="164" width="682" height="30" style="fill: var(--surface-sunken); opacity:0.45;" />
+  <!-- SNR -->
+  <text x="38"  y="184" style="font-family: var(--mono); font-size: 13px; fill: var(--text-accent);">SNR</text>
+  <text x="228" y="184" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--accent-light);">+8</text>
+  <text x="388" y="184" style="font-family: var(--font); font-size: 12px; fill: var(--text-muted);">dB above noise floor — the quality number</text>
+
+  <!-- Row 5: RSSI -->
+  <line x1="18" y1="194" x2="702" y2="194" style="stroke: var(--border-subtle); opacity:0.4;" stroke-width="1" />
+  <text x="38"  y="214" style="font-family: var(--mono); font-size: 13px; fill: var(--text-accent);">RSSI</text>
+  <text x="228" y="214" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">−87</text>
+  <text x="388" y="214" style="font-family: var(--font); font-size: 12px; fill: var(--text-muted);">received power in dBm (more negative = weaker)</text>
+
+  <!-- Row 6 alt bg -->
+  <rect x="19" y="221" width="682" height="30" style="fill: var(--surface-sunken); opacity:0.45;" />
+  <!-- hash -->
+  <text x="38"  y="241" style="font-family: var(--mono); font-size: 13px; fill: var(--text-accent);">hash</text>
+  <text x="228" y="241" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">AC9D2D…</text>
+  <text x="388" y="241" style="font-family: var(--font); font-size: 12px; fill: var(--text-muted);">unique fingerprint — same packet, any gateway</text>
+
+  <!-- Bottom border -->
+  <line x1="18" y1="251" x2="702" y2="251" style="stroke: var(--border-subtle);" stroke-width="1" />
+</svg>

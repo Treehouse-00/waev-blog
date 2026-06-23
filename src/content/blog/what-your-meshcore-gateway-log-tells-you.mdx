@@ -1,0 +1,84 @@
+---
+title: "What Your MeshCore Gateway Log Tells You"
+description: "Reading MeshCore gateway logs: the MQTT packet fields your gateway publishes, what SNR and packet type reveal, and how to trace a node problem directly."
+date: 2026-06-21
+tags: ["signal", "mqtt"]
+hero:
+  src: "/hero-what-your-meshcore-gateway-log-tells-you.jpg"
+  alt: "An open electronic circuit schematic printed on blue drafting linen, laid flat on a wooden workshop table, one small section encircled in pencil, warm overhead light — the act of reading a system from its own record."
+faq:
+  - q: "What does my MeshCore gateway log to MQTT?"
+    a: "Your MeshCore gateway publishes a JSON record to MQTT for every packet it receives. Each record includes which gateway heard the packet (origin), a timestamp, signal quality as SNR and RSSI, the packet type (ADVERT, flood text, direct message, and others), routing mode (flood or direct), and a unique hash. ADVERT packets add the announcing node's name and node type."
+  - q: "What is the difference between SNR and RSSI in the gateway log?"
+    a: "SNR (Signal-to-Noise Ratio) is the difference in decibels between the received signal and the local noise floor; a higher value means a cleaner, more reliable link. RSSI (Received Signal Strength Indicator) is the raw received power in dBm; a more negative value means weaker power at the receiver. For diagnosing link quality, SNR is more actionable because it accounts for the local noise floor rather than just raw signal power."
+  - q: "How do I use the gateway log to find out why a node is missing from Waev?"
+    a: "Subscribe to your gateway's MQTT packets topic and filter for ADVERT packets (packet_type 4) from the missing node. If its ADVERT appears in the log, the node is being heard at the RF level and the issue is likely an enrollment or configuration step in Waev. If no ADVERT appears at all, the node is not reaching your gateway, which points to a radio coverage or antenna problem rather than a Waev configuration issue."
+  - q: "What is the hash field in a MeshCore MQTT packet?"
+    a: "The hash is a short fingerprint of the packet content. Because MeshCore uses flood routing, the same original packet can arrive at multiple gateways. Comparing the hash across gateways lets you confirm whether two log entries represent the same original transmission or two distinct packets, which is useful for verifying multi-path coverage and tracing how a message propagated across the mesh."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalGatewayLog from "../../components/viz/signal-GatewayLog.astro";
+import MeasureLivePackets from "../../components/viz/measure-LivePackets.astro";
+
+<div class="callout">
+<p><strong>In short.</strong> Reading MeshCore gateway logs: your gateway publishes a JSON record per received packet, including SNR, RSSI, packet type, routing mode, and a unique hash. Waev subscribes to this same MQTT stream, applies privacy scrubbing at the ingest edge, and surfaces it as Live Packets and Network Stats. You can subscribe to the identical stream directly in any MQTT client — and knowing what each field contains is how you stop guessing and start reading the evidence yourself.</p>
+</div>
+
+You've connected a gateway, enrolled an observer, and Waev is showing live data. The SNR column ticks up as packets arrive. A node you expected to see is missing. Or one you haven't heard from in a while just reappeared with a hop count two higher than before. The natural question is: where exactly is this coming from, and what does Waev actually see?
+
+The answer is your MQTT gateway log — a JSON record for every packet your gateway hears, published in real time. Waev reads the same stream. Understanding the fields is the difference between reading Waev's output and understanding the system well enough to read it yourself.
+
+## What the log contains
+
+Each JSON record in the MQTT packets topic captures six key pieces of information about a single received packet.
+
+<Figure caption="Six fields in every MeshCore MQTT packet record. <b>SNR is the quality number</b> — it tells you how cleanly the signal arrived above the local noise floor. The hash lets you track the same packet across multiple gateways.">
+  <SignalGatewayLog />
+</Figure>
+
+**`origin`** is the name of the gateway that received and reported this packet. On a mesh with multiple enrolled observers, each one publishes to the same broker under its own topic path, so you can tell which gateway heard what. When a node is visible from one observer but not another, the origin field is how you map coverage to geography.
+
+**`packet_type`** is a numeric code indicating what kind of packet this is. The most important for topology are type `4` (ADVERT — a node announcing its presence, name, and type) and type `8` (PATH — the result of a trace). Type `2` is a direct text message; type `5` is a channel (group) message; type `3` is an acknowledgment. Most of what Waev uses to identify nodes and draw edges comes from ADVERT packets, which nodes broadcast periodically as part of normal mesh operation.
+
+**`route`** is a single character: `F` for flood-routed and `D` for direct. Flood packets are broadcast across the mesh and can arrive at any observer. Direct packets are addressed to a specific destination and travel a known path — when a direct packet arrives, the `path` field appears alongside it, listing the intermediate node prefixes as a short chain (for example, `C2 -> E2`).
+
+**`SNR`** and **`RSSI`** are the signal quality fields. SNR is the difference in decibels between the received signal and the background noise floor; RSSI is the raw received power in dBm. For link quality assessment, SNR is the more useful of the two because it accounts for local conditions. A −87 dBm RSSI might represent a healthy link on a quiet hilltop or a marginal one near interference — the SNR number resolves that ambiguity. [Reading the Signal](/blog/reading-the-signal/) covers how to interpret these numbers in practice.
+
+**`hash`** is a short fingerprint of the packet content. Because the mesh uses flood routing, the same original packet can arrive at multiple gateways within milliseconds of each other. The hash lets you recognize when two log entries represent the same original transmission. When you're testing multi-path coverage — verifying that a critical node is reachable from more than one observer — the hash is how you confirm it.
+
+## Packet types and what Waev uses
+
+Not every packet type is equally interesting for network monitoring. Knowing which types carry which information helps you filter the log when you're watching for something specific.
+
+The ADVERT (type `4`) is the heartbeat of identity on the mesh. Every node broadcasts it periodically, announcing its name, public key prefix, and node type (chat client, repeater, room server). These advertisements are the primary input Waev uses to build the node list. An ADVERT received by an enrolled observer over MQTT is the evidence Waev requires before it will draw a node or a topology edge — not an inference, and not a claim the node makes about itself to the map, but a packet your own gateway observed. This is what [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/) means by evidence-based topology: the edge exists in the map because the ADVERT arrived at a verified observer.
+
+The PATH (type `8`) is the result of a trace — a packet that reports the sequence of node prefixes a message traveled through. Where ADVERT packets establish that a node exists and is being heard, a PATH record shows the specific sequence of nodes a message actually traversed. That is concrete evidence of routing, not an inference from signal strength alone.
+
+Messages (types `2` and `5`) flow through the log too. Waev does not retain message content — only the metadata attached to delivery (origin, SNR, hop count, timestamp). That metadata is what populates the Live Packets stream and the per-node activity history.
+
+## What Waev surfaces from the stream
+
+Waev subscribes to your broker as a read-only observer, applies identity scrubbing at the ingest edge (nodes carrying a privacy marker — ⛔ 🛑 🚫 — are dropped before they reach any storage), verifies that edges come from enrolled observers and authenticated repeaters only, and routes the result to Live Packets and Network Stats.
+
+<Figure caption="Live Packets as it appears in Waev: the same fields from the gateway log — origin, hop count, SNR — rendered per incoming observation. The status column (healthy / watchlist / degraded) is Waev's interpretation of the raw SNR value.">
+  <MeasureLivePackets />
+</Figure>
+
+The Live Packets view is not a summary. It is the MQTT stream, made legible: timestamps normalized, node names resolved from the most recent ADVERT, SNR color-coded against the working threshold. Every row in that view corresponds to a record in your gateway log. If you subscribe to the raw MQTT topic in a client like MQTTX or `mosquitto_sub`, you see the same data arrive at the same time, in JSON form.
+
+## Reading the log to diagnose a problem
+
+The most direct use of raw log access is diagnosis. When something is wrong in Waev — a node has disappeared, or never appeared — the first question is whether the problem is at the RF layer or the software layer. The gateway log answers it cleanly.
+
+Subscribe to your gateway's packets topic and watch for ADVERT packets (packet_type `4`) from the node you're looking for. The node's name or its public key prefix will appear in the ADVERT payload. If you see it arrive, the node is being heard at the RF level: the issue is downstream of reception, likely an enrollment or configuration step. If no ADVERT from that node appears in the log at all — even after several minutes — the node is not reaching your gateway over RF. That is a coverage problem: antenna placement, range, or obstruction, not Waev configuration.
+
+This diagnostic step takes about two minutes with any MQTT client. It is more reliable than checking the Waev UI first because it rules out the radio layer independently of everything else.
+
+The hash field is useful here too. If the node's ADVERT is appearing in the log but with an unexpectedly high hop count, look at whether multiple gateways are logging records with the same hash. If only one gateway is hearing it — and that gateway is four hops away — the path through your network is longer than it needs to be. Adding an observer closer to the node would shorten the hop count and improve the SNR on the logged packets.
+
+## The log is the source
+
+Waev is not a black box making independent claims about your mesh. It subscribes to what your gateway hears, scrubs what it isn't allowed to keep, and surfaces the rest. Reading the gateway log directly is not an advanced step — it is the same evidence, one layer closer to the radio. The more clearly you can read that layer, the more precisely you can act on what the map shows.
+
+{/* ILLUSTRATION PROMPT: A warm hand-painted illustration of an open electronic circuit schematic printed on blue drafting linen, laid flat on a wooden workshop table. A single section of the schematic — a small cluster of components — is encircled with a careful pencil line. A wooden pencil rests across the lower corner. Warm overhead incandescent light casts gentle shadows. No people, no screens, no UI. Earthy tones, blue-linen accent, one restrained highlight. Mood: unhurried, precise, craft. */}
