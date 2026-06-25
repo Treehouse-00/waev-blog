@@ -1,0 +1,93 @@
+---
+title: "Reading Your MeshCore Gateway Logs"
+description: "Reading MeshCore gateway logs shows which nodes reached your observer, at what SNR, and where the mesh is dropping packets."
+date: 2026-06-21
+tags: ["deep-dive", "signal"]
+hero:
+  src: "/hero-reading-your-meshcore-gateway-logs.jpg"
+  alt: "A hand-painted close-up of a small glass prism on a warm wooden workbench, a narrow beam of afternoon sunlight entering one face and fanning into a color spectrum across the grain below."
+faq:
+  - q: "What information is in a MeshCore gateway log?"
+    a: "Every packet your enrolled observer hears from the mesh generates a record: the originating node's identifier, the number of hops to the observer, the SNR at the final hop, the packet type, and a timestamp. Reading those records directly shows which nodes are reaching your network, at what signal quality, and over what path — without waiting for a summary view to process them."
+  - q: "How do I read the raw MQTT observer stream directly?"
+    a: "Subscribe to your broker using any MQTT client. The Mosquitto package includes mosquitto_sub, which connects to a broker and prints arriving packets to the terminal. Subscribe to the wildcard topic '#' to see every topic your observer publishes. Credentials are required if your broker enforces authentication."
+  - q: "What does a hop count change in the gateway log mean?"
+    a: "A hop count change means the mesh rerouted. If a node that reached your observer in two hops consistently shows three hops in subsequent entries, the shorter path degraded or dropped — a relay went offline, a link deteriorated, or traffic shifted to an alternate route. Hop count changes in the raw stream are often the earliest signal that something structural changed in your network."
+  - q: "Why does the same packet appear multiple times in my log?"
+    a: "If you run more than one enrolled observer, both will hear the same advertisement packet and each will publish a separate record to your broker. You will see two entries for the same source node within seconds of each other, with different SNR values — each observer reports signal quality from its own position. This is expected behavior and provides two independent readings of the same RF event."
+---
+
+import Figure from "../../components/Figure.astro";
+import SignalGatewayStream from "../../components/viz/signal-GatewayStream.astro";
+
+Your observer is sitting on your mesh and your MQTT broker simultaneously. Every packet it hears from the air gets published to your broker as a structured record. Waev reads that stream to build the map and the stats. But the stream exists independently — you can subscribe to it yourself, and reading it directly is a diagnostic skill worth having.
+
+<div class="callout"><p><strong>In short.</strong> Reading MeshCore gateway logs gives you a direct, per-packet view of what your observer hears: which nodes reached it, over how many hops, at what SNR, and when. Those four data points, read across enough entries, show whether a link is stable, drifting, or actively rerouting — often before any aggregated view has surfaced the same pattern.</p></div>
+
+## What the stream is
+
+An enrolled observer is a repeater connected to your MQTT broker. On the radio side it operates like any other repeater, forwarding packets through the mesh. On the internet side, every packet it receives from the RF environment gets published to your broker as a JSON record. That published record is the gateway log entry.
+
+The record contains the data that matters for diagnostics: the originating node's identifier, the hop path to the observer, the SNR at the final hop as measured by the observer's radio, the packet type, and a timestamp. Waev reads this same stream when it builds Live Packets, Network Stats, and the topology map. The raw stream and Waev's surfaces are reading the same source.
+
+## Subscribing directly
+
+With Mosquitto's command-line client, subscribing to your observer's stream is a single command:
+
+```
+mosquitto_sub -h <your-broker-hostname> -t '#' -v
+```
+
+The `-h` flag sets your broker's hostname or IP address. The `#` wildcard matches every topic your observer publishes to — both packet observations and status messages. The `-v` flag prints the topic name before each message so you can see which observer and packet type produced each entry. If your broker requires credentials, add `-u <username> -P <password>`.
+
+On an active mesh, advertisement packets from neighboring nodes appear continuously. Each one produces a log entry as soon as the observer hears it. A quiet mesh produces fewer entries but the same structure.
+
+## The four data elements that matter
+
+Each entry in the stream carries a small set of fields. Four of them do the diagnostic work:
+
+**Source node** identifies which node originated the packet. A node that went silent — one that had been appearing every few minutes and stops appearing for an extended period — is itself a signal. Absence from the stream is data.
+
+**Hop count** is how many discrete RF legs the packet traveled to reach your observer. One or two hops is normal for nodes within comfortable range. Higher counts mean the packet routed through additional relays. What matters is change: a sustained increase in hop count for a specific node means the mesh rerouted around something that degraded.
+
+**SNR** is the signal quality at the final hop — what your observer's radio measured when it decoded the packet. This is the same number that appears in Live Packets. A single reading is noise; a consistent drift in one direction is evidence of a changing RF environment. The working target for a reliable LoRa link is roughly +7 dB or above in typical conditions.
+
+**Timestamp** shows when the observation arrived. Irregular gaps — a node that usually appears every several minutes going quiet for an extended window before returning — are worth investigating. The gap tells you when the problem started.
+
+## Reading the change in the stream
+
+The most diagnostic thing the raw stream shows is a transition: a specific entry where one of those data elements changed from the expected value to a new one.
+
+<Figure caption="<b>Hop count change mid-stream.</b> Node relay-ridge arrives at 2 hops and +10 dB SNR through 17:48. At 18:01 the hop count shifts to 3 and SNR drops to +6 dB. The old relay path rerouted — a shorter route degraded, the mesh found a longer one.">
+  <SignalGatewayStream />
+</Figure>
+
+A hop count step-change like this is a structural event. The node itself didn't move; a path did. The specific entry where hop count changed gives you the timestamp when the reroute happened. That's your start point for any deeper investigation: what else changed around 18:01? Did a relay go quiet? Did a link's SNR drop below reliable threshold shortly before?
+
+The raw stream exposes that transition entry by entry. Aggregated views will show the new average hop count eventually — the raw log shows *when* it changed.
+
+## Three patterns the stream surfaces first
+
+Aggregated statistics smooth data by design. The raw stream shows the unprocessed record. Three patterns appear in the log before any summary view surfaces them:
+
+**Advertisement cadence gaps.** MeshCore nodes broadcast advertisements on a regular interval to announce their presence. A node that was producing entries every few minutes and stops for an extended window — then returns — is worth noting even before a health dashboard flags it. The raw stream has per-packet timestamps; an aggregated view reports over a window and may not surface a short gap until the next reporting cycle.
+
+**Step changes in hop count.** The hop count transition — the exact entry where the count shifted — is in the raw stream. Aggregated hop count statistics will reflect the new value over time; the raw log shows the specific moment of rerouting.
+
+**SNR drift before it crosses the threshold.** If a link has been running at +10 dB and starts appearing at +7, +6, +5 across successive entries, you can spot that downward trend in the stream before it crosses any alert threshold. The trend is visible in the raw entries; a threshold-based alert fires only once it's already crossed.
+
+## Where Waev surfaces the same data
+
+Waev reads the same MQTT stream and processes it into three surfaces:
+
+**Live Packets** shows per-observation records as they arrive — the same stream, privacy-filtered, labeled, and timestamped. If a node is reaching any of your observers, it appears here first.
+
+**Network Stats** aggregates hop count and SNR across time. The patterns you'd read entry by entry from the raw stream appear here as trend lines and status flags, with comparison across all your enrolled observers.
+
+**Outpost** shows per-node history: one node's SNR over time, hop count trend, and heard-by log. [Reading the Signal](/blog/reading-the-signal/) explains how to interpret the SNR numbers once you're looking at a specific node's history.
+
+The raw stream and Waev's views are showing the same underlying data. The stream gives you the unmediated record — every observation, in order, unsmoothed. Waev adds the context of multiple observers, correlation over time, and pattern recognition across your whole network. [Understanding the full pipeline from your observer to the Live Map](/blog/how-waev-reads-your-mesh/) shows how data moves from the stream to each of those surfaces.
+
+For most day-to-day diagnostics, Waev's views are faster. For the specific cases where you need to know *exactly when* something changed — the transition entry, the gap start, the first appearance of a new hop count — the raw stream is where you find it.
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted close-up of a small triangular glass prism resting on a bare wooden workbench. A narrow pencil-thin beam of afternoon sunlight enters one face and spreads into a short arc of color spectrum across the warm wood grain — the single, clear subject of the image. Soft, raking side light; painterly texture; calm and grounded. No text, no mesh, no UI, no equipment other than the prism and the bench surface. The concept: a single stream of data refracted into its meaningful components. */}

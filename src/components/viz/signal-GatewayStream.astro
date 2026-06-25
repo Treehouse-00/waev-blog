@@ -1,0 +1,77 @@
+---
+/**
+ * signal-GatewayStream — a schematic of a raw MQTT observer log stream.
+ * Shows six chronological entries for a single source node, with a hop-count
+ * step-change highlighted between entries 4 and 5.  Teaches the diagnostic
+ * pattern: hop count changes in the raw stream before aggregated views flag it.
+ * Theme-aware via CSS custom properties. Pure SVG, no client JS.
+ */
+---
+
+<svg viewBox="0 0 720 302" role="img" aria-label="Raw MQTT observer log stream showing six chronological entries for node relay-ridge. SNR is stable around plus 10 dB for the first four entries with a hop count of 2. At 18:01 the hop count shifts to 3 and SNR drops to plus 6. A change marker spans the transition, labeled hop count changed." style="width:100%;height:auto;">
+
+  <!-- Panel chrome -->
+  <rect x="18" y="14" width="684" height="276" rx="14" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Panel title -->
+  <text x="38" y="38" class="viz-label" style="fill: var(--text-accent); letter-spacing:0.06em;">OBSERVER STREAM · relay-ridge</text>
+  <text x="682" y="38" text-anchor="end" class="viz-label" style="fill: var(--text-muted);">raw packets</text>
+
+  <!-- Header rule -->
+  <line x1="18" y1="50" x2="702" y2="50" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- Column headers -->
+  <text x="38"  y="66" class="viz-label" style="fill: var(--text-muted);">TIME</text>
+  <text x="140" y="66" class="viz-label" style="fill: var(--text-muted);">SOURCE</text>
+  <text x="340" y="66" class="viz-label" style="fill: var(--text-muted);">HOPS</text>
+  <text x="440" y="66" class="viz-label" style="fill: var(--text-muted);">SNR</text>
+  <text x="560" y="66" class="viz-label" style="fill: var(--text-muted);">PKT TYPE</text>
+  <line x1="18" y1="74" x2="702" y2="74" style="stroke: var(--border-subtle);" stroke-width="1" />
+
+  <!-- ── Row 1  17:14:02  2 hops  +10 dB  ADVERT ── -->
+  <text x="38"  y="98" style="font-family: var(--mono); font-size: 12px; fill: var(--text-muted);">17:14:02</text>
+  <text x="140" y="98" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">relay-ridge</text>
+  <text x="340" y="98" style="font-family: var(--mono); font-size: 12px; fill: var(--text-muted);">2</text>
+  <text x="440" y="98" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--accent-light);">+10 dB</text>
+  <text x="560" y="98" style="font-family: var(--mono); font-size: 11px; fill: var(--text-muted);">ADVERT</text>
+
+  <!-- ── Row 2 (alt bg)  17:22:17  2 hops  +11 dB  ADVERT ── -->
+  <rect x="19" y="104" width="682" height="38" style="fill: var(--surface-sunken); opacity: 0.5;" />
+  <text x="38"  y="128" style="font-family: var(--mono); font-size: 12px; fill: var(--text-muted);">17:22:17</text>
+  <text x="140" y="128" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">relay-ridge</text>
+  <text x="340" y="128" style="font-family: var(--mono); font-size: 12px; fill: var(--text-muted);">2</text>
+  <text x="440" y="128" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--accent-light);">+11 dB</text>
+  <text x="560" y="128" style="font-family: var(--mono); font-size: 11px; fill: var(--text-muted);">ADVERT</text>
+
+  <!-- ── Row 3  17:48:31  2 hops  +10 dB  ADVERT ── -->
+  <text x="38"  y="158" style="font-family: var(--mono); font-size: 12px; fill: var(--text-muted);">17:48:31</text>
+  <text x="140" y="158" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">relay-ridge</text>
+  <text x="340" y="158" style="font-family: var(--mono); font-size: 12px; fill: var(--text-muted);">2</text>
+  <text x="440" y="158" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--accent-light);">+10 dB</text>
+  <text x="560" y="158" style="font-family: var(--mono); font-size: 11px; fill: var(--text-muted);">ADVERT</text>
+
+  <!-- ── Transition marker rule ── -->
+  <line x1="19" y1="168" x2="701" y2="168" style="stroke: var(--sys-orangeyellow-600); opacity: 0.6;" stroke-width="1" stroke-dasharray="4 3" />
+  <text x="360" y="181" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600); letter-spacing:0.04em;">↑ hop count changed ↓</text>
+  <line x1="19" y1="186" x2="701" y2="186" style="stroke: var(--sys-orangeyellow-600); opacity: 0.6;" stroke-width="1" stroke-dasharray="4 3" />
+
+  <!-- ── Row 4 (alt bg, post-change)  18:01:44  3 hops  +6 dB  ADVERT ── -->
+  <rect x="19" y="188" width="682" height="38" style="fill: var(--surface-sunken); opacity: 0.5;" />
+  <text x="38"  y="212" style="font-family: var(--mono); font-size: 12px; fill: var(--text-muted);">18:01:44</text>
+  <text x="140" y="212" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">relay-ridge</text>
+  <text x="340" y="212" style="font-family: var(--mono); font-size: 12px; font-weight: 700; fill: var(--sys-orangeyellow-600);">3</text>
+  <text x="440" y="212" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--sys-orangeyellow-600);">+6 dB</text>
+  <text x="560" y="212" style="font-family: var(--mono); font-size: 11px; fill: var(--text-muted);">ADVERT</text>
+
+  <!-- ── Row 5  18:09:03  3 hops  +7 dB  ADVERT ── -->
+  <text x="38"  y="242" style="font-family: var(--mono); font-size: 12px; fill: var(--text-muted);">18:09:03</text>
+  <text x="140" y="242" style="font-family: var(--mono); font-size: 13px; fill: var(--text);">relay-ridge</text>
+  <text x="340" y="242" style="font-family: var(--mono); font-size: 12px; font-weight: 700; fill: var(--sys-orangeyellow-600);">3</text>
+  <text x="440" y="242" style="font-family: var(--mono); font-size: 14px; font-weight: 700; fill: var(--sys-orangeyellow-600);">+7 dB</text>
+  <text x="560" y="242" style="font-family: var(--mono); font-size: 11px; fill: var(--text-muted);">ADVERT</text>
+
+  <!-- Bottom legend -->
+  <line x1="18" y1="256" x2="702" y2="256" style="stroke: var(--border-subtle);" stroke-width="1" />
+  <text x="38" y="278" class="viz-label" style="fill: var(--text-muted);">six entries, one source node — hop count shifted from 2 to 3 at 18:01, old path rerouted</text>
+
+</svg>
