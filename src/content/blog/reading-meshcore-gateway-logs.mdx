@@ -78,7 +78,7 @@ A healthy stream on an active mesh produces a line every few seconds or faster, 
 
 **Hop count** is the number of relay legs the packet crossed. One hop means the source was heard directly by the observer. Two hops means one relay was between them. What matters is consistency: a node that typically appears at two hops suddenly showing four means the shorter path degraded and the mesh rerouted. That change in the packet stream is earlier information than anything Waev can surface at the UI layer — it appears in the raw log immediately.
 
-**SNR** is the most actionable field. A reading above +7 dB indicates a solid link for that observation. Below +3 dB, treat the path as marginal. Negative SNR on a path that was positive last week indicates degradation — and because it appears on every packet, you can watch the trend in real time rather than waiting for a Network Stats summary.
+**SNR** is the most actionable field. A reading above +7 dB indicates a solid link for that observation. The +3 to +5 dB range is marginal — workable under normal conditions but unreliable when conditions deteriorate. Below +3 dB, plan for intermittency. Negative SNR on a path that was positive last week indicates degradation — and because it appears on every packet, you can watch the trend in real time rather than waiting for a Network Stats summary.
 
 ## Reading the patterns
 
