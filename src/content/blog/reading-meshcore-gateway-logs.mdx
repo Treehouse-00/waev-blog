@@ -1,0 +1,125 @@
+---
+title: "Reading MeshCore Gateway Logs"
+description: "Reading MeshCore gateway logs gives you a per-packet view of every observation your observer reports: SNR, hop count, and route type as the mesh sees them."
+date: 2026-06-21
+tags: ["signal", "mesh-measurement"]
+hero:
+  src: "/hero-reading-meshcore-gateway-logs.jpg"
+  alt: "A warm flat illustration of an open radio operator's log, neat handwritten columns of entries on the page, a pen resting diagonally across it, warm light from one side."
+faq:
+  - q: "What does a MeshCore gateway log contain?"
+    a: "A MeshCore observer publishes a JSON record for every packet it hears from the RF mesh to your MQTT broker. Each record includes the source node identity, the number of hops the packet traveled, the Signal-to-Noise Ratio at the observer, and whether the packet was a flood broadcast or a direct transmission. The result is a timestamped stream of every observation your observer made."
+  - q: "How do I subscribe to my observer's MQTT stream directly?"
+    a: "Use the mosquitto_sub command-line tool with your broker address, port, and credentials to subscribe to the topic your observer publishes to. Run it while your mesh is active and you will see packet records arriving in real time. The same stream is what Waev subscribes to when building its analytics views."
+  - q: "What is the difference between a flood packet and a direct packet in the gateway log?"
+    a: "A flood packet is a broadcast that all nearby nodes relay according to the mesh routing rules. A direct packet is addressed to a specific node and travels a routed path to its destination. Both appear in your gateway log tagged with their route type. Flood packets are the primary source of topology data, as they propagate through the mesh and carry observable hop counts and SNR values at each relay."
+  - q: "My observer shows packets from some nodes but not others. Why?"
+    a: "An observer hears packets from nodes that are within its RF range, directly or via relays. Nodes that are outside your observer's hearing range, or that route through paths that do not pass near your observer, will not appear in the log. Adding a second observer at a different location expands the coverage of your enrolled observer set."
+  - q: "Can I verify gateway log contents against what Waev shows in Live Packets?"
+    a: "Yes. Waev's Live Packets view presents the same packet stream your observer publishes to your broker, passed through the ingest-edge privacy and verification checks. If a packet appears in your raw subscription but not in Waev's Live Packets, it was either filtered by the privacy gate because the source node carried an opt-out privacy marker, or it came from a source Waev could not verify against an enrolled observer."
+---
+
+import Figure from "../../components/Figure.astro";
+import GatewayMQTTStream from "../../components/viz/gateway-MQTTStream.astro";
+import MeasureLivePackets from "../../components/viz/measure-LivePackets.astro";
+
+Your observer has been running for a few days. Packets are flowing, the broker is up, and Waev is showing activity. But you've never looked at the raw stream itself — the actual MQTT messages your observer is publishing, packet by packet, before Waev processes them.
+
+That stream is readable. And reading it directly is the fastest way to know exactly what your mesh is telling you right now.
+
+<div class="callout">
+<p><strong>In short.</strong> Reading MeshCore gateway logs means subscribing to the MQTT topic your enrolled observer publishes to and watching the per-packet data stream arrive in real time. Each packet record includes the source node, route type (flood or direct), hop count, and SNR — the same fields Waev's Live Packets view presents, before any aggregation. When something looks off in Waev, the raw stream is where you verify it.</p>
+</div>
+
+## What the observer publishes
+
+A MeshCore observer's job is to bridge two worlds: it hears RF packets from the mesh and publishes a JSON record of each one to your MQTT broker. Every time a mesh packet reaches the observer's radio, an entry is posted to the broker topic. Waev subscribes to that topic and processes the stream; but the stream itself is yours — on your broker, readable by any MQTT client you authenticate.
+
+The topic your observer publishes to follows the structure `meshcore/{IATA}/{PUBLIC_KEY}/packets`, where `IATA` is the three-letter location code you set on the node and `PUBLIC_KEY` is the first several characters of the node's public key (the full identifier the broker uses to route traffic). You configure this during observer setup — it's the same topic you give Waev's subscriber credentials.
+
+What arrives on that topic, for each packet the observer hears, includes at minimum:
+
+- **Source node** — the name or identifier of the mesh node that originated the packet
+- **Route type** — whether the packet was a flood (mesh broadcast) or a direct (addressed to a specific destination)
+- **Hop count** — how many relays the packet crossed before reaching the observer
+- **SNR** — the Signal-to-Noise Ratio at the observer's receiver, in dB
+- **Timestamp** — when the observation was recorded
+
+These are the same numbers that appear in Waev's Live Packets. The observer is the single source for all of them.
+
+## Subscribing to the stream directly
+
+The standard tool is `mosquitto_sub`. Point it at your broker with the topic your observer uses, and the stream arrives line by line:
+
+```bash path=null start=null
+mosquitto_sub \
+  -h your-broker-hostname \
+  -p 8883 \
+  --cafile /path/to/ca.pem \
+  -u your-username \
+  -P your-password \
+  -t "meshcore/#" \
+  -v
+```
+
+The `-v` flag prints the topic alongside each message — useful when your observer publishes to multiple sub-topics (status, packets). If you want only the packet stream, replace `meshcore/#` with the exact topic prefix from your observer's configuration.
+
+A healthy stream on an active mesh produces a line every few seconds or faster, depending on how many nodes are broadcasting and how often. If you start `mosquitto_sub` and see nothing for thirty seconds while your mesh should be active, the silence is diagnostic: the observer may be offline, the broker address may be wrong, or authentication may be failing.
+
+## What each packet tells you
+
+<Figure caption="Four packets arriving from an observer's subscription. Each row shows source node, route type, hop count, and SNR — the four values that describe a single observation. The third row shows a marginal +3 dB on a 3-hop path: a real finding, not a display artifact.">
+  <GatewayMQTTStream />
+</Figure>
+
+**Source node** is the identity of the mesh node the observer heard, not necessarily the node that transmitted directly to it. A packet can travel two or three hops before reaching the observer; the source is the originating node, and the path is reflected in the hop count.
+
+**Route type** — flood or direct — tells you what kind of traffic the packet was. Flood packets are advertisements and broadcasts: all nodes relay them, and they spread through the mesh naturally. Direct packets are routed messages addressed to a specific destination. Topology data in Waev's Live Map comes primarily from flood packets, since they propagate widely and carry observable hop counts at each relay.
+
+**Hop count** is the number of relay legs the packet crossed. One hop means the source was heard directly by the observer. Two hops means one relay was between them. What matters is consistency: a node that typically appears at two hops suddenly showing four means the shorter path degraded and the mesh rerouted. That change in the packet stream is earlier information than anything Waev can surface at the UI layer — it appears in the raw log immediately.
+
+**SNR** is the most actionable field. A reading above +7 dB indicates a solid link for that observation. Below +3 dB, treat the path as marginal. Negative SNR on a path that was positive last week indicates degradation — and because it appears on every packet, you can watch the trend in real time rather than waiting for a Network Stats summary.
+
+## Reading the patterns
+
+A single packet record is a snapshot. The stream is the picture. Patterns in the raw log tell you things that aggregated views can miss:
+
+**A node appears, then disappears.** A repeater that was consistently present every thirty seconds goes silent. This is in the packet log before it shows as "last seen" in any dashboard. If the node reappears after a few minutes, power is intermittent. If it stays gone, the relay is offline.
+
+**Hop count increases on one node.** `repeater-hill` has been showing at two hops for weeks. Today's stream shows it at three, consistently. The direct relay path between the observer and `repeater-hill` has changed — either the relay in the middle went offline, or terrain obstruction shifted. The raw stream shows the change the moment it happens.
+
+**SNR drifts downward across multiple nodes.** Several nodes that were at +7 to +9 dB are now reading +4 to +6 dB. The observer's local noise floor may have risen (a new interference source nearby), or the observer's antenna connection may have degraded. When the SNR drop is across multiple unrelated paths simultaneously, the observer end is the common variable.
+
+**All packets show high hop counts.** If every node in the stream is showing four or five hops and your mesh is supposed to have close-in repeaters, your observer is receiving only indirectly — it's either not well-positioned, or the nearby relay it was counting on has gone offline. For a deeper look at how SNR and hop count interact to describe path quality, [Reading the Signal](/blog/reading-the-signal/) covers the diagnostic framework.
+
+## How Waev presents the same data
+
+Waev subscribes to the same MQTT topic and receives the same per-packet JSON records. The difference is what it does with them: privacy scrubbing, deduplication, and aggregation over time.
+
+<Figure caption="Waev's Live Packets view parsing the same stream. The raw log and this view draw from identical data; Live Packets adds the status column, filters privacy-marked nodes, and holds the running history.">
+  <MeasureLivePackets />
+</Figure>
+
+Live Packets is the most direct translation — essentially a windowed view of the stream with privacy filters applied. Each row you see in Live Packets corresponds to a packet record that arrived at the ingest edge from your observer. If a packet is in your raw subscription but absent in Live Packets, one of three things happened: the source node carried a privacy opt-out marker (⛔ 🛑 🚫), the observation came through a path Waev could not verify, or the packet was from a companion device whose identity was scrubbed at ingest.
+
+Network Stats is the aggregated layer — it works from the same stream but summarizes across time. The raw subscription shows you the sequence of individual events; Network Stats shows you the derived pattern over hours or days. Both are downstream of the same observer packet.
+
+When something looks off in either surface, the raw stream is where you go to verify. If Live Packets shows a node at +2 dB and you want to confirm that's real and not a display glitch, `mosquitto_sub` will show you the identical reading arriving from the observer directly.
+
+## Checking the broker log
+
+The packet stream tells you what the mesh is reporting. The broker log tells you whether your observer is connecting and publishing at all.
+
+On a systemd system running Mosquitto, the broker's own log is visible with:
+
+```bash path=null start=null
+journalctl -u mosquitto -f
+```
+
+Connection events, authentication failures, and client disconnections appear here. If your observer connects and disconnects repeatedly, it will show up as a sequence of connection and disconnection entries — often a sign of network instability between the observer and the broker, or a credential problem. If Waev's subscriber account drops and reconnects, that also appears here.
+
+The broker log and the packet stream are complementary: one tells you the health of the transport layer, the other tells you what the mesh is actually sending. For the transport configuration side — TLS, password files, ACL grants — [Setting Up Mosquitto for MeshCore](/blog/setting-up-mosquitto-for-meshcore/) covers the setup in detail. For what the observer is, and why it's Waev's only source of mesh data, [what a mesh network observer actually does](/blog/what-is-a-mesh-network-observer/) covers the model.
+
+Understanding what's in the stream — and being able to read it directly when you need to — is the difference between using Waev as a display and understanding the network it's measuring. The display shows you the summary; the stream shows you the source.
+
+{/* ILLUSTRATION PROMPT: A warm flat illustration of an open radio operator's logbook — a ruled pad with handwritten columnar entries in neat ballpoint pen: timestamps in the left column, abbreviated callsigns or node names in the center, signal reports in the right. The last two or three lines are freshly written, the pen resting diagonally across the bottom of the page. Warm late-afternoon light angled from one side, casting a long soft shadow from the pen. Cream paper, earthy ink, no figures. House style: hand-painted, calm, grounded. The image should evoke the act of methodical data capture — not a dramatic scene, just the record itself. */}
