@@ -23,7 +23,7 @@ import Figure from "../../components/Figure.astro";
 import SignalLinkMarginStack from "../../components/viz/signal-LinkMarginStack.astro";
 import SignalSNRScale from "../../components/viz/signal-SNRScale.astro";
 
-Part 3 of the *measure your mesh* series. Earlier installments covered [SNR and hop count](/blog/reading-the-signal/) and [why packets disappear](/blog/why-mesh-packets-disappear/). This one covers link margin: the number that tells you how much headroom you actually have.
+Part 3 of the *measure your mesh* series. Earlier installments covered [SNR and hop count](/blog/measuring-snr-on-a-lora-mesh/) and [why packets disappear](/blog/why-mesh-packets-disappear/). This one covers link margin: the number that tells you how much headroom you actually have.
 
 <div class="callout">
 <p><strong>In short.</strong> Link margin is the difference between your received signal level and the minimum your receiver needs to decode. You can estimate it from your SNR reading plus the spreading factor's demodulation floor. For a LoRa mesh link you plan to depend on, target 15–20 dB of margin above the demodulation floor. Below 10 dB, the link is weather-dependent.</p>
@@ -90,7 +90,7 @@ Most link failures aren't sudden. They're the result of margin that was always t
 
 This is why SNR history matters. A link showing +8 dB SNR consistently over six months is very different from one that has been trending from +14 dB down to +8 dB over the same period. The trend is the signal; the snapshot is just a reading.
 
-Waev's Outpost view shows per-node SNR history over days and weeks. The [baseline work described in the grid-down post](/blog/when-the-grid-goes-down/) is about building enough history to see these trends before they become failures.
+Waev's Outpost view shows per-node SNR history over days and weeks. The [baseline work described in the grid-down post](/blog/plan-your-grid-down-comms-now/) is about building enough history to see these trends before they become failures.
 
 ## A practical measurement workflow
 

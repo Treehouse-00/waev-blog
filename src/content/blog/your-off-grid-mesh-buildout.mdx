@@ -67,7 +67,7 @@ One well-placed observer, typically at the main house or whichever site has the 
 
 The MQTT broker is the part of this stack that you own completely. Mosquitto on a Raspberry Pi or a small VPS — or any other standard MQTT server — is all you need. Your observer sends to it; Waev subscribes to it read-only. If you stop using Waev, the broker keeps running and the data stays yours. If your internet connection goes down, the mesh keeps routing packets — it just doesn't update Waev until the connection comes back.
 
-This architecture is deliberate. [Waev's bring-your-own-broker model](/blog/bring-your-own-broker/) means the data never leaves infrastructure you control. You hold the keys, and what goes onto the map is what your observer actually heard — not an estimate, not a guess, not topology inferred from node names. [Evidence-based topology](/blog/how-waev-reads-your-mesh/) means the Live Map shows you only what can be verified from your enrolled observer.
+This architecture is deliberate. [Waev's bring-your-own-broker model](/blog/can-waev-write-to-your-broker/) means the data never leaves infrastructure you control. You hold the keys, and what goes onto the map is what your observer actually heard — not an estimate, not a guess, not topology inferred from node names. [Evidence-based topology](/blog/how-waev-reads-your-mesh/) means the Live Map shows you only what can be verified from your enrolled observer.
 
 ## What to expect from your first week
 

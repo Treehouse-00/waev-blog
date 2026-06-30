@@ -67,7 +67,7 @@ A baseline built over 30 days before an activation gives you:
   <GridgoneHealthBaseline />
 </Figure>
 
-The baseline answers the served agency's question with data: these nodes were active as of yesterday, these links are healthy at +11 dB, this relay's packet rate is 45/hour and has been stable for three weeks. That's a health report you can hand to a served agency, not an estimate. For more on building and reading a 30-day baseline, see [what to watch when the grid goes down](/blog/when-the-grid-goes-down/).
+The baseline answers the served agency's question with data: these nodes were active as of yesterday, these links are healthy at +11 dB, this relay's packet rate is 45/hour and has been stable for three weeks. That's a health report you can hand to a served agency, not an estimate. For more on building and reading a 30-day baseline, see [what to watch when the grid goes down](/blog/plan-your-grid-down-comms-now/).
 
 ## What to add to your go-kit
 
@@ -77,7 +77,7 @@ For a CERT or ARES EMCOMM go-kit with Waev integration, the minimum additions to
 
 **One observer node.** This is a MeshCore-compatible device running gateway firmware that connects to your MQTT broker over TCP/IP. Positioned at your operations center, where internet access is available. This is the bridge between the radio mesh and the Live Map. Without it, the mesh operates but is not visible.
 
-**A broker.** Self-hosted (Mosquitto on a Raspberry Pi or a VPS) or third-party. The observer publishes to the broker; Waev subscribes and reads. The data stays with you — [bring-your-own-broker](/blog/bring-your-own-broker/) means you hold the keys. A served agency asking about data custody gets a simple answer: the data is on your broker.
+**A broker.** Self-hosted (Mosquitto on a Raspberry Pi or a VPS) or third-party. The observer publishes to the broker; Waev subscribes and reads. The data stays with you — [bring-your-own-broker](/blog/can-waev-write-to-your-broker/) means you hold the keys. A served agency asking about data custody gets a simple answer: the data is on your broker.
 
 **A Waev account connected to the broker.** This is the analytics layer. Connect it before any exercise and start the baseline. By activation day, you'll have weeks of context.
 

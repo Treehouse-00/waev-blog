@@ -47,7 +47,7 @@ Distinguishing this from scenario 1: check the node's history in Outpost. A node
 
 **3. Opted-out privacy marker.** The node name contains ⛔, 🛑, or 🚫. When a packet from that node reaches the ingest edge, it is discarded before any processing — before any record is created, before topology is drawn, before statistics are counted. The node does not appear anywhere in Waev.
 
-If you added the marker intentionally (a household member's personal device, a node you've chosen to exclude), this is correct behavior. If you added it accidentally while setting up a node name, removing the marker and rebooting the node will cause it to start appearing. For more on how opt-out works and what gets dropped vs. scrubbed, see [what Waev chooses not to know](/blog/what-we-choose-not-to-know/).
+If you added the marker intentionally (a household member's personal device, a node you've chosen to exclude), this is correct behavior. If you added it accidentally while setting up a node name, removing the marker and rebooting the node will cause it to start appearing. For more on how opt-out works and what gets dropped vs. scrubbed, see [what Waev chooses not to know](/blog/what-a-mesh-monitor-refuses/).
 
 **4. Observer not publishing to the broker.** The observer is on the mesh, hearing RF traffic, but its MQTT connection to your broker is down. It could be an internet outage, a credential change, a broker restart that the observer hasn't reconnected from, or a TLS certificate issue. The observer hears the node; it just can't forward the observation.
 

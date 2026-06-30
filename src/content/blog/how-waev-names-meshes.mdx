@@ -78,7 +78,7 @@ Two fields on the `MeshStability` record govern this.
 
 `pendingNameTicks` applies the same logic to names. When a new name challenger appears, meaning a different gazetteer polygon now covers the centroid, MeshBuilder starts counting. The challenger must win for a sustained run of consecutive ticks before the committed name changes. A cluster whose footprint briefly touches a neighboring polygon at midnight does not wake up with a new name.
 
-The result is stable community identity. You can track the signal quality of "Portland Metro" across weeks without the label swapping to "Beaverton" and back. For reading those signal patterns over time, [Reading the Signal](/blog/reading-the-signal/) covers what SNR and link quality tell you about a specific mesh.
+The result is stable community identity. You can track the signal quality of "Portland Metro" across weeks without the label swapping to "Beaverton" and back. For reading those signal patterns over time, [Reading the Signal](/blog/measuring-snr-on-a-lora-mesh/) covers what SNR and link quality tell you about a specific mesh.
 
 ## Fallbacks: the cluster at the edge of the map
 
