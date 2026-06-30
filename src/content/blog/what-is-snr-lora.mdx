@@ -71,7 +71,7 @@ The zone boundaries in the diagram are practical rules of thumb, not hard physic
 - **Unreliable (−5 to 0 dB):** Only functions in ideal conditions. Treat as intermittent.
 - **At the noise floor (below −5 dB):** The radio may decode it occasionally, but the mesh should not route through it.
 
-The +7 dB figure as a working target appears in Waev's Network Stats watchlist logic: paths consistently below +7 dB get flagged as marginal. It's the same figure used in the [Reading the Signal](/blog/reading-the-signal/) post, which covers how to use SNR alongside hop count to assess overall path quality.
+The +7 dB figure as a working target appears in Waev's Network Stats watchlist logic: paths consistently below +7 dB get flagged as marginal. It's the same figure used in the [Reading the Signal](/blog/measuring-snr-on-a-lora-mesh/) post, which covers how to use SNR alongside hop count to assess overall path quality.
 
 ## SNR vs. RSSI: which number to use
 
@@ -87,6 +87,6 @@ The reverse — low RSSI, positive SNR — is LoRa's sweet spot. A signal at −
 
 For diagnosing mesh health, SNR is the more useful number. RSSI helps explain why SNR is what it is — but SNR is what determines whether the packet arrives.
 
-[When the grid goes down](/blog/when-the-grid-goes-down/) covers the practical work of using SNR trends to build a pre-event network health baseline.
+[When the grid goes down](/blog/plan-your-grid-down-comms-now/) covers the practical work of using SNR trends to build a pre-event network health baseline.
 
 {/* ILLUSTRATION PROMPT: A hand-painted close-up of an analog meter dial in warm workshop light. The needle points upward, rising above a softly textured fuzzy band that represents the noise zone — rendered as a blurred warm-ochre region near the bottom of the dial face. The dial background is cream or off-white, the needle warm orange, the whole scene intimate and workbench-scale. No mesh overlays, no digital elements, no LEDs. One simple metaphor: a signal rising above background noise, rendered as a measurement instrument. House style: painterly, earthy, calm. */}

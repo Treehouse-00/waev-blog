@@ -63,7 +63,7 @@ Separation becomes worth considering when you're optimizing for coverage and rel
 
 ## The data flow either way
 
-Whether the gateway is dedicated or shared, the data path is the same: the gateway node publishes MQTT records to [your broker](/blog/bring-your-own-broker/), Waev subscribes, and the map is built from what enrolled observers report.
+Whether the gateway is dedicated or shared, the data path is the same: the gateway node publishes MQTT records to [your broker](/blog/can-waev-write-to-your-broker/), Waev subscribes, and the map is built from what enrolled observers report.
 
 <Figure caption="Data lineage: whether gateway and repeater are one node or two, the observation path to your MQTT broker stays the same. The broker is always yours; Waev subscribes read-only.">
   <ByobDataFlow />

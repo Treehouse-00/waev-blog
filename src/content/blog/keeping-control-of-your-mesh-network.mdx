@@ -34,11 +34,11 @@ When a community mesh decides to add analytics or bridging, the standard industr
 
 They own the broker. They hold the data. They decide how long to keep it, who has access to it, and what happens if their servers go down.
 
-For a network built specifically for resilience, that architecture is a single point of failure that exists outside the community's control. If the vendor shuts down, pivots to a new business model, or simply suffers an outage, the community's routing breaks. [What you choose not to know](/blog/what-we-choose-not-to-know/) about your own network becomes what a third party chooses to know about it.
+For a network built specifically for resilience, that architecture is a single point of failure that exists outside the community's control. If the vendor shuts down, pivots to a new business model, or simply suffers an outage, the community's routing breaks. [What you choose not to know](/blog/what-a-mesh-monitor-refuses/) about your own network becomes what a third party chooses to know about it.
 
 ## The Bring-Your-Own-Broker architecture
 
-Waev takes a deliberately inverted approach. [Bring your own broker (BYOB)](/blog/bring-your-own-broker/) isn't just a configuration option; it is the only way Waev operates. 
+Waev takes a deliberately inverted approach. [Bring your own broker (BYOB)](/blog/can-waev-write-to-your-broker/) isn't just a configuration option; it is the only way Waev operates. 
 
 You stand up an MQTT broker — Mosquitto running on a Raspberry Pi in a barn, or a small virtual private server (VPS) you rent yourself. Your MeshCore observers point to *your* broker. You create a specific, read-only credential for Waev. Waev connects as a subscriber, reading the packet stream to build the Live Map and calculate Network Stats.
 

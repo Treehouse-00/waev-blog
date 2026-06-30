@@ -50,7 +50,7 @@ The order matters. The opt-out check runs before the companion device scrub, bef
 
 The most common use cases are personal or family devices that happen to be on the mesh — a companion app on a phone, a handheld carried by someone who did not sign up to be logged — and infrastructure nodes you are testing or running in a sensitive context.
 
-For personal companion devices, Waev already scrubs identity at the ingest edge by default (name and device type are nullified, only anonymous signal metadata is kept). If you want a stronger guarantee — no record at all, no signal metadata, no anything — a privacy marker on the companion's node name achieves that. [What we choose not to know](/blog/what-we-choose-not-to-know/) covers both gates in full detail.
+For personal companion devices, Waev already scrubs identity at the ingest edge by default (name and device type are nullified, only anonymous signal metadata is kept). If you want a stronger guarantee — no record at all, no signal metadata, no anything — a privacy marker on the companion's node name achieves that. [What we choose not to know](/blog/what-a-mesh-monitor-refuses/) covers both gates in full detail.
 
 For infrastructure nodes, the marker is a deliberate choice about visibility. A test node you are moving around to check coverage might carry a marker while you are working with it and lose the marker once it is installed permanently. A repeater at a private location might carry a marker permanently.
 
@@ -58,6 +58,6 @@ For infrastructure nodes, the marker is a deliberate choice about visibility. A 
 
 A privacy marker in a MeshCore node name is a convention that Waev checks at its own ingest edge. It does not affect how MeshCore's firmware broadcasts the node's packets on the mesh. Other nodes on the mesh still hear those packets; other tools connected to your broker still receive them. The marker controls only what Waev does with the packet when it arrives.
 
-It also does not change what your MQTT broker stores, if your broker retains messages. Your broker stores whatever the observer publishes; the marker operates downstream of that, at Waev's ingest, not at the broker. This is one of the structural consequences of the [bring-your-own-broker model](/blog/bring-your-own-broker/): your broker and Waev's ingest are separate layers, each with their own controls.
+It also does not change what your MQTT broker stores, if your broker retains messages. Your broker stores whatever the observer publishes; the marker operates downstream of that, at Waev's ingest, not at the broker. This is one of the structural consequences of the [bring-your-own-broker model](/blog/can-waev-write-to-your-broker/): your broker and Waev's ingest are separate layers, each with their own controls.
 
 {/* ILLUSTRATION PROMPT: A warm flat illustration of a small hand-written name tag or address label lying flat on a wooden surface. One of the privacy emoji characters (⛔ or 🚫) is written on it in pen, cleanly. Simple, quiet, direct. Warm wood tones, cream paper, soft afternoon light. */}
