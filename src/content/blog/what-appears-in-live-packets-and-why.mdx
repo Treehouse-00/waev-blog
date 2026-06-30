@@ -41,7 +41,7 @@ Each row in Live Packets carries exactly five pieces of data.
 
 **Source node name** is what the sending node has named itself. You set this name when you configure a node. Giving each relay a descriptive, location-specific name — `valley-relay`, `hilltop-main`, `club-gw-n` — makes filtering Live Packets immediately useful.
 
-**SNR** is Signal-to-Noise Ratio at your observer the moment this packet arrived. It measures how cleanly the signal separated from the noise floor at that location. The number reflects the RF path between the source and your observer — not between source and destination, not across the whole mesh. A packet that traveled 4 hops before reaching your observer carries the SNR of the last hop, the one your observer actually heard. For the full SNR interpretation framework, see [reading the signal](/blog/reading-the-signal/).
+**SNR** is Signal-to-Noise Ratio at your observer the moment this packet arrived. It measures how cleanly the signal separated from the noise floor at that location. The number reflects the RF path between the source and your observer — not between source and destination, not across the whole mesh. A packet that traveled 4 hops before reaching your observer carries the SNR of the last hop, the one your observer actually heard. For an SNR primer, see [what SNR means in LoRa](/blog/what-is-snr-lora/).
 
 **Hop count** is how many radio legs the packet traveled. One means your observer heard the source directly. Two means it passed through one relay. The hop count climbs as the packet moves farther through the mesh before reaching your observer — it is a measure of routing distance, not physical distance.
 
@@ -59,7 +59,7 @@ Live Packets does not show everything your observer hears. Three things happen b
 
 **Companion devices are anonymised.** When a MeshCore companion app — a personal phone running the app — is active on your mesh, its ADVERTs reach your observer just like a relay's. Waev identifies these by device type and removes the identity fields before storing anything. What survives is the signal record: SNR, hop count, and timing. You will see the signal in aggregate counts in Network Stats, but the device does not appear as a named entry in Live Packets.
 
-**Observer enrollment affects what gets in.** An observer that is not enrolled with Waev can still publish to your broker, and those packets may arrive at the broker — but they don't come through the verified pipeline that Live Packets draws from. Full enrollment means Waev has confirmed the observer's identity against your broker credentials. This is also why topology edges on the Live Map require an enrolled observer: without that verification, the packet cannot prove where it came from.
+**Observer enrollment and placement set the third boundary.** The Live Map draws topology edges only from enrolled observers — without a verified source, an edge cannot be proved. The same enrolled observers define the ceiling of what Live Packets can show: what sits outside their RF reach cannot appear in the stream. A node on the air but beyond all enrolled observers will be absent from both.
 
 These three filters are not gaps in coverage. They are choices about what goes into the record. A tool that shows everything, including unverifiable and opted-out signals, produces a map you can't trust. A tool that shows only what it can verify produces a smaller picture that is accurate.
 
