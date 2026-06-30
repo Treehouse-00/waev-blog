@@ -1,0 +1,235 @@
+---
+/**
+ * hiw-IngestGate — shows the three paths a packet can take at Waev's
+ * ingest edge: (1) regular node from enrolled observer passes fully,
+ * (2) privacy-marked node is dropped entirely, (3) companion device
+ * is anonymised to signal-only. Used in "What Appears in Live Packets."
+ * No client JS. Theme-aware via CSS custom properties.
+ */
+---
+
+<figure
+  class="ingest-gate"
+  aria-label="Three packet paths at Waev's ingest gate. Path one: a regular node from an enrolled observer — all five Live Packets fields appear. Path two: a privacy-marked node — dropped at the gate, nothing stored. Path three: a companion device — anonymised to signal only, no identity fields."
+>
+  <div class="ig-wrap">
+
+    <!-- Header -->
+    <div class="ig-header" aria-hidden="true">
+      <span class="ig-col-source">Packet arriving</span>
+      <span class="ig-col-gate">Ingest gate</span>
+      <span class="ig-col-result">What appears in Live Packets</span>
+    </div>
+
+    <!-- Row 1: regular node, enrolled observer -->
+    <div class="ig-row ig-row-pass">
+      <div class="ig-source">
+        <span class="ig-badge ig-badge-advert">ADVERT</span>
+        <span class="ig-node-name">ridge-relay</span>
+        <span class="ig-detail">from enrolled observer</span>
+      </div>
+      <div class="ig-gate">
+        <span class="ig-gate-icon" aria-label="check — passes">✓</span>
+        <span class="ig-gate-label ig-pass-label">passes</span>
+      </div>
+      <div class="ig-result">
+        <div class="ig-fields ig-fields-pass">
+          <span class="ig-field">time</span>
+          <span class="ig-field">type</span>
+          <span class="ig-field">node</span>
+          <span class="ig-field">SNR</span>
+          <span class="ig-field">hops</span>
+        </div>
+        <span class="ig-result-note ig-pass-note">All 5 fields — appears in full</span>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="ig-divider" role="separator"></div>
+
+    <!-- Row 2: privacy-marked node -->
+    <div class="ig-row ig-row-drop">
+      <div class="ig-source">
+        <span class="ig-badge ig-badge-advert">ADVERT</span>
+        <span class="ig-node-name">⛔ ridge-relay</span>
+        <span class="ig-detail">privacy-marked node name</span>
+      </div>
+      <div class="ig-gate">
+        <span class="ig-gate-icon ig-drop-icon" aria-label="cross — dropped">✕</span>
+        <span class="ig-gate-label ig-drop-label">dropped</span>
+      </div>
+      <div class="ig-result">
+        <div class="ig-fields ig-fields-drop">
+          <span class="ig-field ig-field-blank">—</span>
+          <span class="ig-field ig-field-blank">—</span>
+          <span class="ig-field ig-field-blank">—</span>
+          <span class="ig-field ig-field-blank">—</span>
+          <span class="ig-field ig-field-blank">—</span>
+        </div>
+        <span class="ig-result-note ig-drop-note">Not stored, not counted</span>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="ig-divider" role="separator"></div>
+
+    <!-- Row 3: companion device -->
+    <div class="ig-row ig-row-scrub">
+      <div class="ig-source">
+        <span class="ig-badge ig-badge-advert">ADVERT</span>
+        <span class="ig-node-name">personal-device-42</span>
+        <span class="ig-detail">MeshCore companion app</span>
+      </div>
+      <div class="ig-gate">
+        <span class="ig-gate-icon ig-scrub-icon" aria-label="tilde — anonymised">≈</span>
+        <span class="ig-gate-label ig-scrub-label">scrubbed</span>
+      </div>
+      <div class="ig-result">
+        <div class="ig-fields ig-fields-scrub">
+          <span class="ig-field">time</span>
+          <span class="ig-field ig-field-blank">—</span>
+          <span class="ig-field ig-field-blank">—</span>
+          <span class="ig-field">SNR</span>
+          <span class="ig-field">hops</span>
+        </div>
+        <span class="ig-result-note ig-scrub-note">Signal only — identity fields removed</span>
+      </div>
+    </div>
+
+  </div>
+</figure>
+
+<style>
+  .ingest-gate {
+    margin: 1.5rem 0;
+    font-family: inherit;
+  }
+
+  .ig-wrap {
+    background: var(--surface-1, #fff);
+    border: 1px solid var(--border, #d9d0c4);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .ig-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--surface-2, #f8f5f0);
+    border-bottom: 1px solid var(--border, #d9d0c4);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-muted, #7a6f62);
+  }
+  .ig-col-gate { text-align: center; }
+  .ig-col-result { text-align: right; }
+
+  /* Rows */
+  .ig-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+  }
+  .ig-divider {
+    height: 1px;
+    background: var(--border-subtle, #ece8e1);
+    margin: 0 1rem;
+  }
+
+  /* Source column */
+  .ig-source {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .ig-badge {
+    display: inline-block;
+    font-family: var(--mono, monospace);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    width: fit-content;
+  }
+  .ig-badge-advert {
+    background: var(--accent-subtle, #eef4e6);
+    border: 1px solid var(--border-accent, #c6d9b0);
+    color: var(--text-accent, #5a6e4a);
+  }
+  .ig-node-name {
+    font-family: var(--mono, monospace);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text, #2d2620);
+  }
+  .ig-detail {
+    font-size: 0.68rem;
+    color: var(--text-muted, #7a6f62);
+  }
+
+  /* Gate column */
+  .ig-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    min-width: 60px;
+  }
+  .ig-gate-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--accent-light, #6a9e3a);
+    font-weight: 700;
+  }
+  .ig-drop-icon  { color: #c04040; }
+  .ig-scrub-icon { color: #b07830; font-size: 1.4rem; }
+  .ig-gate-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .ig-pass-label  { color: var(--accent-light, #6a9e3a); }
+  .ig-drop-label  { color: #c04040; }
+  .ig-scrub-label { color: #b07830; }
+
+  /* Result column */
+  .ig-result {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
+  }
+  .ig-fields {
+    display: flex;
+    gap: 0.3rem;
+  }
+  .ig-field {
+    font-family: var(--mono, monospace);
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    background: var(--accent-subtle, #eef4e6);
+    border: 1px solid var(--border-accent, #c6d9b0);
+    color: var(--text-accent, #5a6e4a);
+  }
+  .ig-field-blank {
+    background: var(--surface-2, #f0ece6);
+    border-color: var(--border-subtle, #ece8e1);
+    color: var(--text-muted, #7a6f62);
+    opacity: 0.6;
+  }
+  .ig-result-note {
+    font-size: 0.68rem;
+    color: var(--text-muted, #7a6f62);
+  }
+  .ig-pass-note  { color: var(--accent-light, #6a9e3a); }
+  .ig-drop-note  { color: #c04040; }
+  .ig-scrub-note { color: #b07830; }
+</style>

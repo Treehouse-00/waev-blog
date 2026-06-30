@@ -1,0 +1,84 @@
+---
+title: "What Appears in Live Packets and Why"
+description: "How Waev's MeshCore live packet viewer works: the five fields in each row, what the ingest edge adds, and why you see some packets but not others."
+date: 2026-06-23
+tags: ["how-it-works", "signal"]
+hero:
+  src: "/hero-what-appears-in-live-packets-and-why.jpg"
+  alt: "A warm hand-painted overhead view of a shallow wooden compartment tray with several small divided sections, each holding a different type of small seed or fastener, sorted and still in warm afternoon light."
+faq:
+  - q: "Why do some nodes appear in Live Packets but not on the Live Map?"
+    a: "Live Packets shows everything that cleared the ingest gate — any packet from any source that reached your observer and passed the privacy filter. The Live Map draws topology edges, which require an observation from an enrolled observer with a complete hop record. A node can reach Live Packets via a path where the hops could not be verified, or where the observer was not fully enrolled, and not contribute a map edge."
+  - q: "What are the five fields in every Live Packets row?"
+    a: "Each row shows: timestamp (when the packet arrived at your observer), packet type (ADVERT, message, ACK, or other), source node name, SNR in dB (signal quality at the observer), and hop count (how many radio legs from source to observer). These five fields answer when, what, who, how clearly, and how far."
+  - q: "What happens to packets from privacy-marked nodes?"
+    a: "A node whose name contains a privacy marker — the symbols ⛔, 🛑, or 🚫 — is dropped at the ingest edge before anything is stored. The packet does not appear in Live Packets, is not counted in Network Stats, and is not stored. The check happens before any other processing."
+  - q: "What happens to packets from MeshCore companion apps?"
+    a: "Companion app packets — from personal MeshCore devices — are anonymised at the ingest edge. Identity fields (name and device type) are removed. The signal record survives: SNR, hop count, and timing. These appear in the anonymous signal statistics in Network Stats but not as named entries in Live Packets."
+---
+
+import Figure from "../../components/Figure.astro";
+import LivePacketRow from "../../components/viz/primer-LivePacketRow.astro";
+import IngestGate from "../../components/viz/hiw-IngestGate.astro";
+
+Open Live Packets on a fresh Waev session and you'll see a stream of rows arriving in real time. There's a timestamp, a badge showing the packet type, a node name, an SNR reading, a hop count. Each row looks simple. But each one is the end of a pipeline that started on a radio antenna somewhere in your mesh, passed through an MQTT broker you run, crossed a verification gate, and landed on your screen.
+
+Understanding what each field means — and why some packets appear while others don't — is what moves you from watching Live Packets to reading it.
+
+<div class="callout">
+<p><strong>In short.</strong> Waev's MeshCore live packet viewer — Live Packets — shows every packet that cleared the ingest gate: privacy-marked nodes are dropped before storage, companion devices are anonymised to signal-only, and everything else appears as a row with five fields. Those five fields answer when the packet arrived, what type it was, which node sent it, how clean the signal was, and how many hops it traveled.</p>
+</div>
+
+## The five fields and what they represent
+
+Each row in Live Packets carries exactly five pieces of data.
+
+<Figure caption="One ADVERT from hilltop-relay: five labeled fields, five questions answered. Packet type tells you what kind of message arrived. Node name tells you who sent it. SNR tells you how clean the signal was at your observer. Hops tells you how far it traveled. Timestamp tells you when.">
+  <LivePacketRow />
+</Figure>
+
+**Packet type** (the badge) is what kind of message this was. ADVERT is a periodic self-announcement from a MeshCore node — the mesh equivalent of a beacon. It does not require a message exchange to trigger, so ADVERTs are the most common packet type in a healthy network. A different type, like a message acknowledgment or a routed packet, carries different information about what just happened on the mesh.
+
+**Source node name** is what the sending node has named itself. You set this name when you configure a node. Giving each relay a descriptive, location-specific name — `valley-relay`, `hilltop-main`, `club-gw-n` — makes filtering Live Packets immediately useful.
+
+**SNR** is Signal-to-Noise Ratio at your observer the moment this packet arrived. It measures how cleanly the signal separated from the noise floor at that location. The number reflects the RF path between the source and your observer — not between source and destination, not across the whole mesh. A packet that traveled 4 hops before reaching your observer carries the SNR of the last hop, the one your observer actually heard. For an SNR primer, see [what SNR means in LoRa](/blog/what-is-snr-lora/).
+
+**Hop count** is how many radio legs the packet traveled. One means your observer heard the source directly. Two means it passed through one relay. The hop count climbs as the packet moves farther through the mesh before reaching your observer — it is a measure of routing distance, not physical distance.
+
+**Timestamp** is when the packet arrived at your observer. Because Waev processes packets from your broker as they arrive, the timestamp reflects the observer's local time, not the time the packet was originally sent from the source node.
+
+## Why not everything appears
+
+Live Packets does not show everything your observer hears. Three things happen before a packet reaches your screen.
+
+<Figure caption="Three paths at Waev's ingest edge. A regular node from an enrolled observer passes fully with all five fields. A privacy-marked node is dropped entirely — nothing stored. A companion device is anonymised: signal fields survive, identity fields do not.">
+  <IngestGate />
+</Figure>
+
+**Privacy-marked nodes are dropped.** If the source node's name contains one of the three privacy markers — ⛔, 🛑, or 🚫 — the packet is discarded before any other processing. Nothing is stored, nothing appears in Live Packets, nothing gets counted. This check runs first.
+
+**Companion devices are anonymised.** When a MeshCore companion app — a personal phone running the app — is active on your mesh, its ADVERTs reach your observer just like a relay's. Waev identifies these by device type and removes the identity fields before storing anything. What survives is the signal record: SNR, hop count, and timing. You will see the signal in aggregate counts in Network Stats, but the device does not appear as a named entry in Live Packets.
+
+**Observer enrollment and placement set the third boundary.** The Live Map draws topology edges only from enrolled observers — without a verified source, an edge cannot be proved. The same enrolled observers define the ceiling of what Live Packets can show: what sits outside their RF reach cannot appear in the stream. A node on the air but beyond all enrolled observers will be absent from both.
+
+These three filters are not gaps in coverage. They are choices about what goes into the record. A tool that shows everything, including unverifiable and opted-out signals, produces a map you can't trust. A tool that shows only what it can verify produces a smaller picture that is accurate.
+
+## What Live Packets tells you that the map doesn't
+
+The Live Map and Live Packets show different slices of the same stream.
+
+The map draws topology: verified edges, authenticated paths. It answers the question "how is this network connected?" But it does not appear until an observation clears all the filters — enrolled observer, complete hop record, no privacy flags. A node that just came online may appear in Live Packets before it appears on the map, because signal data is faster than topology verification.
+
+Live Packets is also the place to see unusual packet types. An ADVERT flood. An acknowledgment from a node that should have gone offline. A packet type you don't recognize. These don't necessarily change the map, but they are present in the stream and searchable.
+
+This is why tinkerers in evaluation find Live Packets more immediately useful than the map: it shows the raw activity of the mesh, without waiting for topology to stabilize. The map is what you trust when you're running operations. Live Packets is what you watch when you're still figuring out what your network is doing.
+
+## The mechanism behind the stream
+
+Your enrolled observer listens on the mesh and publishes every heard packet to your MQTT broker. Waev subscribes to that broker — the architecture is explained in full in [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/). What Live Packets shows you is the privacy-filtered, verified subset of what your observer heard.
+
+The observer is the constraint. An observer in a central location hears a high fraction of the network's traffic. An observer in a corner hears only what reaches that corner. For a deep dive on the observer's role specifically, see [what a mesh network observer is](/blog/what-is-a-mesh-network-observer/).
+
+What doesn't appear in Live Packets is either opted out (privacy markers, companion devices) or beyond your observer's RF reach. That gap — what your observer cannot hear — is the most useful thing Live Packets can show you, because it points directly to where your coverage ends.
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted overhead view of a small shallow wooden compartment sorting tray lying flat on a surface — the kind used to organize seeds or small hardware. Several rectangular compartments each hold a different small item: some hold tiny round seeds in warm amber, some hold small brass fasteners, one or two are empty. Soft diffused afternoon light from one side. Aged wood grain, simple clean composition. No technology. Painterly texture, earthy palette — warm wood, cream paper lining, small warm-colored items. */}
