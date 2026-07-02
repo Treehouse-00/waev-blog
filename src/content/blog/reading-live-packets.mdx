@@ -44,7 +44,7 @@ Five types account for nearly everything you will see in a running MeshCore mesh
   <LivepacketsPacketTypes />
 </Figure>
 
-**ADVERT** — a node announcing its identity to the mesh. Every repeater sends an ADVERT on a schedule (the interval is configurable in firmware), and companion devices send one when they first join. ADVERT packets dominate most streams, especially on a network with several active repeaters. They are how nodes make themselves known, and a steady cadence of ADVERTs from a given relay is a reliable indicator that relay is up and hearing the mesh.
+**ADVERT** — a node announcing its identity to the mesh. Every repeater sends an ADVERT on a schedule (the interval is configurable in firmware via `set advert.interval`); companion devices can send one to announce themselves, typically on demand from the app rather than automatically. ADVERT packets dominate most streams on networks with several active repeaters. They are how nodes make themselves known, and a steady cadence of ADVERTs from a given relay is a reliable indicator that relay is up and hearing the mesh.
 
 **MSG** — an encrypted direct message between two contacts. When someone sends a private message on the mesh, you see it as MSG from the sender's node. The content is encrypted end-to-end; what Live Packets shows is the fact of transmission — who sent it, when, at what SNR, and how many hops it took to reach your observer.
 
