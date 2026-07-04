@@ -1,0 +1,83 @@
+name: Growth OS — monthly metrics fetch
+
+# The CI half of the analytics loop (growth/CADENCE.md §3.4). It runs the data
+# pull that needs secrets, so the secrets stay in GitHub Actions and never
+# reach the Claude environment. It:
+#   1. runs scripts/pull-growth-metrics.mjs (GSC + Cloudflare + optional
+#      Perplexity) — dependency-free Node, degrades gracefully on any missing
+#      secret or plan limit (records null + a data-gap, never a fake number);
+#   2. publishes the resulting _metrics-<YYYY-MM>.json to the orphan
+#      `growth-metrics` branch (NOT main — so deploy.yml is never triggered).
+# One hour later the secret-free `waev-analytics-reporter` Claude routine
+# (RUNBOOK §3) reads that JSON and writes the report + any calendar PR.
+#
+# Repo secrets (Settings -> Secrets and variables -> Actions). All optional —
+# a missing one just becomes a data-gap in the metrics file:
+#   GSC_SERVICE_ACCOUNT_JSON  — Google service-account key JSON (whole file);
+#                               Search Console API enabled, read on waev.app.
+#   CF_ANALYTICS_TOKEN        — Cloudflare token, Zone Analytics:Read on waev.app.
+#   CF_ZONE_ID                — Cloudflare zone id for waev.app.
+#   PERPLEXITY_API_KEY        — (optional) Perplexity sonar key for the AEO probe.
+# (CF_ACCOUNT_ID is not needed for the zone-analytics GraphQL pulls used here.)
+
+on:
+  schedule:
+    # 15:00 UTC on the 1st — one hour before the analytics routine reads it.
+    - cron: "0 15 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write # push the orphan growth-metrics data branch
+
+concurrency:
+  group: growth-metrics
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Pull metrics
+        id: pull
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          CF_ANALYTICS_TOKEN: ${{ secrets.CF_ANALYTICS_TOKEN }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
+          METRICS_OUT: ${{ runner.temp }}/metrics.json
+        run: |
+          node scripts/pull-growth-metrics.mjs | tee "$RUNNER_TEMP/pull.log"
+          echo "month=$(grep -oP '^report_month=\K.*' "$RUNNER_TEMP/pull.log")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to the growth-metrics data branch
+        env:
+          MONTH: ${{ steps.pull.outputs.month }}
+        run: |
+          set -euo pipefail
+          test -n "$MONTH"
+          test -f "$RUNNER_TEMP/metrics.json"
+          git config user.email "growth-os@waev.app"
+          git config user.name "Waev Growth OS metrics bot"
+          # growth-metrics is an ORPHAN branch holding only metrics JSONs — it
+          # shares no history with main and is never merged.
+          git fetch origin growth-metrics || true
+          if git rev-parse --verify origin/growth-metrics >/dev/null 2>&1; then
+            git checkout -B growth-metrics origin/growth-metrics
+          else
+            git checkout --orphan growth-metrics
+            git rm -rf . >/dev/null 2>&1 || true
+          fi
+          cp "$RUNNER_TEMP/metrics.json" "_metrics-$MONTH.json"
+          git add "_metrics-$MONTH.json"
+          if git diff --cached --quiet; then
+            echo "No metrics change for $MONTH; nothing to publish."
+          else
+            git commit -m "metrics: $MONTH growth data pull"
+            git push origin growth-metrics
+          fi

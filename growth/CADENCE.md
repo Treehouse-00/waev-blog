@@ -164,15 +164,23 @@ The orchestrating run-system reads this section to register jobs.
   PR with only that fix.
 - gate: `none` for the report; `human-merge` for any PR it opens.
 
-### 3.4 Monthly — Analytics report
+### 3.4 Monthly — Analytics report (fetch in CI, analysis by the agent)
 - brief: `./briefs/analytics-reporter.md`
-- cron: `0 15 1 * *`  (1st of month, 15:00 UTC) — matches the 28-day window in
-  `./MEASUREMENT.md`; its T1–T7 thresholds are written month-over-month.
-- trigger: monthly. Pull traffic / ranking / answer-engine-citation metrics per
-  `./MEASUREMENT.md`, then evaluate its decision thresholds (T1–T7).
+- cron: fetch `0 15 1 * *`; analysis `0 16 1 * *` (1st of month, UTC) — matches
+  the 28-day window in `./MEASUREMENT.md`; its T1–T8 thresholds are written
+  month-over-month.
+- trigger: monthly, in two steps so secrets never reach the agent
+  (`./RUNBOOK.md` §2). (a) The **CI fetch** (`.github/workflows/growth-metrics.yml`
+  → `scripts/pull-growth-metrics.mjs`) holds the credentials, pulls the
+  traffic / ranking / answer-engine-citation metrics per `./MEASUREMENT.md`, and
+  publishes `_metrics-<YYYY-MM>.json` to the orphan `growth-metrics` branch.
+  (b) One hour later the **analytics-reporter agent** — holding no secrets —
+  reads that snapshot and evaluates the decision thresholds (T1–T8).
 - output: `report` to `growth/reports/YYYY-MM.md` (the MEASUREMENT template),
   plus a `calendar.yaml` PR for any threshold that fires.
-- gate: `none` for the report; `human-merge` for any `calendar.yaml` PR.
+- gate: `none` for the report; `human-merge` for any `calendar.yaml` PR. The CI
+  fetch writes only the `growth-metrics` data branch — never `main` — so it
+  triggers no deploy.
 
 ### 3.5 Weekly — Competitive watch
 - brief: `./briefs/competitive-monitor.md`

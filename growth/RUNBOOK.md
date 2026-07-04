@@ -26,6 +26,15 @@ changes, update the routines to match.
 | Deploy on push to `main` | GitHub Actions | `.github/workflows/deploy.yml` |
 | Daily 13:00 UTC publish rebuild (date-gated launch, CADENCE §3.1) | GitHub Actions | `.github/workflows/scheduled-publish.yml` |
 | Hero-present gate on content PRs (CHARTER gate 2) | GitHub Actions | `.github/workflows/hero-asset-check.yml` |
+| Monthly metrics **fetch** (the secret-holding half of the analytics loop) | GitHub Actions | `.github/workflows/growth-metrics.yml` |
+
+**Secrets stay in GitHub Actions, not in the Claude env.** The only loop that
+needs credentials is the monthly analytics loop, and it is split in two: a
+GitHub Actions job (`growth-metrics.yml` → `scripts/pull-growth-metrics.mjs`)
+holds the secrets, pulls the raw numbers, and publishes a metrics JSON to the
+orphan `growth-metrics` branch; the secret-free `waev-analytics-reporter`
+routine then reads that JSON and writes the report. No API token ever reaches a
+Claude session (§2).
 
 **One trigger per loop.** The former Oz (`oz schedule`) deployment and the
 `growth-weekly.yml` Action variant of the seo-auditor are superseded by the
@@ -51,37 +60,53 @@ Growth OS:
   Use `npm install`, not `npm ci`: a `package-lock.json` generated on macOS
   can omit Linux-native optional deps that `npm ci` strictly requires.
 - **Network:** allow outbound HTTPS — the writer/editor/competitive loops
-  verify claims via web search, and the analytics loop calls the Google and
-  Cloudflare APIs.
-- **Environment variables:** the secrets in §2.
+  verify claims via web search. (The analytics loop does NOT call any metrics
+  API from the Claude env — that happens in CI, §2.)
+- **Environment variables:** none required. No Growth OS routine reads a secret
+  from the Claude env (§2).
 
 Note the environment name/id — every routine in §3 is created **in this
 environment** so its fresh sessions start with the repo cloned and deps
 installed.
 
-## 2. Secrets (environment variables — never in this repo)
+## 2. Secrets (GitHub Actions repo secrets — never in the Claude env)
 
-Set these in the environment's **Environment variables** (claude.ai/code →
-Environments → your environment → Environment variables / secrets). Agent
-sessions read them as env vars of the same name (see `MEASUREMENT.md` pulls).
-Only the analytics-reporter loop needs them; every other loop runs without
-secrets.
+**No secret is stored in the Claude environment.** The only credentials the
+Growth OS needs are for the monthly metrics pull, and that pull runs in GitHub
+Actions (`.github/workflows/growth-metrics.yml`), where the secrets are
+injected only for the run. Add them under **Settings → Secrets and variables →
+Actions** on the repo. Every one is optional — a missing secret just becomes a
+`data-gap` in that month's metrics snapshot (never a fabricated number), and
+`scripts/pull-growth-metrics.mjs` still exits cleanly.
 
-| Variable | Used by | What it is |
-| --- | --- | --- |
-| `GSC_SERVICE_ACCOUNT_JSON` | analytics-reporter | Google service-account key JSON (whole file contents); Search Console API enabled, read access to the `waev.app` property |
-| `CF_ANALYTICS_TOKEN` | analytics-reporter | Cloudflare token with `Zone Analytics:Read` covering the `waev.app` zone (an `Account Analytics:Read` token that covers the zone also works) |
-| `CF_ACCOUNT_ID` | analytics-reporter | Cloudflare account id (GraphQL analytics) |
-| `CF_ZONE_ID` | analytics-reporter | Zone id for `waev.app` (`zoneTag` in the north-star referral query) |
-| `PERPLEXITY_API_KEY` | analytics-reporter (optional) | Perplexity sonar key for the AEO citation probe |
+| Repo secret | What it is |
+| --- | --- |
+| `GSC_SERVICE_ACCOUNT_JSON` | Google service-account key JSON (whole file contents); Search Console API enabled, read access to the `waev.app` property |
+| `CF_ANALYTICS_TOKEN` | Cloudflare token with `Zone Analytics:Read` covering the `waev.app` zone (an `Account Analytics:Read` token that covers the zone also works) |
+| `CF_ZONE_ID` | Zone id for `waev.app` (`zoneTag` in the north-star / blog-traffic queries) |
+| `PERPLEXITY_API_KEY` | *(optional)* Perplexity sonar key for the AEO citation probe |
 
 Referrer-host filtering used by the north-star metric requires a **paid**
-Cloudflare plan (see `MEASUREMENT.md`).
+Cloudflare plan (see `MEASUREMENT.md`); on a free plan that one metric records
+`null` + a data-gap and everything else still pulls. `CF_ACCOUNT_ID` is **not**
+needed — the zone-analytics GraphQL pulls key off `CF_ZONE_ID` alone.
 
-Unchanged and separate: the **GitHub Actions repo secrets**
-`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` stay in Settings → Secrets
-→ Actions — they belong to the deploy workflows, and no Growth OS loop ever
-reads them. `WARP_API_KEY` (Oz) can be deleted after §6.
+Already present and separate: the deploy workflows' secrets
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (same Actions secrets store)
+power `deploy.yml` / `scheduled-publish.yml`; no Growth OS loop reads them.
+`WARP_API_KEY` (Oz) can be deleted after §6.
+
+### How the analytics loop gets its data (the split)
+
+1. `growth-metrics.yml` fires monthly (1st, 15:00 UTC), runs the fetch script
+   with the secrets above, and pushes `_metrics-<YYYY-MM>.json` to the orphan
+   `growth-metrics` branch (never `main`, so no deploy is triggered).
+2. One hour later the `waev-analytics-reporter` routine (§3, 16:00 UTC) — which
+   holds no secrets — reads that snapshot, writes `growth/reports/<YYYY-MM>.md`,
+   evaluates the thresholds, and opens any `calendar.yaml` PR.
+
+If the fetch job has not run (or failed), the routine reports the data-gap and
+opens no threshold PR — it never fetches or guesses.
 
 ## 3. Create the routines
 
@@ -106,8 +131,13 @@ standalone — a fresh session has no prior context.
 | `waev-publish-pipeline` | `0 * * * *` | §3.11 + §3.12 |
 | `waev-seo-auditor-weekly` | `0 14 * * 2` | §3.3 |
 | `waev-competitive-monitor` | `0 14 * * 3` | §3.5 |
-| `waev-analytics-reporter` | `0 15 1 * *` | §3.4 |
+| `waev-analytics-reporter` | `0 16 1 * *` | §3.4 |
 | `waev-seo-audit-monthly` | `0 15 1 * *` | §3.6 |
+
+> The analytics routine runs at **16:00** on the 1st — one hour after its CI
+> companion `growth-metrics.yml` (15:00) publishes the metrics snapshot it
+> reads (§2). The 15:00 CADENCE §3.4 slot is the *fetch*; the *analysis* is
+> offset so the snapshot exists when the routine runs.
 | `waev-link-distribution` | `0 15 5 * *` | §3.7 |
 | `waev-keyword-research` | `0 16 21 1,4,7,10 *` | §3.8 |
 | `waev-competitive-deep-audit` | `0 16 28 2,5,8,11 *` | §3.9 |
@@ -153,10 +183,13 @@ survives an environment that did not pre-clone the repo:
   never post externally; no-op if this week's report already exists.`
 - **waev-analytics-reporter** — `You are the Waev Growth OS monthly analytics
   reporter (growth/CADENCE.md §3.4). In the waev-blog repo, read
-  growth/briefs/analytics-reporter.md and execute it. Secrets arrive as
-  environment variables per growth/RUNBOOK.md §2. Invariants: report +
-  calendar PR only; never merge, never deploy; never invent a baseline; no-op
-  if this month's report already exists.`
+  growth/briefs/analytics-reporter.md and execute it. You hold NO secrets: read
+  the pre-fetched metrics snapshot _metrics-<YYYY-MM>.json from the orphan
+  growth-metrics branch (published by the growth-metrics.yml CI job) and analyze
+  it; never fetch metrics yourself. Invariants: report + calendar PR only; never
+  merge, never deploy; never invent a baseline; if the snapshot is missing
+  report the data-gap and open no threshold PR; no-op if this month's report
+  already exists.`
 - **waev-seo-audit-monthly** — `You are the Waev Growth OS monthly full SEO
   audit (growth/CADENCE.md §3.6). In the waev-blog repo, read
   growth/briefs/seo-auditor.md and execute it at MONTHLY FULL-AUDIT scope
@@ -190,7 +223,10 @@ runs stay quiet.
 
 > **Provisioned state (2026-07-04):** all ten routines above were created in
 > environment `env_01NikYkL9rtvfCZMWwSQo6hw` with push notifications on, and
-> left **disabled**. Enable them (Routines UI toggle) only after (a) this
+> left **disabled**. The `growth-metrics.yml` CI companion (§2) ships in this
+> same change and needs no enabling — it runs on its own Actions cron once the
+> branch is on `main` and the repo secrets are set. Enable the routines
+> (Routines UI toggle) only after (a) this
 > runbook's branch is merged to `main` so firings read the current briefs,
 > and (b) the old Oz schedules are decommissioned (§6).
 

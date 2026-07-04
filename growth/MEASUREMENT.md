@@ -1,14 +1,24 @@
 # MEASUREMENT.md — Waev Growth OS metrics & decision rules
 
-This document is executed by the **analytics-reporter** agent (see
-`./briefs/analytics-reporter.md`). It defines every metric the Growth OS
-tracks, the exact data source, the API call an autonomous agent uses to pull
-it, the monthly report template, and the numeric thresholds that trigger a
-change to `./calendar.yaml` or `./STRATEGY.md`.
+This document defines every metric the Growth OS tracks, the exact data
+source, the API call used to pull it, the monthly report template, and the
+numeric thresholds that trigger a change to `./calendar.yaml` or
+`./STRATEGY.md`.
 
-It is written for an LLM agent reader. Prefer the structured rules below over
-judgement. Where a value cannot be pulled programmatically, the metric is
-marked `MANUAL-GATE` and the agent records `null` rather than guessing.
+**Fetch and analysis are split (so secrets never reach the agent).** The raw
+pull — which needs Google/Cloudflare/Perplexity credentials — runs in GitHub
+Actions: `scripts/pull-growth-metrics.mjs`, invoked monthly by
+`.github/workflows/growth-metrics.yml`, holds the secrets and writes a
+`growth-metrics/v1` JSON snapshot to the orphan `growth-metrics` branch. The
+query definitions in this document are the SPEC that script implements. The
+**analytics-reporter** agent (`./briefs/analytics-reporter.md`) holds no
+secrets: it reads that snapshot and does the analysis (report + threshold
+evaluation + calendar PR). See `./RUNBOOK.md` §2–§3.
+
+It is written for both readers (the script author and the agent). Prefer the
+structured rules below over judgement. Where a value cannot be pulled
+programmatically, the metric is marked `MANUAL-GATE`; the CI script records
+`null` + a `data-gap` and the agent reports it rather than guessing.
 
 ## Identifiers (fill once, then treat as canon)
 
@@ -16,7 +26,8 @@ marked `MANUAL-GATE` and the agent records `null` rather than guessing.
 # growth/measurement.config — referenced by the analytics-reporter brief.
 gsc_property: "sc-domain:waev.app"        # GSC property (domain property recommended)
 gsc_page_filter: "https://blog.waev.app/" # restrict Search Console rows to the blog
-cf_zone_tag: "$CF_ZONE_ID"               # Cloudflare Zone ID — read from the CF_ZONE_ID env var (RUNBOOK §2).
+cf_zone_tag: "$CF_ZONE_ID"               # Cloudflare Zone ID — a GitHub Actions secret (RUNBOOK §2),
+                                          # read by the CI fetch script, never by the agent.
                                           # blog.waev.app is a subdomain inside this zone, so
                                           # the GraphQL `zoneTag` is this ID — NOT a hostname.
                                           # If the app is served from a *different* Cloudflare
@@ -24,7 +35,7 @@ cf_zone_tag: "$CF_ZONE_ID"               # Cloudflare Zone ID — read from the 
                                           # for the north-star query below.
 cf_blog_host: "blog.waev.app"             # blog rows: filter by clientRequestHTTPHost
 cf_app_host: "waev.app"                   # app host the blog refers readers into
-cloudflare_account_id: "<CF_ACCOUNT_ID>"  # from env, not committed
+# (cloudflare_account_id is not needed for these zone-analytics GraphQL pulls.)
 report_window_days: 28                    # GSC data is ~2-3 days delayed; use a 28-day window
 ```
 
@@ -51,7 +62,7 @@ activation count and this section is updated (a `STRATEGY.md`-level change).
   north-star rewards traffic that is the *right* audience and intent. Awareness
   and evaluation metrics below are leading indicators of it.
 
-### How the agent pulls it
+### How the CI fetch pulls it (spec — implemented in `scripts/pull-growth-metrics.mjs`)
 
 ```bash
 # Cloudflare GraphQL Analytics API. CF_ANALYTICS_TOKEN scope: "Zone Analytics:Read"
@@ -104,56 +115,46 @@ Each row: metric · source · pull method · what it tells the agent.
   Keep `query`, `position`, `impressions`, `clicks` per row.
 - **Signal:** ranking trajectory per keyword; feeds keyword-level decisions.
 
-### How the agent pulls GSC (shared by metrics 1–4)
+### How the CI fetch pulls GSC (spec — implemented in `scripts/pull-growth-metrics.mjs`)
 
-GSC has no API-key auth; you mint a short-lived token from the service-account
-JSON (`$GSC_SERVICE_ACCOUNT_JSON`, provisioned as an environment variable —
-see `./RUNBOOK.md` §2), then POST to `searchAnalytics.query`. For metrics 1–3 query
-with `dimensions:["date"]` and sum the totals; for metric 4 use
-`dimensions:["query"]`. Recompute CTR from summed clicks/impressions — never
-average GSC's per-row CTR.
+GSC has no API-key auth; the CI script mints a short-lived token from the
+service-account JSON (`$GSC_SERVICE_ACCOUNT_JSON`, a GitHub Actions secret —
+see `./RUNBOOK.md` §2) with a hand-rolled RS256 JWT (`node:crypto`, no
+dependencies), then POSTs to `searchAnalytics.query`. It queries
+`dimensions:["date"]` for accurate totals (metrics 1–3) AND
+`dimensions:["query"]` (rowLimit 1000) for the per-query table (metric 4),
+recomputing CTR from summed clicks/impressions — never averaging GSC's per-row
+CTR. Request shape:
 
-```python
-# pip install google-auth requests
-import json, os, requests
-from google.oauth2 import service_account
-from google.auth.transport.requests import Request
-
-info = json.loads(os.environ["GSC_SERVICE_ACCOUNT_JSON"])
-creds = service_account.Credentials.from_service_account_info(
-    info, scopes=["https://www.googleapis.com/auth/webmasters.readonly"])
-creds.refresh(Request())
-
-site = "sc-domain:waev.app"            # gsc_property
-body = {
-    "startDate": "<YYYY-MM-DD>", "endDate": "<YYYY-MM-DD>",  # the 28-day window
-    "type": "web",
-    "dimensions": ["query"],          # ["date"] for totals (metrics 1–3); ["query"] for metric 4
-    "dimensionFilterGroups": [{"filters": [{
-        "dimension": "page", "operator": "contains",
-        "expression": "https://blog.waev.app/"}]}],          # gsc_page_filter
-    "rowLimit": 1000,
+```jsonc
+// POST https://searchconsole.googleapis.com/webmasters/v3/sites/{property}/searchAnalytics/query
+{
+  "startDate": "<YYYY-MM-DD>", "endDate": "<YYYY-MM-DD>",   // the 28-day window
+  "type": "web",
+  "dimensions": ["query"],           // ["date"] for totals (metrics 1–3); ["query"] for metric 4
+  "dimensionFilterGroups": [{ "filters": [{
+    "dimension": "page", "operator": "contains",
+    "expression": "https://blog.waev.app/" }] }],           // gsc_page_filter
+  "rowLimit": 1000
 }
-r = requests.post(
-    "https://searchconsole.googleapis.com/webmasters/v3/sites/"
-    f"{requests.utils.quote(site, safe='')}/searchAnalytics/query",
-    headers={"Authorization": f"Bearer {creds.token}"}, json=body)
-r.raise_for_status()
-rows = r.json().get("rows", [])       # each row: keys[query], clicks, impressions, ctr, position
+// each row: keys[query], clicks, impressions, ctr, position
 ```
 
 If `GSC_SERVICE_ACCOUNT_JSON` is unset or the service account lacks access to the
-property, metrics 1–4 are `MANUAL-GATE` → record `null` + a `data-gap` note.
+property, the script records metrics 1–4 as `null` + a `data-gap`; the agent
+reports them as such. The agent never calls this API itself.
 
 ### 5. AEO / answer-engine citation appearances
 - **Source:** Perplexity API (`sonar` model) as the machine-checkable proxy
   for answer-engine visibility. The probe-query set is fixed (defined verbatim
-  in the pull command below) so the number is comparable month over month.
+  in the CI script, mirrored below) so the number is comparable month over month.
 - **Pull:** for each probe query, call the API and check whether any returned
   source URL host equals `blog.waev.app`. Metric = number of probe queries (out
   of the 12) that cite the blog at least once; the report also splits out the
-  4-query mesh-curious subset. The probe set is the single source of truth in
-  the command's heredocs — edit it **only** via a STRATEGY.md change.
+  4-query mesh-curious subset. The canonical probe set now lives in
+  `scripts/pull-growth-metrics.mjs` (`AEO_PROBES_CORE` + `AEO_PROBES_MESH`, kept
+  identical to the heredocs below); edit it **only** via a STRATEGY.md change,
+  in both places, and bump `AEO_PROBE_SET_VERSION`.
 - **Pull command:** the OpenAI-compatible `/chat/completions` endpoint returns
   `citations` as a **top-level** array of source URLs; newer responses also fill
   `search_results[].url` (we check both). Citations are returned by default for
@@ -337,5 +338,6 @@ PR. Silence is a valid, expected outcome.
 - No new client-side JS is implied — all measurement is server-side API pulls
   against GSC and Cloudflare *zone* analytics (no RUM beacon); the near-zero-JS
   blog is untouched.
-- Secret values (API tokens) are read from the environment, never committed.
-  See `./RUNBOOK.md` §2 for provisioning them as environment variables.
+- Secret values (API tokens) live only as GitHub Actions repo secrets, read by
+  the CI fetch (`growth-metrics.yml`), never committed and never exposed to the
+  Claude agent environment. See `./RUNBOOK.md` §2.

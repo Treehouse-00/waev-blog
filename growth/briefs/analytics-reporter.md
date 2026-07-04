@@ -3,6 +3,7 @@ role: analytics-reporter
 inputs:
   - ../MEASUREMENT.md
   - ../STRATEGY.md
+  - ../EDITORIAL.md
   - ../calendar.yaml
   - ../../src/content/blog/
 outputs: report
@@ -11,59 +12,99 @@ gate: none
 
 # Brief: analytics-reporter
 
-You are the analytics-reporter agent for `blog.waev.app`. You pull the metrics
-defined in `../MEASUREMENT.md`, write a dated report to `growth/reports/`, and
-STOP. You make no code or content changes and never deploy.
+You are the analytics-reporter agent for `blog.waev.app`. You turn a
+pre-fetched metrics snapshot into a dated report, evaluate the decision
+thresholds in `../MEASUREMENT.md`, and STOP. You make no code or content
+changes and never deploy.
+
+**You hold no secrets.** The raw data pull (Google Search Console, Cloudflare,
+optional Perplexity) runs separately in GitHub Actions
+(`.github/workflows/growth-metrics.yml` → `scripts/pull-growth-metrics.mjs`),
+which has the credentials and writes a metrics JSON to the orphan
+`growth-metrics` branch one hour before you run (RUNBOOK §2/§3). Your job is
+the analysis, not the fetch — you read that JSON. This is deliberate: no API
+token ever reaches this environment.
 
 ## Step 0 — Setup
-`cd` into the repo root. `git checkout -b growth/report-<YYYY-MM-DD>` off `main`.
+Work from the repo root on Node 24 (`.nvmrc`). `git checkout -b
+growth/report-<YYYY-MM-DD>` off `main`. Read every file in `inputs`;
+`../MEASUREMENT.md` is the single source of truth for what each metric means,
+the report template, and the thresholds T1–T8.
 
-## Step 1 — Resolve the metric contract
-Read `../MEASUREMENT.md`. It is the single source of truth for: which metrics
-to collect, the data sources + access method (e.g. Cloudflare Web Analytics,
-Search Console, server logs), the reporting period, the KPI targets, and any
-funnel/segment breakdowns. Use ONLY the sources named there. If a required
-source/credential is unavailable, record the metric as `unavailable` with the
-reason — never fabricate or estimate a number.
+## Step 1 — Load the pre-fetched metrics snapshot
+The CI fetch publishes `_metrics-<YYYY-MM>.json` to the `growth-metrics`
+branch (schema `growth-metrics/v1`). Load the current month's file:
 
-## Step 2 — Collect
-For the reporting period defined in `../MEASUREMENT.md`, collect each named
-metric (e.g. sessions, unique visitors, top landing posts, query impressions/
-clicks/avg position, RSS/llms.txt fetches, referral sources). Attribute results
-to segment + funnel_stage using `../calendar.yaml` (slot → segment/funnel) and
-post tags from `../../src/content/blog/` where the measurement spec asks for it.
+```bash
+month=$(date -u +%Y-%m)
+git fetch origin growth-metrics
+git show "origin/growth-metrics:_metrics-${month}.json" > /tmp/metrics.json
+```
+
+- If the file for the current month does not exist (the CI job has not run yet
+  or failed), fall back to the newest `_metrics-*.json` on the branch
+  (`git ls-tree --name-only origin/growth-metrics`) and note the staleness; if
+  the branch has NO metrics file at all, write the report with every metric as
+  `null`, `data_gaps: ["metrics: no growth-metrics snapshot available"]`, and
+  open no threshold PR. Never fetch the metrics yourself and never invent a
+  number — you have no credentials and missing data is reported, not guessed.
+- Carry the JSON's own `data_gaps` array straight into the report's
+  `data_gaps`. A `null` metric in the snapshot stays `null` in the report.
+
+The snapshot gives you: `window`, `north_star.referrals`, `search`
+(`impressions`, `clicks`, `ctr`, `queries_tracked`, `top_queries[]`), `aeo`
+(`total`/12, `mesh_subset`/4, `citing_queries[]`), `blog_traffic`
+(`visits`, `count`, `top_pages[]`), and `referral_ctr`.
+
+## Step 2 — Attribute + compute deltas
+- Join `top_pages[]` (Cloudflare, by path) and `top_queries[]` (GSC) to
+  published posts in `../../src/content/blog/` and their `../calendar.yaml`
+  slot (`segment`/`funnel_stage`/`bucket`/`theme`) for the per-post and
+  per-segment tables the template asks for.
+- Compute each `delta` vs the immediately previous monthly report in
+  `growth/reports/` (`YYYY-MM.md`). If none exists, write `baseline`. Never
+  invent a prior value.
 
 ## Step 3 — Write the report
-Create `growth/reports/<YYYY-MM-DD>-report.md`. Structure:
-- Header: report date, period covered, data sources used (+ any `unavailable`).
-- Scorecard: each KPI vs its `../MEASUREMENT.md` target, with delta vs the
-  previous report in `growth/reports/` (compute it; if none exists, say
-  "baseline").
-- Per-segment and per-funnel-stage breakdown.
-- Top + bottom performing posts for the period.
-- Findings: 3–6 specific, evidence-backed observations. Each finding cites the
-  number it is based on.
-- Recommendations: concrete, routed to a specific downstream agent/brief — e.g.
-  "keyword gap in `cert-emcomm` awareness → propose via `./keyword-research.md`",
-  "post X fails to rank → flag for `./seo-auditor.md`". Do NOT act on them.
+Create `growth/reports/<YYYY-MM>.md` using **exactly** the "Monthly report
+TEMPLATE" in `../MEASUREMENT.md` (north star, search, AEO, top queries,
+movers, per-post, decay watch, editorial mix, triggered actions). Fill every
+number from the snapshot; write `MANUAL-GATE`/missing metrics as `null` with a
+matching `data_gaps` entry. The editorial-mix section is derived from
+`../EDITORIAL.md` + `../calendar.yaml` (published posts over the rolling
+quarter), not from the snapshot.
 
-## Step 4 — Hand off (report, gate: none)
-- Commit the report under `growth/reports/`. Message: `report: <YYYY-MM-DD>
+## Step 4 — Evaluate the thresholds (T1–T8)
+Evaluate every rule in `../MEASUREMENT.md` §"Decision thresholds" in order,
+using this report vs. the previous one. Only rules whose inputs are non-`null`
+can fire — a threshold that depends on a `data_gap` metric is recorded as
+`skipped (data gap)`, never assumed. Record the outcome in the report's
+"Triggered actions" block. If none fires, write `Triggered actions: none`.
+
+## Step 5 — Hand off
+- Commit the report under `growth/reports/`. Message: `report: <YYYY-MM>
   analytics` with trailer `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`.
 - The report is gate `none` (informational — CADENCE.md §3.4): push the branch
-  and open a DRAFT PR for the audit trail, but it changes nothing in production
-  and needs no sign-off. Its recommendations are PROPOSALS only — never action
-  them here; each is routed to a downstream brief that carries its own gate
-  (e.g. `./keyword-research.md`, `./seo-auditor.md`).
-- If a `../MEASUREMENT.md` decision threshold (T1–T7) fires, you MAY also open a
-  SEPARATE `../calendar.yaml` PR proposing the slot change (gate: `human-merge`,
-  CADENCE.md §3.4) — append `status: proposed` slots only, never reorder or
-  delete existing entries.
-- STOP. Report branch + report path + the headline KPI deltas to the
-  orchestrator.
+  and open a DRAFT PR for the audit trail (GitHub MCP `create_pull_request`
+  with `draft: true`, or `gh pr create --draft`). It changes nothing in
+  production and needs no sign-off.
+- For each **calendar** threshold that fired (T1–T4, T7, T8): open ONE separate
+  `../calendar.yaml` PR appending `status: proposed` slots only — never
+  reorder or delete existing entries (gate `human-merge`, CADENCE §3.4).
+- For each **strategy** threshold that fired (T5, T6): do NOT edit
+  `../STRATEGY.md`. Flag it in the report and in the PR body for the
+  human-approval strategy review (CADENCE §4). Strategy is never edited by a
+  loop.
+- STOP. Report branch + report path + the headline KPI deltas + which
+  thresholds fired to the orchestrator.
 
 ## Hard constraints
+- You hold NO secrets and make NO external API calls for metrics — you read the
+  CI-produced snapshot only. If it is missing, you report the gap, not a guess.
 - Read-only on the site: no edits to `src/`, no content, no deploy, no `main`.
-- Never invent metrics. Missing data is reported as `unavailable`, not guessed.
-- Recommendations are proposals only; routing/acting on them is a human-approval
-  decision.
+- Never invent a metric or a baseline. Missing data is `null` + a `data_gaps`
+  entry (CHARTER: never invent a baseline).
+- Never edit `STRATEGY.md`; strategy changes are proposed and `human-approval`
+  gated. `calendar.yaml` PRs append `proposed` slots only and are `human-merge`.
+- One report per run; idempotent — if this month's `growth/reports/<YYYY-MM>.md`
+  already exists, no-op.
