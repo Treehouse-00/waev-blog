@@ -49,7 +49,7 @@ Create `growth/reports/<YYYY-MM-DD>-report.md`. Structure:
 
 ## Step 4 — Hand off (report, gate: none)
 - Commit the report under `growth/reports/`. Message: `report: <YYYY-MM-DD>
-  analytics` with trailer `Co-Authored-By: Oz <oz-agent@warp.dev>`.
+  analytics` with trailer `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`.
 - The report is gate `none` (informational — CADENCE.md §3.4): push the branch
   and open a DRAFT PR for the audit trail, but it changes nothing in production
   and needs no sign-off. Its recommendations are PROPOSALS only — never action

@@ -10,7 +10,7 @@ inputs:
   - ../../src/pages/llms.txt.ts
   - ../../src/content/blog/
 outputs: pr
-gate: human-merge
+gate: os-merge
 ---
 
 # Brief: editor (the internal review cycle)
@@ -25,15 +25,36 @@ You are a fresh, skeptical second set of eyes — NOT the writer. Do not trust t
 draft's own self-grade. Re-derive every judgment yourself.
 
 ## Step 0 — Setup
-`cd` into the repo root. Run `nvm use`. Read every file in `inputs`.
+Work from the repo root on Node 24 (`.nvmrc` — `nvm use` if the environment
+does not already provide it). Read every file in `inputs`. Confirm you can
+list, read, and update PRs with the run-system's GitHub tooling (GitHub MCP
+tools, or the `gh` CLI where it exists).
 
 ## Step 1 — Pick one draft PR (deterministic, idempotent)
-List open PRs whose head branch matches `growth/post-*` and whose state is DRAFT
-(`gh pr list --draft --state open --json number,headRefName,body,isDraft`).
-Among those whose body contains NEITHER `<!-- editor-approved -->` NOR
-`<!-- editor-escalated -->` (already-handled markers), pick the one with the
-lowest PR number (oldest). If none, STOP and report "no draft post PR awaiting
-review". Process exactly ONE PR per run. Check out its branch (`gh pr checkout <N>`).
+List open DRAFT PRs whose head branch matches `growth/post-*` (GitHub MCP
+`list_pull_requests`, or `gh pr list --draft --state open`), with number, head
+branch, and body. Among those whose body contains NEITHER
+`<!-- editor-approved -->` NOR `<!-- editor-escalated -->` (already-handled
+markers), pick the one with the lowest PR number (oldest). If none, STOP and
+report "no draft post PR awaiting review". Process exactly ONE PR per run.
+Check out its head branch locally (`git fetch origin <branch> && git checkout
+<branch>`, or `gh pr checkout <N>`).
+
+## Internal orchestration (how to work, when your run-system supports subagents)
+You are the skeptical second set of eyes — independence is the whole point, so
+buy as much of it as the run-system allows (e.g. Claude's Agent/Workflow tools):
+- **Adversarial claim panel (Step 2.1):** for each load-bearing external claim,
+  spawn an independent verifier whose instruction is to REFUTE the claim
+  against a primary source. A claim survives only with a confirming primary
+  source; anything refuted or unconfirmed gets corrected, softened, or cut.
+  Verifiers must receive the claim, not the draft's justification of it.
+- **Parallel lens reviewers (Steps 2.2–2.7):** independent passes for
+  voice/cultural safety, bucket+theme resonance, canon consistency, and
+  SEO/structure, each returning concrete findings against its rubric axis.
+- **You arbitrate:** apply surviving findings to the branch yourself; discard
+  anything a lens flagged that the rubric does not actually require.
+If no subagent facility exists, run the same axes sequentially with fresh
+skepticism per axis. Either way the rubric, outputs, and gates are unchanged.
 
 ## Step 2 — Review against the rubric (revise in place)
 Read the post `.mdx`, its PR body, and the slot's `bucket`/`theme`/`segment`/
@@ -71,16 +92,17 @@ only escalate (Step 4) what genuinely needs a human.
    prompt and update the ledger row. Never create the image (CHARTER gate 2).
 
 After edits, run `npm run build` — it MUST pass. Keep the `status: drafted`
-calendar entry as-is (the human merge advances it).
+calendar entry as-is (the merge-runner's merge advances it — CADENCE §2).
 
 ## Step 3 — Approve & promote (the normal path)
 When the draft passes every axis (after your revisions):
 - Commit your changes: `edit: editorial review — <one-line summary>` with trailer
-  `Co-Authored-By: Oz <oz-agent@warp.dev>`. Push the branch.
+  `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`. Push the branch.
 - Append an `## Editorial review` section to the PR body: the rubric result per
   axis (pass / what you fixed), the external claims you verified and against what
   source, and end with the literal marker on its own line: `<!-- editor-approved -->`.
-- Flip the PR to ready-for-review: `gh pr ready <N>`. This signals the human it is
+- Flip the PR to ready-for-review (GitHub MCP `update_pull_request` with
+  `draft: false`, or `gh pr ready <N>`). This signals the human it is
   internally reviewed and needs only a cursory gut-check + the hero image.
 - STOP. Report the PR number, what you revised, and the verified claims to the
   orchestrator.

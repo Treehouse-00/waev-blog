@@ -70,7 +70,7 @@ You do NOT edit `../calendar.yaml`; turning a gap into a dated slot is
 ## Step 5 — Hand off (report, gate: none)
 - Commit the report under `growth/reports/`. Message:
   `competitive: <N> gap recommendations` with trailer
-  `Co-Authored-By: Oz <oz-agent@warp.dev>`.
+  `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`.
 - The report is gate `none` (informational — CADENCE.md §3.5/§3.9): push the
   branch and open a DRAFT PR for the audit trail; it changes nothing in
   production and needs no sign-off.

@@ -20,7 +20,8 @@ and open issues for fixes that need human judgment. You never deploy and never
 merge (AGENT.md Invariant 1).
 
 ## Step 0 — Setup
-`cd` into the repo root. `nvm use`. Create a branch off `main`:
+Work from the repo root on Node 24 (`.nvmrc` — `nvm use` if the environment
+does not already provide it). Create a branch off `main`:
 `git checkout -b growth/seo-audit-<YYYY-MM-DD>`.
 
 ## Step 1 — Build
@@ -50,11 +51,11 @@ For each FAILing rule, apply the fix at the EXACT location named in the rule's
   TG-01–TG-04 (create `../../src/pages/tags/[tag].astro` + linkify tag badges),
   IL-01 (create `../../src/components/RelatedPosts.astro`, static, no client JS).
 - `major` (non-mechanical, e.g. requires editorial body changes in a post):
-  open a `gh` issue per finding instead of editing post prose.
+  open a GitHub issue per finding instead of editing post prose.
 - `human-approval` rules — SD-06 (which profile, if any, to ADD), MT-07
   (`twitter:site` handle), SM-04 (any canon fact change): never decide these
   yourself. Make only the safe mechanical part (e.g. removing a wrong value)
-  and open a `gh` issue listing candidates for a human.
+  and open a GitHub issue listing candidates for a human.
 - `minor`: fix in this PR only if trivial; otherwise list in the PR body for
   the next pass.
 
@@ -67,11 +68,12 @@ rules to confirm they now PASS. The build MUST pass before you open the PR.
   <YYYY-MM-DD>.md` for the weekly sweep, or `growth/reports/audit-<YYYY-MM>.md`
   for the monthly full audit. Commit it alongside any fixes.
 - Commit fixes. Message: `seo: fix <comma-separated rule IDs>` with trailer
-  `Co-Authored-By: Oz <oz-agent@warp.dev>`.
-- Push the branch and open a DRAFT PR (`gh pr create --draft`). PR body MUST
+  `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`.
+- Push the branch and open a DRAFT PR (GitHub MCP `create_pull_request` with
+  `draft: true`, or `gh pr create --draft` where the CLI exists). PR body MUST
   include: a summary table of FAILs (the full set lives in the report file), the
   rule IDs fixed in-PR, and links to any issues opened for human-judgment items.
-- Open `gh` issues for every non-mechanical `major` and every `human-approval`
+- Open GitHub issues for every non-mechanical `major` and every `human-approval`
   finding, each titled `seo:<rule-id> — <short>` and referencing the playbook
   rule.
 - STOP. Report the branch, PR URL, and opened issue numbers to the orchestrator.

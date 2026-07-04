@@ -110,8 +110,8 @@ The orchestrating run-system reads this section to register jobs.
   + cultural safety), `./SEO-PLAYBOOK.md`, the two-axis resonance, and the hero
   concept/`./image-concepts.md`. The editor REVISES the branch in place to fix
   what it can, appends an "Editorial review" section + the `<!-- editor-approved
-  -->` marker to the PR body, and flips the PR to ready-for-review (`gh pr
-  ready`). If a draft is unsalvageable within scope, it leaves the PR a draft
+  -->` marker to the PR body, and flips the PR to ready-for-review. If a
+  draft is unsalvageable within scope, it leaves the PR a draft
   with a clear "needs human" note instead.
 - gate: `os-merge` (the editor never merges/deploys; it only flips draft→ready).
   After the editor approves, the only remaining human act is the hero image.
@@ -145,11 +145,11 @@ The orchestrating run-system reads this section to register jobs.
 - output: `merge` — brings `origin/main` into the branch (auto-resolving only the
   two known-safe conflict classes: the `image-concepts.md` ledger via the
   `merge=union` driver, and a `calendar.yaml` own-slot `status` line), re-runs the
-  build, and merges the PR with `gh pr merge --merge`. It comments the merge SHA
+  build, and merges the PR with a merge commit. It comments the merge SHA
   + publish date + `<!-- os-merged -->`. Any conflict outside the safe set, a red
   build, or a missing hero → it comments `<!-- merge-blocked -->` (or no-ops for a
   missing hero) and stops for a human. It NEVER deploys, force-pushes, squashes,
-  or `--admin`-bypasses checks.
+  or bypasses required checks via admin override.
 - gate: `os-merge` (this loop IS the execution half of that gate; the human's
   hero image is the decision half). Publication still flows only through the
   merge → date gate → deploy Action path.

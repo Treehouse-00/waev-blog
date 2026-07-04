@@ -58,7 +58,7 @@ human can paste/adapt — but it remains a suggestion.
 
 ## Step 5 — Hand off (report, human-approval)
 - Commit the report. Message: `distribution: <YYYY-MM-DD> vetted list` with
-  trailer `Co-Authored-By: Oz <oz-agent@warp.dev>`.
+  trailer `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`.
 - Push the branch and open a DRAFT PR (or notify per `../MEASUREMENT.md`).
   STOP. Report branch + report path + count of vetted opportunities to the
   orchestrator.

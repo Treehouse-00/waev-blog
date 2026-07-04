@@ -25,12 +25,16 @@ edit prose, you do not make editorial judgments, and you do not merge anything a
 human has not authorized via the hero image.
 
 ## Step 0 — Setup
-`cd` into the repo root (the `waev-blog` checkout). Run `nvm use`. Read every
-file in `inputs`. Confirm `gh auth status` works.
+Work from the repo root (the `waev-blog` checkout) on Node 24 (`.nvmrc` —
+`nvm use` if the environment does not already provide it). Read every file in
+`inputs`. Confirm you can list, comment on, and merge PRs with the
+run-system's GitHub tooling (GitHub MCP tools, or the `gh` CLI where it
+exists).
 
 ## Step 1 — Select one PR to merge (deterministic, idempotent)
-List open PRs on `growth/post-*` branches:
-`gh pr list --state open --json number,headRefName,isDraft,body`.
+List open PRs on `growth/post-*` branches with number, head branch, draft
+state, and body (GitHub MCP `list_pull_requests` + `pull_request_read`, or
+`gh pr list --state open --json number,headRefName,isDraft,body`).
 Restrict to PRs that satisfy ALL of the following, then pick the LOWEST number
 (oldest). One PR per run.
 - `isDraft == false` (the editor flipped it ready), AND
@@ -41,7 +45,8 @@ Restrict to PRs that satisfy ALL of the following, then pick the LOWEST number
 If none qualifies, STOP and report "no PR ready to merge".
 
 ## Step 2 — Verify the gates on the branch (all must be green)
-Check out the PR branch (`gh pr checkout <N>`). Then:
+Check out the PR's head branch locally (`git fetch origin <branch> &&
+git checkout <branch>`, or `gh pr checkout <N>`). Then:
 1. **Hero present.** Run `node scripts/check-hero-assets.mjs`. It MUST print OK.
    If it reports the post's hero missing, the human has not finished the gate-2
    authorization — STOP this PR (do not merge, do not block; the image-handler
@@ -69,10 +74,11 @@ After resolving, commit the merge (`git commit --no-edit`), run `npm run build`
 once more (MUST pass), and push the branch (`git push`). Never force-push.
 
 ## Step 4 — Merge the PR (NOT deploy)
-Merge via `gh pr merge <N> --merge` (a merge commit; do NOT squash or rebase —
-preserve the editor + image-handler commit trail). Do NOT use `--admin` to
-bypass required checks; if the merge is blocked by a failing required check,
-treat it like Step 2/3 failure: comment `<!-- merge-blocked -->` and STOP.
+Merge with a MERGE COMMIT (GitHub MCP `merge_pull_request` with merge method
+`merge`, or `gh pr merge <N> --merge`); do NOT squash or rebase — preserve the
+editor + image-handler commit trail. Do NOT bypass required checks with any
+admin override; if the merge is blocked by a failing required check, treat it
+like Step 2/3 failure: comment `<!-- merge-blocked -->` and STOP.
 The push to `main` triggers `.github/workflows/deploy.yml` and the date gate —
 that is the system shipping the post, not you. You never run `./manage.sh
 blog:deploy` or any deploy command.
@@ -91,7 +97,8 @@ STOP and report the merged PR number + publish date to the orchestrator.
   other PR class — those keep the `human-merge` gate (a human clicks merge).
 - NEVER deploy. The deploy Action (push to `main`) + the date gate are the only
   path to production; you only merge.
-- NEVER force-push, never squash/rebase-merge, never `--admin`-bypass checks.
+- NEVER force-push, never squash/rebase-merge, never bypass required checks
+  via any admin override.
 - Auto-resolve ONLY the two known-safe conflict classes in Step 3
   (`image-concepts.md` union; `calendar.yaml` own-slot status). Any other
   conflict → `<!-- merge-blocked -->` + STOP. Never resolve a prose/code

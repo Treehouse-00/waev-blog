@@ -6,7 +6,7 @@ inputs:
   - ../../scripts/check-hero-assets.mjs
   - ../../src/content/blog/
 outputs: pr
-gate: human-merge
+gate: os-merge
 ---
 
 # Brief: image-handler (the hero-asset placement loop)
@@ -26,17 +26,21 @@ compress, place, commit). Naming, processing, and committing are fully
 delegated — do them; do not ask the human to do them.
 
 ## Step 0 — Setup
-`cd` into the repo root (the `waev-blog` checkout). Run `nvm use`. Read every
-file in `inputs`. Confirm `gh auth status` works and a GitHub token is present in
-the environment (`$GH_TOKEN` or `$GITHUB_TOKEN`) — you need it to download
-attachments from a private repo.
+Work from the repo root (the `waev-blog` checkout) on Node 24 (`.nvmrc` —
+`nvm use` if the environment does not already provide it). Read every file in
+`inputs`. Confirm you can list PRs and read their comments with the
+run-system's GitHub tooling (GitHub MCP tools, or the `gh` CLI where it
+exists). If the repo is private, you also need an authenticated way to
+download comment attachments (a `$GH_TOKEN`/`$GITHUB_TOKEN` env var, or the
+run-system's GitHub integration).
 
 ## Step 1 — Pick one PR awaiting its hero (deterministic, idempotent)
-List open PRs on `growth/post-*` branches:
-`gh pr list --state open --json number,headRefName,isDraft`.
+List open PRs on `growth/post-*` branches with number, head branch, and
+draft state (GitHub MCP `list_pull_requests`, or `gh pr list --state open`).
 Process them oldest-first (lowest PR number). For each, until you find ONE to
 handle:
-1. Check out the branch (`gh pr checkout <N>`).
+1. Check out the head branch locally (`git fetch origin <branch> &&
+   git checkout <branch>`, or `gh pr checkout <N>`).
 2. Run `node scripts/check-hero-assets.mjs`. If it prints OK (the hero already
    exists on the branch), this PR is DONE — skip it.
 3. If it reports THIS post's hero as missing, the PR is a candidate. Read its
@@ -46,18 +50,21 @@ handle:
    exists in its comments, SELECT this PR.
 
 Handle exactly ONE PR per run (the lowest-numbered candidate). If no open
-`growth/post-*` PR is BOTH missing its hero AND has a human image attached, STOP
-and report "no PR with a pending hero image" to the orchestrator. Never invent or
-generate an image to fill the gap.
+`growth/post-*` PR is BOTH missing its hero AND has a human image attached,
+report "no PR with a pending hero image" and END THIS BRIEF — but when running
+as the publish-pipeline routine (RUNBOOK §3), still proceed to
+`./merge-runner.md`: its hourly merge backstop must run even when no hero was
+pending. Never invent or generate an image to fill the gap.
 
 ## Step 2 — Locate the human's image (in the PR's comments)
 Derive the target path from the post `.mdx` on the branch: parse the frontmatter
 `hero.src` (it is `/hero-<slug>.jpg`). That exact path is your output target —
 never rename it; the page and the check both reference it.
 
-Read, in this order, the PR's issue comments then the PR body itself:
-- `gh api repos/{owner}/{repo}/issues/<N>/comments --jq '.[] | {created_at, body}'`
-- the PR description: `gh pr view <N> --json body --jq '.body'`
+Read, in this order, the PR's issue comments then the PR body itself
+(GitHub MCP `pull_request_read` / comment listing; or `gh api
+repos/{owner}/{repo}/issues/<N>/comments` and `gh pr view <N> --json body`
+where the CLI exists).
 
 Scan for an image attachment — markdown `![...](<url>)` or HTML `<img src="<url>">`.
 Accept GitHub's attachment hosts (`github.com/user-attachments/assets/...`,
@@ -68,9 +75,11 @@ upload wins, so the human can re-attach to override a previous image). If none i
 found, no-op this PR and return to Step 1 for the next candidate.
 
 ## Step 3 — Download + normalize to the house hero format
-Download the chosen URL to a temp file with an authenticated request (private-repo
-attachments require it):
-`curl -fsSL -H "Authorization: token ${GH_TOKEN:-$GITHUB_TOKEN}" -o /tmp/hero-src "<url>"`.
+Download the chosen URL to a temp file. Private-repo attachments require an
+authenticated request — e.g.
+`curl -fsSL -H "Authorization: token ${GH_TOKEN:-$GITHUB_TOKEN}" -o /tmp/hero-src "<url>"`
+(public attachment hosts need no auth; use whatever authenticated fetch the
+run-system provides if no token env var exists).
 Validate the bytes are a real raster image (`file /tmp/hero-src` → JPEG/PNG/WebP).
 REJECT anything that is HTML, SVG, or an error page — if invalid, do not commit;
 comment on the PR that the attachment could not be read and ask for a re-upload,
@@ -103,9 +112,9 @@ file the human also attached.
 ## Step 5 — Commit + push (NOT merge, NOT deploy)
 - `git add public/hero-<slug>.jpg`
 - Commit: `asset: hero image for <slug>` with trailer
-  `Co-Authored-By: Oz <oz-agent@warp.dev>`.
-- Push the existing `growth/post-<slug>` branch. Do NOT touch `main`. Do NOT run
-  `gh pr merge`, `./manage.sh blog:deploy`, or any deploy.
+  `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`.
+- Push the existing `growth/post-<slug>` branch. Do NOT touch `main`. Do NOT
+  merge the PR, and never run `./manage.sh blog:deploy` or any deploy.
 
 ## Step 6 — Confirm on the PR and stop
 Post one PR comment confirming the handoff is complete: the placed path
@@ -117,16 +126,19 @@ Do NOT change the PR's draft/ready state — the editor loop (`./editor.md`) own
 the draft→ready flip. If the PR is still a draft awaiting editorial review, leave
 it a draft.
 
-Then, for promptness, BEST-EFFORT hand off to the merge-runner (`./merge-runner.md`,
-CADENCE §3.12): placing the hero clears the last gate, so the post is now ready to
-merge if it is also editor-approved. If the `oz` CLI is available in this
-environment, trigger it on demand:
-`oz agent run-cloud --environment "$OZ_ENVIRONMENT_ID" --prompt "Read growth/briefs/merge-runner.md and execute it."`
-If `oz` is not available or the call fails, do NOT error — the hourly merge-runner
-sweep (§3.12) will pick the PR up within the hour. You never merge or deploy
-yourself; you only place the asset and optionally nudge the merge-runner.
+Then hand off to the merge-runner (`./merge-runner.md`, CADENCE §3.12):
+placing the hero clears the last gate, so the post is now ready to merge if it
+is also editor-approved. If you are running as the publish-pipeline routine
+(RUNBOOK §3), the merge-runner brief executes NEXT IN THIS SAME RUN — simply
+proceed to it. If you are running standalone and the run-system exposes an
+on-demand trigger for the merge-runner loop (RUNBOOK §5), fire it best-effort;
+if that is not possible, do NOT error — the hourly sweep (§3.12) picks the PR
+up within the hour. Executing this brief, you never merge or deploy; you only
+place the asset and hand off.
 
-STOP and report the PR number + the placed hero path to the orchestrator.
+Report the PR number + the placed hero path to the orchestrator, then end
+this brief (in the publish-pipeline routine, `./merge-runner.md` executes
+next; standalone, this is the end of the run).
 
 ## Hard constraints
 - Never GENERATE, fabricate, paint, or AI-synthesize a hero image, and never

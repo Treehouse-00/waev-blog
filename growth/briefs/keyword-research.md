@@ -73,8 +73,10 @@ Do not modify or reorder existing entries; only append.
 ## Step 5 — Hand off (calendar-pr)
 - Commit `../keyword-map.md` + the `../calendar.yaml` additions. Message:
   `keywords: propose <N> slots (<segments>)` with trailer
-  `Co-Authored-By: Oz <oz-agent@warp.dev>`.
-- Push and open a DRAFT PR (`gh pr create --draft`). Body MUST list each
+  `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`.
+- Push and open a DRAFT PR (GitHub MCP `create_pull_request` with
+  `draft: true`, or `gh pr create --draft` where the CLI exists). Body MUST
+  list each
   proposed slot (keyword/segment/funnel/date) with its one-line rationale and
   note what was rejected as already-covered.
 - STOP. Human merge accepts the slots into the calendar (gate: human-merge),

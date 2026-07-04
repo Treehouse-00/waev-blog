@@ -25,7 +25,7 @@ Conventions used below:
 - **PASS** — the boolean that must hold.
 - **Fix** — the exact source file/location to edit when the rule FAILS.
 - **Severity** — `blocker` (auditor must fix in-PR before merge) ·
-  `major` (fix in-PR if mechanical, else open a `gh` issue) ·
+  `major` (fix in-PR if mechanical, else open a GitHub issue) ·
   `minor` (batch into the next audit PR).
 
 A post or page **passes the playbook** only when every `blocker` and `major`
@@ -437,6 +437,6 @@ For each run the `seo-auditor` agent MUST:
 2. Evaluate every rule in §§1–6 against `dist/`, emitting one JSON result line
    per (rule, url): `{ "id", "url", "pass", "severity", "evidence" }`.
 3. Fix every FAILing `blocker` (and mechanical `major`) in the same PR, naming
-   each rule ID in the PR body. Open a `gh` issue for non-mechanical `major`
+   each rule ID in the PR body. Open a GitHub issue for non-mechanical `major`
    fixes and for every rule flagged `human-approval` (SD-06, MT-07, SM-04).
 4. Never deploy. Never edit `main`. Hand off per `./briefs/seo-auditor.md`.

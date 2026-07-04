@@ -1,248 +1,253 @@
-# RUNBOOK.md — provisioning the Waev Growth OS on Oz
+# RUNBOOK.md — provisioning the Waev Growth OS on Claude Routines
 
-Reproducible, copy-pasteable setup for the autonomous Growth OS loops. Run
-these once from a terminal that has the `oz` CLI installed and authenticated
-(`oz help` to verify). Placeholders look like `<THIS>` — replace them; never
-paste secret values into a committed file.
+Reproducible setup for the autonomous Growth OS loops, running as **Claude
+Routines** — scheduled triggers that fire a fresh Claude Code cloud session in
+an environment attached to this repo (claude.ai/code). Placeholders look like
+`<THIS>` — replace them; never paste secret values into a committed file.
 
-The Growth OS is a set of **scheduled cloud agents**. Each loop is one
-`oz schedule` whose prompt tells the agent to read and execute a brief in
-`growth/briefs/`. Agents only ever PROPOSE (PR / report) — the existing date
-gate + deploy Action (`.github/workflows/scheduled-publish.yml`) is what
-actually ships merged posts. No loop here deploys.
+The Growth OS is a set of **scheduled cloud agents**. Each routine's prompt
+tells the agent to read and execute a brief in `growth/briefs/` — the brief
+stays the single source of truth for what the loop does, and the scheduler
+stays a dumb trigger. Loops PROPOSE (PR / report); the only loop that merges
+is the publish-pipeline routine executing CADENCE §3.12, and **no loop
+deploys** — the existing date gate + deploy Actions
+(`.github/workflows/deploy.yml`, `scheduled-publish.yml`) are what actually
+ship merged posts.
 
-## 0. Prerequisites
+`growth/CADENCE.md` §3 is the authority on which loops exist and when they
+fire; this file only records how to register them on Claude. If CADENCE
+changes, update the routines to match.
 
-```bash
-oz help                       # confirm the CLI is installed + authenticated
-oz environment list --output-format text
-oz schedule list --output-format text
-```
+## 0. What runs where
 
-You also need: a Google Cloud service account with the Search Console API
-enabled and granted read access to the `waev.app` property; a Cloudflare API
-token with `Zone Analytics:Read` covering the `waev.app` zone (an
-`Account Analytics:Read` token that covers the zone also works); (optional) a
-Perplexity API key for the AEO metric. Referrer-host filtering used by the
-north-star metric requires a **paid** Cloudflare plan (see `MEASUREMENT.md`).
+| Concern | Runs on | Defined in |
+| --- | --- | --- |
+| All Growth OS loops (draft, edit, hero, merge, audits, reports) | Claude Routines (fresh session per firing) | §3 below |
+| Deploy on push to `main` | GitHub Actions | `.github/workflows/deploy.yml` |
+| Daily 13:00 UTC publish rebuild (date-gated launch, CADENCE §3.1) | GitHub Actions | `.github/workflows/scheduled-publish.yml` |
+| Hero-present gate on content PRs (CHARTER gate 2) | GitHub Actions | `.github/workflows/hero-asset-check.yml` |
+
+**One trigger per loop.** The former Oz (`oz schedule`) deployment and the
+`growth-weekly.yml` Action variant of the seo-auditor are superseded by the
+routines below — decommission them (§6) so no loop has two triggers opening
+duplicate PRs.
 
 ## 1. Create the environment
 
-The environment checks out THIS repo and installs deps so every loop starts
-ready to build and open PRs. Node 24 matches `.nvmrc`.
+In **claude.ai/code → Environments**, create (or reuse) an environment for the
+Growth OS:
 
-```bash
-oz environment create \
-  --name "waev-growth-os" \
-  --docker-image "warpdotdev/dev-web:latest-agents" \
-  --repo "<ORG>/waev-blog" \
-  --setup-command "cd /workspace/waev-blog && npm install --no-audit --no-fund" \
-  --output-format text
-# -> note the returned ENV_ID, e.g. UA17BXYZ. Used below as <ENV_ID>.
-```
+- **Repository:** `<ORG>/waev-blog` (the canonical repo — routines act on it
+  through Claude's GitHub integration, so no `gh` CLI or PAT is needed).
+- **Setup script:** runs on container start so every loop begins ready to
+  build and open PRs. Node 24 matches `.nvmrc` (Claude cloud images ship it).
 
-`--repo` takes `owner/repo` (not a URL) and may be repeated. `--docker-image`
-(`-d`) is the image flag. Two gotchas, both learned the hard way:
-- The setup command does **not** run from the repo root — the repo clones to
-  `/workspace/<repo>`, so the command must `cd` there first or `npm` finds no
-  `package.json` and fails in ~5s. `dev-web:latest-agents` already ships Node 24,
-  so no `nvm` step is needed.
-- Use `npm install`, not `npm ci`: a `package-lock.json` generated on macOS can
-  omit the Linux-native optional deps that `npm ci` strictly requires, so `npm
-  ci` fails on the Linux image while `npm install` resolves them.
-Confirm:
+  ```bash
+  npm install --no-audit --no-fund
+  # Needed only by the publish-pipeline routine (hero normalization):
+  which magick || which convert || sudo apt-get install -y --no-install-recommends imagemagick
+  ```
 
-```bash
-oz environment get <ENV_ID> --output-format text
-```
+  Use `npm install`, not `npm ci`: a `package-lock.json` generated on macOS
+  can omit Linux-native optional deps that `npm ci` strictly requires.
+- **Network:** allow outbound HTTPS — the writer/editor/competitive loops
+  verify claims via web search, and the analytics loop calls the Google and
+  Cloudflare APIs.
+- **Environment variables:** the secrets in §2.
 
-## 2. Set required secrets
+Note the environment name/id — every routine in §3 is created **in this
+environment** so its fresh sessions start with the repo cloned and deps
+installed.
 
-Secrets are stored by Oz, never in the environment or this repo. Provide each
-from a file so the value never lands in shell history. The cloud agent reads
-them as environment variables of the same name (see `MEASUREMENT.md` pulls).
+## 2. Secrets (environment variables — never in this repo)
 
-```bash
-# Google Search Console — service-account JSON (the whole key file):
-oz secret create GSC_SERVICE_ACCOUNT_JSON --team \
-  --value-file ./gsc-service-account.json \
-  --description "GSC API service account for the analytics-reporter loop"
+Set these in the environment's **Environment variables** (claude.ai/code →
+Environments → your environment → Environment variables / secrets). Agent
+sessions read them as env vars of the same name (see `MEASUREMENT.md` pulls).
+Only the analytics-reporter loop needs them; every other loop runs without
+secrets.
 
-# Cloudflare Analytics (north-star + blog traffic):
-oz secret create CF_ANALYTICS_TOKEN --team \
-  --value-file ./cf-analytics-token.txt \
-  --description "Cloudflare Account Analytics:Read token"
+| Variable | Used by | What it is |
+| --- | --- | --- |
+| `GSC_SERVICE_ACCOUNT_JSON` | analytics-reporter | Google service-account key JSON (whole file contents); Search Console API enabled, read access to the `waev.app` property |
+| `CF_ANALYTICS_TOKEN` | analytics-reporter | Cloudflare token with `Zone Analytics:Read` covering the `waev.app` zone (an `Account Analytics:Read` token that covers the zone also works) |
+| `CF_ACCOUNT_ID` | analytics-reporter | Cloudflare account id (GraphQL analytics) |
+| `CF_ZONE_ID` | analytics-reporter | Zone id for `waev.app` (`zoneTag` in the north-star referral query) |
+| `PERPLEXITY_API_KEY` | analytics-reporter (optional) | Perplexity sonar key for the AEO citation probe |
 
-# Cloudflare account id:
-oz secret create CF_ACCOUNT_ID --team \
-  --value-file ./cf-account-id.txt \
-  --description "Cloudflare account id for GraphQL analytics"
+Referrer-host filtering used by the north-star metric requires a **paid**
+Cloudflare plan (see `MEASUREMENT.md`).
 
-# Cloudflare zone id for waev.app (needed by the north-star referral query):
-oz secret create CF_ZONE_ID --team \
-  --value-file ./cf-zone-id.txt \
-  --description "Cloudflare Zone ID for waev.app (zoneTag in GraphQL analytics)"
+Unchanged and separate: the **GitHub Actions repo secrets**
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` stay in Settings → Secrets
+→ Actions — they belong to the deploy workflows, and no Growth OS loop ever
+reads them. `WARP_API_KEY` (Oz) can be deleted after §6.
 
-# Optional — answer-engine (AEO) probe metric:
-oz secret create PERPLEXITY_API_KEY --team \
-  --value-file ./perplexity-key.txt \
-  --description "Perplexity sonar key for AEO citation probing"
-```
+## 3. Create the routines
 
-Then delete the local key files: `rm ./gsc-service-account.json
-./cf-analytics-token.txt ./cf-account-id.txt ./cf-zone-id.txt ./perplexity-key.txt`.
+One routine per CADENCE loop, except §3.11 + §3.12 which share the single
+`waev-publish-pipeline` routine (the image-handler brief hands off to the
+merge-runner brief in the same run, so a landed hero merges in the same hour
+it is placed). All crons are UTC, mirror `growth/CADENCE.md` §3 verbatim, and
+land **after** the 13:00 UTC scheduled-publish rebuild where order matters.
+The hourly pipeline cron satisfies both the §3.12 hourly backstop and the
+§3.11 max-latency bound (which was 2-hourly).
 
-Verify (names only — values are never printed):
+Create each routine either in the **claude.ai/code Routines UI** or from any
+Claude session running in this environment (the session-side trigger tools
+take the same fields). Every routine uses **fresh-session-per-firing** in the
+§1 environment, with the exact name / cron / prompt below. Prompts are
+standalone — a fresh session has no prior context.
 
-```bash
-oz secret list --output-format text
-```
+| Routine | Cron (UTC) | CADENCE |
+| --- | --- | --- |
+| `waev-content-writer` | `0 14 * * 0,2,4` | §3.2 |
+| `waev-editor` | `0 18 * * 0,2,4` | §3.10 |
+| `waev-publish-pipeline` | `0 * * * *` | §3.11 + §3.12 |
+| `waev-seo-auditor-weekly` | `0 14 * * 2` | §3.3 |
+| `waev-competitive-monitor` | `0 14 * * 3` | §3.5 |
+| `waev-analytics-reporter` | `0 15 1 * *` | §3.4 |
+| `waev-seo-audit-monthly` | `0 15 1 * *` | §3.6 |
+| `waev-link-distribution` | `0 15 5 * *` | §3.7 |
+| `waev-keyword-research` | `0 16 21 1,4,7,10 *` | §3.8 |
+| `waev-competitive-deep-audit` | `0 16 28 2,5,8,11 *` | §3.9 |
 
-## 3. Create the recurring loops
+Prompts (verbatim). Each begins with the same bootstrap sentence so a firing
+survives an environment that did not pre-clone the repo:
+`If the waev-blog repo is not already present in the workspace, clone
+<ORG>/waev-blog first and run npm install.`
 
-One `oz schedule` per loop defined in `growth/CADENCE.md`. Each prompt is the
-same minimal shape — read a brief and execute it — so the brief stays the
-single source of truth for what the agent does. All crons are UTC and chosen
-to land **after** the 13:00 UTC scheduled-publish rebuild where order matters.
+- **waev-content-writer** — `You are the Waev Growth OS content-writer loop
+  (growth/CADENCE.md §3.2). In the waev-blog repo, read
+  growth/briefs/content-writer.md and execute it end to end, including its
+  internal orchestration. Invariants: propose via one draft PR only; never
+  merge, never deploy, never post externally; leave npm run build green; if
+  no calendar slot is due or an open PR already covers the due slot, no-op.`
+- **waev-editor** — `You are the Waev Growth OS editor loop
+  (growth/CADENCE.md §3.10). In the waev-blog repo, read
+  growth/briefs/editor.md and execute it end to end, including its internal
+  orchestration. Invariants: revise the branch and flip draft→ready only;
+  never merge, never deploy; one PR per run; if no draft post PR awaits
+  review, no-op.`
+- **waev-publish-pipeline** — `You are the Waev Growth OS publish pipeline
+  (growth/CADENCE.md §3.11 + §3.12). In the waev-blog repo, first read
+  growth/briefs/image-handler.md and execute it, then read
+  growth/briefs/merge-runner.md and execute it. Invariants: never deploy;
+  never force-push, squash, or bypass required checks; only merge a ready,
+  editor-approved growth/post-* PR whose human-provided hero asset is present
+  and whose build is green; auto-resolve only the two known-safe conflict
+  classes; a missing hero is a SILENT no-op (never mark it blocked — the
+  human simply has not authorized yet); comment the blocked marker only for a
+  red build, an unsafe conflict, or a failing required check, per the briefs.
+  Most runs no-op — that is correct and cheap.`
+- **waev-seo-auditor-weekly** — `You are the Waev Growth OS weekly link &
+  crawl sweep (growth/CADENCE.md §3.3). In the waev-blog repo, read
+  growth/briefs/seo-auditor.md and execute it at WEEKLY scope. Invariants:
+  write the report under growth/reports/; a PR only for safe mechanical
+  fixes; never merge, never deploy; check for an existing report/PR for this
+  slot and no-op if found.`
+- **waev-competitive-monitor** — `You are the Waev Growth OS weekly
+  competitive watch (growth/CADENCE.md §3.5). In the waev-blog repo, read
+  growth/briefs/competitive-monitor.md and execute it at WEEKLY scope
+  (material changes since the prior report only). Invariants: report only;
+  never post externally; no-op if this week's report already exists.`
+- **waev-analytics-reporter** — `You are the Waev Growth OS monthly analytics
+  reporter (growth/CADENCE.md §3.4). In the waev-blog repo, read
+  growth/briefs/analytics-reporter.md and execute it. Secrets arrive as
+  environment variables per growth/RUNBOOK.md §2. Invariants: report +
+  calendar PR only; never merge, never deploy; never invent a baseline; no-op
+  if this month's report already exists.`
+- **waev-seo-audit-monthly** — `You are the Waev Growth OS monthly full SEO
+  audit (growth/CADENCE.md §3.6). In the waev-blog repo, read
+  growth/briefs/seo-auditor.md and execute it at MONTHLY FULL-AUDIT scope
+  (technical + content + structured data + llms.txt canon consistency; the
+  calendar.yaml entry names the month's segment cluster). Invariants: report
+  to growth/reports/audit-<YYYY-MM>.md plus one mechanical-fix PR at most;
+  never merge, never deploy; no-op if this month's audit already exists.`
+- **waev-link-distribution** — `You are the Waev Growth OS monthly
+  distribution prep (growth/CADENCE.md §3.7). In the waev-blog repo, read
+  growth/briefs/link-distribution.md and execute it. Invariants: report only —
+  drafts and target venues; NEVER post to any external community, forum, or
+  social channel (human-approval gate); no-op if this month's report already
+  exists.`
+- **waev-keyword-research** — `You are the Waev Growth OS quarterly keyword
+  roadmap refresh (growth/CADENCE.md §3.8). In the waev-blog repo, read
+  growth/briefs/keyword-research.md and execute it. Invariants: one PR
+  editing only growth/calendar.yaml and growth/keyword-map.md — no post
+  bodies; never merge, never deploy; no-op if this quarter's refresh PR
+  already exists.`
+- **waev-competitive-deep-audit** — `You are the Waev Growth OS quarterly
+  competitive deep audit (growth/CADENCE.md §3.9). In the waev-blog repo,
+  read growth/briefs/competitive-monitor.md and execute it at QUARTERLY
+  DEEP-AUDIT scope (full positioning review vs. the competitive set, to
+  growth/reports/competitive-deep-<YYYY-Qn>.md). Invariants: report only;
+  never post externally; no-op if this quarter's deep audit already exists.`
 
-Crons below mirror `growth/CADENCE.md` §3 verbatim — CADENCE is the authority on
-which loops exist and when; if it changes, update these to match.
+Enable **completion notifications** (push and/or email) so failed or
+noteworthy runs surface without polling — fresh-session routines only notify
+when a run ends with something noteworthy, so the hourly pipeline's no-op
+runs stay quiet.
 
-```bash
-# Content drafting — Sun/Tue/Thu 14:00 UTC, the 3×/week grid (CADENCE §3.2).
-oz schedule create \
-  --name "waev-content-writer" \
-  --cron "0 14 * * 0,2,4" \
-  --prompt "Read growth/briefs/content-writer.md and execute it." \
-  --environment <ENV_ID>
-
-# Editorial review — Sun/Tue/Thu 18:00 UTC, ~4h after drafting (CADENCE §3.10).
-# The internal review cycle: independently fact-checks + revises each draft post
-# PR and flips it draft→ready, so the human gate is a cursory gut-check + the
-# hero-image pass only. Runs after content-writer on the same days.
-oz schedule create \
-  --name "waev-editor" \
-  --cron "0 18 * * 0,2,4" \
-  --prompt "Read growth/briefs/editor.md and execute it." \
-  --environment <ENV_ID>
-
-# Hero-image placement — every 2 hours UTC (CADENCE §3.11). The last-mile asset
-# loop: it picks up a hero image a human attached to a draft post PR comment,
-# normalizes it, and commits public/hero-<slug>.jpg to the branch so the
-# `Hero asset check` clears. Most runs no-op; the cron only bounds how long a
-# human waits after attaching. Needs `gh` auth (to read comments + download the
-# attachment) and ImageMagick (`magick`/`convert`) in the environment image for
-# resize/compress — `dev-web:latest-agents` ships it; if a custom image does not,
-# the brief falls back to committing an already-web-sized JPEG verbatim.
-oz schedule create \
-  --name "waev-image-handler" \
-  --cron "0 */2 * * *" \
-  --prompt "Read growth/briefs/image-handler.md and execute it." \
-  --environment <ENV_ID>
-
-# Merge-runner — hourly UTC (CADENCE §3.12). The publish-execution loop: once a
-# human has authorized a post by attaching its hero image and every automated
-# gate is green (editor-approved, hero present, build clean), it brings main in
-# (auto-resolving only the ledger union + own-slot calendar status), re-builds,
-# and merges the PR — the deploy Action + date gate then ship it. It NEVER
-# deploys. Hourly is the backstop; the image-handler also triggers it on demand
-# the moment a hero lands, so most posts merge within minutes. Needs `gh` auth.
-oz schedule create \
-  --name "waev-merge-runner" \
-  --cron "0 * * * *" \
-  --prompt "Read growth/briefs/merge-runner.md and execute it." \
-  --environment <ENV_ID>
-
-# Weekly SEO link & crawl sweep — Tuesdays 14:00 UTC (CADENCE §3.3).
-oz schedule create \
-  --name "waev-seo-auditor" \
-  --cron "0 14 * * 2" \
-  --prompt "Read growth/briefs/seo-auditor.md and execute it." \
-  --environment <ENV_ID>
-
-# Weekly competitive watch — Wednesdays 14:00 UTC (CADENCE §3.5).
-oz schedule create \
-  --name "waev-competitive-monitor" \
-  --cron "0 14 * * 3" \
-  --prompt "Read growth/briefs/competitive-monitor.md and execute it." \
-  --environment <ENV_ID>
-
-# Monthly analytics report + thresholds — 1st of month 15:00 UTC (CADENCE §3.4).
-oz schedule create \
-  --name "waev-analytics-reporter" \
-  --cron "0 15 1 * *" \
-  --prompt "Read growth/briefs/analytics-reporter.md and execute it." \
-  --environment <ENV_ID>
-
-# Monthly distribution prep — 5th of month 15:00 UTC (CADENCE §3.7).
-oz schedule create \
-  --name "waev-link-distribution" \
-  --cron "0 15 5 * *" \
-  --prompt "Read growth/briefs/link-distribution.md and execute it." \
-  --environment <ENV_ID>
-
-# Quarterly keyword roadmap refresh — 21st Jan/Apr/Jul/Oct 16:00 UTC (CADENCE §3.8).
-oz schedule create \
-  --name "waev-keyword-research" \
-  --cron "0 16 21 1,4,7,10 *" \
-  --prompt "Read growth/briefs/keyword-research.md and execute it." \
-  --environment <ENV_ID>
-
-# Editorial review — Sun/Tue/Thu 18:00 UTC, ~4h after content drafting (CADENCE §3.10).
-# The internal review cycle: fact-checks + revises draft post PRs, then flips draft->ready
-# so the human gate is a cursory gut-check + hero-image pass only.
-oz schedule create \
-  --name "waev-editor" \
-  --cron "0 18 * * 0,2,4" \
-  --prompt "Read growth/briefs/editor.md and execute it." \
-  --environment <ENV_ID>
-```
-
-> `growth/CADENCE.md` §3 also defines the monthly full SEO audit (§3.6, reuses
-> `seo-auditor.md`) and the quarterly competitive deep audit (§3.9, reuses
-> `competitive-monitor.md`). Register those the same way if you want them on a
-> separate cron from their weekly counterparts. Keep CADENCE.md as the single
-> authority on the loop set and crons.
+> **Provisioned state (2026-07-04):** all ten routines above were created in
+> environment `env_01NikYkL9rtvfCZMWwSQo6hw` with push notifications on, and
+> left **disabled**. Enable them (Routines UI toggle) only after (a) this
+> runbook's branch is merged to `main` so firings read the current briefs,
+> and (b) the old Oz schedules are decommissioned (§6).
 
 ## 4. Inspect & operate
 
-```bash
-oz schedule list --output-format text          # all loops + most recent run
-oz schedule get <SCHEDULE_ID> --output-format text
-oz run list --output-format text               # recent runs across loops
-oz run get <RUN_ID> --output-format text       # one run's detail + output
-
-# JSON for scripting / dashboards:
-oz run list --output-format json | jq '.[] | {id, status, created_at}'
-```
-
-To pause/remove a loop (e.g. during a content freeze):
-
-```bash
-oz schedule delete <SCHEDULE_ID>
-```
+- **Routines UI** (claude.ai/code → Routines): last run per routine, run
+  history, pause/resume, edit cron/prompt, run now.
+- From any Claude session in the environment, the trigger tools do the same:
+  list routines, enable/disable, update cron, delete.
+- **Pause during a content freeze** by disabling the routine (keep it stored);
+  delete only when retiring a loop — and update `CADENCE.md` §3 first, which
+  is a human-gated change (CADENCE §4).
+- Each firing is an ordinary Claude Code session — open it from the run
+  history to read the full transcript when a loop misbehaves.
 
 ## 5. One-off / manual trigger
 
 To run a loop immediately without waiting for its cron (e.g. to test a brief
-edit):
+edit): **Run now** on the routine in the Routines UI, or fire the trigger
+from any Claude session in the environment. You can attach a one-line note to
+a manual firing (e.g. `Process PR #81 first`) — it arrives as an extra
+message after the routine's prompt.
 
-```bash
-oz agent run-cloud \
-  --environment <ENV_ID> \
-  --prompt "Read growth/briefs/seo-auditor.md and execute it."
-# -> Spawned agent with run ID: <RUN_ID>;  then: oz run get <RUN_ID>
-```
+**The instant-publish path:** after you drag-and-drop a post's hero image
+into its PR comment (CHARTER gate 2 — that act is the publish authorization),
+fire `waev-publish-pipeline` manually and the image lands + the PR merges
+within minutes instead of at the top of the hour. The hourly cron remains the
+backstop, so doing nothing is also fine.
+
+## 6. Decommission the previous run-systems (one-time)
+
+Do this once the routines above are live, so each loop has exactly one
+trigger:
+
+1. **Oz schedules:** `oz schedule list --output-format text`, then
+   `oz schedule delete <SCHEDULE_ID>` for every `waev-*` schedule. Optionally
+   delete the Oz environment and secrets (`oz secret list`).
+2. **`growth-weekly.yml`:** removed from `.github/workflows/` in the same
+   change that introduced this runbook (it was the Action variant of the
+   weekly seo-auditor).
+3. **Repo secret `WARP_API_KEY`:** delete from Settings → Secrets → Actions.
+4. Keep `deploy.yml`, `scheduled-publish.yml`, and `hero-asset-check.yml` —
+   they are the deploy/publish/gate layer, not Growth OS loops (§0).
 
 ## Notes & invariants
-- Loops PROPOSE only. They open PRs or write `growth/reports/*`; a human merge
-  publishes. Distribution to external communities is a separate
-  human-approval gate — no loop posts to communities autonomously.
-- The weekly seo-auditor also runs as a GitHub Action variant in
-  `.github/workflows/growth-weekly.yml` (uses `secrets.WARP_API_KEY`) for
-  teams that prefer CI-cron over `oz schedule`. Pick one trigger per loop to
-  avoid duplicate PRs.
-- Never commit secret values. `oz secret` is the only store; environments and
-  this repo hold none.
-- Replace every `<PLACEHOLDER>`: `<ORG>`, `<ENV_ID>`, `<SCHEDULE_ID>`,
-  `<RUN_ID>`.
+
+- Loops PROPOSE only. They open PRs or write `growth/reports/*`; the
+  publish-pipeline routine merges **only** a hero-present, editor-approved
+  content post (the human's hero image is the authorization — CHARTER
+  gate 2), and nothing here deploys: merge → `deploy.yml` → date gate →
+  `scheduled-publish.yml` is the only path to production.
+- No loop posts to external communities autonomously (CHARTER gate 3).
+- One trigger per loop — never run a routine and a leftover Oz schedule or
+  Action for the same brief in parallel (duplicate PRs).
+- Never commit secret values. Environment variables (§2) are the only store;
+  this repo holds none.
+- The writer and editor briefs define their own internal agent orchestration
+  (parallel research / adversarial verification). That happens **inside** a
+  single routine firing — it needs no extra scheduling here.
+- Replace every `<PLACEHOLDER>`: `<ORG>`, ids/names of your environment.

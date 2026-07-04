@@ -16,7 +16,7 @@ marked `MANUAL-GATE` and the agent records `null` rather than guessing.
 # growth/measurement.config — referenced by the analytics-reporter brief.
 gsc_property: "sc-domain:waev.app"        # GSC property (domain property recommended)
 gsc_page_filter: "https://blog.waev.app/" # restrict Search Console rows to the blog
-cf_zone_tag: "$CF_ZONE_ID"               # Cloudflare Zone ID — read from the CF_ZONE_ID oz secret.
+cf_zone_tag: "$CF_ZONE_ID"               # Cloudflare Zone ID — read from the CF_ZONE_ID env var (RUNBOOK §2).
                                           # blog.waev.app is a subdomain inside this zone, so
                                           # the GraphQL `zoneTag` is this ID — NOT a hostname.
                                           # If the app is served from a *different* Cloudflare
@@ -107,8 +107,8 @@ Each row: metric · source · pull method · what it tells the agent.
 ### How the agent pulls GSC (shared by metrics 1–4)
 
 GSC has no API-key auth; you mint a short-lived token from the service-account
-JSON (`$GSC_SERVICE_ACCOUNT_JSON`, provisioned via `oz secret` — see
-`./RUNBOOK.md` §2), then POST to `searchAnalytics.query`. For metrics 1–3 query
+JSON (`$GSC_SERVICE_ACCOUNT_JSON`, provisioned as an environment variable —
+see `./RUNBOOK.md` §2), then POST to `searchAnalytics.query`. For metrics 1–3 query
 with `dimensions:["date"]` and sum the totals; for metric 4 use
 `dimensions:["query"]`. Recompute CTR from summed clicks/impressions — never
 average GSC's per-row CTR.
@@ -338,4 +338,4 @@ PR. Silence is a valid, expected outcome.
   against GSC and Cloudflare *zone* analytics (no RUM beacon); the near-zero-JS
   blog is untouched.
 - Secret values (API tokens) are read from the environment, never committed.
-  See `./RUNBOOK.md` for provisioning them via `oz secret`.
+  See `./RUNBOOK.md` §2 for provisioning them as environment variables.

@@ -14,22 +14,41 @@ inputs:
   - ../../src/content/blog/
   - ../../src/components/viz/
 outputs: pr
-gate: human-merge
+gate: os-merge
 ---
 
 # Brief: content-writer
 
 You are the content-writer agent for `blog.waev.app`. You write ONE post per
 run, from an existing calendar slot, as a pull request. You never deploy and
-never merge — human merge is publication (AGENT.md Invariant 1).
+never merge — publication follows the `os-merge` gate: the human authorizes by
+providing the hero image, and the merge-runner loop executes the merge
+(CHARTER gate 2; CADENCE §1; AGENT.md Invariant 1).
 
 ## Preconditions
-1. `cd` into the repo root (the `waev-blog` checkout). Run `nvm use`.
+1. Work from the repo root (the `waev-blog` checkout) on Node 24 (`.nvmrc` —
+   run `nvm use` if the environment does not already provide it).
 2. Read every file in `inputs`. `../../src/pages/llms.txt.ts` Key facts are
    FACTUAL CANON — nothing you write may contradict them. `../VOICE.md` is the
    BINDING voice law: obey it directly (this brief does not restate or weaken
    its rules), and you MUST pass its "Pre-PR self-verify checklist" before
    opening the PR. `../STRATEGY.md` governs segment + funnel framing.
+
+## Internal orchestration (how to work, when your run-system supports subagents)
+Quality scales with independent context, not with one long pass. If you can
+spawn subagents (e.g. Claude's Agent/Workflow tools), structure the run as:
+1. **Parallel research fan-out, before drafting:** (a) canon + corpus — what
+   existing posts say near this keyword, which posts to internally link, what
+   the corpus has NOT covered; (b) demand + intent — what the `primary_keyword`
+   searcher actually needs, verified against primary sources per Step 5;
+   (c) hero-concept survey — the `../image-concepts.md` ledger + existing
+   `hero.alt` values, returning the saturated motifs to avoid.
+2. **Draft yourself** in one context, from those findings.
+3. **Independent self-review pass:** a fresh-context reviewer runs the
+   `../VOICE.md` checklist and Step 6 rules against the draft before the PR
+   opens — it must not see your reasoning, only the draft.
+If no subagent facility exists, do the same three phases sequentially
+yourself. Either way the outputs and gates below are unchanged.
 
 ## Step 1 — Select the slot (deterministic)
 Parse `../calendar.yaml`. You draft the BACKLOG, never the already-shipped
@@ -188,11 +207,12 @@ change any other entry. Keep your appended `../image-concepts.md` row.
 ## Step 8 — Open the PR (no deploy)
 - Commit: `git add` the new `.mdx`, any new viz component, the `../calendar.yaml`
   edit, AND the `../image-concepts.md` row. Commit message: `post: <title>` with
-  trailer `Co-Authored-By: Oz <oz-agent@warp.dev>`.
-- Push `growth/post-<slug>` and open a DRAFT PR with `gh pr create --draft`. The
-  PR stays a DRAFT on purpose: the editor loop (`./editor.md`) independently
-  reviews and revises it, then flips it to ready-for-review. Do NOT mark it ready
-  yourself.
+  trailer `Co-Authored-By: Waev Growth OS <growth-os@waev.app>`.
+- Push `growth/post-<slug>` and open a DRAFT PR using whatever GitHub tooling
+  the run-system provides (GitHub MCP `create_pull_request` with `draft: true`,
+  or `gh pr create --draft` where the CLI exists). The PR stays a DRAFT on
+  purpose: the editor loop (`./editor.md`) independently reviews and revises it,
+  then flips it to ready-for-review. Do NOT mark it ready yourself.
 - The PR body MUST open with this block, so the human handoff is unmissable:
   `## 🎨 HERO IMAGE — HUMAN ACTION REQUIRED BEFORE MERGE`
   followed by the illustration prompt (verbatim), the target path
@@ -205,8 +225,10 @@ change any other entry. Keep your appended `../image-concepts.md` row.
 - Below that, list: the slot (date/segment/funnel/`bucket`/`theme`/keywords), one
   sentence on how the piece ladders its niche up to the `theme`, the SEO-PLAYBOOK
   rules you verified, and the internal posts you linked.
-- STOP. Human merge publishes (gate: human-merge). Report the branch + PR URL
-  to the orchestrator.
+- STOP. Publication follows the `os-merge` gate (CADENCE §1): the human
+  authorizes by providing the hero image, and the merge-runner loop executes
+  the merge once every automated gate is green. Report the branch + PR URL to
+  the orchestrator.
 
 ## Hard constraints
 - Never set `draft: true` to hide a finished post; use the `date` gate.
