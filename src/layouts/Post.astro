@@ -1,7 +1,13 @@
 ---
 import Base from "./Base.astro";
 import AuthorChip from "../components/AuthorChip.astro";
+import RelatedPosts from "../components/RelatedPosts.astro";
 import { BYLINE_AUTHORS } from "../data/authors";
+
+interface RelatedPost {
+  id: string;
+  data: { title: string; description: string };
+}
 
 interface Props {
   title: string;
@@ -14,6 +20,7 @@ interface Props {
   ogImage?: string;
   faq?: { q: string; a: string }[];
   hero?: { src: string; alt: string };
+  relatedPosts?: RelatedPost[];
 }
 
 const {
@@ -27,6 +34,7 @@ const {
   ogImage,
   faq = [],
   hero,
+  relatedPosts = [],
 } = Astro.props;
 
 // Social image precedence: explicit ogImage → hero illustration → default.
@@ -69,7 +77,28 @@ const faqPage =
         })),
       }
     : null;
-const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
+
+// SD-09: BreadcrumbList — Home → Post
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Waev Blog",
+      item: new URL("/", Astro.site).href,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: title,
+      item: pageUrl,
+    },
+  ],
+};
+
+const jsonLd = [...(faqPage ? [blogPosting, faqPage] : [blogPosting]), breadcrumb];
 ---
 
 <Base
@@ -77,6 +106,8 @@ const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
   description={description}
   type="article"
   publishedTime={date.toISOString()}
+  modifiedTime={updated?.toISOString()}
+  author={author}
   tags={tags}
   image={socialImage}
   jsonLd={jsonLd}
@@ -134,6 +165,8 @@ const jsonLd = faqPage ? [blogPosting, faqPage] : [blogPosting];
           </dl>
         </section>
       )}
+
+      <RelatedPosts posts={relatedPosts} />
 
       {updated && (
         <p class="post-meta" style="margin-top: var(--sp-10);">

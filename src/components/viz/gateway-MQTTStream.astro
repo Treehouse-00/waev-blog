@@ -1,0 +1,185 @@
+---
+/**
+ * gateway-MQTTStream — illustrates the live MQTT packet stream an enrolled
+ * observer publishes to the broker. Shows four representative packet rows
+ * with callout annotations for the key fields: origin/node, route type
+ * (flood vs. direct), hop count, SNR, and packet hash.
+ * Pure CSS + HTML, no client JS. Theme-aware via CSS custom properties.
+ */
+---
+<figure
+  class="gw-stream"
+  aria-label="MQTT packet stream panel showing four packets published by a MeshCore observer. Each row shows a timestamp, source node name, route type, hop count, and SNR reading."
+>
+  <!-- Terminal header -->
+  <div class="gw-header">
+    <span class="gw-cmd">$ mosquitto_sub -h your-broker -p 8883 -t&nbsp;<span class="gw-topic">meshcore/SEA/4a8b…/packets</span>&nbsp;-v</span>
+  </div>
+
+  <!-- Packet rows -->
+  <div class="gw-body">
+    <!-- Row 1: flood, 1 hop, strong -->
+    <div class="gw-row gw-row-alt">
+      <span class="gw-ts">14:22:07</span>
+      <span class="gw-node">relay-south</span>
+      <span class="gw-route gw-flood">FLOOD</span>
+      <span class="gw-hops">1 hop</span>
+      <span class="gw-snr gw-snr-good">+11 dB</span>
+    </div>
+    <!-- Row 2: flood, 2 hops, solid -->
+    <div class="gw-row">
+      <span class="gw-ts">14:22:09</span>
+      <span class="gw-node">relay-north</span>
+      <span class="gw-route gw-flood">FLOOD</span>
+      <span class="gw-hops">2 hops</span>
+      <span class="gw-snr gw-snr-good">+8 dB</span>
+    </div>
+    <!-- Row 3: flood, 3 hops, marginal -->
+    <div class="gw-row gw-row-alt">
+      <span class="gw-ts">14:22:11</span>
+      <span class="gw-node">repeater-hill</span>
+      <span class="gw-route gw-flood">FLOOD</span>
+      <span class="gw-hops">3 hops</span>
+      <span class="gw-snr gw-snr-warn">+3 dB</span>
+    </div>
+    <!-- Row 4: direct, 2 hops, solid -->
+    <div class="gw-row">
+      <span class="gw-ts">14:22:14</span>
+      <span class="gw-node">node-portable</span>
+      <span class="gw-route gw-direct">DIRECT</span>
+      <span class="gw-hops">2 hops</span>
+      <span class="gw-snr gw-snr-good">+6 dB</span>
+    </div>
+  </div>
+
+  <!-- Field legend -->
+  <div class="gw-legend">
+    <span class="gw-leg-item"><span class="gw-leg-dot gw-leg-node"></span>source node</span>
+    <span class="gw-leg-item"><span class="gw-leg-dot gw-leg-route"></span>route type</span>
+    <span class="gw-leg-item"><span class="gw-leg-dot gw-leg-hops"></span>hop count</span>
+    <span class="gw-leg-item"><span class="gw-leg-dot gw-leg-snr"></span>SNR</span>
+  </div>
+</figure>
+
+<style>
+  .gw-stream {
+    margin: 1.5rem 0;
+    border: 1px solid var(--border, #d9d0c4);
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--mono, "JetBrains Mono", "Fira Mono", monospace);
+    font-size: 0.78rem;
+  }
+
+  /* Terminal-style header */
+  .gw-header {
+    background: var(--surface-sunken, #e8e2d8);
+    padding: 0.5rem 0.85rem;
+    border-bottom: 1px solid var(--border, #d9d0c4);
+    color: var(--text-muted, #7a6f62);
+    white-space: nowrap;
+    overflow-x: auto;
+    font-size: 0.72rem;
+  }
+  .gw-cmd {
+    color: var(--text-muted, #7a6f62);
+  }
+  .gw-topic {
+    color: var(--text-accent, #b57b3a);
+    font-weight: 600;
+  }
+
+  /* Packet rows */
+  .gw-body {
+    background: var(--surface-1, #fff);
+  }
+  .gw-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.45rem 0.85rem;
+    border-bottom: 1px solid var(--border-subtle, #ede8e0);
+  }
+  .gw-row:last-child {
+    border-bottom: none;
+  }
+  .gw-row-alt {
+    background: var(--surface-sunken, #f5f1eb);
+  }
+
+  .gw-ts {
+    color: var(--text-muted, #7a6f62);
+    flex: 0 0 6.5rem;
+    font-size: 0.72rem;
+  }
+  .gw-node {
+    color: var(--text, #2d2620);
+    font-weight: 600;
+    flex: 0 0 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .gw-route {
+    flex: 0 0 5.5rem;
+    font-size: 0.68rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .gw-flood {
+    background: #e8f0e0;
+    color: #3a6020;
+  }
+  .gw-direct {
+    background: #e0ecf8;
+    color: #1a4a78;
+  }
+  .gw-hops {
+    color: var(--text-muted, #7a6f62);
+    flex: 0 0 5rem;
+  }
+  .gw-snr {
+    font-weight: 700;
+    font-size: 0.82rem;
+  }
+  .gw-snr-good {
+    color: var(--accent-light, #5a8a3a);
+  }
+  .gw-snr-warn {
+    color: var(--sys-orangeyellow-600, #b57b3a);
+  }
+  .gw-snr-bad {
+    color: var(--sys-red-400, #c04040);
+  }
+
+  /* Legend */
+  .gw-legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.45rem 0.85rem;
+    border-top: 1px solid var(--border, #d9d0c4);
+    background: var(--surface-2, #f8f5f0);
+    font-family: var(--mono, monospace);
+    font-size: 0.68rem;
+    color: var(--text-muted, #7a6f62);
+  }
+  .gw-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .gw-leg-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .gw-leg-node  { background: var(--text, #2d2620); }
+  .gw-leg-route { background: #3a6020; }
+  .gw-leg-hops  { background: var(--text-muted, #7a6f62); }
+  .gw-leg-snr   { background: var(--accent-light, #5a8a3a); }
+</style>

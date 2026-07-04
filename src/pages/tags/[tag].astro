@@ -25,7 +25,7 @@ const fmt = (d: Date) =>
 // Human-readable label for the tag
 const label = tag.replace(/-/g, " ");
 
-const title = `${label.charAt(0).toUpperCase() + label.slice(1)} — Waev Blog`;
+const title = `Posts tagged "${label}" — Waev Blog`;
 const description = `Posts tagged "${label}" on the Waev Blog — field notes on MeshCore mesh network analytics, privacy-by-default, and operator tools.`;
 
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;

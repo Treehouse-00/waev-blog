@@ -1,0 +1,36 @@
+---
+/**
+ * RelatedPosts — static related-post links rendered after the FAQ section.
+ * Receives posts pre-computed by src/pages/blog/[...slug].astro (shared-tags
+ * first, then recency). No client JS — AGENT.md Invariant 2.
+ *
+ * IL-01: renders 2–4 <a href="/blog/<slug>/"> links to other published posts.
+ */
+
+interface RelatedPost {
+  id: string;
+  data: { title: string; description: string };
+}
+
+interface Props {
+  posts: RelatedPost[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <section class="related-posts" aria-labelledby="related-title">
+    <h2 class="related-title" id="related-title">Related posts</h2>
+    <ul class="related-list">
+      {posts.map((p) => (
+        <li class="related-item">
+          <a href={`/blog/${p.id}/`} class="related-link">
+            <span class="related-link-title">{p.data.title}</span>
+          </a>
+          <p class="related-link-desc">{p.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

@@ -35,18 +35,19 @@ const fmt = (d: Date) =>
     timeZone: "UTC",
   });
 
-// Blog schema for the index page
+// Blog schema for the index page — enumerates ALL published posts (SD-08)
 const blogSchema = {
   "@context": "https://schema.org",
   "@type": "Blog",
   "@id": new URL("/", Astro.site).href,
   name: "Waev Blog",
-  description: "Field notes on MeshCore mesh network analytics — SNR, coverage, data ownership, and privacy-by-default for ham radio operators, CERT teams, and emergency networks.",
+  description: "Field notes on MeshCore mesh network analytics — SNR, coverage, data ownership, and privacy-by-default for ham operators, CERT teams, and emergency networks.",
   url: new URL("/", Astro.site).href,
   inLanguage: "en",
   publisher: { "@id": new URL("/#org", Astro.site).href },
-  blogPost: posts.slice(0, 20).map((p) => ({
+  blogPost: posts.map((p, i) => ({
     "@type": "BlogPosting",
+    position: i + 1,
     headline: p.data.title,
     url: new URL(`/blog/${p.id}/`, Astro.site).href,
     datePublished: p.data.date.toISOString(),
@@ -56,7 +57,7 @@ const blogSchema = {
 
 <Base
   title="Waev Blog — MeshCore Mesh Network Analytics & Operations"
-  description="Field notes on MeshCore mesh network analytics — SNR, coverage, data ownership, and privacy-by-default for ham radio operators, CERT teams, and emergency networks."
+  description="Field notes on MeshCore mesh network analytics — SNR, coverage, data ownership, and privacy-by-default for ham operators, CERT teams, and emergency networks."
   image={ogImage}
   jsonLd={[blogSchema]}
 >
