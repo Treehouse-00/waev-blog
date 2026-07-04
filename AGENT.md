@@ -93,8 +93,10 @@ no args for the full env-override reference.
 6. **Factual canon.** Product claims must stay consistent with the "Key facts"
    in `src/pages/llms.txt.ts` (privacy markers ⛔ 🛑 🚫 → never stored;
    evidence-based topology from enrolled observers + authenticated repeaters;
-   bring-your-own-broker data ownership; contact `admin@waev.app`). If a fact
-   genuinely changes, update `llms.txt.ts` as the canonical source.
+   the never-captive stream — publish-only observer credentials, public read
+   API — for data ownership; contact `admin@waev.app`). BYOB (bring-your-own-
+   broker) is retired — never write it as shipped capability or roadmap. If a
+   fact genuinely changes, update `llms.txt.ts` as the canonical source.
 7. **Accessibility is non-negotiable.** Decorative images use `alt=""`; hero
    images carry a real `alt`. Viz components need appropriate ARIA / text
    alternatives. Recent work was an a11y refactor across all viz — do not
@@ -127,7 +129,7 @@ faq:                        # optional; renders section + FAQPage JSON-LD
 ```
 
 Conventions observed across existing posts:
-- Open with a short **`<div class="callout"><p><strong>In short.</strong> …</p></div>`**
+- Open with a short **`<div class="callout"><p><strong>TLDR:</strong> …</p></div>`**
   summary near the top — this is the answer-engine (AEO) hook.
 - Embed visuals via `<Figure caption="…"><SomeViz /></Figure>`; captions may
   contain inline HTML (`<b>`).

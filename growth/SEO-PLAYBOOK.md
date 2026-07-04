@@ -407,8 +407,8 @@ Existing posts (slugs for cross-linking): `bring-your-own-broker`,
        `identity-scrubbed at the ingest edge` (privacy by default);
     2. `enrolled observers` and `authenticated repeaters` and
        `Spoofed or inferred prefixes are rejected` (evidence-based topology);
-    3. `bring-your-own-broker` and `operators host their own MQTT broker`
-       (data ownership);
+    3. `publish-only` and `read API is public`
+       (data ownership — the never-captive stream);
     4. `admin@waev.app` (contact).
   - PASS: every listed substring is present in `dist/llms.txt`.
   - Fix: `src/pages/llms.txt.ts` — this file IS the canon; a missing/altered

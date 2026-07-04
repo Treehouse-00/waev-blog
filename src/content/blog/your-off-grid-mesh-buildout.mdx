@@ -1,6 +1,6 @@
 ---
 title: "Your Off-Grid Mesh Buildout"
-description: "An off-grid mesh network buildout doesn't have to start large. A homestead or rural property can be covered with three or four well-placed nodes, one observer, and a broker you own."
+description: "An off-grid mesh network buildout doesn't have to start large. A homestead or rural property can be covered with three or four well-placed nodes and one enrolled observer."
 date: 2026-06-09
 tags: ["off-grid", "field-notes"]
 hero:
@@ -12,11 +12,11 @@ faq:
   - q: "How many nodes do I need to cover a small homestead?"
     a: "Three to four nodes can cover most small properties: one observer at the main house, one repeater at a workshop or outbuilding, one node at a barn or far corner, and optionally a repeater on high ground. Start with two and add nodes when you find a gap — don't overbuild upfront."
   - q: "Do the nodes need to be connected to the internet?"
-    a: "Mesh nodes communicate with each other over LoRa radio and do not need an internet connection to relay packets. Your observer node does need internet access — via Wi-Fi, Ethernet, or a cellular modem — to push data to your MQTT broker, which is what Waev subscribes to."
-  - q: "What happens to my mesh data if I run my own broker?"
-    a: "When you run your own MQTT broker, you own the data. Waev connects to your broker as a read-only subscriber — it can see the packets your observer reports, but it cannot write to your broker or delete anything. If you stop using Waev, your data stays on your broker and you have full control over it."
-  - q: "Can I run the MQTT broker on the same site as the observer?"
-    a: "Yes. A small single-board computer running Mosquitto on the same local network as your observer works well for an off-grid setup. You can also run the broker on a small VPS if you want remote access to your Waev dashboard from anywhere, and point the observer's Wi-Fi uplink there."
+    a: "Mesh nodes communicate with each other over LoRa radio and do not need an internet connection to relay packets. Your observer node does need internet access — via Wi-Fi, Ethernet, or a cellular modem — to publish its packet stream to Waev's MQTT ingest."
+  - q: "What happens to my mesh data once my observer is enrolled?"
+    a: "Your observer publishes to Waev's ingest with a credential that is publish-only — it can send its own data and nothing else; it cannot subscribe to, read, alter, or delete anything on the broker. You read your data back out through a public read API, and the same observer stream can be pointed at other tools of your choosing using presets Waev ships in its own docs, so nothing about the stream is captive to Waev."
+  - q: "Do I need to host anything on-site besides the observer?"
+    a: "No. The observer needs an internet uplink — Wi-Fi, Ethernet, or a cellular modem — and enough power to run continuously, but it doesn't need a local server or broker running alongside it. A small single-board computer running the observer software on the same network as your nodes is enough for most off-grid setups."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -27,7 +27,7 @@ The node arrived in the mail on a Tuesday in October. By Thursday it was blinkin
 What comes next is the part this post is about: turning that first link into a network you actually own, that covers the places you need it to cover, and that you can see clearly without depending on anyone else's infrastructure.
 
 <div class="callout">
-<p><strong>In short.</strong> A practical off-grid mesh network buildout starts with two to four nodes, not twenty. One observer at your main location reports to a broker you control. Every packet that crosses the network stays on your infrastructure — from the radio to the MQTT broker to the Waev Live Map — without touching a cloud you didn't choose.</p>
+<p><strong>TLDR:</strong> A practical off-grid mesh network buildout starts with two to four nodes, not twenty. One enrolled observer at your main location publishes its packet stream directly to Waev — a publish-only credential that can send data and nothing else. Every packet that crosses the network is reported, not guessed at, from the radio to the Live Map.</p>
 </div>
 
 ## Start with two nodes and a real link
@@ -51,23 +51,23 @@ That's where a repeater node earns its place. In MeshCore, a repeater is a node 
 
 The best site for a repeater is high ground, if you have it. A node on a ridge or a roofline that can hear both the backbone link and the outlying nodes creates a bridge that would otherwise require a much longer point-to-point path. This is the same logic that governs where you'd put a VHF repeater for voice communications — the physics don't change because the frequency is lower.
 
-<Figure caption="A plan-view of a four-node off-grid buildout: an observer at the main house with an enrolled MQTT uplink, a repeater at the workshop, a node at the barn, and a repeater on high ground. Coverage circles show where the links overlap. The mesh works without internet; the observer pushes data over Wi-Fi to a self-hosted broker.">
+<Figure caption="A plan-view of a four-node off-grid buildout: an observer at the main house with an enrolled MQTT uplink, a repeater at the workshop, a node at the barn, and a repeater on high ground. Coverage circles show where the links overlap. The mesh works without internet; the observer publishes data over Wi-Fi directly to Waev's ingest.">
   <BuildoutLayoutMap />
 </Figure>
 
 ## The observer: the node that feeds Waev
 
-Not every node needs to report to MQTT. Most nodes in a MeshCore mesh just route packets. The observer is the specific node — usually one, occasionally two or three for a larger property — that also sends what it hears to your MQTT broker so Waev can see it.
+Not every node needs to report to MQTT. Most nodes in a MeshCore mesh just route packets. The observer is the specific node — usually one, occasionally two or three for a larger property — that also publishes what it hears to Waev's MQTT ingest so Waev can see it.
 
-In practical terms, this means the observer needs two things a plain repeater doesn't: internet connectivity (Wi-Fi, Ethernet, or cellular modem) and observer firmware or a bridge setup. Once it has those, every packet it hears — from every node it can reach, directly or through repeaters — flows to your broker, and Waev subscribes to that broker to draw the Live Map and populate the Live Packets feed.
+In practical terms, this means the observer needs two things a plain repeater doesn't: internet connectivity (Wi-Fi, Ethernet, or cellular modem) and observer firmware or a bridge setup. Once it has those, every packet it hears — from every node it can reach, directly or through repeaters — is published directly to Waev's own MQTT ingest (mqtt.waev.app), using a credential that is publish-only: it can send the observer's own data and nothing else, and it cannot subscribe to, read, alter, or delete anything on the broker. There is no operator-hosted broker in this path.
 
-One well-placed observer, typically at the main house or whichever site has the most reliable internet connection, is enough for most homestead buildouts. If your property is large enough that a single observer can't hear all your repeaters, you'll want a second one. But one is the right place to start.
+One well-placed observer, typically at the main house or whichever site has the most reliable internet connection, is enough for most homestead buildouts. If your property is large enough that a single observer can't hear all your repeaters, you'll want a second one. But one is the right place to start. The buildout's real milestone isn't wiring up a connection — it's the moment your enrolled observer reaches its first Proven edge on the Live Map.
 
-## The broker: what you own
+## The stream: never captive to Waev
 
-The MQTT broker is the part of this stack that you own completely. Mosquitto on a Raspberry Pi or a small VPS — or any other standard MQTT server — is all you need. Your observer sends to it; Waev subscribes to it read-only. If you stop using Waev, the broker keeps running and the data stays yours. If your internet connection goes down, the mesh keeps routing packets — it just doesn't update Waev until the connection comes back.
+Once your observer is enrolled, the data it publishes is never locked to Waev alone. You read it back out through a public read API, and the same observer stream can be pointed at other tools of your choosing, using presets Waev ships in its own docs. If your internet connection goes down, the mesh keeps routing packets locally — it just doesn't reach Waev until the connection comes back.
 
-This architecture is deliberate. [Waev's bring-your-own-broker model](/blog/bring-your-own-broker/) means the data never leaves infrastructure you control. You hold the keys, and what goes onto the map is what your observer actually heard — not an estimate, not a guess, not topology inferred from node names. [Evidence-based topology](/blog/how-waev-reads-your-mesh/) means the Live Map shows you only what can be verified from your enrolled observer.
+This is deliberate. The never-captive stream means nothing about your observer's data is locked into Waev's platform — you hold the read access, and what goes onto the map is what your observer actually heard, published with a credential that can never be used to read or alter anything on the broker. [Evidence-based topology](/blog/how-waev-reads-your-mesh/) means the Live Map shows you only what can be verified from your enrolled observer.
 
 ## What to expect from your first week
 

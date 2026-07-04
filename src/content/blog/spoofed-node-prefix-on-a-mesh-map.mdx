@@ -26,7 +26,7 @@ import HiwTopologyDraw from "../../components/viz/hiw-TopologyDraw.astro";
 A MeshCore node's name and prefix are operator-configurable. There is nothing in the RF mesh protocol that prevents someone from setting up a node with a prefix that resembles or copies another node's identifier. This is not a unique vulnerability — it's a property of any open, cooperative radio system. But it has direct implications for what a mesh map shows, and how much you can trust the topology it draws.
 
 <div class="callout">
-<p><strong>In short.</strong> A spoofed node prefix on a mesh map is only a problem if the map draws edges it cannot verify. Waev's evidence-based topology draws lines only from observations made by enrolled observers and authenticated repeaters. A claimed hop record from an unverified source — whether spoofed, misconfigured, or simply unrecognized — does not produce a map edge. If the map shows it, something verifiable produced it.</p>
+<p><strong>TLDR:</strong> A spoofed node prefix on a mesh map is only a problem if the map draws edges it cannot verify. Waev's evidence-based topology draws lines only from observations made by enrolled observers and authenticated repeaters. A claimed hop record from an unverified source — whether spoofed, misconfigured, or simply unrecognized — does not produce a map edge. If the map shows it, something verifiable produced it.</p>
 </div>
 
 ## What a node prefix is

@@ -16,13 +16,13 @@ faq:
   - q: "How do I opt out of Waev?"
     a: "Add a privacy marker (⛔, 🛑, or 🚫) to your node name. A node marked that way is never stored, mapped, or counted."
   - q: "Who owns the data Waev uses?"
-    a: "You do. With the bring-your-own-broker model, you host your own MQTT broker and own the data; Waev subscribes and keeps a read-only copy."
+    a: "You do. Your observer's credentials are publish-only, the same device can publish to other tools alongside Waev — presets for several are in Waev's own docs — and the read API is public. Nothing locks your stream to Waev."
   - q: "Does Waev accept feature requests?"
     a: "Yes, and we read every one. We build in an order that serves the whole tool, so we may not build a given request — and we will be honest when we won't. Bug reports are always taken seriously."
 ---
 
 <div class="callout">
-<p><strong>TL;DR.</strong> Waev does not guess, it does not track phones, and it does not steal your data. We draw edges only when packets prove they exist. We drop packets entirely if a node asks for privacy. And we connect to your broker with read-only credentials, so you hold the keys. This is telemetry you can trust.</p>
+<p><strong>TL;DR.</strong> Waev does not guess, it does not track phones, and it does not steal your data. We draw edges only when packets prove they exist. We drop packets entirely if a node asks for privacy. And your observer publishes on credentials that can never read, so nothing locks your stream to Waev. This is telemetry you can trust.</p>
 </div>
 
 import Figure from "../../components/Figure.astro";
@@ -36,7 +36,7 @@ If you're running a mesh network for a community that depends on it, you already
 
 <aside class="callout">
 
-**In short.** Waev is a real-time analytics platform for MeshCore mesh radio networks. It keeps privacy on by default, draws its maps only from verified evidence, and leaves your community's data in your hands. What follows is the six values behind those choices — and what each one means in practice.
+**TLDR:** Waev is a real-time analytics platform for MeshCore mesh radio networks. It keeps privacy on by default, draws its maps only from verified evidence, and leaves your community's data in your hands. What follows is the six values behind those choices — and what each one means in practice.
 
 </aside>
 
@@ -70,7 +70,7 @@ Here are the six things underneath everything else.
   <div class="value-card">
     <span class="value-card-index">05</span>
     <h3 class="value-card-title">Your data stays yours</h3>
-    <p class="value-card-body">You bring users to a broker you own. We keep a copy — not the keys.</p>
+    <p class="value-card-body">Publish-only credentials, presets for other tools in our own docs, a public read API. Nothing locks your stream to Waev.</p>
   </div>
   <div class="value-card">
     <span class="value-card-index">06</span>
@@ -125,9 +125,9 @@ You built your mesh. You recruited the operators, configured the nodes, solved t
 
 The old model, where everyone requests access to a central set of MQTT servers, turns into a management problem fast: scoped here, full access there, a half-dozen requests a day, every one a judgment call. We've watched it happen. We'd rather invert it entirely.
 
-**You bring your users to a broker you own. We subscribe, and keep a read-only copy.**
+**Your observers publish on credentials that can never read. The same devices can feed other tools — the presets are in our own docs — and the read API is public. Nothing locks your stream to Waev.**
 
-<Figure caption="You host the broker and own the data. <b>We take a copy, not the keys.</b>">
+<Figure caption="Your stream is never captive. <b>Publish-only in, public read API out.</b>">
   <BrokerCopy />
 </Figure>
 

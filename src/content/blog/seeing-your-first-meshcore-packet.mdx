@@ -14,7 +14,7 @@ faq:
   - q: "What is the SNR number I see on each packet?"
     a: "SNR (Signal-to-Noise Ratio) is the quality of the radio signal as received by your observer, in decibels. Higher is better. An SNR above +7 dB is a comfortable working link; below 0 dB the link is marginal. The number is attached to each packet your observer recorded, not to the source node itself."
   - q: "Do I need to be enrolled as an observer to see packets in Live Packets?"
-    a: "Yes. Live Packets shows what your enrolled observers have heard. An observer is a MeshCore device connected to your MQTT broker over the network. When your observer goes online and Waev connects to your broker, packets start appearing in real time as they arrive at the observer's radio."
+    a: "Yes. Live Packets shows what your enrolled observers have heard. An observer is a MeshCore device that publishes directly to Waev's own MQTT ingest over the network, using a publish-only credential. When your observer goes online and starts publishing, packets start appearing in real time as they arrive at the observer's radio."
   - q: "Why do I see multiple entries for the same node?"
     a: "Nodes send adverts periodically, and each transmission creates a new entry in Live Packets. You may also see a node appear from different observers or at different hop counts if the mesh routed around an obstacle. Multiple entries for the same node are normal and give you a record of the node's activity over time."
 ---
@@ -28,7 +28,7 @@ import PrimerLivePacketRow from "../../components/viz/primer-LivePacketRow.astro
 
 The first time you connect an observer and open Live Packets, the stream starts populating. Names appear. Numbers. Timestamps ticking in real time. It looks like a lot — but each row contains exactly five pieces of information, and once you know what they are, the stream stops being a wall of text and starts being a live window into your network.
 
-<div class="callout"><p><strong>In short.</strong> Seeing your first MeshCore packet in Live Packets means reading five fields: the packet type (what kind of packet this is), the node name (who sent it), the SNR (how cleanly your observer heard it), the hop count (how many radio legs it traveled), and the timestamp (when it arrived). ADVERT packets — nodes announcing their presence — are usually the first to appear. Everything else follows from there.</p></div>
+<div class="callout"><p><strong>TLDR:</strong> Seeing your first MeshCore packet in Live Packets means reading five fields: the packet type (what kind of packet this is), the node name (who sent it), the SNR (how cleanly your observer heard it), the hop count (how many radio legs it traveled), and the timestamp (when it arrived). ADVERT packets — nodes announcing their presence — are usually the first to appear. Everything else follows from there.</p></div>
 
 ## What the stream shows
 
@@ -59,13 +59,13 @@ ADVERT packets tend to dominate a newly connected observer's stream, because rep
 
 ## The first packet usually says "I'm here"
 
-When your observer first comes online and Waev connects to your broker, the first packets to appear are almost always ADVERTs from nearby repeaters or companion radios. This is expected: repeaters broadcast adverts on a schedule (the interval varies by firmware version and node configuration, and nodes also send one sooner after they power on), and the first advert you see from a given node is that node introducing itself to your observer.
+When your observer first comes online and starts publishing to Waev's ingest, the first packets to appear are almost always ADVERTs from nearby repeaters or companion radios. This is expected: repeaters broadcast adverts on a schedule (the interval varies by firmware version and node configuration, and nodes also send one sooner after they power on), and the first advert you see from a given node is that node introducing itself to your observer.
 
 If you see an ADVERT from a node you recognize — a repeater you deployed, a club member's radio — it is confirmation the mesh is reaching your observer and the pipeline from radio to Live Packets is working end-to-end. That is the milestone. Everything else is the network doing what it always does; now you can watch it.
 
 ## What a quiet stream tells you
 
-If Live Packets is empty, or nothing has arrived in several minutes, there are a few likely causes. The most common: your observer is not yet enrolled in Waev, or the MQTT connection between your observer and your broker has not established. Check the observer's MQTT status and confirm it is publishing to the correct broker. If the connection is healthy and the network is genuinely quiet, that is also useful data — it means no nodes are currently within radio range of your observer, or all nearby nodes are privacy-marked. Both tell you something real about your coverage.
+If Live Packets is empty, or nothing has arrived in several minutes, there are a few likely causes. The most common: your observer is not yet enrolled in Waev, or the MQTT connection between your observer and Waev's ingest has not established. Check the observer's MQTT status and confirm it is publishing to mqtt.waev.app. If the connection is healthy and the network is genuinely quiet, that is also useful data — it means no nodes are currently within radio range of your observer, or all nearby nodes are privacy-marked. Both tell you something real about your coverage.
 
 ## Where to look next
 

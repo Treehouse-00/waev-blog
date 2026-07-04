@@ -25,7 +25,7 @@ import PrivacyGateFlow from "../../components/viz/privacy-GateFlow.astro";
 A node's name in MeshCore is normally just a label for humans — a callsign, a location, a reminder of what the hardware is. In Waev's ingest pipeline, the node name also functions as an explicit control: put the right character in it and that node's packets are dropped at the first gate, before they are stored, before they appear on the map, before they contribute to any count.
 
 <div class="callout">
-<p><strong>In short.</strong> MeshCore node naming privacy markers — ⛔, 🛑, or 🚫 in a node name — are checked first at Waev's ingest edge. A packet from a node whose name contains any of these characters is discarded entirely before any other processing. Nothing is stored, nothing is mapped, nothing is counted.</p>
+<p><strong>TLDR:</strong> MeshCore node naming privacy markers — ⛔, 🛑, or 🚫 in a node name — are checked first at Waev's ingest edge. A packet from a node whose name contains any of these characters is discarded entirely before any other processing. Nothing is stored, nothing is mapped, nothing is counted.</p>
 </div>
 
 ## How to apply a marker
@@ -56,8 +56,9 @@ For infrastructure nodes, the marker is a deliberate choice about visibility. A 
 
 ## What the marker does not do
 
-A privacy marker in a MeshCore node name is a convention that Waev checks at its own ingest edge. It does not affect how MeshCore's firmware broadcasts the node's packets on the mesh. Other nodes on the mesh still hear those packets; other tools connected to your broker still receive them. The marker controls only what Waev does with the packet when it arrives.
+A privacy marker in a MeshCore node name is a convention that Waev checks at its own ingest edge. It does not affect how MeshCore's firmware broadcasts the node's packets on the mesh. Other nodes on the mesh still hear those packets; if the same observer stream is also pointed at other tools, as the [never-captive stream](/blog/bring-your-own-broker/) allows, those tools still receive them. The marker controls only what Waev does with the packet when it arrives.
 
-It also does not change what your MQTT broker stores, if your broker retains messages. Your broker stores whatever the observer publishes; the marker operates downstream of that, at Waev's ingest, not at the broker. This is one of the structural consequences of the [bring-your-own-broker model](/blog/bring-your-own-broker/): your broker and Waev's ingest are separate layers, each with their own controls.
+It also does not reach back into any other tool the observer stream is pointed at. The scrub happens once, at Waev's ingest edge, before anything is stored on Waev's side — it is not a broker-side setting, because there is no operator-hosted broker in Waev's path. Whatever else consumes the same publish-only stream applies its own rules to what it keeps.
+{/* CANON-GAP: confirm whether/how a privacy marker should be communicated to other tools consuming the same observer stream, or whether that's explicitly out of scope */}
 
 {/* ILLUSTRATION PROMPT: A warm flat illustration of a small hand-written name tag or address label lying flat on a wooden surface. One of the privacy emoji characters (⛔ or 🚫) is written on it in pen, cleanly. Simple, quiet, direct. Warm wood tones, cream paper, soft afternoon light. */}

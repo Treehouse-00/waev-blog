@@ -39,16 +39,19 @@ one or more of these.
 2. **Evidence-based topology.** Map edges are drawn only from enrolled observers
    (over MQTT) and authenticated repeaters. Spoofed or inferred prefixes are
    rejected, never drawn. Frame: the map is evidence, not a guess.
-3. **Data ownership (bring-your-own-broker).** Operators host their own MQTT
-   broker and own the data; Waev subscribes and keeps a read-only copy. Frame: a
-   deliberate inversion of the usual SaaS data-grab; the community keeps its data.
+3. **Data ownership (the never-captive stream).** Observer credentials are
+   publish-only; the same device can feed other tools (presets ship in Waev's own
+   docs); the read API is public. Frame: nothing locks a community's stream to
+   Waev — a deliberate inversion of the usual SaaS data-grab. (BYOB was retired at
+   brand gate 1, 2026-07-02 — never write it as capability or roadmap;
+   waev/brand/RATIFICATION.md §1.)
 
 ## Do / Don't
 **Do**
-- Open with an `In short.` callout (see AEO hook below).
+- Open with a `TLDR:` callout (see AEO hook below).
 - Name the real surface: "Live Map," "Network Stats," "Live Packets," "ingest
   edge," "enrolled observer," "authenticated repeater."
-- Use exact terms from canon: "bring-your-own-broker" / "BYOB," "evidence-based
+- Use exact terms from canon: "the never-captive stream," "evidence-based
   topology," "identity-scrubbed."
 - Quantify where possible (SNR in dB, hop counts, timing). Teach a transferable
   skill the operator can act on.
@@ -69,7 +72,8 @@ one or more of these.
   performing personality is not.
 - No marketing exaggeration, no fabricated metrics, no invented customer quotes,
   no unverifiable claims. If you don't have the number, don't imply one.
-- Never contradict canon (privacy markers, evidence-only edges, BYOB, contact
+- Never contradict canon (privacy markers, evidence-only edges, the
+  never-captive stream, contact
   `admin@waev.app`).
 - Don't frame Waev as competing with or replacing MeshCore, firmware, or radios;
   don't sell on feature breadth over trustworthiness (see `./STRATEGY.md`).
@@ -80,7 +84,7 @@ one or more of these.
 
 ## Median copy vs. waev-grade (the anti-cringe test, with teeth)
 This audience rolls its eyes at anything that reads like a marketing deck. Apply
-one test to every title, `In short.`, and paragraph: *would a sharp, skeptical
+one test to every title, `TLDR:`, and paragraph: *would a sharp, skeptical
 operator find this true, specific, and worth their time — or roll their eyes?* If
 a line could appear verbatim in ten thousand other startups' blogs, it is median
 SEO-bait — cut it or sharpen it until it is unmistakably ours. The contrasts
@@ -111,7 +115,7 @@ behavior that earns the word. If you can't, the claim isn't ready to ship.
 ### Titles and keywords (where median creeps in first)
 A title and `primary_keyword` must read like a specific operator wrote them, not
 like an SEO tool generated them. The shipped titles are the bar: "Reading the
-Signal," "What We Choose Not to Know," "Bring Your Own Broker," "Where Your
+Signal," "What We Choose Not to Know," "The Never-Captive Stream," "Where Your
 Network Ends," "When the Grid Goes Down" — concrete, plain, about a real task or
 decision. Never "The Ultimate Guide to MeshCore Network Monitoring." Fold the
 keyword into a human title; never let the keyword *be* the title.
@@ -144,15 +148,16 @@ When a topic is culturally sensitive (a competitor comparison, an emergency
 scenario, a community debate), the bar is higher, not lower: more sources, more
 restraint, more credit to others.
 
-## The AEO hook: the `In short.` callout
+## The AEO hook: the `TLDR:` callout
 Every post opens, near the top, with the answer-engine hook used across the
-existing corpus:
+existing corpus. The label is `TLDR:` (verbatim, with the colon — not "In
+short.", not "TL;DR."):
 
 ```html
-<div class="callout"><p><strong>In short.</strong> …</p></div>
+<div class="callout"><p><strong>TLDR:</strong> …</p></div>
 ```
 
-Rules for the `In short.` sentence(s):
+Rules for the `TLDR:` sentence(s):
 - Self-contained: answers the post's core question in 1–3 sentences without
   requiring the rest of the post.
 - Citable: a true, standalone statement an answer engine can quote verbatim.
@@ -171,7 +176,7 @@ Structure & schema (MUST)
 - [ ] `date` is set to the intended `slot_date` from `./calendar.yaml` (future
       date = scheduled; the date gate ships it on merge).
 - [ ] No byline and no signoff anywhere in the post.
-- [ ] Opens with the `In short.` callout following the rules above.
+- [ ] Opens with the `TLDR:` callout following the rules above.
 - [ ] If a `faq` is present, it is in frontmatter only and not duplicated in body.
 - [ ] Reading time is NOT hand-written (it is computed automatically).
 
@@ -185,7 +190,7 @@ Voice & messaging (MUST)
 - [ ] Every product claim is consistent with `src/pages/llms.txt.ts`; any new
       fact is flagged for the human gate, not asserted.
 - [ ] Targets one `segment` + `funnel_stage` from `./STRATEGY.md`; the
-      `primary_keyword` appears in the title or `In short.` and reads naturally.
+      `primary_keyword` appears in the title or `TLDR:` and reads naturally.
 
 Source discipline & cultural safety (MUST)
 - [ ] Every external technical claim (firmware/CLI/defaults/versions/RF/hardware/

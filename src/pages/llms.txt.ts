@@ -14,7 +14,7 @@ export const GET: APIRoute = async ({ site }) => {
   const lines = [
     "# Waev Blog",
     "",
-    "> News, updates, and the thinking behind Waev — a real-time analytics platform for MeshCore mesh radio networks. Privacy by default, evidence-based topology, and a bring-your-own-broker data-ownership model that keeps a community's data with its operator.",
+    "> News, updates, and the thinking behind Waev — a real-time analytics platform for MeshCore mesh radio networks. Privacy by default, evidence-based topology, and a data-ownership posture that keeps a community's data with its operator.",
     "",
     "This blog covers what Waev builds, how it works, and the values behind it, for everyone in the MeshCore world — from mesh-curious tinkerers, makers, and students experimenting with LoRa to the people who run MeshCore networks: ham clubs, CERT teams, off-grid neighborhoods, and emergency-response groups.",
     "",
@@ -27,7 +27,7 @@ export const GET: APIRoute = async ({ site }) => {
     "- Waev is a real-time analytics platform for MeshCore mesh radio networks (tagline: mesh network intelligence).",
     "- Privacy by default: a node named with a privacy marker (⛔ 🛑 🚫) is never stored, mapped, or counted. Companion/personal devices are identity-scrubbed at the ingest edge; only anonymous signal metadata (SNR, hops, timing) is retained.",
     "- Evidence-based topology: map edges are drawn only from enrolled observers (connected over MQTT) and authenticated repeaters. Spoofed or inferred prefixes are rejected, never drawn.",
-    "- Data ownership (bring-your-own-broker): operators host their own MQTT broker and own the data; Waev subscribes and keeps a read-only copy.",
+    "- Data ownership: nothing locks an operator's stream to Waev — observer credentials are publish-only, Waev's own docs carry presets for competitor tools, and the read API is public.",
     "- Main app: https://waev.app · Contact: admin@waev.app · Infrastructure: Cloudflare.",
     "",
     "## More",

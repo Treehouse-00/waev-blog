@@ -31,8 +31,9 @@ three fronts that competitors usually get wrong:
 - **It refuses to know what it doesn't need.** Opted-out nodes are dropped;
   companion devices are identity-scrubbed at the ingest edge. Privacy is the
   floor, not a setting (see `./VOICE.md` pillars).
-- **It leaves the data with the operator.** Bring-your-own-broker: you host the
-  broker, you hold the keys, Waev keeps a read-only copy.
+- **It leaves the data with the operator.** The never-captive stream: the
+  observer's credential is publish-only, you read your data back out through a
+  public read API, and the same stream can feed other tools of your choosing.
 
 For a net people may lean on in an emergency, a confident map that might be
 guessing is worse than no map. That is the gap Waev fills: the mesh tool a
@@ -89,9 +90,9 @@ emphasis.
   dashboard", "mesh network hobby project", "LoRa node testing".
 - **Primary funnel entry:** awareness via primer / getting-started / "see your
   mesh" posts that turn a bench experiment into a visible network.
-- **Conversion goal:** connect a broker (even a hobby one) and view the Live
-  Map — the first taste of the product that converts curiosity into a habit and
-  seeds the move toward mesh-committed.
+- **Conversion goal:** enroll an observer and watch its first Proven edge appear
+  on the Live Map — the first taste of the product that converts curiosity into
+  a habit and seeds the move toward mesh-committed.
 
 ### off-grid — off-grid neighborhoods & community networks
 - **Trigger / pain:** a neighborhood or co-op runs a community mesh and wants
@@ -102,9 +103,10 @@ emphasis.
   network", "data ownership", "self-hosted MQTT", "privacy mesh", "own your
   data", "decentralized comms".
 - **Primary funnel entry:** awareness via philosophy / data-ownership posts
-  (privacy-by-default, bring-your-own-broker).
-- **Conversion goal:** stand up their own broker and connect it to Waev,
-  retaining ownership (BYOB) — the activation that proves the values land.
+  (privacy-by-default, the never-captive stream).
+- **Conversion goal:** enroll observers and see the community's live picture —
+  ownership demonstrated by the never-captive stream — the activation that
+  proves the values land.
 
 ### cert-emcomm — CERT teams & emergency-comms groups
 - **Trigger / pain:** responsible for comms that must work during an incident;
@@ -156,11 +158,11 @@ Format per row: `primary_keyword | secondary_keyword | segment | funnel_stage`
 
 ### off-grid
 - `community mesh network | neighborhood mesh | off-grid | awareness`
-- `mesh network data ownership | bring your own broker | off-grid | awareness`
+- `mesh network data ownership | never-captive stream | off-grid | awareness`
 - `privacy mesh network | data minimization mesh | off-grid | awareness`
-- `self-hosted mqtt mesh | own your mesh data | off-grid | evaluation`
+- `own your mesh data | publish-only observer credential | off-grid | evaluation`
 - `off-grid network visibility | community network analytics | off-grid | evaluation`
-- `set up waev byob | self-host broker waev | off-grid | adoption`
+- `waev data ownership | public read api mesh data | off-grid | adoption`
 
 ### cert-emcomm
 - `emergency communications mesh | grid-down comms | cert-emcomm | awareness`

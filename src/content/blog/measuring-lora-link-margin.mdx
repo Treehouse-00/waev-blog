@@ -26,7 +26,7 @@ import SignalSNRScale from "../../components/viz/signal-SNRScale.astro";
 Part 3 of the *measure your mesh* series. Earlier installments covered [SNR and hop count](/blog/reading-the-signal/) and [why packets disappear](/blog/why-mesh-packets-disappear/). This one covers link margin: the number that tells you how much headroom you actually have.
 
 <div class="callout">
-<p><strong>In short.</strong> Link margin is the difference between your received signal level and the minimum your receiver needs to decode. You can estimate it from your SNR reading plus the spreading factor's demodulation floor. For a LoRa mesh link you plan to depend on, target 15–20 dB of margin above the demodulation floor. Below 10 dB, the link is weather-dependent.</p>
+<p><strong>TLDR:</strong> Link margin is the difference between your received signal level and the minimum your receiver needs to decode. You can estimate it from your SNR reading plus the spreading factor's demodulation floor. For a LoRa mesh link you plan to depend on, target 15–20 dB of margin above the demodulation floor. Below 10 dB, the link is weather-dependent.</p>
 </div>
 
 ## What link margin actually is

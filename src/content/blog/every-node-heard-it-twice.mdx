@@ -30,7 +30,7 @@ Open Live Packets on an active mesh and you will sometimes see the same node app
 
 Knowing the difference is what this post is about.
 
-<div class="callout"><p><strong>In short.</strong> Duplicate packet floods in a LoRa mesh arise because flooding is the legitimate mechanism for discovery and group channel delivery. MeshCore limits flooding via duplicate suppression (a hash table that drops already-seen packets) and its flood-once-then-direct routing for unicast messages. What you see as duplicates in Live Packets is usually normal multi-observer delivery, not a malfunction — but high-volume flooding on a congested channel does cost real airtime, and a poorly sited repeater with no tuning can amplify it.</p></div>
+<div class="callout"><p><strong>TLDR:</strong> Duplicate packet floods in a LoRa mesh arise because flooding is the legitimate mechanism for discovery and group channel delivery. MeshCore limits flooding via duplicate suppression (a hash table that drops already-seen packets) and its flood-once-then-direct routing for unicast messages. What you see as duplicates in Live Packets is usually normal multi-observer delivery, not a malfunction — but high-volume flooding on a congested channel does cost real airtime, and a poorly sited repeater with no tuning can amplify it.</p></div>
 
 ## Why flooding exists
 

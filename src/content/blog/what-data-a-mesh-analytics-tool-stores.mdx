@@ -21,17 +21,17 @@ import Figure from "../../components/Figure.astro";
 import PrivacyScrub from "../../components/viz/PrivacyScrub.astro";
 import PrivacyDataModel from "../../components/viz/privacy-DataModel.astro";
 
-The question comes up early in any evaluation: before you connect your broker, before you enroll an observer, before anything flows — what does a tool like this actually keep?
+The question comes up early in any evaluation: before you enroll an observer, before anything flows — what does a tool like this actually keep?
 
 It's the right question to ask first. What doesn't enter the database can't be accessed, breached, or misused. The architecture's privacy posture isn't defined by what it promises to protect, but by what it declines to collect in the first place.
 
 <div class="callout">
-<p><strong>In short.</strong> What data a mesh analytics tool stores should have a short answer: signal metadata only. Waev retains SNR per link, hop count, packet timing, and verified topology edges. Node identity, location, and companion device details never reach persistent storage — they're dropped or scrubbed at the ingest edge before anything is written.</p>
+<p><strong>TLDR:</strong> What data a mesh analytics tool stores should have a short answer: signal metadata only. Waev retains SNR per link, hop count, packet timing, and verified topology edges. Node identity, location, and companion device details never reach persistent storage — they're dropped or scrubbed at the ingest edge before anything is written.</p>
 </div>
 
 ## What arrives at the ingest edge
 
-Your mesh observer receives every LoRa packet that passes through it and publishes those records to your MQTT broker. Waev subscribes to that broker. What arrives at Waev's ingest edge is a stream of raw packet records: the source node's name, the path the packet traveled, signal quality readings at each hop, and a timestamp.
+Your mesh observer receives every LoRa packet that passes through it and publishes those records directly to Waev's own MQTT ingest, using a credential that can only send its own data — it can't read, alter, or delete anything else on the broker. What arrives at Waev's ingest edge is a stream of raw packet records: the source node's name, the path the packet traveled, signal quality readings at each hop, and a timestamp.
 
 That stream contains more information than Waev needs. The ingest edge's job is to reduce it to the minimum that makes the product useful, before anything is written.
 
@@ -80,6 +80,6 @@ None of these surfaces require storing identity, location, or message content. T
 
 ---
 
-The choice about what not to collect is made once, at the architecture level, and it determines what's possible from that point forward. You can't breach data that was never stored. You can't misuse identity that was scrubbed before it was written. The [privacy-by-default framing](/blog/what-we-choose-not-to-know/) is the same one that governs [who holds your broker credentials](/blog/bring-your-own-broker/): the less the system knows, the more the operator controls.
+The choice about what not to collect is made once, at the architecture level, and it determines what's possible from that point forward. You can't breach data that was never stored. You can't misuse identity that was scrubbed before it was written. The [privacy-by-default framing](/blog/what-we-choose-not-to-know/) is the same one that governs [the never-captive stream](/blog/bring-your-own-broker/): the less the system knows, the more the operator controls.
 
 {/* ILLUSTRATION PROMPT: A warm, hand-painted still-life in a painterly flat style: an open glass jar sitting on a worn wooden surface, containing only three small smooth river stones — the jar is otherwise empty. The surrounding surface is bare and clean. Warm, earthy tones with one restrained accent; soft ambient light from one side. The feeling is deliberate simplicity — a container that holds only what it was asked to hold. No text, no UI, no tech elements. */}

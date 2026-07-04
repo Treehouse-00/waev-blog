@@ -27,7 +27,7 @@ deploy and never merge (AGENT.md Invariant 1).
   `off-grid`) and their funnel framing, and `../CHARTER.md` for scope.
 - Read `../../src/pages/llms.txt.ts` Key facts — keywords must be consistent
   with canon (MeshCore, privacy-by-default, evidence-based topology,
-  bring-your-own-broker). Do not propose topics that contradict canon.
+  the never-captive stream). Do not propose topics that contradict canon.
 - Inventory existing coverage: list the `title`/`description`/`tags` of every
   `.mdx` in `../../src/content/blog/` and every `primary_keyword`/
   `secondary_keyword` already in `../calendar.yaml`. These are ALREADY COVERED —

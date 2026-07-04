@@ -14,7 +14,7 @@ faq:
   - q: "Why does Waev only draw edges from authenticated repeaters?"
     a: "A topology edge in Waev represents a path that something verifiable produced — a packet that traveled through a repeater whose identity is cryptographically established. Drawing an edge from an inferred or spoofed source would mean the map contains guesses. Evidence-based topology means: if the map shows it, something verifiable produced it. No proof, no line."
   - q: "What is the difference between an enrolled observer and an authenticated repeater in Waev?"
-    a: "An enrolled observer is a MeshCore node connected to your MQTT broker over the internet — it hears RF packets and publishes them as telemetry to Waev. An authenticated repeater is a node running repeater firmware whose public-key identity is established on the mesh. Waev draws topology edges only from what enrolled observers witness about authenticated repeaters, combining both sources to build the map."
+    a: "An enrolled observer is a MeshCore node publishing to Waev's MQTT ingest over the internet — it hears RF packets and publishes them as telemetry to Waev. An authenticated repeater is a node running repeater firmware whose public-key identity is established on the mesh. Waev draws topology edges only from what enrolled observers witness about authenticated repeaters, combining both sources to build the map."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -26,7 +26,7 @@ When Waev draws an edge between two nodes on the topology map, that line represe
 That evidence chain starts in the repeater's firmware, at first boot.
 
 <div class="callout">
-<p><strong>In short.</strong> How MeshCore repeaters are authenticated starts at the device level: every repeater generates a public-private key pair at first boot and signs every advertisement it broadcasts. Clients authenticate against that identity using a password and ECDH-derived shared secrets. Waev's topology map draws edges only from enrolled observers and authenticated repeaters — if a source cannot be verified, its claimed edge is rejected, not drawn.</p>
+<p><strong>TLDR:</strong> How MeshCore repeaters are authenticated starts at the device level: every repeater generates a public-private key pair at first boot and signs every advertisement it broadcasts. Clients authenticate against that identity using a password and ECDH-derived shared secrets. Waev's topology map draws edges only from enrolled observers and authenticated repeaters — if a source cannot be verified, its claimed edge is rejected, not drawn.</p>
 </div>
 
 ## The identity on the device
@@ -57,9 +57,9 @@ This is where the device-level identity connects to what Waev can draw.
   <TrustedSources />
 </Figure>
 
-Waev's topology is built from what enrolled observers report over MQTT. An enrolled observer is a MeshCore node — typically running on a fixed installation — that has both a radio interface and an internet connection. It hears RF packets on the mesh and publishes them to your MQTT broker, where Waev subscribes. The observer is the bridge between the radio world and the analytics layer.
+Waev's topology is built from what enrolled observers report over MQTT. An enrolled observer is a MeshCore node — typically running on a fixed installation — that has both a radio interface and an internet connection. It hears RF packets on the mesh and publishes them directly to Waev's own MQTT ingest, using a credential that can only send that observer's own data. The observer is the bridge between the radio world and the analytics layer.
 
-<Figure caption="<b>The observer bridges radio and network.</b> On the left, it hears RF packets from mesh nodes. On the right, it publishes over MQTT/TLS to your broker. Waev subscribes read-only to that broker. Waev has no antenna — it sees only what enrolled observers relay.">
+<Figure caption="<b>The observer bridges radio and network.</b> On the left, it hears RF packets from mesh nodes. On the right, it publishes over MQTT/TLS to Waev's ingest with a publish-only credential. Waev has no antenna — it sees only what enrolled observers relay.">
   <HiwObserverBridge />
 </Figure>
 
@@ -71,10 +71,10 @@ This is what the brief in [From Radio to Map](/blog/how-waev-reads-your-mesh/) d
 
 A topology edge in Waev is a different kind of claim than a topology edge in a system that draws from inferred or crowd-sourced data.
 
-Each edge represents: a packet traveled this path; an enrolled observer with an MQTT connection to your broker witnessed it; the repeater in that path signed its advertisement with a private key it generated at first boot and has never transmitted. That is the chain.
+Each edge represents: a packet traveled this path; an enrolled observer publishing its stream directly to Waev's ingest witnessed it; the repeater in that path signed its advertisement with a private key it generated at first boot and has never transmitted. That is the chain.
 
 The practical implication: you can read the Live Map before an activation and know that what it shows reflects something real. Not a claim. Not an assumption. A packet that actually traveled those paths, witnessed by an observer you enrolled, through a repeater whose identity is established at the device level.
 
-For more on how Waev's bring-your-own-broker model keeps that MQTT connection under operator control, see [Bring Your Own Broker](/blog/bring-your-own-broker/).
+For more on how Waev's never-captive stream keeps that MQTT connection under operator control, see [The Never-Captive Stream](/blog/bring-your-own-broker/).
 
 {/* ILLUSTRATION PROMPT: Hand-painted warm illustration, intimate close-up still life. A single antique brass skeleton key lying on an open-weave natural linen textile, casting a precise angled shadow. The key is the sole subject — no lock, no door, no hand holding it. Warm amber side light, painterly texture, earthy tones, no tech elements, no glowing effects. The mood: a credential at rest, specific and singular. Thumbnail-readable at any size. */}

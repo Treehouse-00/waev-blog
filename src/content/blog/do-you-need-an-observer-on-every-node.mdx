@@ -12,7 +12,7 @@ faq:
   - q: "What is the difference between a MeshCore observer and a repeater?"
     a: "A repeater relays packets through the mesh — it extends the network's range by rebroadcasting traffic. An observer listens to what's happening on the mesh and reports it to an MQTT broker over the internet. A node can serve as a repeater, an observer, or both, depending on its firmware and configuration."
   - q: "Where should I place my observer?"
-    a: "Place the observer where it can hear the most nodes. High ground with line-of-sight to your backbone repeaters is ideal. The observer needs internet connectivity — Wi-Fi, Ethernet, or a cellular modem — to push data to your MQTT broker, so the chosen location also needs a reliable connection."
+    a: "Place the observer where it can hear the most nodes. High ground with line-of-sight to your backbone repeaters is ideal. The observer needs internet connectivity — Wi-Fi, Ethernet, or a cellular modem — to publish its packet stream to Waev's ingest, so the chosen location also needs a reliable connection."
   - q: "What happens to nodes the observer can't hear?"
     a: "Nodes that the observer can't hear won't appear in Waev's Live Packets or Live Map. Waev's evidence-based topology only draws what it can verify from enrolled observers — silence doesn't mean the node isn't on the air, just that it isn't reaching your observer. This is useful: it tells you exactly where your monitoring coverage ends."
   - q: "Can I add a second observer later if I expand the network?"
@@ -27,7 +27,7 @@ The question arrives reliably once you have more than three or four nodes: does 
 The short answer is: no, not every node needs to be an observer. The useful answer is longer, because it depends on what you're trying to see and where you've placed the one observer you do have.
 
 <div class="callout">
-<p><strong>In short.</strong> You don't need an observer on every mesh node. One well-placed observer — on high ground, with line-of-sight to your backbone repeaters — can give you visibility into an entire network. The question isn't how many observers to enroll; it's where to place the ones you have so they hear what matters.</p>
+<p><strong>TLDR:</strong> You don't need an observer on every mesh node. One well-placed observer — on high ground, with line-of-sight to your backbone repeaters — can give you visibility into an entire network. The question isn't how many observers to enroll; it's where to place the ones you have so they hear what matters.</p>
 </div>
 
 ## What an observer actually does
@@ -49,7 +49,7 @@ One well-sited observer outperforms five poorly sited ones in visibility. The re
 What to prioritize when siting an observer:
 - **Height above the terrain.** A rooftop, a ridge, or the upper floor of a building gives more radio horizon than a ground-level placement.
 - **Proximity to backbone repeaters.** The observer doesn't need to hear every leaf node directly; if it hears the backbone, it sees what the backbone sees.
-- **Internet connectivity.** The observer needs a reliable internet connection to push data to [your MQTT broker](/blog/bring-your-own-broker/). A location with unreliable Wi-Fi produces an observer that drops out intermittently and leaves gaps in your monitoring record.
+- **Internet connectivity.** The observer needs a reliable internet connection to publish its packet stream to [Waev's MQTT ingest](/blog/bring-your-own-broker/). A location with unreliable Wi-Fi produces an observer that drops out intermittently and leaves gaps in your monitoring record.
 
 ## When one observer is enough
 

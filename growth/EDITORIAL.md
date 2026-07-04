@@ -43,7 +43,7 @@ positioning rather than drifting from it. Use the token verbatim as a slot's
   (Converges with: privacy-by-default.) Cultural pull: data dignity; restraint
   as a feature, not a gap.
 - `own-your-ground` — autonomy over your data and your infrastructure; hold your
-  own keys. (Converges with: bring-your-own-broker.) Cultural pull: digital
+  own keys. (Converges with: the never-captive stream.) Cultural pull: digital
   sovereignty; refusing platform capture.
 - `ready-before-it-matters` — resilience is rehearsed, not hoped; the weak link
   fails first. (Converges with: resilience / verification.) Cultural pull:
@@ -71,7 +71,7 @@ target share of the annual post mix.
   Corpus echo: "Where Your Network Ends".
 - `under-the-hood` — how Waev itself works; the mechanism that earns trust. Lean:
   any · evaluation→adoption. Share ~15%.
-  Corpus echo: "From Radio to Map", "Bring Your Own Broker".
+  Corpus echo: "From Radio to Map", "The Never-Captive Stream".
 - `position` — manifesto / values / point of view. The loud, citable, shareable
   expression of the wedge. Lean: any · brand (any funnel). Share ~15%.
   Corpus echo: "What We Choose Not to Know".
@@ -139,16 +139,16 @@ Planning Table (Thursday):
   antennas to buy/avoid, off-grid power, the $100 starter mesh, gateway
   hardware. ~6 parts.
 - **under-the-hood** (`under-the-hood`, all) — how Waev works: ingest pipeline,
-  the observer model, the privacy scrub, the topology engine, BYOB
-  architecture, the live map. ~6 parts.
+  the observer model, the privacy scrub, the topology engine, the never-captive
+  stream, the live map. ~6 parts.
 
 Long Read (Sunday):
 - **from-the-field** (`dispatch`, community) — monthly field reports / case
   studies: Field Day, a CERT activation, an off-grid buildout, a hamfest, a SAR
   exercise, a storm watch. ~12 parts (first Sunday each month).
 - **why-we** (`position`, all) — the manifesto series: why evidence-only, why
-  refusal, why BYOB, why local, why a map may say "I don't know". ~6 parts (~one
-  Sunday every eight weeks).
+  refusal, why the never-captive stream, why local, why a map may say "I don't
+  know". ~6 parts (~one Sunday every eight weeks).
 - **readiness** (`field-manual`, cert-emcomm) — preparedness: the readiness
   check, the tabletop, writing mesh into the plan, the served-agency report, the
   activation playbook, the after-action. ~6 parts.

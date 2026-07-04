@@ -16,7 +16,7 @@ faq:
   - q: "How does Waev help with a neighborhood mesh buildout?"
     a: "Waev's Live Map shows you exactly where your observer's coverage ends and where the gaps are. Network Stats shows which nodes are reliably active versus intermittent. Together they make the next expansion decision concrete: here is the gap, here is the coverage from a potential node placement, here is the node you need to bring back online."
   - q: "Who owns the data from a neighborhood mesh network?"
-    a: "Under a bring-your-own-broker (BYOB) architecture, the community that hosts the MQTT broker owns the data. Waev connects as a read-only subscriber and cannot alter or delete anything on the broker. If the community decides to stop using Waev, the data stays on the broker under the community's control."
+    a: "An enrolled observer publishes its packet stream to Waev's own MQTT ingest using a credential that is publish-only — it can send its observer's data and nothing else, and it cannot read, alter, or delete anything on the broker. The community reads its data back out through a public read API, and the same observer stream can be pointed at other tools of the community's choosing using the presets Waev ships in its own docs. Nothing about the stream is captive to Waev."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -30,7 +30,7 @@ The right question is: who is willing to host the second one?
 A block by block neighborhood mesh buildout is a social project that happens to use radio hardware. The topology grows as the community grows, and the community grows as each new participant finds the network genuinely useful. Planning for full coverage before you have two working nodes in place is planning for hardware that sits in a closet.
 
 <div class="callout">
-<p><strong>In short.</strong> A block by block neighborhood mesh buildout starts with two nodes on your block, not twenty nodes across the neighborhood. Expand by solving a coverage problem for a specific household, not by buying hardware in bulk. The mesh holds together long-term because each node is owned and maintained by someone who has a reason to keep it running.</p>
+<p><strong>TLDR:</strong> A block by block neighborhood mesh buildout starts with two nodes on your block, not twenty nodes across the neighborhood. Expand by solving a coverage problem for a specific household, not by buying hardware in bulk. The mesh holds together long-term because each node is owned and maintained by someone who has a reason to keep it running.</p>
 </div>
 
 ## Why block by block
@@ -63,7 +63,7 @@ A single well-placed repeater on a rooftop or second-floor window can transform 
   <PlaybookRepeaterImpact />
 </Figure>
 
-The repeater is also the right infrastructure to put on [an observer that reports to your MQTT broker](/blog/how-waev-reads-your-mesh/). A rooftop repeater already has the height advantage and the RF view of the neighborhood. An observer co-located with the repeater gives you the best possible vantage for watching what the mesh is doing.
+The repeater is also the right infrastructure to put [an observer](/blog/how-waev-reads-your-mesh/) on. A rooftop repeater already has the height advantage and the RF view of the neighborhood. An observer co-located with the repeater gives you the best possible vantage for watching what the mesh is doing, publishing its stream directly to Waev's ingest.
 
 ## Expanding to the next block
 

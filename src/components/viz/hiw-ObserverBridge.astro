@@ -3,13 +3,14 @@
  * hiw-ObserverBridge — the observer as the bridge between two worlds:
  *   Left: radio mesh (nodes + RF edges, dashed)
  *   Center: the observer device (both radio and internet-facing)
- *   Right: your MQTT broker (solid line — TCP/IP)
+ *   Right: Waev's own MQTT ingest (solid line — TCP/IP), reached with a
+ *   publish-only credential — no operator-hosted broker in the path.
  * Teaches that Waev has no antenna — it reads only what an enrolled
  * observer relays over MQTT. Theme-aware via CSS custom properties.
  */
 ---
 
-<svg viewBox="0 0 720 230" role="img" aria-label="The observer bridges two worlds: on the left it hears radio packets from mesh nodes over RF; on the right it publishes them to your MQTT broker over the internet." style="width:100%;height:auto;">
+<svg viewBox="0 0 720 230" role="img" aria-label="The observer bridges two worlds: on the left it hears radio packets from mesh nodes over RF; on the right it publishes them directly to Waev's own MQTT ingest over the internet, using a publish-only credential." style="width:100%;height:auto;">
   <defs>
     <marker id="hiw-ob-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
@@ -71,8 +72,8 @@
   <path d="M344 120 C 370 120 390 120 406 120" fill="none" style="stroke: var(--accent-light);" stroke-width="1.75" marker-end="url(#hiw-ob-arrow-acc)" />
   <text x="375" y="115" text-anchor="middle" class="viz-label" style="font-size: 10px; fill: var(--text-accent);">MQTT/TLS</text>
 
-  <!-- ─── RIGHT: Your Broker ─── -->
-  <text x="556" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;">Your Broker</text>
+  <!-- ─── RIGHT: Waev Ingest ─── -->
+  <text x="556" y="26" text-anchor="middle" class="viz-label" style="fill: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;">Waev Ingest</text>
 
   <rect x="414" y="78" width="164" height="86" rx="16" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1.25" />
   <!-- server glyph (matching BrokerCopy) -->
@@ -82,15 +83,10 @@
     <circle cx="6" cy="6" r="2" style="fill: var(--text-muted); stroke: none;" />
     <circle cx="6" cy="24" r="2" style="fill: var(--text-muted); stroke: none;" />
   </g>
-  <text x="510" y="100" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">Your Broker</text>
-  <text x="510" y="118" text-anchor="middle" class="viz-label">MQTT</text>
+  <text x="510" y="100" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">Waev Ingest</text>
+  <text x="510" y="118" text-anchor="middle" class="viz-label">mqtt.waev.app</text>
   <line x1="434" y1="138" x2="562" y2="138" style="stroke: var(--border-subtle);" stroke-width="1" />
-  <text x="434" y="156" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11px;">you own the data ✓</text>
-
-  <!-- Waev subscribe arrow (accent, right side of broker) -->
-  <line x1="580" y1="120" x2="640" y2="120" style="stroke: var(--accent-light);" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#hiw-ob-arrow-acc)" />
-  <text x="610" y="115" text-anchor="middle" class="viz-label" style="font-size: 10px; fill: var(--text-accent);">Waev</text>
-  <text x="610" y="136" text-anchor="middle" class="viz-label" style="font-size: 10px; fill: var(--text-accent);">subscribes</text>
+  <text x="434" y="156" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11px;">publish-only in ✓</text>
 
   <!-- bottom legend: RF=dashed, Internet=solid -->
   <line x1="218" y1="210" x2="260" y2="210" style="stroke: var(--border-hover);" stroke-width="1.5" stroke-dasharray="4 3" />

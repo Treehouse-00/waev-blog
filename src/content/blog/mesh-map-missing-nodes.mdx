@@ -28,7 +28,7 @@ You installed twelve nodes. The map shows eight. The four missing nodes aren't f
 This is a common situation for off-grid mesh operators, and it's usually not a problem with the nodes themselves. It's a visibility problem: the map shows only what an enrolled observer can verify. The reasons something doesn't appear are specific, and each has a specific fix.
 
 <div class="callout">
-<p><strong>In short.</strong> Mesh map missing nodes almost always trace to one of four causes: no observer close enough to hear the node, the node itself is offline, an opt-out privacy marker in the node name, or the observer's connection to your MQTT broker is down. The map is being honest — absence here is information, not silence.</p>
+<p><strong>TLDR:</strong> Mesh map missing nodes almost always trace to one of four causes: no observer close enough to hear the node, the node itself is offline, an opt-out privacy marker in the node name, or the observer's connection to your MQTT broker is down. The map is being honest — absence here is information, not silence.</p>
 </div>
 
 ## The four reasons
@@ -49,7 +49,7 @@ Distinguishing this from scenario 1: check the node's history in Outpost. A node
 
 If you added the marker intentionally (a household member's personal device, a node you've chosen to exclude), this is correct behavior. If you added it accidentally while setting up a node name, removing the marker and rebooting the node will cause it to start appearing. For more on how opt-out works and what gets dropped vs. scrubbed, see [what Waev chooses not to know](/blog/what-we-choose-not-to-know/).
 
-**4. Observer not publishing to the broker.** The observer is on the mesh, hearing RF traffic, but its MQTT connection to your broker is down. It could be an internet outage, a credential change, a broker restart that the observer hasn't reconnected from, or a TLS certificate issue. The observer hears the node; it just can't forward the observation.
+**4. Observer not publishing to Waev's ingest.** The observer is on the mesh, hearing RF traffic, but its MQTT connection to Waev's ingest is down. It could be an internet outage, a credential issue, or a TLS certificate problem. The observer hears the node; it just can't forward the observation.
 
 The diagnostic here: check whether the observer itself appears in the Live Map. If the observer is also missing, the broker connection is the issue. If the observer appears but nodes in its vicinity don't, the issue is specific to those nodes' RF reach.
 
