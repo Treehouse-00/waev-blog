@@ -1,0 +1,81 @@
+---
+title: "Reading Live Packets"
+description: "How to read the live packet viewer in Waev: what each packet type means and what patterns reveal about your MeshCore mesh health."
+date: 2026-06-23
+tags: ["how-it-works", "deep-dive"]
+hero:
+  src: "/hero-reading-live-packets.jpg"
+  alt: "A warm hand-painted close-up of a paper-drum seismograph mid-rotation, an ink stylus pressing a fresh dark zigzag trace against the cream paper cylinder, warm amber side-lamp illuminating the instrument from the left."
+faq:
+  - q: "What packet types show up in Live Packets?"
+    a: "The most common are ADVERT (a node announcing its presence to the mesh), MSG (an encrypted direct message between two contacts), GRP_TXT (an encrypted group or channel message), PATH (the route returned to the original sender after a message is delivered), and ACK (a delivery acknowledgment). ADVERT packets dominate most streams because repeaters broadcast them on a regular schedule."
+  - q: "How do I know if a gap in Live Packets means something is wrong?"
+    a: "Check the timestamp on the last row. A gap of a minute or two is common on a quiet network; a gap of many minutes usually means your observer went offline, the MQTT connection between your observer and your broker dropped, or the mesh around your observer is genuinely inactive. Cross-check your broker connection status before concluding the network is down."
+  - q: "What is a PATH packet and why does it follow a MSG?"
+    a: "A PATH packet carries the route a message took from sender to destination, returned back to the original sender so the network knows the working path. It is part of MeshCore's routing handshake: after a node receives a MSG, it returns a PATH so the sender can cache the route for future direct delivery. Seeing MSG followed quickly by PATH means a message was received and the route was confirmed."
+  - q: "How is Live Packets different from Network Stats?"
+    a: "Live Packets shows raw events as they arrive — one row per packet, in arrival order, useful for watching something happen right now or spotting a short-window pattern. Network Stats aggregates those events into a per-node health picture: average SNR, hop count trends, and status flags. Use Live Packets when you want to watch; use Network Stats when you want a health overview of the whole network."
+  - q: "Can I filter Live Packets by node name or packet type?"
+    a: "Yes. You can filter the stream by node name to isolate packets from a specific source, which is useful when diagnosing a particular node or watching for traffic from a single contact. This keeps the stream focused on what you are investigating without losing the real-time feed from the rest of the network."
+---
+
+import Figure from "../../components/Figure.astro";
+import LivepacketsPacketTypes from "../../components/viz/livepackets-PacketTypes.astro";
+
+<div class="callout"><p><strong>In short.</strong> The MeshCore live packet viewer in Waev — Live Packets — shows every packet your enrolled observers have received, in arrival order, tagged with its type, source node, SNR, and hop count. Packet type tells you what the packet was; SNR tells you how cleanly your observer heard it; hop count tells you how far it traveled. Those three numbers together are a real-time readout of your mesh's activity.</p></div>
+
+You're connected, packets are arriving, and the stream is moving. The rows come in quickly, names and numbers scrolling past. The question most operators hit next is: what do I actually look at?
+
+Live Packets is not a dashboard. It is a raw event stream — every radio event your enrolled observers have heard, filtered through the privacy gate and delivered in order. Reading it means knowing which packet types are infrastructure noise, which are user traffic, and what patterns in the stream tell you about the health of your network.
+
+## What the stream shows
+
+Every row in Live Packets is one packet: one radio event at one of your enrolled observers at a specific moment. The columns are always the same — timestamp, packet type, source node, SNR, hop count — and they carry the same meaning regardless of what kind of packet it is.
+
+The data comes only from your enrolled observers. If an observer goes offline, packets from nodes that only reach you through that observer disappear from the stream. Nothing is inferred to fill the gap. What you see is what your observers actually heard — which is why a quiet stream can mean either a quiet network or a disconnected observer, and distinguishing between those two requires looking at more than the stream itself.
+
+The pipeline that produces this stream — how a radio packet becomes a row in Live Packets — is covered in [the full ingest pipeline from radio broadcast to Waev](/blog/how-waev-reads-your-mesh/).
+
+## The five packet types
+
+Five types account for nearly everything you will see in a running MeshCore mesh.
+
+<Figure caption="A Live Packets stream showing all five types in sequence. ADVERT and MSG have accent-colored badges — they carry identity or user content. PATH and ACK are muted — they are routing confirmation, not user-visible traffic. GRP_TXT appears alongside MSG whenever a channel is active.">
+  <LivepacketsPacketTypes />
+</Figure>
+
+**ADVERT** — a node announcing its identity to the mesh. Every repeater sends an ADVERT on a schedule (the interval is configurable in firmware via `set advert.interval`); companion devices can send one to announce themselves, typically on demand from the app rather than automatically. ADVERT packets dominate most streams on networks with several active repeaters. They are how nodes make themselves known, and a steady cadence of ADVERTs from a given relay is a reliable indicator that relay is up and hearing the mesh.
+
+**MSG** — an encrypted direct message between two contacts. When someone sends a private message on the mesh, you see it as MSG from the sender's node. The content is encrypted end-to-end; what Live Packets shows is the fact of transmission — who sent it, when, at what SNR, and how many hops it took to reach your observer.
+
+**GRP_TXT** — an encrypted group or channel message. Structured similarly to MSG but keyed per channel rather than per contact. On a net with an active ops or tactical channel, GRP_TXT will appear in bursts whenever someone transmits.
+
+**PATH** — the route returned to the original sender after a message is delivered. This is part of MeshCore's routing: once a receiving node gets a MSG, it sends back a PATH packet carrying the hop-by-hop route that message traveled, so the sender can cache the path for future direct delivery. You will typically see PATH arrive shortly after MSG, from the same node the MSG came from — the PATH is the receiving node confirming the route exists.
+
+**ACK** — delivery acknowledgment. After a node successfully receives and decodes a MSG, it sends an ACK back. An ACK following a MSG means the message arrived and was confirmed. If you see MSG but no ACK, the destination may not have heard it — the sender will retry.
+
+PATH and ACK are infrastructure. They confirm that direct messaging is working, but they are not user traffic on their own. A stream dominated by ADVERT, PATH, and ACK with no MSG or GRP_TXT simply means no one is actively messaging right now — the mesh is healthy and quiet.
+
+## Reading the rhythm
+
+A running stream has a rhythm, and deviations from that rhythm carry information.
+
+**ADVERT cadence tells you which relays are up.** A repeater that broadcasts an ADVERT every few minutes will appear in the stream on schedule. If a relay you expect to see goes silent — no ADVERT for longer than its configured interval — it has likely gone offline or lost its connection to your observer's reach.
+
+**MSG + PATH + ACK in sequence means a message got through.** The three often appear within a few seconds of each other, from the same nodes. This is the normal successful messaging pattern. If you see MSG without a following PATH and ACK, the recipient either did not receive the message or has not yet acknowledged it — the sender's firmware will retry before giving up.
+
+**A gap in the stream needs a cause.** Compare the timestamp on the last row to the current time. A gap of a few minutes is ordinary on a quiet network. A gap of thirty minutes or more, on a network that normally has repeaters broadcasting ADVERTs, suggests your observer is offline or the MQTT connection has dropped. That is worth investigating before concluding the mesh went silent.
+
+**A node appearing at a higher hop count than usual means a shorter path degraded.** If `ridge-relay` normally arrives at 2 hops and starts arriving at 4, the mesh rerouted around something. The closer relay that used to carry the packet in one hop is no longer reachable through the original path. The underlying SNR work for diagnosing which link weakened is covered in [measuring SNR on a LoRa mesh](/blog/measuring-snr-on-a-lora-mesh/).
+
+## Live Packets, Network Stats, and Outpost
+
+Live Packets is the right tool for three specific tasks: confirming a node is currently reaching your observer, watching what happens on the mesh right now, and spotting anomalies in the last few minutes of activity.
+
+It is not the right tool for trend analysis. A single SNR reading in Live Packets is a snapshot. Whether that reading is typical or an outlier requires Network Stats, which aggregates readings over time into a per-node health view sorted by path quality. If you see a node arriving at unexpected SNR in the live stream, Network Stats tells you whether that reading is new or whether it has been marginal for days.
+
+Outpost is the per-node layer: one node's full activity history, including which observers heard it, when, and at what SNR over time. If something looks wrong on a specific node — inconsistent arrival, unexpected hop counts, activity dropping off — Outpost is where you go to understand the pattern rather than just observe the moment.
+
+The three surfaces together cover a mesh diagnostic from real-time event to long-term trend without needing to leave the browser.
+
+{/* ILLUSTRATION PROMPT: A warm, hand-painted close-up of a paper-drum seismograph at rest in mid-recording: the white cylindrical paper drum mid-rotation on its spindle, a fine ink stylus pressing a fresh dark zigzag trace onto the drum as it turns. The recent trace is clearly visible against the cream paper — gentle peaks and valleys, the ink still fresh and dark. Warm amber side-light from a single lamp at the left, casting a soft shadow across the drum housing. No people, no UI. The mood is patient and continuous — a machine doing its quiet job of recording events as they arrive. Palette: cream paper, dark ink, warm amber light, dark instrument housing. Painterly texture throughout. */}

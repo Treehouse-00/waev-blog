@@ -642,7 +642,7 @@ posts:
     theme: earned-competence
     primary_keyword: "MeshCore live packet viewer"
     secondary_keyword: "watch mesh packets in real time"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-06-25
