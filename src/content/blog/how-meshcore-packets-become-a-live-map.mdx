@@ -26,16 +26,16 @@ import SignalHopChain from "../../components/viz/signal-HopChain.astro";
 A MeshCore packet leaves a node's antenna as a burst of radio energy. By the time it appears as a line on Waev's Live Map, it has traveled through several transformations: from RF to IP, from a raw MQTT record to a parsed observation, from an observation to a verified edge. Each step either advances the packet toward the map or discards it. Understanding those steps is what lets you read the map honestly — and diagnose it when something's missing.
 
 <div class="callout">
-<p><strong>In short.</strong> How MeshCore packets become a live map: an enrolled observer hears the packet, publishes a record to your MQTT broker, Waev parses the hop path to identify which nodes the packet traversed, verifies those observations against known sources, and draws only the edges it can prove. The map is the subset of your mesh that enrolled observers have actually seen.</p>
+<p><strong>TLDR:</strong> How MeshCore packets become a live map: an enrolled observer hears the packet, publishes a record to your MQTT broker, Waev parses the hop path to identify which nodes the packet traversed, verifies those observations against known sources, and draws only the edges it can prove. The map is the subset of your mesh that enrolled observers have actually seen.</p>
 </div>
 
 ## What a MeshCore advertisement packet contains
 
 MeshCore nodes periodically broadcast advertisement packets to announce their presence and maintain mesh routing. Each packet carries enough information to reconstruct the path it took: the originating node's identifier, and a record of the nodes it passed through — each hop appending evidence of what it heard and at what signal quality.
 
-When the packet reaches an enrolled observer, the observer captures this path record and publishes it to your MQTT broker as a structured JSON document. That published record is what Waev receives.
+When the packet reaches an enrolled observer, the observer captures this path record and publishes it directly to Waev's own MQTT ingest as a structured JSON document, using a credential that is publish-only. That published record is what Waev receives.
 
-<Figure caption="A packet traversing two hops. Node A originates; Node B relays; the enrolled Observer hears it and publishes the full path to your broker. The SNR values travel with the record.">
+<Figure caption="A packet traversing two hops. Node A originates; Node B relays; the enrolled Observer hears it and publishes the full path to Waev's ingest. The SNR values travel with the record.">
   <SignalHopChain />
 </Figure>
 

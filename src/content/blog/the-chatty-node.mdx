@@ -27,7 +27,7 @@ Something is wrong with the mesh, but nothing is obviously broken. Messages stil
 That's the chatty node. Here's how to confirm what you're seeing, find which node it is, and fix it.
 
 <div class="callout">
-<p><strong>In short.</strong> Diagnosing a chatty node on a LoRa mesh starts with Live Packets: look for a source node that appears far more often than its neighbors. A MeshCore repeater should send flood adverts roughly every 47 hours by default (firmware v1.16.0+). If a node is advertising every few minutes, it's either misconfigured or running old firmware. The fix is one CLI command: <code>set flood.advert.interval 47</code>, followed by <code>reboot</code>.</p>
+<p><strong>TLDR:</strong> Diagnosing a chatty node on a LoRa mesh starts with Live Packets: look for a source node that appears far more often than its neighbors. A MeshCore repeater should send flood adverts roughly every 47 hours by default (firmware v1.16.0+). If a node is advertising every few minutes, it's either misconfigured or running old firmware. The fix is one CLI command: <code>set flood.advert.interval 47</code>, followed by <code>reboot</code>.</p>
 </div>
 
 ## What an advert is and why the interval matters

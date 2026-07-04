@@ -27,7 +27,7 @@ MeshCore and Meshtastic are both open-source LoRa mesh firmware projects. Both r
 Under that surface similarity is a single architectural decision that makes them behave very differently at scale, and understanding that decision is what tells you which one fits your situation.
 
 <div class="callout">
-<p><strong>In short.</strong> MeshCore vs Meshtastic is a routing question. Meshtastic floods every message outward through every available node — which makes it work instantly without planning, but generates network-wide traffic for every message. MeshCore floods once to find a path, then routes all subsequent traffic directly along that path — which requires fixed repeater infrastructure but produces a network that handles scale without channel congestion. Neither is better; each is right for the network it was designed for.</p>
+<p><strong>TLDR:</strong> MeshCore vs Meshtastic is a routing question. Meshtastic floods every message outward through every available node — which makes it work instantly without planning, but generates network-wide traffic for every message. MeshCore floods once to find a path, then routes all subsequent traffic directly along that path — which requires fixed repeater infrastructure but produces a network that handles scale without channel congestion. Neither is better; each is right for the network it was designed for.</p>
 </div>
 
 ## The routing decision

@@ -15,7 +15,7 @@ faq:
   - q: "What will I see on Waev during Field Day?"
     a: "Live Packets will fill quickly with packets from temporary stations. The Live Map will draw new topology edges as those stations appear and connect through your permanent repeaters. Network Stats will show a clear spike in unique nodes and packet volume for the operating window."
   - q: "Do I need to configure anything special for Field Day?"
-    a: "No. If you have an enrolled observer connected to your MQTT broker and Waev is already subscribed, the Field Day traffic will appear automatically as it arrives. The only thing to check beforehand is that your observer is online and your broker connection is healthy."
+    a: "No. If you have an enrolled observer publishing to Waev's ingest, the Field Day traffic will appear automatically as it arrives. The only thing to check beforehand is that your observer is online and its connection to Waev is healthy."
   - q: "Will temporary Field Day stations appear on the Live Map?"
     a: "If a temporary station routes through one of your enrolled observers or authenticated repeaters, and they haven't marked their node with an opt-out symbol, yes — they'll appear in Live Packets and potentially draw edges on the Live Map. Nodes that haven't been heard by your observers won't appear, which is accurate: Waev only maps what it can verify."
   - q: "What's the most useful thing to watch for during the operating window?"
@@ -30,7 +30,7 @@ import FielddayNetStats from "../../components/viz/fieldday-NetStats.astro";
 Every year, near the end of June, a quiet hill somewhere gets a little busier. Generators fire up. Antennas go into the air. Operators who usually work from a home station spend 27 hours entirely off-grid, running on batteries and solar, calling CQ into a contest that's less about competition than it is about proving the infrastructure works when you need it. ARRL Field Day — June 27–28 this year — is the most widely participated amateur radio event in North America, and for anyone running a MeshCore network, it's something specific: the year's best live load test.
 
 <div class="callout">
-<p><strong>In short.</strong> Field Day puts 30,000+ operators on the air simultaneously, many of them on temporary mesh nodes that appear, route traffic, and disappear again over a 27-hour window. Waev gives you a real-time view of that surge through your own infrastructure — the packets arriving, the map expanding, the stats climbing — and something useful to look back on afterward.</p>
+<p><strong>TLDR:</strong> Field Day puts 30,000+ operators on the air simultaneously, many of them on temporary mesh nodes that appear, route traffic, and disappear again over a 27-hour window. Waev gives you a real-time view of that surge through your own infrastructure — the packets arriving, the map expanding, the stats climbing — and something useful to look back on afterward.</p>
 </div>
 
 ## The mesh before the weekend starts
@@ -87,7 +87,7 @@ Three specific things worth checking in Stats during the weekend:
 
 Field Day is not a normal traffic load, and that's exactly what makes it useful. It's a scheduled, predictable surge with a known start time, a known end time, and operators who are there to operate — not to debug mesh issues. If your network absorbs it cleanly, you have real evidence that your infrastructure works under pressure. If something bends — a key repeater saturating, a long path degrading, a coverage gap showing up for the first time — you find out during a controlled event rather than when it counts more.
 
-You don't need to do anything special to take advantage of this. If your observer is running and your broker is connected, the data will be there. The best preparation is making sure everything is healthy before the weekend starts — observer online, MQTT connection clean, Waev subscribed.
+You don't need to do anything special to take advantage of this. If your observer is running and publishing, the data will be there. The best preparation is making sure everything is healthy before the weekend starts — observer online, MQTT connection clean, packets arriving.
 
 The rest is just watching. And this particular weekend, watching is worth it.
 

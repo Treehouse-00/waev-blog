@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════
    blog.css — index masthead, post cards, long-form prose, value cards,
    and figure/visual-aid framing.
 
@@ -8,6 +8,9 @@
    Section kickers + feature cards mirror About's `.about-section-title`
    and `.about-feature`.
    ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Cache-bust anchor (non-visual) ── */
+.fc-cache-anchor { --_: 1; }
 
 /* ── Shared card chrome ── */
 .card {
@@ -655,6 +658,7 @@ a.tag:hover {
 .featured-link {
   color: inherit;
   text-decoration: none;
+  transition: color var(--dur-short-2) var(--ease-standard);
 }
 
 .featured-link::after {
@@ -663,6 +667,15 @@ a.tag:hover {
   inset: 0;
   z-index: 0;
   border-radius: var(--shape-xl);
+}
+
+/* When the CARD is hovered (anywhere — hero image, body, etc.),
+   the title turns accent-blue + underline, matching .post-card. */
+.featured:hover .featured-link {
+  color: var(--text-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border-accent);
 }
 
 .featured-meta .tag {
@@ -982,5 +995,257 @@ a.tag:hover {
   .about-avatar {
     width: 80px;
     height: 80px;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   Featured Carousel (.fc-*) — horizontal peek layout
+   Class prefix: .fc  (featured-carousel)
+   CSS source of truth: packages/ui-kit/src/styles/components/featured-carousel.css
+   This block must stay in sync with that file.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* Defense-in-depth: a grid item's min-width:auto resolves to its
+   min-content size, which would let any wide descendant (like the
+   carousel track) blow the .page grid column out past the viewport.
+   Pin main's minimum to 0 so the column stays at viewport width. */
+.page > main {
+  min-width: 0;
+}
+
+/* ── Outer shell ── */
+.fc {
+  position: relative;
+  /* Clip horizontal only — the flex track extends past the viewport.
+     Vertical stays visible so the active card's hover lift + shadow
+     can breathe above the card edge without being cropped. */
+  overflow-x: clip;
+  overflow-y: visible;
+  margin-block: 0 var(--sp-12);
+  /* GAP between slides in the track.
+     --fc-slide-w and --fc-fade-end are computed and set by JS. */
+  --fc-gap: 4px;
+}
+
+/* Strip the inner .featured's margin — .fc owns block spacing */
+.fc .featured {
+  margin-block: 0;
+}
+
+/* Inactive slides: suppress hover lift (spring owns the motion).
+   Active slide: restore the raised hover state matching .post-card. */
+.fc .fc-slide:not(.fc-slide--active) .featured:hover {
+  transform: none;
+  box-shadow: var(--shadow-container);
+}
+.fc .fc-slide--active .featured:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-container), 0 8px 30px rgba(28, 66, 149, 0.18);
+}
+
+/* ── Clip container — hides off-screen slides + gradient-fades the peek areas ── */
+.fc-clip {
+  /* clip-left/right only — visible top/bottom so the active card's
+     hover lift + shadow can breathe above the card edge. */
+  overflow-x: hidden;
+  overflow-y: visible;
+  /* CRITICAL: the slides have flex-shrink:0, so the track's min-content
+     width is the sum of ALL slides (~4700px). Without inline-size
+     containment that min-content propagates up through main into the
+     .page grid column and inflates the whole site layout. contain:
+     inline-size makes this element's intrinsic inline size zero, so the
+     track can never widen the page grid. */
+  contain: inline-size;
+  /* Vertical breathing room: top has extra for the hover-lift shadow bloom,
+     bottom for the resting drop-shadow. Negative margins compensate. */
+  padding-block: 16px 8px;
+  margin-block: -16px -8px;
+  /* Gradient mask: fades peeking slides from transparent at the viewport
+     edge to solid at the card boundary. --fc-fade-end is set by JS to the
+     computed gutter width (= (viewport − slideW) / 2). */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--fc-fade-end, 16px),
+    black calc(100% - var(--fc-fade-end, 16px)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--fc-fade-end, 16px),
+    black calc(100% - var(--fc-fade-end, 16px)),
+    transparent 100%
+  );
+}
+
+/* ── Horizontal track — all slides always in the DOM ── */
+.fc-track {
+  display: flex;
+  gap: var(--fc-gap);
+  will-change: transform;
+  /* transform set by JS: translateX(…px) */
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.fc-track.is-dragging {
+  cursor: grabbing;
+}
+
+/* ── Individual slides — always visible; motion JS owns opacity/scale ── */
+.fc-slide {
+  flex: 0 0 var(--fc-slide-w, 80%);
+  min-width: 0;
+  /* Initial state — JS sets these via inline style immediately;
+     these CSS defaults are the zero-JS fallback only. */
+  opacity: 0.45;
+  transform: scale(0.96);
+  /* NO CSS transition on opacity/transform — motion.animate() drives
+     these properties via spring physics synchronized with the track. */
+}
+
+.fc-slide--active {
+  /* JS sets opacity:1 + scale(1) via spring; this selector exists
+     for the zero-JS fallback and hover rule scoping. */
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Inactive slides: hover hint (CSS transition is fine here —
+   it's a micro-interaction, not the slide-change animation). */
+.fc-slide:not(.fc-slide--active) {
+  transition: opacity 200ms ease;
+}
+.fc-slide:not(.fc-slide--active):hover {
+  opacity: 0.65;
+}
+
+/* ── Navigation row: [←]  ● ● ○ ○ ○  [→] ── */
+/* Nav stays inside the container content width even though .fc is full-bleed */
+.fc-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  max-width: var(--grid-body);
+  margin-inline: auto;
+  padding-inline: var(--page-px);
+}
+
+/* ── Prev / next buttons ── */
+.fc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--shape-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-tint);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  transition:
+    background     var(--dur-short-2) var(--ease-standard),
+    color          var(--dur-short-2) var(--ease-standard),
+    border-color   var(--dur-short-2) var(--ease-standard);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.fc-btn:hover {
+  background: var(--accent-subtle);
+  color: var(--accent-light);
+  border-color: var(--border-accent);
+}
+
+.fc-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.fc-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Dot indicators ── */
+.fc-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  flex: 1;
+}
+
+.fc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--shape-full);
+  background: var(--border-subtle);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background  var(--dur-short-2) var(--ease-standard),
+    transform   var(--dur-short-2) var(--ease-standard);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.fc-dot--active {
+  background: var(--accent);
+  transform: scale(1.35);
+}
+
+.fc-dot:hover:not(.fc-dot--active) {
+  background: var(--text-tertiary);
+}
+
+.fc-dot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── Slot label (eyebrow) ── */
+.fc-label {
+  font-family: var(--mono);
+  font-size: var(--fs-label-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  font-weight: var(--fw-bold);
+}
+
+/* Visually hidden (sr-only) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 639px) {
+  .fc-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+  .fc-dot {
+    width: 10px;
+    height: 10px;
   }
 }

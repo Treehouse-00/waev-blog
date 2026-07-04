@@ -28,7 +28,7 @@ The call comes in at 0730. A storm made landfall overnight, cell towers are satu
 What you see in the next thirty seconds — which nodes are up, which links are holding, where the topology has gaps — determines how useful your mesh is for the next twelve hours. But what you can *interpret* in those thirty seconds was determined three weeks ago, when you last looked at the health baseline.
 
 <div class="callout">
-<p><strong>In short.</strong> A CERT mesh network activation is not a moment; it's the consequence of preparation. The mesh checks out quickly if you know what to expect. You know what to expect if you've been watching it. Thirty days of quiet baseline data is worth more on activation morning than any procedure written in a binder.</p>
+<p><strong>TLDR:</strong> A CERT mesh network activation is not a moment; it's the consequence of preparation. The mesh checks out quickly if you know what to expect. You know what to expect if you've been watching it. Thirty days of quiet baseline data is worth more on activation morning than any procedure written in a binder.</p>
 </div>
 
 ## The activation is the easy part
@@ -65,7 +65,7 @@ Siting a second relay to eliminate a SPOF follows the same logic covered in [how
 
 In the days before a forecast event or a scheduled activation, run through this list:
 
-**Confirm your observer is online.** A node publishing to your broker is the only source of topology data. If the observer's internet connection is down, the map won't update. Verify the observer is reachable and publishing before activation day.
+**Confirm your observer is online.** A node publishing to Waev's ingest is the only source of topology data. If the observer's internet connection is down, the map won't update. Verify the observer is reachable and publishing before activation day.
 
 **Check packet rates from sentinel relays.** Sentinel relays — those field nodes that transmit periodically to prove they're alive — are your canaries. In Outpost, pull the 7-day packet rate for each sentinel. A sentinel at 30+ packets per hour that's now at five has a problem. That's a field check before activation, not a question during it.
 
@@ -73,7 +73,7 @@ In the days before a forecast event or a scheduled activation, run through this 
 
 **Identify any nodes in watchlist or silent status.** These are nodes with reduced or absent packet rates. For each one: is the cause known? Is a repair possible before activation? If not, update your operational picture — that node may not be available.
 
-**Confirm your broker is reachable from the field.** Your observer needs to publish to the broker. Your operations center needs to read from Waev. Both paths need to be verified before activation day, not assumed.
+**Confirm Waev's ingest is reachable from the field.** Your observer needs to publish to it. Your operations center needs to read from Waev. Both paths need to be verified before activation day, not assumed.
 
 ## During the activation
 

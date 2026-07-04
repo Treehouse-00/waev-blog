@@ -20,3 +20,5 @@ pnpm-debug.log*
 # editor
 .vscode/
 .idea/
+# local dev launch config (machine-specific paths)
+.claude/

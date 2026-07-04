@@ -1,6 +1,6 @@
 ---
 title: "Setting Up Mosquitto for MeshCore"
-description: "A practical guide to Mosquitto MQTT broker setup for MeshCore: TLS on port 8883, password authentication, and an ACL that limits Waev to read-only access."
+description: "A practical guide to Mosquitto MQTT broker setup for MeshCore: TLS on port 8883, password authentication, and an ACL that scopes access — useful if you want a copy of your observer's stream for your own tools."
 date: 2026-06-09
 tags: ["how-it-works", "data-ownership"]
 hero:
@@ -11,21 +11,21 @@ faq:
     a: "Port 8883 is the standard port for MQTT over TLS. Configure it with a `listener 8883` directive in mosquitto.conf and attach your TLS certificate files. The unencrypted default is port 1883, which should not be exposed publicly when credentials are in use."
   - q: "Do I need a public CA certificate, or will a self-signed CA work?"
     a: "A self-signed CA works as long as every connecting client is configured to trust it. A certificate from Let's Encrypt on a domain name is simpler to rotate and trusted by clients by default. Either approach is valid; the requirement is that TLS is active so credentials travel encrypted."
-  - q: "How do I create the Waev subscriber account on Mosquitto?"
-    a: "Run `mosquitto_passwd /etc/mosquitto/passwd waev` and enter a strong password at the prompt. Then add a user block in your ACL file granting that account read access to the topic tree your observer publishes to. The observer account needs readwrite on those same topics. Restart Mosquitto after any credential or ACL change."
+  - q: "How do I create a scoped account for my own tools on Mosquitto?"
+    a: "Run `mosquitto_passwd /etc/mosquitto/passwd <toolname>` and enter a strong password at the prompt. Then add a user block in your ACL file granting that account read access to the topic tree your observer publishes to. The observer account needs readwrite on those same topics. Restart Mosquitto after any credential or ACL change."
   - q: "Can I run this broker on a Raspberry Pi or a small VPS?"
-    a: "Yes to both. Mosquitto is lightweight and runs comfortably on either. A VPS with a static IP or a domain name is the simpler choice because the public address requirement for Waev's subscription is already satisfied. A Raspberry Pi works with a stable internet-facing address via port-forwarding or a VPN."
-  - q: "How do I confirm TLS and authentication are working before connecting Waev?"
-    a: "Run `openssl s_client -connect your-broker:8883` and confirm the TLS handshake completes. Then test with `mosquitto_sub -h your-broker -p 8883 --cafile /path/to/ca.pem -u waev -P yourpassword -t '#'`. If packets arrive when the observer is active, both TLS and credential authentication are working."
+    a: "Yes to both. Mosquitto is lightweight and runs comfortably on either. A VPS with a static IP or a domain name is the simpler choice if you want a stable public address for other tools to reach. A Raspberry Pi works with a stable internet-facing address via port-forwarding or a VPN."
+  - q: "How do I confirm TLS and authentication are working?"
+    a: "Run `openssl s_client -connect your-broker:8883` and confirm the TLS handshake completes. Then test with `mosquitto_sub -h your-broker -p 8883 --cafile /path/to/ca.pem -u <toolname> -P yourpassword -t '#'`. If packets arrive when the observer is active, both TLS and credential authentication are working."
 ---
 
 import Figure from "../../components/Figure.astro";
 import ByobMosquittoConfig from "../../components/viz/byob-MosquittoConfig.astro";
 
-Setting up a self-hosted MQTT broker is the first concrete step toward data ownership in a MeshCore network. The broker is where your observer publishes packets, where Waev subscribes to read them, and where your data lives — on infrastructure you control. Getting the security layers right from the start means credentials are never sent in the clear, access is scoped correctly, and you can rotate or revoke any client at any time without anyone's permission but your own.
+Your MeshCore observer's packet stream isn't captive to Waev — the same stream can be pointed at other tools of your choosing, using presets Waev ships in its own docs. One way to do that is to run your own Mosquitto broker: your observer publishes a copy of its stream there, and whatever tools you want — a local dashboard, a logging pipeline, a second analysis stack — subscribe to it on your own terms. Waev isn't a party to this broker at all; the observer reaches Waev's ingest directly, over a separate publish-only connection. This guide covers setting one up for that purpose: TLS on the wire, password authentication per client, and an ACL that scopes who gets to read what.
 
 <div class="callout">
-<p><strong>In short.</strong> Mosquitto MQTT broker setup for MeshCore involves three layered controls: TLS on port 8883 encrypts the transport, a password file authenticates each client, and an ACL file grants your observer readwrite access while limiting Waev's subscriber account to read-only. Your data stays on your infrastructure; every client's permissions are explicit and yours to change.</p>
+<p><strong>TLDR:</strong> If you want a copy of your MeshCore observer's stream for your own tools, running a Mosquitto broker is a solid way to get one: TLS on port 8883 encrypts the transport, a password file authenticates each client, and an ACL file grants your observer readwrite access while scoping each downstream tool's account to read-only. This broker is separate from Waev's own ingest — it exists to serve tools of your choosing, on your infrastructure.</p>
 </div>
 
 ## What you need before you start
@@ -42,7 +42,7 @@ The three items that need to exist before Mosquitto starts:
 
 Mosquitto's security model is additive: TLS encrypts the transport; the password file authenticates the connecting client; the ACL file controls what that client can do once authenticated. Each layer is configured in `mosquitto.conf`.
 
-<Figure caption="Three layers inside a Mosquitto broker. Left: the MeshCore observer publishes on port 8883. Center: Mosquitto enforces TLS, then password-based authentication, then per-user ACL rules — the observer gets readwrite, Waev's subscriber account gets read-only. Right: Waev subscribes and can only receive.">
+<Figure caption="Three layers inside a Mosquitto broker you run yourself. Left: the MeshCore observer publishes a copy of its stream on port 8883. Center: Mosquitto enforces TLS, then password-based authentication, then per-user ACL rules — the observer gets readwrite, each downstream tool's account gets read-only. Right: your own tools subscribe and can only receive. Waev is not on this broker; the observer reaches Waev's ingest separately.">
   <ByobMosquittoConfig />
 </Figure>
 
@@ -74,10 +74,10 @@ password_file /etc/mosquitto/passwd
 sudo mosquitto_passwd -c /etc/mosquitto/passwd observer
 ```
 
-The `-c` flag creates a new file. To add subsequent accounts without overwriting:
+The `-c` flag creates a new file. To add an account for each tool you want to read from this broker, without overwriting the file:
 
 ```
-sudo mosquitto_passwd /etc/mosquitto/passwd waev
+sudo mosquitto_passwd /etc/mosquitto/passwd dashboard
 ```
 
 Mosquitto stores passwords hashed with PBKDF2. The plaintext password is not stored anywhere on disk after this step.
@@ -90,17 +90,17 @@ The ACL file maps usernames to their permitted topics and access levels. Add to 
 acl_file /etc/mosquitto/acl
 ```
 
-A minimal ACL for a MeshCore observer and a read-only Waev subscriber:
+A minimal ACL for a MeshCore observer and a read-only downstream tool:
 
 ```
 user observer
 topic readwrite #
 
-user waev
+user dashboard
 topic read #
 ```
 
-The `#` wildcard covers the full topic tree. The observer account can publish and subscribe; the `waev` account can only subscribe. This is what "read-only subscriber" means at the broker level: the credential Waev holds cannot publish a single message to your broker, regardless of what Waev's software attempts to do.
+The `#` wildcard covers the full topic tree. The observer account can publish and subscribe; the `dashboard` account can only subscribe. This is what "read-only" means at the broker level: whatever credential you hand to a downstream tool cannot publish a single message back to your broker, regardless of what that tool's software attempts to do. Add one account per tool you want to feed, each scoped the same way.
 
 If you want tighter scope, replace `#` with the specific topic prefix your observer publishes to — for example, `msh/#` — and both accounts follow the same rules within that subtree.
 
@@ -118,14 +118,16 @@ Verify the TLS listener is active:
 openssl s_client -connect your-broker-hostname:8883
 ```
 
-A completed TLS handshake confirms the listener is up. Then verify authentication and topic access with `mosquitto_sub` using the `waev` account credentials. Packets from an active observer should appear. If nothing arrives, `journalctl -u mosquitto -f` shows connection errors in real time.
+A completed TLS handshake confirms the listener is up. Then verify authentication and topic access with `mosquitto_sub` using one of your downstream tool's account credentials. Packets from an active observer should appear. If nothing arrives, `journalctl -u mosquitto -f` shows connection errors in real time.
 
 ## Rotating and revoking credentials
 
-To update a password: run `mosquitto_passwd /etc/mosquitto/passwd username` with the new password, then `systemctl restart mosquitto`. Waev's connection drops and will reconnect once you provide the updated credentials. To revoke access entirely, remove the user from the password file and ACL, then restart. Neither operation requires contacting Waev.
+To update a password: run `mosquitto_passwd /etc/mosquitto/passwd username` with the new password, then `systemctl restart mosquitto`. Whatever tool was using that account drops its connection and reconnects once you update it with the new credentials. To revoke access entirely, remove the user from the password file and ACL, then restart. Both operations happen entirely on infrastructure you control.
 
-This is the operating meaning of the [bring-your-own-broker model](/blog/bring-your-own-broker/): the credentials governing who can read your mesh data live on your infrastructure, and the actions that matter — issue, rotate, revoke — are yours to take without coordination.
+{/* CANON-GAP: confirm the exact list of preset destinations/tools Waev documents for pointing an observer's stream elsewhere, so this can name them specifically instead of speaking generically */}
 
-For the broader picture of how a MeshCore observer feeds data from the radio mesh to your broker and on to Waev, see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/).
+None of this is how Waev gets your data — your observer reaches Waev's own MQTT ingest directly, over a separate publish-only connection, with no broker of yours in that path. A broker like the one in this guide is for you: it's how you keep a copy of your own stream on infrastructure you control, so any tool you choose — now or later — can read it without you having to re-plumb anything upstream.
+
+For the broader picture of how an enrolled observer's stream reaches Waev, see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/). For more on why the stream isn't locked to any one destination, see [the never-captive stream](/blog/bring-your-own-broker/).
 
 {/* ILLUSTRATION PROMPT: A warm flat illustration of a small locked steel junction box mounted on a concrete or brick wall, two conduit pipes entering from below. The padlock is prominent on the latch, warm side light, earthy palette. No screens, no figures. */}

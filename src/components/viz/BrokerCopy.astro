@@ -1,11 +1,13 @@
 ---
 /**
- * BrokerCopy — the bring-your-own-broker model: a community publishes to a
- * broker the operator owns; Waev subscribes and keeps a read-only copy.
- * Ownership stays on the left.
+ * BrokerCopy — the never-captive stream: an enrolled observer publishes
+ * directly to Waev's own MQTT ingest on a publish-only credential (it can
+ * send its own data and nothing else), and the operator reads it back out
+ * through a public read API. The same stream can feed other tools too —
+ * nothing about it is captive to Waev.
  */
-// Six community dots in a symmetric arc above the broker card, funnelling
-// to its top-center (150, 116) so the "community -> your broker" flow reads
+// Six community dots in a symmetric arc above the ingest card, funnelling
+// to its top-center (150, 116) so the "observers -> Waev ingest" flow reads
 // as a deliberate connection rather than scattered lines.
 const users = [
   { x: 78, y: 58 }, { x: 108, y: 48 }, { x: 138, y: 44 },
@@ -13,16 +15,16 @@ const users = [
 ];
 ---
 
-<svg viewBox="0 0 720 280" role="img" aria-label="A community publishes to a broker the operator owns; Waev subscribes and keeps a read-only copy. Control stays with the operator." style="width:100%;height:auto;">
+<svg viewBox="0 0 720 280" role="img" aria-label="An enrolled observer publishes to Waev's own MQTT ingest on a publish-only credential; the operator reads it back out through a public read API. Nothing about the stream is captive to Waev." style="width:100%;height:auto;">
   <defs>
     <marker id="bc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill: var(--accent-light);" />
     </marker>
   </defs>
 
-  <!-- community funnelling into the broker (label -> dots -> tip on card top) -->
+  <!-- observers funnelling into Waev's ingest (label -> dots -> tip on card top) -->
   <g>
-    <text x="150" y="30" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">your community</text>
+    <text x="150" y="30" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">your observers</text>
     {users.map((u) => (
       <>
         <line x1={u.x} y1={u.y} x2="150" y2="116" style="stroke: var(--border-hover);" stroke-width="1" />
@@ -31,7 +33,7 @@ const users = [
     ))}
   </g>
 
-  <!-- left card — operator's broker -->
+  <!-- left card — Waev's ingest -->
   <g>
     <rect x="40" y="116" width="220" height="120" rx="16" style="fill: var(--surface-1); stroke: var(--border-accent);" stroke-width="1" />
     <!-- server glyph -->
@@ -41,25 +43,25 @@ const users = [
       <circle cx="6" cy="5.5" r="1.2" style="fill: var(--accent-light); stroke: none;" />
       <circle cx="6" cy="20.5" r="1.2" style="fill: var(--accent-light); stroke: none;" />
     </g>
-    <text x="104" y="150" style="fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600;">Your broker</text>
-    <text x="104" y="168" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">MQTT · you host it</text>
+    <text x="104" y="150" style="fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600;">Waev ingest</text>
+    <text x="104" y="168" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">mqtt.waev.app</text>
     <line x1="64" y1="190" x2="236" y2="190" style="stroke: var(--border-subtle);" stroke-width="1" />
-    <text x="64" y="212" style="fill: var(--accent-light); font-family: var(--mono); font-size: 12px;">you own the data ✓</text>
+    <text x="64" y="212" style="fill: var(--accent-light); font-family: var(--mono); font-size: 12px;">publish-only in ✓</text>
   </g>
 
-  <!-- subscribe / copy arrow -->
+  <!-- public read API arrow -->
   <g>
     <line x1="268" y1="176" x2="452" y2="176" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#bc-arrow)" />
-    <text x="360" y="160" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">subscribe</text>
-    <text x="360" y="198" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">a copy, not the keys</text>
+    <text x="360" y="160" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">public read API</text>
+    <text x="360" y="198" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">never captive</text>
   </g>
 
-  <!-- right card — Waev -->
+  <!-- right card — the operator, reading their own data back out -->
   <g>
     <rect x="460" y="116" width="220" height="120" rx="16" style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
-    <text x="484" y="150" style="fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600;">Waev</text>
-    <text x="484" y="168" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">keeps a read-only copy</text>
+    <text x="484" y="150" style="fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600;">You</text>
+    <text x="484" y="168" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">read your data out</text>
     <line x1="484" y1="190" x2="656" y2="190" style="stroke: var(--border-subtle);" stroke-width="1" />
-    <text x="484" y="212" style="fill: var(--text-muted); font-family: var(--mono); font-size: 12px;">maps · health · telemetry</text>
+    <text x="484" y="212" style="fill: var(--text-muted); font-family: var(--mono); font-size: 12px;">+ other tools, your choice</text>
   </g>
 </svg>

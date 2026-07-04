@@ -1,6 +1,6 @@
 ---
 title: "From Radio to Map"
-description: "The pipeline from a radio broadcast to a verified edge on Waev's Live Map: how enrolled observers, your MQTT broker, and the ingest edge work together."
+description: "The pipeline from a radio broadcast to a verified edge on Waev's Live Map: how enrolled observers, the never-captive stream, and the ingest edge work together."
 date: 2026-06-08
 tags: ["deep-dive", "how-it-works"]
 author: "Waev"
@@ -9,8 +9,8 @@ hero:
   src: "/hero-how-waev-reads-your-mesh.jpg"
   alt: "A hand-painted outdoor scene of a handheld radio transceiver showing a grid map on its screen, set among rolling hills, winding rivers, and a rising moon."
 faq:
-  - q: "Does my MQTT broker need to be reachable from the public internet?"
-    a: "Yes. Waev subscribes from our infrastructure, so your broker needs a public address or hostname that resolves externally. Many operators run Mosquitto on a small VPS. You control the credentials and TLS configuration; Waev just subscribes."
+  - q: "Do I need to host anything for Waev to receive my observer's data?"
+    a: "No. An enrolled observer publishes directly to Waev's own MQTT ingest (mqtt.waev.app) using a publish-only credential — it can send its own data and nothing else. There's no broker for you to stand up or keep reachable."
   - q: "What happens if my observer goes offline?"
     a: "Waev stops receiving packets from that observer. The map shows the last-known topology; edges age but are not immediately removed, and nothing is inferred to fill the gap. When the observer reconnects, the data stream resumes."
   - q: "My node shows up in Live Packets but not on the Live Map. Why?"
@@ -27,7 +27,7 @@ import HiwTopologyDraw from "../../components/viz/hiw-TopologyDraw.astro";
 Your mesh doesn't know about <span class="waev-brand">Waev</span>. The nodes on your hilltop relays, the repeaters in the valley — they're broadcasting the same LoRa packets they always have, into the air, to whatever's listening. <span class="waev-brand">Waev</span> has no antenna. So the question, for anyone standing up their first observer, is a fair one: how does anything get from the radio to the browser tab?
 
 <div class="callout">
-<p><strong>In short:</strong> an enrolled observer listens on your mesh and publishes packets to an MQTT broker you host. Waev subscribes to that broker, scrubs private and unverifiable data at the ingest edge, and builds the map from what it can prove. The pipeline has five stages; each one does one job.</p>
+<p><strong>TLDR:</strong> an enrolled observer listens on your mesh and publishes packets straight to Waev's own MQTT ingest, using a credential that can only publish — never read, alter, or delete anything on the broker. Waev scrubs private and unverifiable data at the ingest edge and builds the map from what it can prove. The pipeline has five stages; each one does one job.</p>
 </div>
 
 <Figure caption="The full pipeline — five stages, one job each. The <b>Observer</b> is the bridge your mesh needs. The <b>Ingest Edge</b> is the gate Waev controls.">
@@ -38,25 +38,29 @@ Your mesh doesn't know about <span class="waev-brand">Waev</span>. The nodes on 
 
 A MeshCore observer is a repeater with an internet connection. On the radio side it operates exactly like any other repeater — forwarding packets through the mesh. On the internet side it has a path out, typically WiFi or Ethernet.
 
-When a packet arrives at the observer's radio, the observer publishes a JSON record of that packet to your MQTT broker. That's the handoff — from radio to IP, from the air to the internet. Without an enrolled observer, <span class="waev-brand">Waev</span> sees nothing.
+When a packet arrives at the observer's radio, the observer publishes a JSON record of that packet directly to Waev's MQTT ingest. That's the handoff — from radio to IP, from the air to the internet. Without an enrolled observer, <span class="waev-brand">Waev</span> sees nothing.
 
-The word "enrolled" matters. <span class="waev-brand">Waev</span> draws topology only from observers you've connected — you gave Waev your broker address, and the observer is publishing to that broker. An observer that publishes to a different broker, or to a broker Waev hasn't been given, doesn't contribute to your map.
+The word "enrolled" matters. <span class="waev-brand">Waev</span> draws topology only from observers you've connected — you gave the observer a publish-only credential scoped to your stream, and it publishes under that credential. An observer that isn't enrolled, or that publishes under someone else's credential, doesn't contribute to your map.
 
-<Figure caption="The observer sits on both sides. <b>Left:</b> RF edges to mesh nodes (dashed — radio). <b>Right:</b> a TCP/IP connection to your broker (solid — internet). Two worlds, one device.">
+<Figure caption="The observer sits on both sides. <b>Left:</b> RF edges to mesh nodes (dashed — radio). <b>Right:</b> a TCP/IP connection to Waev's MQTT ingest (solid — internet). Two worlds, one device.">
   <HiwObserverBridge />
 </Figure>
 
 One observer is enough to start. Multiple observers give you overlapping vantage points — more verified hops, better coverage of nodes that sit far from any single connection point, and more independent evidence per edge. The map gets richer with each additional vantage point you add.
 
-## Your broker: your terms, your credentials
+## Your stream: publish-only, never captive
 
-<span class="waev-brand">Waev</span> subscribes to your broker with read-only credentials. You set those credentials. You run the broker — on a VPS, a home server, a managed service, wherever makes sense for your setup. Waev gets a copy of the data as it arrives. You can rotate or revoke credentials without asking anyone.
+The observer publishes to Waev's MQTT ingest (mqtt.waev.app) using a credential that is publish-only: it can send its own data and nothing else. It cannot subscribe to, read, alter, or delete anything on the broker — not its own stream, not anyone else's. There's no broker for you to host, patch, or keep online; that's Waev's infrastructure to run.
 
-This inverts the usual model. The alternative — where operators connect into a centrally-hosted MQTT server — creates access management problems at any scale: different permission levels, request workflows, a shared database everyone has to trust. Bring-your-own-broker removes those problems by design. You are never dependent on us to access your own data.
+You read your data back out through a public read API — the same one that feeds the Live Map, Live Packets, and the rest of the surfaces on waev.app.
+{/* CANON-GAP: confirm whether the read API is documented/self-serve today, or still needs a doc link operators can follow */}
+
+The same observer stream can also be pointed at other tools of your choosing — Waev ships presets for that in its own docs, so nothing about the stream is captive to Waev. If you stop using Waev, the observer doesn't stop working; you point it somewhere else.
+{/* CANON-GAP: confirm which preset tools/destinations exist today so this can name them specifically */}
 
 ## The ingest edge: where the picture gets verified
 
-<span class="waev-brand">Waev</span> receives the stream from your broker and runs three checks, in order, before anything is written.
+<span class="waev-brand">Waev</span> receives the stream from your observer and runs three checks, in order, before anything is written.
 
 **Opt-out markers drop the packet entirely.** If the source node name contains a privacy marker — ⛔, 🛑, or 🚫 — the packet is discarded before any other processing. Nothing stored, nothing counted. The marker is checked first, no exceptions.
 
@@ -86,7 +90,7 @@ Once packets clear the ingest edge, they're stored and routed to the relevant su
 
 ---
 
-The five stages work together: the observer bridges RF to the internet, your broker holds the data on your terms, the ingest edge enforces what gets in, and the surfaces show what the network can prove about itself. When something looks off on the map — a missing node, a gap in topology — tracing back through those five stages is usually enough to find where the observation chain broke.
+The five stages work together: the observer bridges RF to the internet, the stream reaches Waev without ever being captive to it, the ingest edge enforces what gets in, and the surfaces show what the network can prove about itself. When something looks off on the map — a missing node, a gap in topology — tracing back through those five stages is usually enough to find where the observation chain broke.
 
 Questions about a specific setup, or something that doesn't add up? [Talk to us](mailto:admin@waev.app) — concrete questions about real networks are the most useful feedback we get.
 

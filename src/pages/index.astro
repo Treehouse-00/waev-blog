@@ -1,13 +1,13 @@
 ---
 import { getPublishedPosts } from "../lib/posts";
 import Base from "../layouts/Base.astro";
-import MeshField from "../components/viz/MeshField.astro";
+import FeaturedCarousel from "../components/FeaturedCarousel.astro";
 
 const posts = await getPublishedPosts();
-const [featured, ...rest] = posts;
+const rest = posts;
 
-// Share card: use the featured post's hero so the blog card showcases the latest post.
-const ogImage = featured?.data.hero?.src ?? "/og-default.png";
+// Share card: use the latest post's hero for the OG image.
+const ogImage = posts[0]?.data.hero?.src ?? "/og-default.png";
 
 // Topic clusters: tag → human label, ordered by post count
 const TOPICS = [
@@ -61,6 +61,7 @@ const blogSchema = {
   image={ogImage}
   jsonLd={[blogSchema]}
 >
+  {/* Masthead + topic bar stay inside the grid container */}
   <div class="container">
     <header class="masthead">
       <span class="kicker">The Waev Blog</span>
@@ -88,41 +89,20 @@ const blogSchema = {
         ))}
       </ul>
     </nav>
+  </div>
 
-    {featured && (
-      <div class="featured">
-        <div class="featured-body">
-          <div class="featured-meta">
-            <span class="featured-eyebrow">Latest</span>
-            <time datetime={featured.data.date.toISOString()}>{fmt(featured.data.date)}</time>
-            {featured.data.tags.slice(0, 2).map((t) => (
-              <a href={`/tags/${t}/`} class="tag">{t}</a>
-            ))}
-          </div>
-          <h2 class="featured-title">
-            <a class="featured-link" href={`/blog/${featured.id}/`}>{featured.data.title}</a>
-          </h2>
-          <p class="featured-desc">{featured.data.description}</p>
-          <span class="featured-cta">Read the post →</span>
-        </div>
-        <div
-          class={`featured-visual${featured.data.hero ? " featured-visual--photo" : ""}`}
-          aria-hidden="true"
-        >
-          {featured.data.hero ? (
-            <img src={featured.data.hero.src} alt="" loading="eager" decoding="async" />
-          ) : (
-            <MeshField />
-          )}
-        </div>
-      </div>
-    )}
+  {/* Carousel is outside the container so it can bleed to viewport edges.
+      Each slide is sized to container content width by JS; peek areas
+      extend to and gradient-fade at the viewport edges. */}
+  <FeaturedCarousel featureSlug="waev-v1-4-0-dev-update" />
 
-    {rest.length > 0 && (
+  {/* All posts grid back inside container */}
+  {rest.length > 0 && (
+    <div class="container">
       <section class="more">
         <div class="more-header">
           <h2 class="more-title">All posts</h2>
-          <span class="more-count">{posts.length} total</span>
+          <span class="more-count">{rest.length} total</span>
         </div>
         <ul class="post-list post-list--grid">
           {rest.map((post) => (
@@ -151,6 +131,6 @@ const blogSchema = {
           ))}
         </ul>
       </section>
-    )}
-  </div>
+    </div>
+  )}
 </Base>

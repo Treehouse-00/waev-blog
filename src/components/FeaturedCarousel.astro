@@ -1,0 +1,480 @@
+---
+/**
+ * FeaturedCarousel.astro
+ *
+ * Renders the five-slot editorial carousel on the blog homepage.
+ * Slot order: FEATURE → DEV UPDATE → HOW IT WORKS → COMMUNITY → OPERATION
+ *
+ * The FEATURE slot is pinned to `featureSlug`. All other slots pick the
+ * latest published post matching their tag that has not already appeared in
+ * the carousel (deduplication via a Set). If a slot has no eligible post it
+ * is simply omitted — the carousel renders with fewer slides.
+ *
+ * Deduplication rule: if the FEATURE post IS also the latest DEV UPDATE,
+ * the DEV UPDATE slot is skipped automatically.
+ *
+ * Interactivity (prev/next, dots, keyboard, auto-advance) is wired by the
+ * companion <script> block using vanilla JS — no framework, no hydration.
+ */
+
+import { getPublishedPosts } from "../lib/posts";
+import MeshField from "./viz/MeshField.astro";
+
+interface Props {
+  /** Slug of the pinned FEATURE post. Defaults to the current hero. */
+  featureSlug?: string;
+}
+
+const { featureSlug = "waev-v1-4-0-dev-update" } = Astro.props;
+
+// ── Slot definitions (in display order) ──────────────────────────────────
+interface Slot {
+  key: string;
+  label: string;
+  pinnedSlug?: string;  // truthy → use this exact post, not tag lookup
+  tag?: string;         // falsy on FEATURE (handled by pinnedSlug)
+}
+
+const SLOTS: Slot[] = [
+  { key: "feature",    label: "Feature",       pinnedSlug: featureSlug },
+  { key: "dev-update", label: "Dev Update",    tag: "dev-update" },
+  { key: "how",        label: "How It Works",  tag: "how-it-works" },
+  { key: "community",  label: "Community",     tag: "community" },
+  { key: "operation",  label: "Operation",     tag: "operations" },
+];
+
+// ── Build slide array with deduplication ─────────────────────────────────
+const allPosts = await getPublishedPosts();
+const seen = new Set<string>();
+
+interface Slide {
+  label: string;
+  title: string;
+  description: string;
+  href: string;
+  date: Date;
+  tags: string[];
+  heroSrc?: string;
+  heroAlt?: string;
+}
+
+const slides: Slide[] = [];
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+
+for (const slot of SLOTS) {
+  let post = slot.pinnedSlug
+    ? allPosts.find((p) => p.id === slot.pinnedSlug)
+    : allPosts.find((p) => slot.tag && p.data.tags.includes(slot.tag) && !seen.has(p.id));
+
+  if (!post || seen.has(post.id)) continue;
+
+  seen.add(post.id);
+  slides.push({
+    label: slot.label,
+    title: post.data.title,
+    description: post.data.description,
+    href: `/blog/${post.id}/`,
+    date: post.data.date,
+    tags: post.data.tags,
+    heroSrc: post.data.hero?.src,
+    heroAlt: post.data.hero?.alt,
+  });
+}
+---
+
+{slides.length > 0 && (
+  <section
+    class="fc"
+    aria-label="Featured articles"
+    aria-roledescription="carousel"
+    data-fc
+  >
+    {/* Live region for screen readers — updated by JS on every slide change */}
+    <div class="sr-only" aria-live="polite" aria-atomic="true" data-fc-live></div>
+
+    {/* Clip container — overflow:hidden hides the off-screen slides.
+        Vertical padding gives the card drop-shadow room to breathe. */}
+    <div class="fc-clip">
+      <div class="fc-track" data-fc-track>
+        {slides.map((slide, i) => (
+          <div
+            class={`fc-slide${i === 0 ? ' fc-slide--active' : ''}`}
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${i + 1} of ${slides.length}: ${slide.label}`}
+            aria-hidden={i !== 0 ? 'true' : undefined}
+            data-fc-slide
+          >
+            {/* .featured card — div + stretched-link pattern preserved exactly */}
+            <div class="featured">
+              <div class="featured-body">
+                <div class="featured-meta">
+                  <span class="featured-eyebrow fc-label">{slide.label}</span>
+                  <time datetime={slide.date.toISOString()}>{fmt(slide.date)}</time>
+                  {slide.tags.slice(0, 2).map((t) => (
+                    <a href={`/tags/${t}/`} class="tag" style="position:relative;z-index:1">{t}</a>
+                  ))}
+                </div>
+                <h2 class="featured-title">
+                  {/* stretched link: ::after covers the whole .featured card */}
+                  <a class="featured-link" href={slide.href}>{slide.title}</a>
+                </h2>
+                <p class="featured-desc">{slide.description}</p>
+                <span class="featured-cta">Read the post →</span>
+              </div>
+              <div
+                class={`featured-visual${slide.heroSrc ? ' featured-visual--photo' : ''}`}
+                aria-hidden="true"
+              >
+                {slide.heroSrc ? (
+                  <img src={slide.heroSrc} alt="" loading="eager" decoding="async" />
+                ) : (
+                  <MeshField />
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Synchronously compute slide width + position the track.
+        is:inline runs as a raw <script> tag at this exact position in the
+        HTML — the track DOM above it has already been parsed, so
+        querySelector finds it immediately. Sets CSS vars + transform
+        before the browser ever paints the carousel. */}
+    <script is:inline>
+      (function () {
+        var fc = document.currentScript.closest('[data-fc]');
+        if (!fc) return;
+        var rootCs = getComputedStyle(document.documentElement);
+        var gridBody = parseFloat(rootCs.getPropertyValue('--grid-body')) || 1200;
+        var pagePx   = parseFloat(rootCs.getPropertyValue('--page-px'))   || 16;
+        var vw       = window.innerWidth;
+        var sw       = Math.min(vw, gridBody) - 2 * pagePx;
+        var peek     = (vw - sw) / 2;
+        fc.style.setProperty('--fc-slide-w',  sw   + 'px');
+        fc.style.setProperty('--fc-fade-end', peek + 'px');
+        var track = fc.querySelector('[data-fc-track]');
+        if (track) track.style.transform = 'translateX(' + peek + 'px)';
+      })();
+    </script>
+
+    {/* Navigation row: [←]  ● ● ○ ○ ○  [→] */}
+    {slides.length > 1 && (
+      <nav class="fc-nav" aria-label="Carousel navigation">
+        <button type="button" class="fc-btn" aria-label="Previous slide" data-fc-prev>←</button>
+        <div class="fc-dots" role="tablist" aria-label="Go to slide">
+          {slides.map((slide, i) => (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-label={`Slide ${i + 1}: ${slide.label}`}
+              class={`fc-dot${i === 0 ? ' fc-dot--active' : ''}`}
+              data-fc-dot={i}
+            />
+          ))}
+        </div>
+        <button type="button" class="fc-btn" aria-label="Next slide" data-fc-next>→</button>
+      </nav>
+    )}
+  </section>
+)}
+
+<script>
+/**
+ * FeaturedCarousel — motion-powered spring controller.
+ *
+ * Uses `motionValue` from the `motion` package to drive the track
+ * translateX with a proper spring (stiffness/damping/velocity-preserving).
+ *
+ * Key advantages over hand-rolled RAF spring:
+ * • `animate(motionValue, target, { type:'spring' })` cancels any
+ *   in-progress animation and resumes FROM current velocity — so
+ *   rapid next/prev clicks carry natural momentum into the new spring.
+ * • `motionValue.getVelocity()` returns px/s built up during drag
+ *   so fling-to-advance gestures feel physically correct.
+ * • Analytical spring solution (not Euler integration) — exact
+ *   overshoot/undershoot regardless of frame rate.
+ *
+ * Track position formula for active index `a`:
+ *   trackX = peekW - a * (slideW + GAP)
+ *   where peekW = (viewport - slideW) / 2  (= natural container gutter)
+ *   → active slide centered in viewport; adjacent slides peek
+ *     from the viewport edges by exactly the container gutter width.
+ */
+import { motionValue, animate } from 'motion';
+
+const AUTO_MS = 6000;
+
+// ── Spring configs ─────────────────────────────────────────────────
+// TRACK: adjacent-slide movement. Smooth ease-in via high mass,
+// gentle overshoot, clean settle.
+const SPRING_TRACK = {
+  type: 'spring' as const,
+  stiffness: 120,    // moderate pull
+  damping: 22,       // slightly underdamped = soft bounce at the end
+  mass: 1.6,         // heavy = smooth ramp-up, no jerk
+  restDelta: 0.5,
+  restSpeed: 0.5,
+};
+
+// TRACK WRAP: last→first (or first→last) long-distance sweep.
+const SPRING_TRACK_WRAP = {
+  type: 'spring' as const,
+  stiffness: 60,     // lazy start
+  damping: 18,       // high relative to stiffness = long decel tail
+  mass: 1.8,         // heavy, deliberate
+  restDelta: 0.5,
+  restSpeed: 0.3,    // linger at the end
+};
+
+// SLIDE PRESENCE: opacity + scale spring for the incoming/outgoing slides.
+// Softer and slightly lagging behind the track so the visual "reveal"
+// feels layered rather than mechanically locked.
+const SPRING_PRESENCE = {
+  type: 'spring' as const,
+  stiffness: 90,     // softer than the track spring
+  damping: 18,       // smooth, no overshoot on opacity
+  mass: 1.0,
+  restDelta: 0.01,
+  restSpeed: 0.01,
+};
+
+document.querySelectorAll<HTMLElement>('[data-fc]').forEach(initCarousel);
+
+function initCarousel(fc: HTMLElement) {
+  const track  = fc.querySelector<HTMLElement>('[data-fc-track]');
+  const slides = Array.from(fc.querySelectorAll<HTMLElement>('[data-fc-slide]'));
+  const dots   = Array.from(fc.querySelectorAll<HTMLButtonElement>('[data-fc-dot]'));
+  const live   = fc.querySelector<HTMLElement>('[data-fc-live]');
+  const prevBtn = fc.querySelector<HTMLButtonElement>('[data-fc-prev]');
+  const nextBtn = fc.querySelector<HTMLButtonElement>('[data-fc-next]');
+  if (!track || !slides.length) return;
+
+  // ── MotionValue — velocity-preserving animated number ─────────────────
+  const trackX = motionValue(0);
+  trackX.on('change', (v: number) => {
+    track.style.transform = `translateX(${v}px)`;
+  });
+
+  const springTo = (target: number, config = SPRING_TRACK) =>
+    animate(trackX, target, config);
+
+  // Synchronous instant-jump — no animation, no frames.
+  // .set() is synchronous and fires on('change') immediately,
+  // unlike animate(..., { duration:0 }) which still dispatches
+  // through a rAF and causes a visible swoop.
+  const springJump = (x: number) => {
+    trackX.jump(x);
+  };
+
+  // ── Layout — card width mirrors .container content width ──────────────
+  const rootCs   = getComputedStyle(document.documentElement);
+  const GRID_BODY = parseFloat(rootCs.getPropertyValue('--grid-body')) || 1200;
+  const PAGE_PX   = parseFloat(rootCs.getPropertyValue('--page-px'))   || 16;
+  const GAP       = parseFloat(getComputedStyle(fc).getPropertyValue('--fc-gap')) || 4;
+  let slideW = 0;
+  let peekW  = 0;
+
+  function updateLayout(jump = false) {
+    const vw   = window.innerWidth;
+    slideW = Math.min(vw, GRID_BODY) - 2 * PAGE_PX;
+    peekW  = (vw - slideW) / 2;
+    fc.style.setProperty('--fc-slide-w',  `${slideW}px`);
+    fc.style.setProperty('--fc-fade-end', `${peekW}px`);
+    if (jump) springJump(getX(active));
+  }
+
+  const getX = (i: number) => peekW - i * (slideW + GAP);
+
+  // ── State ───────────────────────────────────────────────────────
+  let active = 0;
+  let paused = false;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  // ── Per-slide MotionValues for opacity + scale ─────────────────
+  const slideOpacities = slides.map((s, i) => {
+    const mv = motionValue(i === 0 ? 1 : 0.45);
+    mv.on('change', (v: number) => { s.style.opacity = String(v); });
+    return mv;
+  });
+  const slideScales = slides.map((s, i) => {
+    const mv = motionValue(i === 0 ? 1 : 0.96);
+    mv.on('change', (v: number) => { s.style.transform = `scale(${v})`; });
+    return mv;
+  });
+
+  function animatePresence(instant = false) {
+    slides.forEach((s, i) => {
+      const on = i === active;
+      const targetOpacity = on ? 1 : 0.45;
+      const targetScale   = on ? 1 : 0.96;
+      if (instant) {
+        slideOpacities[i].jump(targetOpacity);
+        slideScales[i].jump(targetScale);
+      } else {
+        animate(slideOpacities[i], targetOpacity, SPRING_PRESENCE);
+        animate(slideScales[i],    targetScale,   SPRING_PRESENCE);
+      }
+    });
+  }
+
+  function show(index: number, instant = false) {
+    const n = slides.length;
+    const prev = active;
+    active = ((index % n) + n) % n;
+    slides.forEach((s, i) => {
+      const on = i === active;
+      s.classList.toggle('fc-slide--active', on);
+      s.setAttribute('aria-hidden', on ? 'false' : 'true');
+    });
+    dots.forEach((d, i) => {
+      const on = i === active;
+      d.classList.toggle('fc-dot--active', on);
+      d.setAttribute('aria-selected', String(on));
+    });
+    if (live) {
+      const lbl = slides[active].querySelector('.fc-label')?.textContent ?? '';
+      const ttl = slides[active].querySelector('.featured-title')?.textContent ?? '';
+      live.textContent = `${lbl}: ${ttl}`;
+    }
+    if (instant) {
+      springJump(getX(active));
+      animatePresence(true);
+    } else {
+      const isWrap = (prev === n - 1 && active === 0) ||
+                     (prev === 0 && active === n - 1);
+      springTo(getX(active), isWrap ? SPRING_TRACK_WRAP : SPRING_TRACK);
+      animatePresence(false);
+    }
+    resetTimer();
+  }
+
+  function resetTimer() {
+    if (timer) clearTimeout(timer);
+    if (!paused && slides.length > 1)
+      timer = setTimeout(() => show(active + 1), AUTO_MS);
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  updateLayout();
+  springJump(getX(0));
+  new ResizeObserver(() => updateLayout(true)).observe(fc);
+
+  // ── Navigation ───────────────────────────────────────────────
+  prevBtn?.addEventListener('click', () => show(active - 1));
+  nextBtn?.addEventListener('click', () => show(active + 1));
+  dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+  fc.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); show(active - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(active + 1); }
+  });
+
+  // ── Pause on hover / focus ──────────────────────────────────
+  fc.addEventListener('mouseenter', () => { paused = true;  if (timer) clearTimeout(timer); });
+  fc.addEventListener('mouseleave', () => { paused = false; resetTimer(); });
+  fc.addEventListener('focusin',    () => { paused = true;  if (timer) clearTimeout(timer); });
+  fc.addEventListener('focusout',   () => setTimeout(() => {
+    if (!fc.contains(document.activeElement)) { paused = false; resetTimer(); }
+  }, 0));
+
+  // ── Touch drag with fling velocity pickup ──────────────────────
+  // During drag we call trackX.set() which builds up velocity in the
+  // MotionValue. On release, animate() picks up that velocity so
+  // fling-to-advance gestures carry momentum into the spring.
+  let touchX0: number | null = null;
+  let touchBase: number;
+  let touchVX = 0;  // px/s, tracked manually for reliable velocity
+  let touchLastX = 0, touchLastT = 0;
+
+  track.addEventListener('touchstart', (e) => {
+    touchX0 = e.touches[0].clientX;
+    touchBase = trackX.get();
+    touchVX = 0; touchLastX = touchX0; touchLastT = performance.now();
+    paused = true; if (timer) clearTimeout(timer);
+  }, { passive: true });
+
+  track.addEventListener('touchmove', (e) => {
+    if (touchX0 === null) return;
+    const now = performance.now();
+    const cx = e.touches[0].clientX;
+    const newX = touchBase + (cx - touchX0);
+    const dt = now - touchLastT;
+    if (dt > 0) touchVX = (newX - touchLastX) / dt * 1000;  // px/s
+    touchLastX = newX; touchLastT = now;
+    trackX.set(newX);  // set builds internal velocity tracker too
+  }, { passive: true });
+
+  track.addEventListener('touchend', (e) => {
+    if (touchX0 === null) return;
+    const dx = e.changedTouches[0].clientX - touchX0;
+    paused = false;
+    // Advance if displacement OR fling velocity crosses threshold
+    if (Math.abs(dx) > slideW * 0.15 || Math.abs(touchVX) > 300)
+      show(touchVX > 0 || dx > 0 ? active - 1 : active + 1);
+    else { springTo(getX(active)); resetTimer(); }
+    touchX0 = null;
+  }, { passive: true });
+
+  // ── Mouse drag with fling velocity ────────────────────────────
+  let mouseX0: number | null = null;
+  let mouseBase: number;
+  let mouseWasDrag = false;
+  let mouseVX = 0, mouseLastX = 0, mouseLastT = 0;
+
+  track.addEventListener('mousedown', (e) => {
+    mouseX0 = e.clientX; mouseBase = trackX.get();
+    mouseWasDrag = false; mouseVX = 0; mouseLastX = mouseX0; mouseLastT = performance.now();
+    track.classList.add('is-dragging');
+    paused = true; if (timer) clearTimeout(timer);
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (mouseX0 === null) return;
+    const now = performance.now();
+    const newX = mouseBase + (e.clientX - mouseX0);
+    const dt = now - mouseLastT;
+    if (Math.abs(e.clientX - mouseX0) > 5) mouseWasDrag = true;
+    if (dt > 0) mouseVX = (newX - mouseLastX) / dt * 1000;
+    mouseLastX = newX; mouseLastT = now;
+    trackX.set(newX);
+  });
+
+  window.addEventListener('mouseup', (e) => {
+    if (mouseX0 === null) return;
+    const dx = e.clientX - mouseX0;
+    track.classList.remove('is-dragging');
+    paused = false;
+    if (mouseWasDrag && (Math.abs(dx) > slideW * 0.15 || Math.abs(mouseVX) > 300))
+      show(mouseVX > 0 || dx > 0 ? active - 1 : active + 1);
+    else { springTo(getX(active)); resetTimer(); }
+    mouseX0 = null;
+  });
+
+  track.addEventListener('click', (e) => {
+    if (mouseWasDrag) { e.preventDefault(); e.stopPropagation(); }
+    mouseWasDrag = false;
+  }, true);
+
+  // ── Reduced motion ────────────────────────────────────────
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq.matches) paused = true;
+  mq.addEventListener('change', (e) => {
+    paused = e.matches;
+    if (paused && timer) clearTimeout(timer);
+    else if (!paused) resetTimer();
+  });
+
+  resetTimer();
+}
+</script>

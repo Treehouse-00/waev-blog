@@ -28,7 +28,7 @@ There is a common pattern in mesh mapping tools: draw everything you hear. A nod
 Confidence without verification isn't trust. It's noise with a clean interface.
 
 <div class="callout">
-<p><strong>In short.</strong> An evidence based mesh network map draws only the edges it can prove: connections backed by enrolled observers receiving real RF transmissions, or authenticated repeaters reporting real relays. If Waev cannot produce a verifiable source for an edge, it does not draw the line. That restraint is not a limitation — it is the point.</p>
+<p><strong>TLDR:</strong> An evidence based mesh network map draws only the edges it can prove: connections backed by enrolled observers receiving real RF transmissions, or authenticated repeaters reporting real relays. If Waev cannot produce a verifiable source for an edge, it does not draw the line. That restraint is not a limitation — it is the point.</p>
 </div>
 
 ## The hearing problem
@@ -47,7 +47,7 @@ A map that draws from ADVERT metadata is drawing from a node's self-report. Self
 
 Waev draws topology edges from two sources: enrolled observers and authenticated repeaters.
 
-An **enrolled observer** is a MeshCore node (or compatible device) that is connected to your MQTT broker over TCP/IP. When a packet passes through the observer's radio range, the observer hears it, records the SNR and hop data, and publishes the observation to your broker. Waev subscribes to the broker and reads the observation. The observer is the physical evidence: it was there, it received the RF signal, it measured the SNR at that moment.
+An **enrolled observer** is a MeshCore node (or compatible device) that connects directly to Waev's own MQTT ingest over TCP/IP, using a credential that is publish-only. When a packet passes through the observer's radio range, the observer hears it, records the SNR and hop data, and publishes the observation to that ingest. The observer is the physical evidence: it was there, it received the RF signal, it measured the SNR at that moment.
 
 An **authenticated repeater** is a node that Waev can verify as a legitimate relay in your network. Its packet contributions carry provenance that can be traced. Inferred or spoofed prefixes — nodes whose identity cannot be verified against your enrolled network — are not authenticated and their edges are not drawn.
 

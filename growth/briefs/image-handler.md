@@ -143,8 +143,11 @@ next; standalone, this is the end of the run).
 ## Hard constraints
 - Never GENERATE, fabricate, paint, or AI-synthesize a hero image, and never
   alter the human's image beyond resize/recompress/strip-metadata. If no human
-  image is attached, no-op — the gate is supposed to stay red until the human
-  provides one (CHARTER gate 2).
+  image is attached, no-op — do not invent one. (A missing hero no longer
+  blocks the merge; `src/lib/posts.ts` falls back to the shared
+  `public/hero-default.jpg` until you place a real one. Your job is still to
+  place the human's bespoke image whenever it shows up — that's what upgrades
+  a post off the shared default — see CHARTER gate 2.)
 - Never merge, never deploy, never run `./manage.sh blog:deploy`, never mark a PR
   ready, never edit `main`.
 - Write only the single `public/hero-<slug>.jpg` (and an OG variant only if the

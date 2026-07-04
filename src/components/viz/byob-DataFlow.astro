@@ -1,14 +1,17 @@
 ---
 /**
- * byob-DataFlow — data lineage for the BYOB model.
- * Shows the three-tier chain: Observer → Your Broker (canonical) → Waev (derived copy).
- * Labels each tier with what it is and who owns it.
- * Emphasizes: your broker is the canonical store; Waev's copy is derived and read-only.
+ * byob-DataFlow — data lineage for the never-captive stream.
+ * Shows the chain: Observer → Waev's ingest (mqtt.waev.app, publish-only) →
+ * public read API, with a parallel branch to the operator's other tools via
+ * presets Waev ships in its own docs.
+ * Emphasizes: the credential can only publish — it cannot read, alter, or
+ * delete anything on the broker — and the operator's data is never captive
+ * to Waev alone.
  * Theme-aware via CSS custom properties.
  */
 ---
 
-<svg viewBox="0 0 720 200" role="img" aria-label="Data lineage in the BYOB model. Observer publishes to your broker, which is the canonical data store you own. Waev subscribes and maintains a derived read-only copy for analytics. The canonical copy stays with the operator." style="width:100%;height:auto;">
+<svg viewBox="0 0 720 220" role="img" aria-label="Data lineage for the never-captive stream. An enrolled observer publishes to Waev's own MQTT ingest using a publish-only credential that cannot read, alter, or delete anything on the broker. The operator reads their data back out through a public read API, and the same observer stream can also be pointed at other tools of the operator's choosing using presets Waev ships in its docs." style="width:100%;height:auto;">
   <defs>
     <marker id="byob-df-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
@@ -19,59 +22,60 @@
   </defs>
 
   <!-- Tier 1: Observer -->
-  <rect x="20" y="40" width="148" height="100" rx="12"
+  <rect x="20" y="50" width="148" height="100" rx="12"
     style="fill: var(--surface-1); stroke: var(--text-accent);"
     stroke-width="1.5" />
   <!-- Observer icon (small antenna) -->
-  <rect x="82" y="56" width="24" height="16" rx="3"
+  <rect x="82" y="66" width="24" height="16" rx="3"
     style="fill: none; stroke: var(--text-accent);" stroke-width="1.5" />
-  <line x1="94" y1="56" x2="94" y2="49" style="stroke: var(--text-accent);" stroke-width="1.5" stroke-linecap="round" />
-  <circle cx="94" cy="47" r="2.5" style="fill: var(--text-accent);" />
-  <text x="94" y="90" text-anchor="middle"
+  <line x1="94" y1="66" x2="94" y2="59" style="stroke: var(--text-accent);" stroke-width="1.5" stroke-linecap="round" />
+  <circle cx="94" cy="57" r="2.5" style="fill: var(--text-accent);" />
+  <text x="94" y="100" text-anchor="middle"
     style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Observer</text>
-  <text x="94" y="106" text-anchor="middle" class="viz-label">enrolled · active</text>
-  <text x="94" y="122" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">set up by you</text>
+  <text x="94" y="116" text-anchor="middle" class="viz-label">enrolled · active</text>
+  <text x="94" y="132" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">set up by you</text>
 
   <!-- Arrow 1→2: publish -->
-  <line x1="168" y1="90" x2="228" y2="90" style="stroke: var(--border-hover);" stroke-width="1.75" marker-end="url(#byob-df-arrow)" />
-  <text x="198" y="82" text-anchor="middle" class="viz-label">publish</text>
+  <line x1="168" y1="100" x2="228" y2="100" style="stroke: var(--border-hover);" stroke-width="1.75" marker-end="url(#byob-df-arrow)" />
+  <text x="198" y="92" text-anchor="middle" class="viz-label">publish-only</text>
 
-  <!-- Tier 2: Your Broker (canonical — centered, highlighted) -->
-  <rect x="238" y="24" width="200" height="132" rx="14"
+  <!-- Tier 2: Waev ingest (centered, highlighted) -->
+  <rect x="238" y="34" width="200" height="132" rx="14"
     style="fill: var(--surface-1); stroke: var(--border-accent);"
     stroke-width="2" />
-  <text x="338" y="46" text-anchor="middle" class="viz-label"
-    style="fill: var(--text-accent); letter-spacing: 0.06em; font-size: 10px;">CANONICAL COPY</text>
+  <text x="338" y="56" text-anchor="middle" class="viz-label"
+    style="fill: var(--text-accent); letter-spacing: 0.06em; font-size: 10px;">WAEV'S INGEST</text>
   <!-- Server rack icon -->
-  <g transform="translate(314, 52)" style="stroke: var(--accent-light); fill: none;" stroke-width="1.75">
+  <g transform="translate(314, 62)" style="stroke: var(--accent-light); fill: none;" stroke-width="1.75">
     <rect x="0" y="0" width="48" height="14" rx="3" />
     <rect x="0" y="20" width="48" height="14" rx="3" />
     <circle cx="7" cy="7" r="2" style="fill: var(--accent-light); stroke: none;" />
     <circle cx="7" cy="27" r="2" style="fill: var(--accent-light); stroke: none;" />
   </g>
-  <text x="338" y="100" text-anchor="middle"
-    style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">Your Broker</text>
-  <text x="338" y="116" text-anchor="middle" class="viz-label">MQTT · you host it</text>
-  <line x1="258" y1="132" x2="418" y2="132" style="stroke: var(--border-subtle);" stroke-width="0.8" />
-  <text x="338" y="148" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11px;">you own the data ✓</text>
+  <text x="338" y="110" text-anchor="middle"
+    style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">mqtt.waev.app</text>
+  <text x="338" y="126" text-anchor="middle" class="viz-label">MQTT · credential is publish-only</text>
+  <line x1="258" y1="142" x2="418" y2="142" style="stroke: var(--border-subtle);" stroke-width="0.8" />
+  <text x="338" y="158" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 11px;">can't read, alter, or delete ✓</text>
 
-  <!-- Arrow 2→3: subscribe (dashed, accent) -->
-  <line x1="438" y1="90" x2="498" y2="90" style="stroke: var(--accent-light); stroke-dasharray: 5 4;" stroke-width="1.75" marker-end="url(#byob-df-arrow-acc)" />
-  <text x="468" y="82" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">subscribe</text>
-  <text x="468" y="98" text-anchor="middle" class="viz-label" style="font-size: 10px;">read-only</text>
+  <!-- Arrow 2→3: read back (dashed, accent) -->
+  <line x1="438" y1="100" x2="498" y2="100" style="stroke: var(--accent-light); stroke-dasharray: 5 4;" stroke-width="1.75" marker-end="url(#byob-df-arrow-acc)" />
+  <text x="468" y="92" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">read back</text>
+  <text x="468" y="108" text-anchor="middle" class="viz-label" style="font-size: 10px;">public API</text>
 
-  <!-- Tier 3: Waev (derived copy) -->
-  <rect x="508" y="40" width="192" height="100" rx="12"
+  <!-- Tier 3: public read API -->
+  <rect x="508" y="50" width="192" height="100" rx="12"
     style="fill: var(--surface-1); stroke: var(--border-subtle);"
     stroke-width="1" />
-  <text x="604" y="72" text-anchor="middle"
-    style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">Waev</text>
-  <text x="604" y="90" text-anchor="middle" class="viz-label">derived copy · analytics</text>
-  <line x1="528" y1="104" x2="680" y2="104" style="stroke: var(--border-subtle);" stroke-width="0.8" />
-  <text x="604" y="120" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">map · stats · search</text>
+  <text x="604" y="82" text-anchor="middle"
+    style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;">Public read API</text>
+  <text x="604" y="100" text-anchor="middle" class="viz-label">the operator's way back out</text>
+  <line x1="528" y1="114" x2="680" y2="114" style="stroke: var(--border-subtle);" stroke-width="0.8" />
+  <text x="604" y="130" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 11px;">map · stats · search</text>
 
-  <!-- Ownership labels under tiers -->
-  <text x="94" y="178" text-anchor="middle" class="viz-label">you operate it</text>
-  <text x="338" y="178" text-anchor="middle" class="viz-label" style="fill: var(--accent-light); font-weight: 600;">you own the canonical data</text>
-  <text x="604" y="178" text-anchor="middle" class="viz-label">a copy, not the keys</text>
+  <!-- Parallel branch: same stream to other tools, via presets -->
+  <line x1="94" y1="150" x2="94" y2="188" style="stroke: var(--border-subtle);" stroke-width="1.5" />
+  <line x1="94" y1="188" x2="604" y2="188" style="stroke: var(--border-subtle);" stroke-width="1.5" stroke-dasharray="3 4" />
+  <line x1="604" y1="188" x2="604" y2="158" style="stroke: var(--border-subtle);" stroke-width="1.5" stroke-dasharray="3 4" marker-end="url(#byob-df-arrow)" />
+  <text x="349" y="206" text-anchor="middle" class="viz-label">same stream, pointed at your other tools too — via presets in Waev's docs</text>
 </svg>

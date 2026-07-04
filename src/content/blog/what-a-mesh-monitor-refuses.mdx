@@ -15,8 +15,8 @@ faq:
     a: "A privacy setting changes behavior at the application layer — it can be misconfigured, forgotten, or overridden by a future update. A structural refusal happens at the data model layer: the field was never written, so it cannot be retrieved, leaked, or accidentally re-enabled. 'We refuse to write this field' is a stronger statement than 'we hide this field by default'."
   - q: "What does Waev actually collect from a MeshCore mesh?"
     a: "Waev collects anonymous signal metadata — SNR, hop count, and timing — and verified topology edges from enrolled observers and authenticated repeaters. Identity fields from companion devices are scrubbed before anything is written. Opted-out nodes are dropped entirely before any processing. Nothing is collected that would identify a person or their location."
-  - q: "Does running a bring-your-own-broker setup change what Waev collects?"
-    a: "The data model is the same regardless of broker setup. The bring-your-own-broker architecture means you control where the data is stored and who has access to the broker, but Waev's collection policy — what it keeps and refuses — is applied at the ingest edge before anything reaches your broker's storage."
+  - q: "Does the never-captive stream change what Waev collects?"
+    a: "No. The data model is the same regardless of where the stream goes. An enrolled observer publishes directly to Waev's own MQTT ingest with a publish-only credential — it can send its data and nothing else — and the operator can read that data back out or point the same stream at other tools. Waev's collection policy is applied at the ingest edge, before anything is written, independent of where else the stream is sent."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -27,7 +27,7 @@ Every mesh analytics tool is a surveillance layer. That is not a criticism — i
 The mesh networks Waev works with carry real traffic from real people. An operator running MeshCore for a homestead or a neighborhood isn't hosting abstract data packets — those packets often represent communication between people who trusted the network. What a monitoring tool keeps about that traffic is a design decision with consequences for everyone on the network, not just the operator who deployed it.
 
 <div class="callout">
-<p><strong>In short.</strong> Privacy-first mesh monitoring means the tool refuses to collect what it doesn't need before any data is stored — not after. Identity fields, location inference, and device tracking are declined at the ingest edge, structurally, so they cannot be retrieved, breached, or accidentally re-enabled. What doesn't enter the database can't be accessed, misused, or lost.</p>
+<p><strong>TLDR:</strong> Privacy-first mesh monitoring means the tool refuses to collect what it doesn't need before any data is stored — not after. Identity fields, location inference, and device tracking are declined at the ingest edge, structurally, so they cannot be retrieved, breached, or accidentally re-enabled. What doesn't enter the database can't be accessed, misused, or lost.</p>
 </div>
 
 ## The architecture of data hunger
@@ -66,6 +66,6 @@ Those missing features are not bugs. They are the point.
 
 What doesn't enter the database can't be accessed, breached, or subpoenaed. The constraint that prevents building a contact graph is the same constraint that prevents a data breach from exposing one. The privacy claim is not "we protect your data" — which is a promise about future behavior — but "this data doesn't exist here," which is a statement about the current state of the database.
 
-Waev is a tool for network operators who need to know whether their infrastructure is working. [The evidence-based topology model](/blog/how-waev-reads-your-mesh/) means the map shows only what can be verified from enrolled observers. [The bring-your-own-broker architecture](/blog/bring-your-own-broker/) means the operator controls where data is stored. The refusal to collect identity, location, and personal device tracking is the third leg of the same stance: the network intelligence you need, without the surveillance infrastructure you don't.
+Waev is a tool for network operators who need to know whether their infrastructure is working. [The evidence-based topology model](/blog/how-waev-reads-your-mesh/) means the map shows only what can be verified from enrolled observers. [The never-captive stream](/blog/bring-your-own-broker/) means the operator's data reaches Waev over a publish-only credential and can be read back out, or pointed at other tools, without anything about the stream being captive to Waev. The refusal to collect identity, location, and personal device tracking is the third leg of the same stance: the network intelligence you need, without the surveillance infrastructure you don't.
 
 {/* ILLUSTRATION PROMPT: A hand-painted still life: an old stone wall with an open gate, viewed from inside a garden or courtyard — field and open sky visible through the opening, but on the near side, a closed ledger book and a pen rest against the wall beside the iron latch. The mood is calm and deliberate, like a guardian who could record but chooses not to. No figures, no screens, no glow. House style: warm flat illustration, painterly texture, earth tones with soft natural light. */}

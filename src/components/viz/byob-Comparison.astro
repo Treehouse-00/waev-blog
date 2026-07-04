@@ -1,15 +1,18 @@
 ---
 /**
- * byob-Comparison — two MQTT access models side by side.
- * LEFT: the old centralized model — multiple operator networks all feed into
- *       one shared MQTT server, requiring access-level management.
- * RIGHT: the BYOB model — each operator runs their own broker; Waev
- *        subscribes to each with read-only credentials.
+ * byob-Comparison — two data-flow models side by side.
+ * LEFT: a captive SaaS model — every operator's stream is reachable only
+ *       through one vendor's server; access, export, and continued
+ *       reachability all depend on that vendor.
+ * RIGHT: the never-captive stream — the observer's credential is
+ *        publish-only (it can send its own data and nothing else); the
+ *        operator reads data back out through a public read API, and can
+ *        point the same stream at other tools at the same time.
  * Theme-aware via CSS custom properties.
  */
 ---
 
-<svg viewBox="0 0 720 290" role="img" aria-label="Two MQTT access models. Left: the centralized model, where all operators connect to a shared server and someone must manage access permissions. Right: the BYOB model, where each operator runs their own broker and Waev subscribes read-only." style="width:100%;height:auto;">
+<svg viewBox="0 0 720 290" role="img" aria-label="Two data-flow models. Left: a captive SaaS model, where a stream is reachable only through one vendor's server. Right: the never-captive stream, where the observer's credential is publish-only, the operator reads data back out through a public read API, and the same stream can also feed other tools." style="width:100%;height:auto;">
   <defs>
     <marker id="byob-cmp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
@@ -19,11 +22,11 @@
     </marker>
   </defs>
 
-  <!-- ── LEFT: centralized / old model ── -->
+  <!-- ── LEFT: captive SaaS model ── -->
   <text x="175" y="20" text-anchor="middle" class="viz-label"
-    style="fill: var(--text-muted); letter-spacing: 0.06em;">CENTRALIZED MODEL</text>
+    style="fill: var(--text-muted); letter-spacing: 0.06em;">A CAPTIVE MODEL</text>
 
-  <!-- Three operator networks feeding into one server -->
+  <!-- Three operator streams feeding into one vendor server, one way out -->
   <!-- Operator A -->
   <circle cx="52" cy="80" r="9" style="fill: var(--text-muted);" />
   <text x="52" y="103" text-anchor="middle" class="viz-label">Operator A</text>
@@ -39,71 +42,65 @@
   <text x="298" y="103" text-anchor="middle" class="viz-label">Operator C</text>
   <line x1="289" y1="80" x2="224" y2="130" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
 
-  <!-- Central shared server -->
+  <!-- Vendor's server: the only door in or out -->
   <rect x="106" y="120" width="138" height="60" rx="10"
     style="fill: var(--surface-1); stroke: var(--text-tertiary);"
     stroke-width="1" />
   <text x="175" y="145" text-anchor="middle"
-    style="fill: var(--text-muted); font-family: var(--font); font-size: 12px; font-weight: 600;">Shared MQTT</text>
-  <text x="175" y="163" text-anchor="middle" class="viz-label">access managed by…?</text>
+    style="fill: var(--text-muted); font-family: var(--font); font-size: 12px; font-weight: 600;">Vendor's server</text>
+  <text x="175" y="163" text-anchor="middle" class="viz-label">the only way in or out</text>
 
   <!-- Pain point annotation -->
   <rect x="88" y="198" width="174" height="38" rx="8"
     style="fill: transparent; stroke: var(--sys-orangeyellow-600); stroke-dasharray: 4 4;"
     stroke-width="1" />
-  <text x="175" y="214" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600);">access-level requests</text>
-  <text x="175" y="228" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600);">shared credential risk</text>
+  <text x="175" y="214" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600);">no read path but theirs</text>
+  <text x="175" y="228" text-anchor="middle" class="viz-label" style="fill: var(--sys-orangeyellow-600);">no other tool can subscribe</text>
 
   <!-- Divider -->
   <line x1="360" y1="20" x2="360" y2="270" style="stroke: var(--border-subtle);" stroke-width="1" />
 
-  <!-- ── RIGHT: BYOB model ── -->
+  <!-- ── RIGHT: the never-captive stream ── -->
   <text x="543" y="20" text-anchor="middle" class="viz-label"
-    style="fill: var(--accent-light); letter-spacing: 0.06em;">BRING YOUR OWN BROKER</text>
+    style="fill: var(--accent-light); letter-spacing: 0.06em;">THE NEVER-CAPTIVE STREAM</text>
 
-  <!-- Operator A network + their own broker -->
-  <circle cx="412" cy="70" r="9" style="fill: var(--accent-light);" />
-  <text x="412" y="92" text-anchor="middle" class="viz-label">Operator A</text>
-  <rect x="378" y="104" width="68" height="36" rx="7"
+  <!-- One observer, publish-only credential in, two ways out -->
+  <circle cx="543" cy="60" r="9" style="fill: var(--accent-light);" />
+  <text x="543" y="82" text-anchor="middle" class="viz-label">Enrolled observer</text>
+  <line x1="543" y1="69" x2="543" y2="98" style="stroke: var(--accent-light);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow-acc)" />
+  <text x="583" y="90" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">publish-only</text>
+
+  <!-- Waev's ingest -->
+  <rect x="474" y="100" width="138" height="52" rx="10"
     style="fill: var(--surface-1); stroke: var(--border-accent);"
     stroke-width="1" />
-  <text x="412" y="122" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">your broker</text>
-  <text x="412" y="134" text-anchor="middle" class="viz-label">you own it</text>
-  <line x1="412" y1="79" x2="412" y2="103" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
+  <text x="543" y="122" text-anchor="middle"
+    style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Waev's MQTT ingest</text>
+  <text x="543" y="139" text-anchor="middle" class="viz-label">mqtt.waev.app</text>
 
-  <!-- Operator B -->
-  <circle cx="543" cy="70" r="9" style="fill: var(--accent-light);" />
-  <text x="543" y="92" text-anchor="middle" class="viz-label">Operator B</text>
-  <rect x="509" y="104" width="68" height="36" rx="7"
-    style="fill: var(--surface-1); stroke: var(--border-accent);"
-    stroke-width="1" />
-  <text x="543" y="122" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">your broker</text>
-  <text x="543" y="134" text-anchor="middle" class="viz-label">you own it</text>
-  <line x1="543" y1="79" x2="543" y2="103" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
+  <!-- Two ways out: public read API (to operator) and parallel feed (to other tools) -->
+  <line x1="495" y1="152" x2="465" y2="200" style="stroke: var(--accent-light); stroke-dasharray: 4 4;" stroke-width="1.25" marker-end="url(#byob-cmp-arrow-acc)" />
+  <line x1="591" y1="152" x2="621" y2="200" style="stroke: var(--border-hover); stroke-dasharray: 4 4;" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
 
-  <!-- Operator C -->
-  <circle cx="674" cy="70" r="9" style="fill: var(--accent-light);" />
-  <text x="674" y="92" text-anchor="middle" class="viz-label">Operator C</text>
-  <rect x="640" y="104" width="68" height="36" rx="7"
-    style="fill: var(--surface-1); stroke: var(--border-accent);"
-    stroke-width="1" />
-  <text x="674" y="122" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">your broker</text>
-  <text x="674" y="134" text-anchor="middle" class="viz-label">you own it</text>
-  <line x1="674" y1="79" x2="674" y2="103" style="stroke: var(--border-hover);" stroke-width="1.25" marker-end="url(#byob-cmp-arrow)" />
-
-  <!-- Waev subscribes to each (read-only arrows from each broker downward) -->
-  <rect x="490" y="196" width="106" height="36" rx="10"
+  <!-- Operator reads back out via public API -->
+  <rect x="401" y="204" width="120" height="40" rx="8"
     style="fill: var(--surface-1); stroke: var(--border-subtle);"
     stroke-width="1" />
-  <text x="543" y="210" text-anchor="middle"
-    style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Waev</text>
-  <text x="543" y="224" text-anchor="middle" class="viz-label">read-only subscriber</text>
+  <text x="461" y="220" text-anchor="middle"
+    style="fill: var(--text); font-family: var(--font); font-size: 11px; font-weight: 600;">Operator</text>
+  <text x="461" y="234" text-anchor="middle" class="viz-label">public read API</text>
 
-  <!-- Dashed subscribe lines -->
-  <line x1="412" y1="140" x2="494" y2="196" style="stroke: var(--accent-light); stroke-dasharray: 4 4;" stroke-width="1.25" marker-end="url(#byob-cmp-arrow-acc)" />
-  <line x1="543" y1="140" x2="543" y2="196" style="stroke: var(--accent-light); stroke-dasharray: 4 4;" stroke-width="1.25" marker-end="url(#byob-cmp-arrow-acc)" />
-  <line x1="674" y1="140" x2="592" y2="196" style="stroke: var(--accent-light); stroke-dasharray: 4 4;" stroke-width="1.25" marker-end="url(#byob-cmp-arrow-acc)" />
+  <!-- Optional parallel feed to another tool -->
+  <rect x="565" y="204" width="120" height="40" rx="8"
+    style="fill: var(--surface-1); stroke: var(--border-subtle); stroke-dasharray: 3 3;"
+    stroke-width="1" />
+  <text x="625" y="220" text-anchor="middle"
+    style="fill: var(--text-muted); font-family: var(--font); font-size: 11px; font-weight: 600;">Another tool</text>
+  <text x="625" y="234" text-anchor="middle" class="viz-label">optional, via preset</text>
 
-  <!-- "subscribe" annotation -->
-  <text x="456" y="166" class="viz-label" style="fill: var(--text-accent);">subscribe</text>
+  <!-- Reassurance annotation -->
+  <rect x="452" y="252" width="182" height="30" rx="8"
+    style="fill: transparent; stroke: var(--accent-light); stroke-dasharray: 4 4;"
+    stroke-width="1" />
+  <text x="543" y="271" text-anchor="middle" class="viz-label" style="fill: var(--text-accent);">nothing here can read the broker back</text>
 </svg>

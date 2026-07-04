@@ -28,7 +28,7 @@ You've got nodes on the air and packets arriving in Live Packets. But when your 
 Understanding how LoRa mesh routing works is the difference between a network you have and a network you understand.
 
 <div class="callout">
-<p><strong>In short.</strong> How LoRa mesh routing works in MeshCore: the first message to any destination floods outward through every repeater in range, each forwarder appending its identifier to a growing path record. The destination reverses that record and sends it back. All subsequent messages between those two nodes travel the direct cached route — only the repeaters on the stored path handle them. Group messages always flood. If a path breaks, the next message discovers a new one automatically.</p>
+<p><strong>TLDR:</strong> How LoRa mesh routing works in MeshCore: the first message to any destination floods outward through every repeater in range, each forwarder appending its identifier to a growing path record. The destination reverses that record and sends it back. All subsequent messages between those two nodes travel the direct cached route — only the repeaters on the stored path handle them. Group messages always flood. If a path breaks, the next message discovers a new one automatically.</p>
 </div>
 
 ## The first message: a flood with memory

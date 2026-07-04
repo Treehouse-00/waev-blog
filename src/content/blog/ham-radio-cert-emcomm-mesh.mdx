@@ -14,7 +14,7 @@ faq:
   - q: "How does Waev support ARES or RACES emergency activations?"
     a: "Waev provides three capabilities relevant to an ARES/RACES activation: a pre-event health baseline showing which nodes are active, which links are marginal, and where the topology has single points of failure; a live map and packet view during the activation showing node status and hop-count changes in real time; and post-event packet history for after-action review. A served agency that asks about network health gets data, not an estimate."
   - q: "What is the minimum kit for a CERT mesh go-kit?"
-    a: "A minimal CERT mesh go-kit for a single deployment point includes: one or more MeshCore nodes for field operations; one observer node (a MeshCore device with MQTT gateway firmware, or equivalent) with internet connectivity at the operations center; an MQTT broker (self-hosted or third-party) for the observer to publish to; and a Waev account connected to the broker. The observer is the critical component — without it, the mesh operates but is not visible on the Live Map."
+    a: "A minimal CERT mesh go-kit for a single deployment point includes: one or more MeshCore nodes for field operations; one observer node (a MeshCore device with MQTT gateway firmware, or equivalent) with internet connectivity at the operations center, enrolled to publish its packet stream to Waev's own MQTT ingest; and a Waev account reading that stream back out. The observer is the critical component — without it, the mesh operates but is not visible on the Live Map."
   - q: "How do I verify the mesh is ready before an activation?"
     a: "Run a readiness check in the two weeks before an activation. Pull the 30-day health baseline in Network Stats: are all expected nodes in healthy status? Are any in watchlist or silent? Review the Live Map topology for single points of failure — relay nodes that are the sole path for a cluster. Check Outpost for sentinel relay packet rates. If you've been watching the network continuously, these checks take minutes. If you're checking for the first time before an activation, that's the problem."
 ---
@@ -26,7 +26,7 @@ import GridgoneHealthBaseline from "../../components/viz/gridgone-HealthBaseline
 You already have a comms plan. It covers your VHF voice net, your ARES/RACES frequencies, your ICS 205 form, and the EOC contact number. The question isn't whether to add a MeshCore mesh — it's where a data mesh fits in what you're already doing, and what it can do that voice can't.
 
 <div class="callout">
-<p><strong>In short.</strong> Ham radio CERT EMCOMM mesh integration adds a data layer that works alongside — not instead of — VHF and UHF voice. The mesh carries digital messages, node status, and position data that voice cannot efficiently relay. Waev closes the verification gap: it shows what the mesh is doing before, during, and after an activation, in a form you can hand to a served agency.</p>
+<p><strong>TLDR:</strong> Ham radio CERT EMCOMM mesh integration adds a data layer that works alongside — not instead of — VHF and UHF voice. The mesh carries digital messages, node status, and position data that voice cannot efficiently relay. Waev closes the verification gap: it shows what the mesh is doing before, during, and after an activation, in a form you can hand to a served agency.</p>
 </div>
 
 ## Two layers, two jobs
@@ -45,7 +45,7 @@ Running both layers simultaneously is straightforward. Voice traffic happens on 
 
 **Digital messaging.** Text messages between nodes don't need to compete for airtime on the voice net, don't require a relay operator to transcribe them accurately, and don't get lost in radio noise. For status reports, resource requests, or damage assessments moving between field teams and a logistics function at the operations center, a digital channel is more reliable for structured data than voice.
 
-**Node status and position.** A MeshCore node that transmits periodically sends signal quality and hop-count data that an observer can publish to the broker. From there, Waev shows which nodes are active, whether any have gone silent, and whether hop counts have changed — meaning paths have changed. During an activation, this is a live picture of your data infrastructure's health.
+**Node status and position.** A MeshCore node that transmits periodically sends signal quality and hop-count data that an enrolled observer publishes directly to Waev's ingest. From there, Waev shows which nodes are active, whether any have gone silent, and whether hop counts have changed — meaning paths have changed. During an activation, this is a live picture of your data infrastructure's health.
 
 **A record.** Voice communications are ephemeral unless someone is logging. Digital messages and Waev's packet history are timestamped and searchable after the event. That's the after-action review: which nodes were active at which times, where path changes occurred, and what the link quality looked like at the moment a team reported trouble.
 
@@ -75,11 +75,12 @@ For a CERT or ARES EMCOMM go-kit with Waev integration, the minimum additions to
 
 **One or more MeshCore field nodes.** These are the mesh radios that field teams carry or deploy. Each node can relay packets, send messages, and broadcast status. No internet connection required at the field level.
 
-**One observer node.** This is a MeshCore-compatible device running gateway firmware that connects to your MQTT broker over TCP/IP. Positioned at your operations center, where internet access is available. This is the bridge between the radio mesh and the Live Map. Without it, the mesh operates but is not visible.
+**One observer node.** This is a MeshCore-compatible device running gateway firmware that connects to the internet over TCP/IP. Positioned at your operations center, where internet access is available. This is the bridge between the radio mesh and the Live Map. Without it, the mesh operates but is not visible.
 
-**A broker.** Self-hosted (Mosquitto on a Raspberry Pi or a VPS) or third-party. The observer publishes to the broker; Waev subscribes and reads. The data stays with you — [bring-your-own-broker](/blog/bring-your-own-broker/) means you hold the keys. A served agency asking about data custody gets a simple answer: the data is on your broker.
+**An enrolled observer credential.** The observer publishes its packet stream directly to Waev's own MQTT ingest using a credential that is publish-only — it can send its own data and nothing else; it cannot read, alter, or delete anything on the broker. There's no separate broker for you to stand up or maintain. You read your data back out through a public read API, and the same observer stream can be pointed at other tools of your choosing using presets Waev ships in its own docs — nothing about the stream is captive to Waev. A served agency asking about data custody gets an answer grounded in that model, not operator-hosted custody.
+{/* CANON-GAP: exact data-custody and retention specifics for a served-agency question (what's retained, for how long, and under what request process) are not yet confirmed */}
 
-**A Waev account connected to the broker.** This is the analytics layer. Connect it before any exercise and start the baseline. By activation day, you'll have weeks of context.
+**A Waev account reading that stream.** This is the analytics layer. Enroll the observer before any exercise and start the baseline. By activation day, you'll have weeks of context.
 
 ## The readiness drill
 

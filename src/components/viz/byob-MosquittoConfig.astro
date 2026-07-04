@@ -1,12 +1,15 @@
 ---
 /**
- * byob-MosquittoConfig — three security layers of a Mosquitto broker.
- * LEFT: MeshCore Observer (publishes); CENTER: Mosquitto (TLS→AuthN→AuthZ);
- * RIGHT: Waev (read-only subscriber). Theme-aware CSS custom properties.
+ * byob-MosquittoConfig — three security layers of a self-hosted Mosquitto
+ * broker the operator runs to feed their OWN tools (not Waev).
+ * LEFT: MeshCore Observer (publishes a copy of its stream); CENTER: Mosquitto
+ * (TLS→AuthN→AuthZ); RIGHT: the operator's own tool (read-only subscriber).
+ * Waev is not on this broker — the observer reaches Waev's ingest separately.
+ * Theme-aware CSS custom properties.
  */
 ---
 <svg viewBox="0 0 720 280" role="img"
-  aria-label="Three-layer Mosquitto broker diagram. Left: MeshCore observer publishes on port 8883. Center: Mosquitto enforces TLS, password_file authentication, and acl_file authorization where observer gets readwrite and subscriber gets read-only. Right: Waev subscribes read-only."
+  aria-label="Three-layer Mosquitto broker diagram for an operator's self-hosted broker. Left: MeshCore observer publishes a copy of its stream on port 8883. Center: Mosquitto enforces TLS, password_file authentication, and acl_file authorization where the observer gets readwrite and each downstream tool gets read-only. Right: the operator's own tool subscribes read-only. Waev is not connected to this broker; the observer reaches Waev's ingest separately."
   style="width:100%;height:auto;">
   <defs>
     <marker id="mc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -23,7 +26,7 @@
     style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">MeshCore</text>
   <text x="85" y="150" text-anchor="middle"
     style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">Observer</text>
-  <text x="85" y="169" text-anchor="middle" class="viz-label">publishes</text>
+  <text x="85" y="169" text-anchor="middle" class="viz-label">publishes a copy</text>
   <!-- Observer → Broker -->
   <line x1="150" y1="140" x2="210" y2="140"
     style="stroke: var(--border-hover);" stroke-width="1.5" marker-end="url(#mc-arrow)" />
@@ -55,25 +58,25 @@
   <rect x="228" y="181" width="264" height="38" rx="7"
     style="fill: var(--surface-1); stroke: var(--border-subtle);" stroke-width="1" />
   <text x="270" y="196" text-anchor="start"
-    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">observer  → topic readwrite #</text>
+    style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">observer   → topic readwrite #</text>
   <text x="270" y="211" text-anchor="start"
-    style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">subscriber → topic read #</text>
+    style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">your tool  → topic read #</text>
   <text x="474" y="200" text-anchor="middle"
     style="fill: var(--text-tertiary); font-family: var(--font); font-size: 10px; font-weight: 600;">AuthZ</text>
-  <!-- Broker → Waev -->
+  <!-- Broker → operator's own tool -->
   <line x1="510" y1="140" x2="570" y2="140"
     style="stroke: var(--accent-light);" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#mc-arrow-acc)" />
   <text x="540" y="133" text-anchor="middle"
     style="fill: var(--text-accent); font-family: var(--font); font-size: 10px;">read-only</text>
-  <!-- RIGHT: Waev -->
+  <!-- RIGHT: operator's own tool -->
   <rect x="570" y="100" width="130" height="80" rx="10"
     style="fill: var(--surface-1); stroke: var(--border-accent);" stroke-width="1.25" />
   <text x="635" y="132" text-anchor="middle"
-    style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Waev</text>
+    style="fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;">Your tool</text>
   <text x="635" y="150" text-anchor="middle"
     style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">subscriber</text>
   <text x="635" y="169" text-anchor="middle" class="viz-label">subscribes</text>
   <!-- Credential note -->
   <text x="360" y="252" text-anchor="middle" class="viz-label"
-    style="fill: var(--text-muted);">You issue the credentials. You rotate them. You revoke them.</text>
+    style="fill: var(--text-muted);">You issue, rotate, and revoke. This broker isn't Waev's.</text>
 </svg>

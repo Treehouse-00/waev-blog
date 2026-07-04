@@ -1,69 +1,60 @@
 ---
-title: "Can Waev Write to Your Broker?"
-description: "Waev subscribes to your MQTT broker with read-only credentials. Writing to your broker is structurally impossible. Your ACL file enforces that limit."
+title: "Can Waev Write to Your Stream?"
+description: "An enrolled observer publishes to Waev's ingest with a publish-only credential. It can send its own data and nothing else — it cannot write, alter, or delete anything on the broker."
 date: 2026-06-09
 tags: ["how-it-works", "data-ownership"]
 hero:
   src: "/hero-can-waev-write-to-your-broker.jpg"
   alt: "A warm flat illustration of a copper one-way check valve in cross-section, the flapper open in one direction and closed in the other, on a warm industrial background."
 faq:
-  - q: "Can Waev publish messages to my MQTT broker?"
-    a: "No. Waev's credentials are issued by you with read (subscribe) access only. The MQTT ACL on your broker enforces this mechanically — no publish permission means no messages originate from Waev, regardless of anything else."
-  - q: "What MQTT operations does Waev's subscriber account perform?"
-    a: "Waev subscribes to the topics you configure, receives packets from your observer, and maintains a derived read-only copy for analytics. It does not publish, does not create or delete topics, and has no broker administration access."
-  - q: "How is the read-only restriction enforced?"
-    a: "The restriction is enforced in your ACL file with a `topic read #` entry for Waev's username. Mosquitto evaluates this before any message is sent; a publish attempt from an account with only read permission is rejected at the broker, not by Waev's software."
-  - q: "What happens if I accidentally give Waev readwrite access instead of read?"
-    a: "Correct the ACL file to `topic read #` for Waev's username and restart Mosquitto. The change takes effect immediately on reconnect. Waev's own analytics pipeline does not publish to broker topics, so the risk is structural misconfiguration on your side rather than intentional writes from Waev."
-  - q: "Can Waev access topics outside what my observer publishes to?"
-    a: "Only if your ACL allows it. If you scope Waev's account to a specific topic prefix, it cannot subscribe to anything outside that prefix. The ACL you write determines the boundary; Waev operates within it."
+  - q: "Can Waev publish messages back to my observer or mesh?"
+    a: "No. An observer's credential to Waev's ingest is publish-only — it can send its own packet stream and nothing else. There is no mechanism in that credential for Waev to send messages back through the ingest to your observer or your mesh."
+  - q: "What does an observer's publish-only credential actually permit?"
+    a: "It permits publishing packets to Waev's ingest (mqtt.waev.app) under that observer's own topic. It does not permit subscribing to, reading, altering, or deleting anything else on the broker — including messages from other observers."
+  - q: "How is the publish-only restriction enforced?"
+    a: "It's enforced the same way at Waev's ingest: the credential issued to an enrolled observer carries publish rights and nothing else. A request to subscribe, read, alter, or delete anything beyond that observer's own published data is rejected at the broker, not filtered after the fact by Waev's software."
+  - q: "Can an observer's stream be read by anyone besides Waev?"
+    a: "Yes. The operator reads their own data back out through a public read API, and the same observer stream can be pointed at other tools of the operator's choosing, using presets Waev ships in its own docs. Nothing about the stream is captive to Waev."
+  - q: "Can Waev access data from observers it isn't enrolled to receive?"
+    a: "No. Each credential is scoped to a single observer's own published data. It cannot subscribe to or read another observer's stream, and it has no broker administration access of any kind."
 ---
 
 import Figure from "../../components/Figure.astro";
 import ByobCredentials from "../../components/viz/byob-Credentials.astro";
 
-The question comes up early when evaluating any analytics service that connects to your broker: what access does it actually have, and can it do anything beyond read? With Waev, the answer is structural rather than policy-based. It is not that Waev promises not to write to your broker — it is that the credential you issue gives it no permission to do so.
+The question comes up early when evaluating any analytics service that touches your mesh: what access does it actually have, and can it do anything beyond receive? With Waev, the answer is structural rather than policy-based. It is not that Waev promises not to write anything back — it is that the credential your observer uses gives it no permission to do so.
 
 <div class="callout">
-<p><strong>In short.</strong> A mesh analytics service cannot write to your broker if you issue it read-only subscriber credentials and your ACL enforces read access only. Waev connects with exactly those credentials: no publish permission, no topic management, no broker administration. The constraint is in your ACL file, not in a terms-of-service clause.</p>
+<p><strong>TLDR:</strong> An enrolled observer publishes its packet stream to Waev's ingest (mqtt.waev.app) with a credential that is publish-only. It can send that observer's own data and nothing else — it cannot subscribe to, read, alter, or delete anything on the broker. The constraint is enforced at the ingest, not by a policy Waev could choose to ignore.</p>
 </div>
 
-## How MQTT access control works
+## Publish-only means exactly that
 
-MQTT brokers like Mosquitto separate authentication (who are you) from authorization (what can you do). Authentication checks username and password. Authorization — controlled by an ACL file — determines which topics a given user can publish to, subscribe to, or both.
+An enrolled observer's credential to Waev's ingest carries one permission: publish its own packet stream. It does not carry subscribe access, so it cannot read what any other observer sends. It does not carry any form of topic management or broker administration. There is no path from "holds this credential" to "can write, alter, or delete data belonging to someone else" — that path simply isn't part of what the credential allows.
 
-The relevant ACL entry for a read-only subscriber looks like this:
+This is the same shape of guarantee any publish-only MQTT credential gives: a client that can only publish can put messages onto the broker under its own topic, and that's the whole of it. It cannot pull messages back off, and it cannot touch anything it didn't put there itself.
+{/* CANON-GAP: need a human-confirmed description of how the publish-only permission is technically scoped/enforced at mqtt.waev.app (per-observer topic ACL, token scope, etc.) */}
 
-```
-user waev
-topic read #
-```
+## What that credential is used for
 
-The `read` keyword grants subscribe access only. A user with this entry can receive messages on matching topics, but any attempt to publish is rejected at the broker. The rejection happens before the message reaches any subscriber — it is not a filter applied later; it is a gate at the point of ingress.
-
-A user with `readwrite` or `write` access could publish. That is not the access Waev is given.
-
-## The credential you issue determines what Waev can do
-
-When you connect Waev to your broker, you create a subscriber account on your broker, set a password, and provide those credentials to Waev. Waev does not ask for anything beyond that. The scope of those credentials — the topics they cover, the access level they carry — is defined entirely by your ACL file.
-
-<Figure caption="Your broker's credential panel. Waev's account carries read-only access. The operator controls — add, rotate, revoke — are all on your infrastructure. No action requires contacting Waev.">
+<Figure caption="An observer's credential to Waev's ingest. It carries publish rights to that observer's own stream — nothing more. There is no subscribe, alter, or delete permission attached.">
   <ByobCredentials />
 </Figure>
 
-If you issue Waev an account with `topic read #`, that is all it can do: subscribe and receive. If you later want to tighten the scope further — to a specific topic prefix, for instance — edit the ACL, restart Mosquitto, and the change takes effect on the next connection. If you want to end Waev's access entirely, remove the account from the password file and ACL and restart. None of these actions require asking Waev for anything.
+The observer uses the credential to send its packet stream to mqtt.waev.app. That's the entire interaction: publish, and nothing back. Waev's ingest receives that stream, and from there it feeds the analytics surfaces — the Live Map, Network Stats, and packet search.
 
-## What Waev's subscriber session actually does
+There is no operator-hosted broker in this path. The stream isn't sitting on infrastructure you run and Waev merely reads from — it's published directly to Waev's own ingest, under a credential scoped to publishing alone.
 
-When Waev connects to your broker, it subscribes to the topics your observer publishes to, receives the packet stream, and maintains a derived copy for building the analytics surfaces: the Live Map, Network Stats, and packet search. That is the extent of what the subscription is used for.
+## Reading your own data back out
 
-Waev's analytics pipeline reads the stream. It does not publish back to the mesh, does not write to broker topics, and has no mechanism for sending messages through your broker to your mesh nodes. There is no design reason for it to do so — analytics is a read operation.
+Because the credential is publish-only, "can Waev write to it" and "can you read it" are two different questions with two different answers. The operator reads their data back out through a public read API. The same observer stream can also be pointed at other tools of the operator's choosing, using presets Waev ships in its own docs — so nothing about the stream is captive to Waev.
+{/* CANON-GAP: need a human-confirmed description of the public read API's access model and the specific preset tools/format Waev documents. */}
 
-The [bring-your-own-broker model](/blog/bring-your-own-broker/) makes this concrete: you own the broker, you issue the credentials, and Waev subscribes to a read-only copy. The ownership is structural. The read-only constraint is structural.
+The activation moment that matters isn't "connect a broker" — it's the enrolled observer reaching its first Proven edge on the Live Map. That's the point where the stream is doing what it's for: producing a verifiable line on the map, not just arriving somewhere.
 
 ## What the constraint does not cover
 
-This constraint applies to Waev's relationship with your MQTT broker. It does not speak to what your observer publishes, what other clients on your broker can do, or how your mesh firmware behaves. Those are separate questions governed by your own configuration.
+This constraint applies to what an observer's credential can do at Waev's ingest. It does not speak to what other tools you point the same stream at can do, or how your mesh firmware behaves. Those are separate questions governed by your own configuration.
 
 If you want to understand the full picture of what Waev stores about your mesh and what it deliberately does not collect, [what we choose not to know](/blog/what-we-choose-not-to-know/) covers the ingest-edge data model in detail.
 

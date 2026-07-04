@@ -23,19 +23,19 @@ import Figure from "../../components/Figure.astro";
 import FieldmanualGatewayRole from "../../components/viz/fieldmanual-GatewayRole.astro";
 import ByobDataFlow from "../../components/viz/byob-DataFlow.astro";
 
-The question arrives once you've got a working mesh and you're thinking about connecting it to Waev. You have repeaters placed for coverage. You need a node that can bridge the mesh to your MQTT broker. Should that be its own dedicated device, or should one of your existing repeaters take on the job?
+The question arrives once you've got a working mesh and you're thinking about connecting it to Waev. You have repeaters placed for coverage. You need a node that can bridge the mesh to Waev's MQTT ingest. Should that be its own dedicated device, or should one of your existing repeaters take on the job?
 
 The framing that makes this decision clearer: these are two different placement requirements. Confusing them is how you end up with a node that does both jobs badly.
 
 <div class="callout">
-<p><strong>In short.</strong> Whether to run a dedicated MeshCore gateway node or share it with a repeater comes down to position. A repeater should go where RF coverage is best; a gateway goes where it has reliable internet access. When those two places are the same location, sharing is fine. When they're different — which is common — separating the roles lets you optimize each one.</p>
+<p><strong>TLDR:</strong> Whether to run a dedicated MeshCore gateway node or share it with a repeater comes down to position. A repeater should go where RF coverage is best; a gateway goes where it has reliable internet access. When those two places are the same location, sharing is fine. When they're different — which is common — separating the roles lets you optimize each one.</p>
 </div>
 
 ## What each role actually requires
 
 A mesh **repeater** exists to extend RF coverage. Its job is to hear packets from distant nodes and re-broadcast them further into the mesh. That job requires good antenna position — elevated, with clear line of sight to the nodes it serves. Where you put it is everything.
 
-An **MQTT gateway** exists to bridge RF observations to the internet. Its job is to receive packets on the mesh and publish them to your broker. That job requires reliable internet access — a stable WiFi connection or a wired Ethernet link. Where it can connect is everything.
+An **MQTT gateway** exists to bridge RF observations to the internet. Its job is to receive packets on the mesh and publish them to Waev's ingest. That job requires reliable internet access — a stable WiFi connection or a wired Ethernet link. Where it can connect is everything.
 
 <Figure caption="Two configurations. Left: a dedicated gateway node placed where WiFi is good, separate from the repeater network. Right: a shared node doing both — placed where RF and WiFi overlap, which may compromise each.">
   <FieldmanualGatewayRole />
@@ -49,7 +49,7 @@ A shared gateway-repeater makes sense when the location satisfies both requireme
 
 For small indoor meshes, sharing is almost always fine. The node doesn't have conflicting placement demands: everything is within range of the WiFi router and within RF range of the other nodes.
 
-If you're running an ESP32-based node like a Heltec WiFi LoRa 32, it handles both functions concurrently. The LoRa radio and the WiFi radio operate independently. One listens on the mesh frequency; the other maintains its MQTT broker connection. They don't interfere in any meaningful way during normal mesh traffic loads.
+If you're running an ESP32-based node like a Heltec WiFi LoRa 32, it handles both functions concurrently. The LoRa radio and the WiFi radio operate independently. One listens on the mesh frequency; the other maintains its connection to Waev's MQTT ingest. They don't interfere in any meaningful way during normal mesh traffic loads.
 
 ## When to separate them
 
@@ -63,13 +63,14 @@ Separation becomes worth considering when you're optimizing for coverage and rel
 
 ## The data flow either way
 
-Whether the gateway is dedicated or shared, the data path is the same: the gateway node publishes MQTT records to [your broker](/blog/bring-your-own-broker/), Waev subscribes, and the map is built from what enrolled observers report.
+Whether the gateway is dedicated or shared, the data path is the same: the gateway node publishes its packet stream directly to [Waev's MQTT ingest](/blog/bring-your-own-broker/) using a publish-only credential — it can send its own data and nothing else — and the map is built from what enrolled observers report.
+{/* CANON-GAP: confirm whether this post's linked slug (bring-your-own-broker) should be renamed/redirected now that the BYOB model is retired — link target left unchanged per instructions */}
 
-<Figure caption="Data lineage: whether gateway and repeater are one node or two, the observation path to your MQTT broker stays the same. The broker is always yours; Waev subscribes read-only.">
+<Figure caption="Data lineage: whether gateway and repeater are one node or two, the observation path is the same — straight to Waev's ingest, publish-only, with the same stream also available to other tools of your choosing.">
   <ByobDataFlow />
 </Figure>
 
-The number of enrolled observers matters more than their physical form. Two nodes reporting to your broker from different positions give the map more coverage than one node doing both jobs from a compromised position. A shared node counts as one observer; two separate nodes count as two.
+The number of enrolled observers matters more than their physical form. Two nodes reporting to Waev from different positions give the map more coverage than one node doing both jobs from a compromised position. A shared node counts as one observer; two separate nodes count as two.
 
 ## A practical starting point
 

@@ -28,7 +28,7 @@ import SignalDBmScale from "../../components/viz/signal-DBmScale.astro";
 
 The Live Packets stream shows an SNR number on every packet. Datasheets quote transmit power in dBm. Antenna specs list gain in dBi. Link budget calculations add and subtract across all of these in one chain. They all speak the same language — and dBm is where that language starts.
 
-<div class="callout"><p><strong>In short.</strong> What is dBm? It is an absolute radio power level referenced to 1 milliwatt: 0 dBm = 1 mW, +10 dBm = 10 mW, +30 dBm = 1 W. Received signals are typically deeply negative — a LoRa radio may decode a signal as weak as −120 dBm or lower — while transmitters output around +20 dBm. The key rules: +3 dB doubles power, +10 dB multiplies it by ten, and you can add a dB gain or loss to a dBm level to get a new dBm level.</p></div>
+<div class="callout"><p><strong>TLDR:</strong> What is dBm? It is an absolute radio power level referenced to 1 milliwatt: 0 dBm = 1 mW, +10 dBm = 10 mW, +30 dBm = 1 W. Received signals are typically deeply negative — a LoRa radio may decode a signal as weak as −120 dBm or lower — while transmitters output around +20 dBm. The key rules: +3 dB doubles power, +10 dB multiplies it by ten, and you can add a dB gain or loss to a dBm level to get a new dBm level.</p></div>
 
 ## The decibel problem it solves
 

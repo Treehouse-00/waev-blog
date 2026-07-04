@@ -27,8 +27,8 @@ owns calendar slotting. You never deploy and never merge (AGENT.md Invariant 1).
 - Read `../CHARTER.md` + `../STRATEGY.md` for scope, positioning, and the four
   segments (tinkerer, ham, cert-emcomm, off-grid).
 - Read `../../src/pages/llms.txt.ts` for canon (Waev's real differentiators:
-  privacy-by-default, evidence-based topology, bring-your-own-broker). Gaps you
-  flag must be answerable WITHOUT contradicting canon.
+  privacy-by-default, evidence-based topology, the never-captive stream). Gaps
+  you flag must be answerable WITHOUT contradicting canon.
 - Inventory current coverage: every `.mdx` in `../../src/content/blog/` and
   every keyword/topic already in `../calendar.yaml`.
 

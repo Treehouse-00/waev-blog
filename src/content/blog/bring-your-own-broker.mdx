@@ -1,6 +1,6 @@
 ---
-title: "Bring Your Own Broker"
-description: "Waev operates on a bring-your-own-broker model: you host the MQTT broker, you own the data, and Waev subscribes with read-only credentials. A deliberate inversion of the usual SaaS data-grab."
+title: "The Never-Captive Stream"
+description: "Waev's observer credentials are publish-only, the read API is public, and the same stream can be pointed at other tools using presets Waev ships in its own docs. Nothing about the stream is captive to Waev."
 date: 2026-07-16
 tags: ["data-ownership", "how-it-works"]
 author: "Waev"
@@ -10,84 +10,72 @@ hero:
   alt: "A hand-painted pink server rack with green keys hanging from its door, colored cables branching outward to connected icons amid painterly plants and greenery."
 draft: false
 faq:
-  - q: "What MQTT broker should I use?"
-    a: "Any standards-compliant MQTT broker works. Mosquitto on a small VPS is the most common choice — it's well-documented, lightweight, and free. Managed MQTT services that give you credential control (HiveMQ Cloud, EMQX Cloud) also work. The requirement is that you control the credentials and the broker has a public address Waev can connect to."
-  - q: "Does my broker need to be publicly accessible from the internet?"
-    a: "Yes. Waev subscribes from our infrastructure, so your broker needs a publicly reachable hostname or IP. This is typically a VPS with a static IP or a domain name pointing to your server. Your MeshCore observers connect from within your local network (or over the internet if they have a path), and Waev connects from outside. Standard TLS and password authentication on port 8883 is the typical setup."
-  - q: "What credentials does Waev need?"
-    a: "A read-only subscriber account — username and password — that you create on your broker. That account can only subscribe to topics, not publish or manage the broker. You create it, you provide it to Waev at setup, and you can rotate or revoke it at any time without contacting us."
+  - q: "How does my observer's data get to Waev?"
+    a: "Your enrolled observer publishes its packet stream directly to Waev's own MQTT ingest, at mqtt.waev.app, using a credential that is publish-only. The observer connects straight to that ingest — there's no intermediate broker in this path."
+  - q: "What can that credential actually do?"
+    a: "It can publish the observer's own data and nothing else. It cannot subscribe to, read, alter, or delete anything on the broker — not its own topic, not anyone else's. The scope is narrow by design: an observer's job is to send its stream, not to see the broker's state."
+  - q: "How do I get my data back out?"
+    a: "Through a public read API. That's the supported path for reading your own data back out of Waev's ingest."
+  - q: "Am I locked into Waev once my observer is enrolled?"
+    a: "No. The same observer stream can also be pointed at other tools of your choosing, using presets Waev ships in its own docs. The publish-only credential and the public read API mean nothing about the stream is captive to a single vendor."
   - q: "What happens to my data if I stop using Waev?"
-    a: "Nothing changes on your broker. Your observer keeps publishing; your broker keeps storing. Waev's copy is a derived read-only subscription — revoking our credentials ends the live feed to Waev, but your data is fully intact on your own infrastructure. There's no export required, no data hostage situation."
-  - q: "Can multiple people or tools subscribe to my broker?"
-    a: "Yes. You can issue multiple subscriber accounts to different tools, give read-only access to a club member who wants to run their own analytics, or set up a monitoring service alongside Waev. Because you issue the credentials, you control who has access at any given time. Add, rotate, and revoke without coordinating with anyone."
+    a: "Your observer's publish-only credential and the public read API don't depend on an ongoing relationship with Waev to exist — but the specific behavior of your account and its data after you stop using Waev is a support question, not something this post asserts."
 ---
 
 import Figure from "../../components/Figure.astro";
 import ByobComparison from "../../components/viz/byob-Comparison.astro";
-import ByobDataFlow from "../../components/viz/byob-DataFlow.astro";
-import ByobCredentials from "../../components/viz/byob-Credentials.astro";
 
-At some point, every mesh network operator running a shared infrastructure has the same conversation. Someone asks for MQTT access. You grant it. Another person asks, and you grant that too. A third person needs a narrower scope than the second — so now you're managing permissions, fielding access requests, and making judgment calls about what level of visibility each person should have. The MQTT server you stood up to monitor your own network has quietly become an access control problem.
+At some point, every mesh network operator running a shared infrastructure has the same conversation. Someone asks for MQTT access. You grant it. Another person asks, and you grant that too. A third person needs a narrower scope than the second — so now you're managing permissions, fielding access requests, and making judgment calls about what level of visibility each person should have. Access to the data has quietly become a bigger problem than collecting it.
 
-This is the model Waev was built to avoid. It doesn't ask you to connect to a centrally hosted server. Instead, you bring your own broker — you host it, you own the data, and Waev subscribes to it. That's not a workaround. It's the design.
+Waev's answer to that problem isn't a broker you host. It's a credential that can only push, a read path that's always yours, and a stream that was never locked to one place to begin with.
 
 <div class="callout">
-<p><strong>In short.</strong> With Waev's bring-your-own-broker model, you host the MQTT broker that your mesh observers publish to. Waev subscribes with read-only credentials you issue and control. Your data has a canonical home that isn't Waev's infrastructure — which means you can rotate or revoke our access at any time, without export requests, without depending on us to release your own data.</p>
+<p><strong>TLDR:</strong> Your enrolled observer publishes its packet stream directly to Waev's own MQTT ingest using a credential that is publish-only — it can send its data and nothing else; it cannot read, alter, or delete anything on the broker. You read your data back out through a public read API, and the same stream can be pointed at other tools of your choosing using presets Waev ships in its own docs. Nothing about the stream is captive to Waev.</p>
 </div>
 
 ## The access-list problem
 
-The centralized model has an honest logic to it: one server, one place to look, easy to set up. It works for a single operator monitoring their own gear. But a MeshCore community isn't a single operator. It's a ham club, a neighborhood emergency net, a CERT team. People join and leave. They want visibility into the parts they're responsible for, not everything. Managing that turns into a half-finished permission matrix that nobody quite trusts.
+A shared, centrally hosted server has an honest logic to it: one place to look, easy to set up. It works cleanly for a single operator monitoring their own gear. But a MeshCore community isn't a single operator. It's a ham club, a neighborhood emergency net, a CERT team. People join and leave. They want visibility into the parts they're responsible for, not everything. Managing that by hand turns into a half-finished permission matrix that nobody quite trusts.
 
-<Figure caption="<b>Left:</b> the centralized model. Three networks, one shared MQTT server — access management falls on whoever's running it, and it gets complicated fast. <b>Right:</b> the BYOB model. Each operator runs their own broker. Waev subscribes to each independently, with read-only credentials the operator issued. No shared server, no access management overhead.">
+<Figure caption="<b>Left:</b> a captive model. Every operator's stream is reachable only through one vendor's server — access, export, and continued reachability all depend on that vendor. <b>Right:</b> the never-captive stream. The observer's credential is publish-only; the operator reads data back out through a public API, and can point the same stream at other tools at the same time.">
   <ByobComparison />
 </Figure>
 
-There's also a subtler problem: if everyone is connecting to the same server, the server operator is implicitly responsible for everyone's data. That's a trust obligation that's hard to audit and easy to get wrong. Distributing the brokers eliminates it — each operator's data stays on infrastructure they control, and nothing depends on a shared server that nobody fully owns.
+Waev's ingest sidesteps the access-list problem at the credential level, not by asking you to run your own server. Each enrolled observer gets its own publish-only credential. That credential can send its own data and nothing else — it can't subscribe to another observer's topic, can't read the broker's state, can't alter or delete anything. There's no shared read access to manage, because there's no read access on that credential in the first place.
 
-## Your broker is the canonical copy
+## What publish-only actually means
 
-In almost every SaaS data model, the platform is the source of truth. Data flows to the provider's infrastructure, and your access to it depends on the provider continuing to exist, continuing to give you access, and handling your data correctly. If the relationship ends, your history ends too, or you're asking for an export.
+An enrolled observer publishes its packet stream directly to Waev's own MQTT ingest, at mqtt.waev.app. The credential it authenticates with is scoped to publishing: it can send the observer's own packets, and that's the extent of what it's allowed to do. It cannot subscribe to other topics, cannot read anything back over that connection, and cannot alter or delete anything on the broker — not its own data, not anyone else's.
 
-Waev inverts this. Your MQTT broker — the one you run — is where your data lives canonically. Waev subscribes to it and maintains a derived copy for building the analytics surfaces: the map, the stats, the packet search. But the stream originates on your broker. The first-class store is yours.
+That asymmetry is the whole design. An observer's job is to report what it heard. It never needed read access, administrative access, or visibility into any other observer's stream, so it doesn't have any of those things. The credential can do exactly one thing, which makes it easy to reason about: if it leaked, the worst it enables is more of the same data it already sends, not a read of your history or anyone else's.
 
-<Figure caption="Data lineage in the BYOB model. Your observer publishes to your broker — that's the canonical copy, and it's yours. Waev subscribes read-only and maintains a derived copy for analytics. The ownership is structural, not contractual.">
-  <ByobDataFlow />
-</Figure>
+## Reading your data back out
 
-The distinction matters because it determines what happens at the end of any relationship with a tool. The ownership is structural, not contractual — it's not a clause in a terms-of-service; it's a consequence of where the data physically lives. If you stop using Waev, your observers keep publishing, your broker keeps accumulating, and nothing is lost. There's no export step, no data migration, no period during which your history is held elsewhere. The canonical data was always on your infrastructure. It still is.
+Publishing is only half the story — the data has to come back to be useful. The operator reads their data back out through a public read API. That's the supported way to get your own observer's history out of Waev's ingest for your own purposes, independent of the Live Map or Network Stats views Waev builds on top of the same stream.
 
-The trade-off is that running a broker is a real responsibility. You need a host with a stable address, reasonable uptime, and credentials you've kept track of. For most operators, this is a small VPS running Mosquitto — something most technically-minded people in the amateur radio and emergency management communities are comfortable with. A managed MQTT service you control works too. The requirement is that you hold the credentials and we don't.
+{/* CANON-GAP: confirm the read API's concrete auth model, base path, and a worked request/response example for this section */}
 
-## The read-only subscribe model
+## The stream isn't captive to one destination, either
 
-When you connect Waev to your broker, you create a subscriber account on your broker and provide those credentials to Waev. That's the only access Waev has: read-only subscription to the topics your observers publish to. Waev can receive messages, but it can't publish, can't manage users or topics, and has no administrative access to your broker.
+The same observer stream can also be pointed at other tools of your choosing, using presets Waev ships in its own docs. That's the second half of "never-captive": it isn't only that you can read your data out of Waev — it's that the stream feeding Waev doesn't have to feed only Waev. An operator evaluating another analytics tool, or running one alongside Waev, isn't blocked by the credential model; the observer can feed more than one destination.
 
-That scope is narrow by design. Analytics doesn't require publishing. It doesn't require managing the broker. The only thing Waev needs to do is read the stream, and so that's all it's allowed to do.
-
-<Figure caption="Your broker's credential panel and the actions you can take. You issued the credential; you can rotate it (Waev reconnects with the new password, no interruption to your data), add other subscribers, or revoke access entirely. None of these require contacting Waev.">
-  <ByobCredentials />
-</Figure>
-
-Rotating or revoking credentials doesn't require any interaction with Waev. You update the password on your broker, Waev's connection drops, you give us the new credentials and we reconnect — or you don't, and our access ends. Either way, your data is unaffected. This is what "you hold the keys" means in practice: not a policy statement, but a credential model where the relevant administrative actions are on your infrastructure.
-
-You can also add other subscribers to your broker alongside Waev. A club member who wants to run their own dashboard, an alerting tool, a backup archiver — any of these can subscribe to the same broker with their own credentials, and you manage each access independently.
+{/* CANON-GAP: confirm which specific tool presets ship in Waev's docs, so this section can name them */}
 
 ## What this means for your community
 
-The BYOB model is primarily a data control story, but it has practical consequences for how you run a community mesh network.
+None of this is a slogan about data rights — it's a description of where the credential's permissions and the read path actually sit.
 
-When someone joins your network and wants visibility, you don't need to give them access to a shared server or trust that a platform's permission model is granular enough for your needs. You give them subscriber credentials to your own broker — scoped as you see fit, revocable without coordination.
+When someone in your group runs an observer, its credential is scoped to that observer alone. It doesn't inherit access to anyone else's stream, and nobody else's credential can read it. There's no shared server whose access list you have to maintain by hand.
 
-When someone leaves, you revoke their credentials. Nothing else changes. The data on your broker is complete. Whatever tools they were using lose their feed; your infrastructure continues unaffected.
+When you want your own history, the public read API is there regardless of what Waev's own dashboards show you that day.
 
-When you want to evaluate a different analytics tool alongside Waev, you add another subscriber account. You're not locked to a single platform because your data isn't owned by any platform. You can run two tools on the same stream and compare them. You can switch without migrating data.
+When you want to compare Waev against another tool, or feed a second tool for a different purpose, you can point the same observer stream at it using the presets in Waev's docs — you're not choosing one platform to the exclusion of every other.
 
-This is the practical shape of data ownership: not a slogan about your rights, but a model where the actions that matter — grant access, rotate credentials, revoke access, add a tool, remove a tool — are things you do on infrastructure you control.
+That's the shape of "never-captive": a stream whose only way in is a credential that can't read anything back, and whose way out — to you, or to any other tool you choose — was never gated behind Waev alone.
 
 ---
 
-If you're evaluating whether BYOB is the right setup for your network, or you have questions about what's involved in running your own broker, [reach out](mailto:admin@waev.app). We're happy to talk through the practical details.
+If you have questions about enrolling an observer or reading your data back out, [reach out](mailto:admin@waev.app). We're happy to talk through the practical details.
 
 Ready to connect? [Start at waev.app](https://waev.app).
 
