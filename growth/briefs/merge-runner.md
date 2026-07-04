@@ -42,10 +42,14 @@ If none qualifies, STOP and report "no PR ready to merge".
 
 ## Step 2 — Verify the gates on the branch (all must be green)
 Check out the PR branch (`gh pr checkout <N>`). Then:
-1. **Hero present.** Run `node scripts/check-hero-assets.mjs`. It MUST print OK.
-   If it reports the post's hero missing, the human has not finished the gate-2
-   authorization — STOP this PR (do not merge, do not block; the image-handler
-   loop owns that step). Return to Step 1 for the next candidate, if any.
+1. **Hero check.** Run `node scripts/check-hero-assets.mjs`. It always prints OK
+   as long as the shared `public/hero-default.jpg` fallback exists — a post
+   without its own bespoke hero yet still ships on that default, so this no
+   longer blocks the merge. It only fails if the fallback asset itself is
+   missing (a real regression); if that happens, comment `<!-- merge-blocked
+   -->` and STOP. Otherwise continue regardless of whether this post's own
+   hero is present (the image-handler loop upgrades it whenever a human
+   attaches one — that's independent of this merge).
 2. **Build green.** Run `npm run build`. It MUST pass. If it fails, comment
    `<!-- merge-blocked -->` on the PR with the build error summary and STOP.
 
@@ -84,9 +88,9 @@ line: `<!-- os-merged -->`. If you advanced a `calendar.yaml` entry, note it.
 STOP and report the merged PR number + publish date to the orchestrator.
 
 ## Hard constraints
-- Authorization is the hero image. NEVER merge a PR whose hero asset is missing,
-  whose body lacks `<!-- editor-approved -->`, that is still a draft, or that
-  carries `<!-- editor-escalated -->`. No hero, no merge — full stop.
+- A missing hero asset no longer blocks the merge (the shared default covers
+  it — Step 2.1). NEVER merge a PR whose body lacks `<!-- editor-approved -->`,
+  that is still a draft, or that carries `<!-- editor-escalated -->`.
 - Only `growth/post-*` branches. Never merge SEO-fix, `calendar.yaml`, or any
   other PR class — those keep the `human-merge` gate (a human clicks merge).
 - NEVER deploy. The deploy Action (push to `main`) + the date gate are the only

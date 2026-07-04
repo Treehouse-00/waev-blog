@@ -24,8 +24,10 @@ to the mission-critical operators who depend on the mesh (ham clubs, CERT/EmComm
 teams, off-grid neighborhoods).
 
 ## North-star metric
-**Qualified operator activations** — the count of MeshCore operators who connect
-their own broker to Waev (bring-your-own-broker) and view their live network.
+**Qualified operator activations** — the count of MeshCore operators whose
+enrolled observer reaches its first Proven edge on the Live Map. (Reconciled at
+brand gate 1, 2026-07-02 — waev/brand/RATIFICATION.md §1: the prior "connect
+their own broker" wording described the retired BYOB flow.)
 This is downstream of every other metric and is the only number that proves the
 content engine produced real adoption, not just traffic. Baseline: TBD (no
 analytics wired yet); until instrumented, agents optimize the KPI proxies below
@@ -63,24 +65,27 @@ listed here is fully delegated to agents.
    and this Charter once before the engine runs in earnest, and again only when
    either materially changes. Until ratified, agents may draft and prepare PRs
    but the positioning is provisional.
-2. **Authorize a post to publish by providing its hero image.** A post reaches
-   production only after a human authorizes it — and that authorization IS the
-   hero-image upload, the single human deliverable on a content post. The
-   content-writer delivers a hero **image prompt**, never the image. The human
-   GENERATES the image (the creative act) and drops it into a comment on the
-   post's PR. That act is the publish authorization: by providing the final human
-   deliverable, the human is saying "ship it."
-   Everything around that act is agent-owned. The content-writer drafts; the
-   editor loop (`./briefs/editor.md`, CADENCE §3.10) independently reviews,
-   fact-checks, revises, and flips the PR draft→ready; the image-handler loop
-   (`./briefs/image-handler.md`, CADENCE §3.11) downloads the attached image,
-   names + compresses it, and commits `public/hero-<slug>.jpg` to the branch;
-   and the **merge-runner loop** (`./briefs/merge-runner.md`, CADENCE §3.12) then
-   EXECUTES the merge — but only once every automated gate is green (editor has
-   approved, the `Hero asset check` passes, `npm run build` is clean). The merge
-   is mechanical execution of the human's decision, not a new decision. The
-   `Hero asset check` stays red until the human-made hero is present, so a post
-   can never publish without it.
+2. **A human-provided hero image is still the preferred publish path — but no
+   longer a hard block.** Bespoke hero art remains the ideal: the content-writer
+   delivers a hero **image prompt**, never the image, and a human GENERATES the
+   image (the creative act) and drops it into a comment on the post's PR. When
+   that happens, the image-handler loop places it and the post ships with its
+   own art. But a post whose hero asset hasn't been attached yet no longer sits
+   blocked indefinitely — `src/lib/posts.ts` falls back to the shared
+   `public/hero-default.jpg` for any declared-but-missing hero, so the `Hero
+   asset check` (`scripts/check-hero-assets.mjs`) reports the gap without
+   failing the build. This was a deliberate human call (not an agent decision)
+   to unblock the publish backlog; a human can still attach real art to any
+   post at any time via the normal image-handler flow, which replaces the
+   default automatically once the file exists.
+   Everything else is agent-owned. The content-writer drafts; the editor loop
+   (`./briefs/editor.md`, CADENCE §3.10) independently reviews, fact-checks,
+   revises, and flips the PR draft→ready; the image-handler loop
+   (`./briefs/image-handler.md`, CADENCE §3.11) places a human-attached image
+   whenever one shows up; and the **merge-runner loop**
+   (`./briefs/merge-runner.md`, CADENCE §3.12) EXECUTES the merge once the
+   editor has approved and `npm run build` is clean — it no longer waits on a
+   bespoke hero to do so.
    No agent DEPLOYS. The merge-runner only merges to `main`; the existing
    date-gate (`src/lib/posts.ts`) + the deploy Action ship the merged post. If a
    human prefers to click merge themselves on a given post, they still can — the
@@ -99,11 +104,13 @@ listed here is fully delegated to agents.
 ## Invariants (inherited, non-negotiable)
 These mirror the repo constitution in `../AGENT.md` and bind every growth agent:
 
-1. Agents propose via PR or report files; they NEVER deploy. A human authorizes
-   a post to publish by providing its hero image (gate 2); the merge-runner loop
-   then executes the merge once every automated gate is green. The date gate +
-   deploy Action ship the merged post. Non-post PRs (SEO fixes, `calendar.yaml`,
-   audits) keep the `human-merge` gate — a human still clicks merge on those.
+1. Agents propose via PR or report files; they NEVER deploy. A human-provided
+   hero image remains the preferred publish path (gate 2), but a missing one no
+   longer blocks the merge-runner loop — it falls back to the shared default
+   hero and executes the merge once every other automated gate is green. The
+   date gate + deploy Action ship the merged post. Non-post PRs (SEO fixes,
+   `calendar.yaml`, audits) keep the `human-merge` gate — a human still clicks
+   merge on those.
 2. No agent posts to external communities autonomously — distribution is always
    the human-approval gate above.
 3. Never contradict the factual canon in `src/pages/llms.txt.ts`. If a fact must
