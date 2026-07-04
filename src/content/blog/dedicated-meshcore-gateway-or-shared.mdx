@@ -64,7 +64,6 @@ Separation becomes worth considering when you're optimizing for coverage and rel
 ## The data flow either way
 
 Whether the gateway is dedicated or shared, the data path is the same: the gateway node publishes its packet stream directly to [Waev's MQTT ingest](/blog/bring-your-own-broker/) using a publish-only credential — it can send its own data and nothing else — and the map is built from what enrolled observers report.
-{/* CANON-GAP: confirm whether this post's linked slug (bring-your-own-broker) should be renamed/redirected now that the BYOB model is retired — link target left unchanged per instructions */}
 
 <Figure caption="Data lineage: whether gateway and repeater are one node or two, the observation path is the same — straight to Waev's ingest, publish-only, with the same stream also available to other tools of your choosing.">
   <ByobDataFlow />

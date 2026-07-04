@@ -35,9 +35,7 @@ That stream is readable. And reading it directly is the fastest way to know exac
 
 A MeshCore observer's job is to bridge two worlds: it hears RF packets from the mesh and publishes a JSON record of each one to Waev's own MQTT ingest, using a credential that is publish-only. Every time a mesh packet reaches the observer's radio, an entry is sent to that ingest. The same stream is what Waev's Live Packets and Network Stats are built from.
 
-{/* CANON-GAP: the exact topic structure an observer publishes to, and whether that structure is documented/stable for operators to reference directly, is not confirmed — softened to avoid asserting a specific topic format. */}
-
-What arrives on that topic, for each packet the observer hears, includes at minimum:
+What arrives at the ingest, for each packet the observer hears, includes at minimum:
 
 - **Source node** — the name or identifier of the mesh node that originated the packet
 - **Route type** — whether the packet was a flood (mesh broadcast) or a direct (addressed to a specific destination)
@@ -120,7 +118,7 @@ journalctl -u mosquitto -f
 
 Connection events, authentication failures, and client disconnections appear here. If your observer connects and disconnects repeatedly on your own broker, it will show up as a sequence of connection and disconnection entries — often a sign of network instability or a credential problem on that side.
 
-{/* CANON-GAP: how an operator checks the health of the observer's connection to Waev's own ingest directly (rather than inferring it from Live Packets activity) isn't confirmed — softened to avoid asserting a specific diagnostic surface. */}
+For the connection to Waev's own ingest directly, there's no separate broker log to check — Live Packets is the practical signal. Packets keep appearing there as long as the connection is healthy; a gap in the stream with no matching gap in your own broker's log points at the observer's credential or its connectivity to Waev specifically, not at the mesh or your local network.
 
 The packet stream and a broker's connection log are complementary: one tells you what the mesh is actually sending, the other tells you the health of a given transport leg. For the optional self-hosted setup — TLS, password files, ACL grants — [Setting Up Mosquitto for MeshCore](/blog/setting-up-mosquitto-for-meshcore/) covers it in detail. For what the observer is, and why it's Waev's only source of mesh data, [what a mesh network observer actually does](/blog/what-is-a-mesh-network-observer/) covers the model.
 

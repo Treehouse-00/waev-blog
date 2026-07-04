@@ -53,10 +53,8 @@ One observer is enough to start. Multiple observers give you overlapping vantage
 The observer publishes to Waev's MQTT ingest (mqtt.waev.app) using a credential that is publish-only: it can send its own data and nothing else. It cannot subscribe to, read, alter, or delete anything on the broker — not its own stream, not anyone else's. There's no broker for you to host, patch, or keep online; that's Waev's infrastructure to run.
 
 You read your data back out through a public read API — the same one that feeds the Live Map, Live Packets, and the rest of the surfaces on waev.app.
-{/* CANON-GAP: confirm whether the read API is documented/self-serve today, or still needs a doc link operators can follow */}
 
 The same observer stream can also be pointed at other tools of your choosing — Waev ships presets for that in its own docs, so nothing about the stream is captive to Waev. If you stop using Waev, the observer doesn't stop working; you point it somewhere else.
-{/* CANON-GAP: confirm which preset tools/destinations exist today so this can name them specifically */}
 
 ## The ingest edge: where the picture gets verified
 

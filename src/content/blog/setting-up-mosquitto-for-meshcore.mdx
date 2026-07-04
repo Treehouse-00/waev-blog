@@ -124,8 +124,6 @@ A completed TLS handshake confirms the listener is up. Then verify authenticatio
 
 To update a password: run `mosquitto_passwd /etc/mosquitto/passwd username` with the new password, then `systemctl restart mosquitto`. Whatever tool was using that account drops its connection and reconnects once you update it with the new credentials. To revoke access entirely, remove the user from the password file and ACL, then restart. Both operations happen entirely on infrastructure you control.
 
-{/* CANON-GAP: confirm the exact list of preset destinations/tools Waev documents for pointing an observer's stream elsewhere, so this can name them specifically instead of speaking generically */}
-
 None of this is how Waev gets your data — your observer reaches Waev's own MQTT ingest directly, over a separate publish-only connection, with no broker of yours in that path. A broker like the one in this guide is for you: it's how you keep a copy of your own stream on infrastructure you control, so any tool you choose — now or later — can read it without you having to re-plumb anything upstream.
 
 For the broader picture of how an enrolled observer's stream reaches Waev, see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/). For more on why the stream isn't locked to any one destination, see [the never-captive stream](/blog/bring-your-own-broker/).

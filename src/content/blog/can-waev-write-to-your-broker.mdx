@@ -33,7 +33,6 @@ The question comes up early when evaluating any analytics service that touches y
 An enrolled observer's credential to Waev's ingest carries one permission: publish its own packet stream. It does not carry subscribe access, so it cannot read what any other observer sends. It does not carry any form of topic management or broker administration. There is no path from "holds this credential" to "can write, alter, or delete data belonging to someone else" — that path simply isn't part of what the credential allows.
 
 This is the same shape of guarantee any publish-only MQTT credential gives: a client that can only publish can put messages onto the broker under its own topic, and that's the whole of it. It cannot pull messages back off, and it cannot touch anything it didn't put there itself.
-{/* CANON-GAP: need a human-confirmed description of how the publish-only permission is technically scoped/enforced at mqtt.waev.app (per-observer topic ACL, token scope, etc.) */}
 
 ## What that credential is used for
 
@@ -48,7 +47,6 @@ There is no operator-hosted broker in this path. The stream isn't sitting on inf
 ## Reading your own data back out
 
 Because the credential is publish-only, "can Waev write to it" and "can you read it" are two different questions with two different answers. The operator reads their data back out through a public read API. The same observer stream can also be pointed at other tools of the operator's choosing, using presets Waev ships in its own docs — so nothing about the stream is captive to Waev.
-{/* CANON-GAP: need a human-confirmed description of the public read API's access model and the specific preset tools/format Waev documents. */}
 
 The activation moment that matters isn't "connect a broker" — it's the enrolled observer reaching its first Proven edge on the Live Map. That's the point where the stream is doing what it's for: producing a verifiable line on the map, not just arriving somewhere.
 

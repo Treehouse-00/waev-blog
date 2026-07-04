@@ -53,13 +53,9 @@ That asymmetry is the whole design. An observer's job is to report what it heard
 
 Publishing is only half the story — the data has to come back to be useful. The operator reads their data back out through a public read API. That's the supported way to get your own observer's history out of Waev's ingest for your own purposes, independent of the Live Map or Network Stats views Waev builds on top of the same stream.
 
-{/* CANON-GAP: confirm the read API's concrete auth model, base path, and a worked request/response example for this section */}
-
 ## The stream isn't captive to one destination, either
 
 The same observer stream can also be pointed at other tools of your choosing, using presets Waev ships in its own docs. That's the second half of "never-captive": it isn't only that you can read your data out of Waev — it's that the stream feeding Waev doesn't have to feed only Waev. An operator evaluating another analytics tool, or running one alongside Waev, isn't blocked by the credential model; the observer can feed more than one destination.
-
-{/* CANON-GAP: confirm which specific tool presets ship in Waev's docs, so this section can name them */}
 
 ## What this means for your community
 
