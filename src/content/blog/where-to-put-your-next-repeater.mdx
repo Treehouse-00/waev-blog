@@ -39,7 +39,7 @@ The complaint usually arrives the same way: someone on the far edge of the mesh 
 
 The Live Map shows your network the way your enrolled observers see it — not modeled, not estimated, but based on packets that actually traveled those paths. The first thing to look for isn't nodes. It's the edges between them.
 
-An edge on the map means two things are true: a packet traversed that path, and an enrolled observer (connected over MQTT) recorded it. If a stretch of your service area shows nothing — no nodes, no edges — you're looking at one of two things: a genuine dead zone, or a region with no observer coverage. Knowing which one is what determines your next move. The map is honest about the limits of its own visibility.
+An edge on the map means two things are true: a packet traversed that path, and an enrolled observer (connected over MQTT) recorded it. If a stretch of your service area shows nothing — no nodes, no edges — you're looking at one of two things: a genuine dead zone, or [a region with no observer coverage](/blog/mesh-map-missing-nodes/), and the two look identical until you check which one it is. Knowing which one is what determines your next move. The map is honest about the limits of its own visibility.
 
 Start by finding the boundary where your map transitions from dense, connected topology to sparse edges or silence. That boundary is where your investigation begins.
 
@@ -61,7 +61,7 @@ Look at the path-quality view for the nodes closest to the silent zone. Three di
 
 **Hop count creep.** A node that was reaching backbone in two hops during initial deployment but now shows three or four is routing around a degraded or failed path. That's not a routing quirk — it's a symptom worth investigating.
 
-**SNR at the edge of acceptable.** A working MeshCore link generally needs at least +5 to +7 dB SNR in typical conditions. Below that range, you're in weather-dependent territory. A node holding at +1 or +2 dB is technically alive but not reliably useful. Pull the time series in Stats to see whether the degradation is constant or shows patterns — weather, terrain obstructions, interference at certain hours.
+**SNR at the edge of acceptable.** A working MeshCore link generally needs at least +5 to +7 dB [SNR](/blog/what-is-snr-lora/) in typical conditions. Below that range, you're in weather-dependent territory. A node holding at +1 or +2 dB is technically alive but not reliably useful. Pull the time series in Stats to see whether the degradation is constant or shows patterns — weather, terrain obstructions, interference at certain hours.
 
 **Zero-packet stretches.** A node that logged 30–40 packets per hour all week and then dropped to zero for a day isn't necessarily down. Compare with neighbor nodes. If neighbors are active and this one isn't, that's a path failure, not a power issue.
 

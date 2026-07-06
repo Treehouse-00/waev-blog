@@ -54,7 +54,7 @@ The observer publishes to Waev's MQTT ingest (mqtt.waev.app) using a credential 
 
 You read your data back out through a public read API — the same one that feeds the Live Map, Live Packets, and the rest of the surfaces on waev.app.
 
-The same observer stream can also be pointed at other tools of your choosing — Waev ships presets for that in its own docs, so nothing about the stream is captive to Waev. If you stop using Waev, the observer doesn't stop working; you point it somewhere else.
+The same observer stream can also be pointed at other tools of your choosing — Waev ships presets for that in its own docs, so nothing about the stream is captive to Waev. If you stop using Waev, the observer doesn't stop working; you point it somewhere else. [The Never-Captive Stream](/blog/bring-your-own-broker/) covers the credential model behind this in more depth.
 
 ## The ingest edge: where the picture gets verified
 
@@ -78,7 +78,7 @@ Once packets clear the ingest edge, they're stored and routed to the relevant su
 
 **Live Packets** is the stream as it arrives — privacy-filtered, timestamped, sorted by arrival. If a node is reaching Waev, it appears here first. It's the fastest way to check whether a given node is getting through.
 
-**Live Map** draws topology from verified edges, updated as new observations arrive. Edges don't disappear the moment a node goes quiet; they age. But the map won't draw a new edge to a silent node until fresh evidence arrives.
+**Live Map** draws topology from verified edges, updated as new observations arrive. Edges don't disappear the moment a node goes quiet; they age. But the map won't draw a new edge to a silent node until fresh evidence arrives — see [why nodes go missing from the map](/blog/mesh-map-missing-nodes/) for how to tell that apart from a real dead zone.
 
 **Network Stats** tracks activity over time: unique nodes active in the last hour, day, week. It uses both confirmed observer records and anonymized companion signal records, so the counts reflect real traffic — including devices that don't appear on the map.
 
