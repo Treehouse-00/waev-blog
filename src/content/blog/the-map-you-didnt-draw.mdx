@@ -1,0 +1,116 @@
+---
+title: "The Map You Didn't Draw"
+description: "How to decide whether a mesh map deserves your trust when something real depends on it — the four ways any network map can lie, why a raw packet feed is necessary but not sufficient, and a five-question audit you can run on any topology, ours included."
+date: 2026-09-10
+tags: ["position", "topology", "evidence"]
+author: "Waev"
+hero:
+  src: "/hero-the-map-you-didnt-draw.jpg"
+  alt: "Abstract glowing blue and violet light strands flowing in parallel across a dark background, like data traveling a fiber-optic stream."
+draft: false
+faq:
+  - q: "How do I know I can trust a mesh map in an emergency?"
+    a: "Ask one question of the tool: what did it take for each line to get drawn? A trustworthy map can answer per-edge — which station heard the packet, at what signal strength, how many times, how recently. If the map can't show the evidence behind a line, treat the line as a guess. Waev draws edges only from receptions reported by enrolled observers and authenticated repeaters, and rejects claims that fail physical plausibility checks."
+  - q: "Can a mesh network map be spoofed?"
+    a: "Parts of one can. Node positions are self-reported, so a device can lie about where it is. What is much harder to fake is a consistent story: a spoofed link tends to show a signal strength that disagrees with the distance and terrain it claims to have crossed. Waev cross-checks each claimed link against propagation physics and rejects what doesn't survive. No map is unspoofable — the honest posture is grading evidence, not asking for faith."
+  - q: "What does a zero-hop link mean on the Waev map?"
+    a: "It means an enrolled observer heard the transmitting radio directly, with no repeaters in between — a reception attested by the receiver itself. Zero-hop receptions are the strongest single piece of evidence a link can have, because they don't depend on any intermediate node's claims."
+  - q: "Why does Waev show a link's SNR and packet count instead of just drawing the line?"
+    a: "Because two drawn lines can carry very different weight. A link heard 3,467 times at +9.7 dB by an observer is different evidence from a link heard 74 times at −4.4 dB by a single station — even if both are real. Showing the numbers lets you weigh the line the way the physics does, instead of trusting a uniform stroke of ink."
+  - q: "Why isn't a raw packet feed enough to understand my mesh?"
+    a: "A raw feed is the right tool for point-to-point questions — did this packet reach that repeater. But diagnosing node performance, finding a misbehaving node, or understanding the shape of a whole network from raw rows makes you the investigator: thousands of true data points still have to be turned into a finding. Waev applies method up front — replicable queries against a public read API, falsifiable edges with explicit rejection rules, physics checks that are blind to identity — so the map hands you findings with the evidence attached. The raw feed stays available for when you need the tape."
+  - q: "Does Waev know who is messaging on the mesh?"
+    a: "No. Personal and companion devices are identity-scrubbed at the ingest edge; only anonymous signal metadata (SNR, hop count, timing) is retained. A node named with a privacy marker (⛔ 🛑 🚫) is never stored, mapped, or counted at all."
+---
+
+{/* Hero concept (for the hero loop): a hand-painted map table seen from above,
+   one glowing edge under a magnifying lens revealing tiny numbers — SNR, km,
+   packet counts — woven into the line itself; dark blues, single warm accent. */}
+
+The exercise is on Saturday. Your served agency wants one page: which neighborhoods can still reach the EOC if the cell sites go dark. You open the map. Forty-three nodes, a lattice of lines, everything reassuringly connected.
+
+At the briefing, somebody is going to ask how you know. Not whether the map is current. Whether it is *true*. And "the software drew it" is not an answer you want to say out loud to a room that plans around your answer.
+
+Every mesh map is an argument. Most maps just don't show their work.
+
+<div class="callout">
+<p><strong>TLDR:</strong> Trusting your mesh map in an emergency comes down to one question: what did it take for each line to get drawn? Waev draws an edge only from evidence — packets heard by enrolled observers and authenticated repeaters — then checks each claim against distance, signal, and physics, and rejects what doesn't survive. Verifying mesh topology you didn't draw is a skill: read the evidence behind the line, weigh the witnesses, and check that the numbers agree with each other. This post shows you how — on any map, including ours.</p>
+</div>
+
+## Four ways a mesh map lies
+
+None of these are exotic. Every one of them is running on a map somewhere right now.
+
+**It remembers too generously.** A node powers down, a repeater comes off a roof before winter, a member moves across town — and the map keeps drawing them, because the last advertisement it heard is still in the database. A map with no notion of freshness is a map of the past wearing today's date. (The inverse problem — nodes that exist but don't appear — has its own post: [why your mesh shows fewer nodes than you have](/blog/mesh-map-missing-nodes/).)
+
+**It believes too easily.** Position on a mesh is self-reported. A device says "I am here," and most tools write that down as fact. Usually the device is honest. Sometimes it has a stale GPS fix from the drive over. Occasionally — on any open radio network — someone is lying on purpose. A map that transcribes claims isn't evidence; it's stenography.
+
+**It infers too much.** A heard B. B heard C. It is tempting to draw A–C as "the network," and some tools do — routing hope through nodes that have never actually exchanged a packet. Inference has its uses, but an inferred line rendered identically to a witnessed one is a quiet lie about how much you know.
+
+**It flatters.** This is the uncomfortable one, and it includes us. Every dashboard is built by people who would rather the network look healthy — nobody codes that bias in on purpose, but it arrives anyway, in the defaults: how long a silent node stays on the map, how generously an inference is drawn, how failure is rendered. A map's incentives are part of its accuracy. Which is why the right question for any tool — ours first — is not "what does it show?" but "what would make it refuse to show something?"
+
+A map that can't say no is worthless when it says yes.
+
+## The recorder is not the investigation
+
+Aviation settled a version of this argument decades ago. Every airliner carries a flight-data recorder that captures hundreds of parameters, continuously, without judgment. And when something needs explaining, nobody answers the hard question by handing over the raw tape. The recorder's job is to capture everything. The investigation's job is to turn everything into a finding — reconstruct the conditions, test each hypothesis against the data until only one survives, and publish the work so anyone can check it. The recorder is indispensable. It is also not the answer.
+
+Most mesh tooling today does the recorder's job — live packet feeds, node tables, raw dashboards, much of it built by volunteers and given away. That work deserves credit, and for point-to-point questions it is exactly the right tool: did my packet reach the repeater, is the new node being heard, [what did the last hour look like](/blog/reading-live-packets/). We ship a recorder ourselves — Live Packets — because sometimes you need the tape.
+
+But if you've run a mesh for more than a month, you've probably lived the other kind of evening: scrolling a few thousand rows at some unreasonable hour, trying to establish whether the western repeater is actually forwarding or merely present, or which node is flooding the channel with adverts, or why the far side of town comes and goes. The tape has the answer in it somewhere. That is exactly the problem. A mountain of true data points is not a finding — and during an activation, nobody has time to be their own accident investigator.
+
+The difference between a recorder and an investigation isn't volume, and it isn't polish. It's method — the old, boring, load-bearing kind. **Replicability:** the read API is public, so any claim the map makes, you can re-derive yourself. **Falsifiability:** every edge has conditions under which it would have been refused — a line that can be proven wrong is the only kind that means something when it isn't. **Objectivity:** the physics doesn't know whose node it's judging, and the pipeline doesn't know who you are — identity is scrubbed before judgment happens.
+
+That's not a feature list. It's the scientific method, applied to a map. Slower to build — and the only kind of answer that survives a briefing room.
+
+## What it takes to draw a line
+
+On Waev, an edge begins as a reception: *this* radio heard *that* radio, at this signal strength, at this moment. Receptions come from two sources only — enrolled observers reporting over MQTT, and authenticated repeaters — because evidence has to come from a witness you can name. ([How Waev reads your mesh](/blog/how-waev-reads-your-mesh/) walks the full path from packet to map.)
+
+Then the claim has to survive scrutiny. Distance against signal strength. Path against terrain. Claims that contradict physics — a reception that would require the packet to have crossed something it demonstrably couldn't — are rejected rather than drawn. What remains is graded, not merely displayed: a zero-hop reception attested by the receiving station is the strongest kind of evidence; a link corroborated by multiple observers carries more weight than a single witness; an inference is labeled as an inference or it doesn't ship.
+
+The grading is the point. Two lines on a map are not two equal facts. They are two arguments of different strength, and you deserve to see the difference.
+
+## The link that looked like a lie
+
+Here is what that discipline looks like on a real edge — the kind that should make a skeptical operator squint.
+
+In early July 2026, the live topology table (9,520 edges that morning; `api.waev.app/topology/edges`, 2026-07-05) contained a zero-hop link between two radios **158.8 km apart**. Average SNR: **−4.4 dB**. Below the noise floor. Seventy-four packets.
+
+On most maps, you'd have no way to interrogate that line. It would just be ink — the same stroke as a link between two rooftops on one street. So interrogate it here, in public.
+
+A hundred and fifty-nine kilometers is not a normal LoRa link, and nobody should plan around one. But it is not automatically a lie, either — LoRa's spread-spectrum design decodes signals *below* the noise floor, which is precisely how improbable-looking distances happen ([Reading the Signal](/blog/reading-the-signal/) covers why). The test is not whether the claim is impressive. The test is whether the numbers agree with each other.
+
+They do. At 158.8 km, physics predicts a signal at the ragged edge of decodability — and −4.4 dB is exactly that. The packets that arrived, arrived barely. **A spoofed link tends to fail this test in the other direction: a strong signal over an implausible path.** Strong-and-far is how a fabrication looks. Weak-and-far, with the weakness matching the farness, is how a real long link looks. Compare the strongest edge in the same table that morning: 13.8 km, +9.7 dB, 3,467 packets. Short, loud, and witnessed thousands of times. The most trustworthy line in the network is not the longest one. It's the best-evidenced one.
+
+And the honest reading of the 158.8 km link includes its limits, which the map hands you instead of hiding: one witnessing observer, not several. Seventy-four packets, not thousands. Real — and thin. Evidence, graded. If your comms plan needs that path, the map has told you exactly what to do about it: put a second witness where it can hear, and find out.
+
+Do not plan an activation around a below-noise-floor link, however real. Plan around the links whose evidence is boring.
+
+## What the map refuses to know
+
+One more thing an emergency coordinator should ask of any tool their members appear on: what does it store about the people?
+
+On Waev, personal and companion devices are identity-scrubbed at the ingest edge — what reaches the database is anonymous signal metadata: SNR, hops, timing. A node named with a privacy marker (⛔ 🛑 🚫) is never stored, mapped, or counted at all. What doesn't enter the database can't be accessed, breached, or misused — and a map that cannot identify your members is also a map nobody else can mine. For a team accountable to a served agency and to its own volunteers, that is not a feature. It is a precondition.
+
+## Auditing a map you didn't draw
+
+The transferable skill, then — five questions to put to any topology tool before you stake a plan on it. They are the method from the last section, wearing work clothes:
+
+1. **Where does this line come from — per line?** If the tool can't answer for a specific edge — which witness, what signal, how many packets, how recently — you are looking at a drawing, not a map.
+2. **What would it take for a line to be refused?** Ask for the rejection rules. A tool with no rejection rules has never told you "no," which means its "yes" is decoration.
+3. **Do the numbers agree with each other?** Distance, signal, terrain. You can do this by eye once you've internalized [the vocabulary](/blog/reading-the-signal/): far-and-strong is suspicious; far-and-weak-in-proportion is credible; short-and-loud-and-frequent is bankable.
+4. **Who witnessed it, and when?** One observer or several. Yesterday or last month. A proven link is proven *as of its evidence* — evidence ages, and a good map shows its age instead of painting over it.
+5. **Can you take your data and leave?** Observer credentials on Waev are publish-only, the read API is public, and presets for other tools ship in our own docs. This isn't generosity — it's the audit question answering itself. A map that holds your data captive has an incentive to flatter you. A map you can walk away from has an incentive to be right.
+
+Run these against Waev. Especially against Waev — the read API is public precisely so that you can. You can't plan around "mostly works." Verify the net on a routine Tuesday, not during the activation.
+
+## The briefing
+
+Saturday comes. Somebody asks how you know.
+
+Now there is an answer that survives the room: here is the line, here is the station that heard it, here is the signal it was heard at, here is how many times, here is how recently — and here are the claims that were checked and refused. Not a picture of a network. A case file for one.
+
+If the map shows it, something verifiable produced it. No proof, no line.
+
+Bring the map to the briefing. And bring its receipts.
