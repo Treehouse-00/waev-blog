@@ -210,12 +210,17 @@ Source surface: `src/layouts/Base.astro` `<head>` (lines ~67–121) and
 
 - **MT-07 — `twitter:site` (and `twitter:creator`).** Severity: major.
   - Scope: every page.
-  - Check: `<meta name="twitter:site" content="@...">` present and non-empty.
-  - PASS: present.
-  - Fix: `src/layouts/Base.astro` Twitter block (lines ~89–93). The handle is an
-    identity claim — if no official handle is verified, the auditor proposes the
-    tag with the candidate handle and flags it `human-approval` in the PR body
-    rather than inventing one.
+  - Check: EITHER the tag is present as `<meta name="twitter:site"
+    content="@...">` with a real, non-placeholder handle, OR no verified
+    handle is configured anywhere in the repo and the tag is correctly omitted.
+  - PASS: present-with-real-handle, or absent-because-no-handle-exists. FAIL
+    only if present with an empty or placeholder value.
+  - Fix: `src/layouts/Base.astro` Twitter block (lines ~89–93). The handle is
+    an identity claim — never invent one. Ratified 2026-07-04: Waev has no
+    official Twitter/X handle at this time, so omission is the correct,
+    passing state — do NOT open a `human-approval` issue for this every audit
+    cycle. Only re-open MT-07 if a human adds an official handle and the tag
+    doesn't reflect it, or removes one that's no longer valid.
 
 - **MT-08 — Open Graph completeness.** Severity: major.
   - Scope: every page.
@@ -355,9 +360,17 @@ Existing posts (slugs for cross-linking): `bring-your-own-broker`,
 - **IL-03 — No broken internal links.** Severity: blocker.
   - Scope: every page.
   - Check: every `<a href>` starting `/` resolves to a built path in `dist/`
-    (post, tag, index, rss, sitemap, llms.txt).
-  - PASS: zero unresolved internal hrefs.
-  - Fix: the page emitting the dead link (fix or remove).
+    (post, tag, index, rss, sitemap, llms.txt) — EXCEPT a link to a post slug
+    that exists in `src/content/blog/` with `draft: false` and a future `date`.
+    That is an intentional forward-reference to a scheduled post (AGENT.md
+    Invariant 1) and is not a defect: it resolves on its own when the daily
+    scheduled-publish rebuild reaches that date. Do not flag it, do not open an
+    issue for it, and do not edit the referring prose to "fix" it.
+  - PASS: zero unresolved internal hrefs, other than the scheduled-post
+    carve-out above.
+  - Fix: the page emitting the dead link (fix or remove) — only for a link to
+    a slug that does not exist at all in `src/content/blog/` (a typo, or a
+    cancelled/renamed post). That case is still a real blocker.
 
 - **IL-04 — No orphan posts.** Severity: major.
   - Scope: each published post.

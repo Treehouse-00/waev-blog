@@ -73,11 +73,28 @@ rules to confirm they now PASS. The build MUST pass before you open the PR.
   `draft: true`, or `gh pr create --draft` where the CLI exists). PR body MUST
   include: a summary table of FAILs (the full set lives in the report file), the
   rule IDs fixed in-PR, and links to any issues opened for human-judgment items.
-- Open GitHub issues for every non-mechanical `major` and every `human-approval`
-  finding, each titled `seo:<rule-id> — <short>` and referencing the playbook
-  rule.
-- STOP. Report the branch, PR URL, and opened issue numbers to the orchestrator.
-  Human merge applies the fixes (gate: human-merge).
+- Before opening an issue for a finding, check for an existing OPEN issue for
+  the same rule ID first: `gh issue list --state open --search "seo:<rule-id> in:title"`.
+  - If one exists AND its finding is materially the same (same slugs/pages, or
+    the same still-unresolved human decision): do NOT open a duplicate. Post a
+    comment on the existing issue with this run's date and the current
+    evidence (e.g., updated slug list), so it reads as one continuously-tracked
+    finding rather than a new ticket. Reference it (not a new number) in the PR
+    body.
+  - If one exists but the finding has materially changed (different slugs
+    now failing, prior ones resolved): update that SAME issue's body to the
+    current finding — edit it in place (`gh issue edit`), do not open a new
+    number.
+  - Only open a new issue if no open issue for that rule ID exists at all.
+  - If, while checking, you find the flagged posts now PASS and no open issue
+    truthfully still applies: close the stale issue yourself with a one-line
+    comment citing the fix, instead of leaving it open and also opening a new
+    one for anything unrelated.
+- Open (or update, per above) GitHub issues for every non-mechanical `major`
+  and every `human-approval` finding, each titled `seo:<rule-id> — <short>` and
+  referencing the playbook rule.
+- STOP. Report the branch, PR URL, and opened/updated/closed issue numbers to
+  the orchestrator. Human merge applies the fixes (gate: human-merge).
 
 ## Hard constraints
 - Audit `dist/` (built output), never the source, unless a rule says "source".
