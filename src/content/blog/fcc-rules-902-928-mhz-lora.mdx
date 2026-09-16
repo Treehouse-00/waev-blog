@@ -1,0 +1,138 @@
+---
+title: "The 500 kHz Floor"
+description: "What 47 CFR 15.247 actually requires of a LoRa radio in the 900 MHz band — why 500 kHz is the eligibility line, where 62.5 kHz really lands, and what the compliant preset costs a MeshCore mesh."
+date: 2026-09-15
+tags: ["signal", "deep-dive", "operations"]
+hero:
+  src: "/hero-fcc-rules-902-928-mhz-lora.jpg"
+  alt: "A weathered wooden plank reaching out from a sandstone ledge, its far end stopping short of the opposite ledge across a sunlit gap."
+faq:
+  - q: "Does FCC 47 CFR 15.247 require a minimum bandwidth for LoRa in the 902-928 MHz band?"
+    a: "Yes. Section 15.247(a)(2) states that systems using digital modulation techniques may operate in the 902-928 MHz, 2400-2483.5 MHz, and 5725-5850 MHz bands, and that the minimum 6 dB bandwidth shall be at least 500 kHz. A single-channel LoRa transmission is a digitally modulated intentional radiator, so this is the binding test. The 500 kHz figure is a measured 6 dB bandwidth, not the nominal bandwidth setting in your firmware."
+  - q: "Is a 62.5 kHz LoRa channel illegal in the United States?"
+    a: "It is outside 47 CFR 15.247 — below the 500 kHz minimum 6 dB bandwidth of the digital-modulation path, and not a frequency-hopping system either. That is not the same as prohibited. Section 15.249 permits operation in 902-928 MHz with no bandwidth minimum at all, capped at 50 mV/m fundamental field strength measured at 3 meters, roughly 0.75 mW EIRP. The practical problem is power: a typical mesh node running +20 dBm into a 3 dBi antenna sits about 24 dB — roughly 270 times — above that ceiling, and Part 15 authorization attaches to the device under a specific rule section, so a module certified under 15.247 does not inherit 15.249 by being reconfigured."
+  - q: "Why did the FCC pick 500 kHz as the minimum bandwidth?"
+    a: "As an eligibility threshold, not as the output of an interference calculation. The 500 kHz minimum dates to the 1985 spread spectrum First Report and Order in Gen. Docket 81-413. In DA 12-839 (2012) the Commission stated the purpose directly: the minimum was chosen to ensure that wideband digital devices operating with higher power than normally allowed under the Part 15 general emission limits would operate compatibly with other authorized radio systems, and specifically to exclude narrowband systems from using the higher power limits of Section 15.247. The 8 dBm per 3 kHz power spectral density cap came later, in 1990, to ensure energy is spread uniformly across that bandwidth rather than concentrated in a spike."
+  - q: "Does the 1 watt limit in 15.247 mean my LoRa node can transmit at 1 watt?"
+    a: "Only if it clears the 500 kHz bandwidth floor, and only within the antenna rule. Section 15.247(b) caps peak conducted output power at 1 watt for digitally modulated systems in 902-928 MHz, and 15.247(b)(4) bases that limit on antennas with directional gain of 6 dBi or less. Above 6 dBi, conducted power must be reduced one-for-one in dB. Unlike 2400-2483.5 MHz, the 902-928 MHz band has no point-to-point relaxation of that trade. Most LoRa modules top out near +22 dBm regardless, so the 1 watt ceiling is usually theoretical without an external amplifier."
+  - q: "What does moving a MeshCore mesh from 62.5 kHz to 500 kHz cost?"
+    a: "Airtime, not range. Widening from 62.5 kHz to 500 kHz raises the thermal noise floor by about 9 dB, but stepping from SF7 to SF11 buys back roughly 10 dB of demodulation margin — so SF11 at 500 kHz lands about 1 dB more sensitive than SF7 at 62.5 kHz, ignoring receiver noise figure. The real cost is symbol time: 2.048 ms at SF7/62.5 kHz versus 4.096 ms at SF11/500 kHz, so roughly double the airtime per packet and double the channel occupancy on a shared medium."
+---
+
+import Figure from "../../components/Figure.astro";
+import FccBandwidthFloor from "../../components/viz/fcc-BandwidthFloor.astro";
+import FccTwoPaths from "../../components/viz/fcc-TwoPaths.astro";
+
+Every MeshCore node in North America transmits under a rule almost nobody has read. This is what it says.
+
+<div class="callout">
+<p><strong>TLDR:</strong> 47 CFR §15.247(a)(2) requires a measured 6 dB bandwidth of at least 500 kHz for any digitally modulated device in 902–928 MHz. A 62.5 kHz LoRa channel is below that floor and is not a hopping system either, so it falls outside §15.247 entirely. The narrowband door that remains — §15.249 — has no bandwidth minimum but caps you near 0.75 mW EIRP, about 24 dB under where a real mesh node runs. The 500 kHz figure is an eligibility line the Commission drew in 1985 to keep narrowband systems out of the 1 W power budget, not an output of the power-density arithmetic. Moving to a compliant 500 kHz preset costs airtime, not range.</p>
+</div>
+
+This post works from a reference page compiled by **cisien** — *FCC Rules for 902–928 MHz and Where LoRa Chirp Spread Spectrum Fits*, at [stuff.cisien.com/fcc-900mhz-regulations.html](https://stuff.cisien.com/fcc-900mhz-regulations.html), used here with his permission. That page assembled the citation list and, more usefully, found the FCC order that settles the "why 500 kHz" question rather than guessing at it. We have checked each citation against the current CFR text and the Commission's own orders, corrected two places where the arithmetic and the rationale had been run together, and added what the rule costs a MeshCore mesh in practice. Read his page for the full glossary and the section-by-section treatment; this one is about what the rule does to a mesh.
+
+## The band is not free. It is conditioned.
+
+902–928 MHz is unlicensed, which people hear as permissionless. It isn't. The FCC issues you no personal license, and in exchange sets hard conditions on how much power you emit and how wide you spread it — because the band is shared, on a noninterference basis, with government systems that were there first. The note appended to §15.247 is blunt about this: many of those are airborne radiolocation systems emitting high EIRP, and the Commission reserves the right to lower the Part 15 power limits if interference investigations warrant it.
+
+The operating assumption behind every limit below is that anyone's transmitter can land on anyone else's frequency at any time, with no coordination. The rules are written to survive that.
+
+## One number does the work
+
+For a digitally modulated transmitter, §15.247(a)(2) is one sentence:
+
+> Systems using digital modulation techniques may operate in the 902–928 MHz, 2400–2483.5 MHz, and 5725–5850 MHz bands. The minimum 6 dB bandwidth shall be at least 500 kHz.
+
+The 6 dB bandwidth is the width of the signal measured between the points 6 dB down from its peak. For a single-channel LoRa radio — one chirp, one frequency — that measurement is essentially the entire compliance question. There is no processing-gain test to pass and no modulation category to fit into.
+
+That last point matters more than it looks. The FCC has never classified chirp spread spectrum as direct sequence, as frequency hopping, or as anything else — and by the Commission's own definitions it can't be the first two. [§2.1](https://www.ecfr.gov/current/title-47/section-2.1) defines a direct sequence system as one in which a *high-speed spreading code* dominates the modulating function and causes the spreading. LoRa has no such code: the chirp itself does the spreading. Nor does a single-channel LoRa radio hop. It didn't have to fit either category, though: in 2002, the Second Report and Order in ET Docket 99-231 ([FCC 02-151](https://apps.fcc.gov/edocs_public/attachmatch/FCC-02-151A1.pdf)) generalized §15.247(a)(2) from *direct sequence spread spectrum* to *digital modulation* and removed the 10 dB processing-gain requirement. That is the only reason LoRa CSS has a path into this section at all. The rule became technology-neutral, and a bandwidth measurement became the whole test.
+
+<Figure caption="Four LoRa channel widths drawn to scale against the §15.247(a)(2) floor. The gate is an <b>eligibility line</b> — a signal either reaches 500 kHz or it doesn't, regardless of how little power it puts in any 3 kHz slice.">
+  <FccBandwidthFloor />
+</Figure>
+
+One practical warning the rule text hides: 500 kHz is a *measured* 6 dB bandwidth, not the nominal bandwidth field in your firmware. A radio configured for "500 kHz" can measure differently depending on spreading factor and implementation. Semtech's application note *AN1200.62, Best Practices for FCC Part 15.247 Compliance* is the vendor reference here. Measure it; don't assume it.
+
+## Where 62.5 kHz actually lands
+
+Read the rule straight and 62.5 kHz is outside §15.247. It is below the (a)(2) floor, and a single-channel LoRa transmission is not a hopping system, so §15.247(a)(1) doesn't take it either.
+
+Outside §15.247 is not the same as prohibited. [§15.249](https://www.ecfr.gov/current/title-47/section-15.249) is a separate, current rule for the same band that imposes no bandwidth minimum whatsoever. It caps the fundamental at 50 mV/m field strength measured at 3 meters — about 0.75 mW EIRP — with harmonics at 500 µV/m.
+
+This is a real door. It is also a very small room.
+
+<Figure caption="Both doors on one axis. §15.247 buys headroom and charges 500 kHz for it. §15.249 asks nothing about bandwidth and gives back <b>roughly 24 dB</b> — a factor of about 270 in power.">
+  <FccTwoPaths />
+</Figure>
+
+A typical MeshCore node running +20 dBm into a 3 dBi whip radiates about +23 dBm EIRP. The §15.249 ceiling is about −1 dBm EIRP. That is roughly 270× more power than the rule allows, and no amount of citing §15.249 changes it.
+
+There is a second point the summaries usually skip. Part 15 authorization attaches to the **device**, under a **specific rule section**. A module certified under §15.247 does not inherit §15.249 by being reconfigured in firmware — it operates outside the terms of its own grant. The two sections are not interchangeable rooms you can walk between, and the FCC has said so on the record. In [DA 12-839](https://docs.fcc.gov/public/attachments/DA-12-839A1.pdf), Starkey Laboratories asked the Commission to lower the §15.247(a)(2) minimum from 500 kHz to 100 kHz, and alternatively to waive it, so its narrowband assistive-listening and hearing-aid programming devices could use §15.247's power budget at 915 MHz. The Commission dismissed the petition and denied the waiver.
+
+## Why 500 kHz — and why the obvious answer is wrong
+
+The intuitive story is that 500 kHz is where the arithmetic works out. Total power is capped at 1 W no matter how wide you are, so spreading a watt across 500 kHz puts about 7.8 dBm in any 3 kHz slice — just under the 8 dBm/3 kHz power spectral density cap in §15.247(e). Anything narrower blows the cap. Tidy. Also not the reason.
+
+The causality runs the other way. The 500 kHz minimum comes from the 1985 spread spectrum First Report and Order in Gen. Docket 81-413. The 8 dBm/3 kHz density cap was added five years later, in 1990, to ensure that energy is actually spread *uniformly* across that bandwidth — so a device can't nominally occupy 500 kHz while concentrating its power in a spike. The floor came first; the density cap polices how you fill it.
+
+The Commission said what the floor is for in DA 12-839. The 500 kHz minimum was chosen to ensure that wideband digital devices operating with higher power than normally allowed under the Part 15 general emission limits would operate compatibly with other authorized radio systems — and specifically, in the Commission's words, to **exclude narrowband systems from using the higher power limits of Section 15.247**.
+
+It is an eligibility rule. You can prove that from the boundary conditions, in both directions:
+
+- A 62.5 kHz signal at +20 dBm sits around 7 dBm/3 kHz — *under* the density cap — and is still outside §15.247.
+- A 500 kHz signal can *violate* the density cap if its spectrum is peaky rather than flat, and is still eligible under (a)(2).
+
+Starkey made precisely the intuitive argument — that 100 kHz signals at the same 8 dBm/3 kHz density would carry less total power and therefore less interference potential — and the Commission rejected it. If you are going to cite a rationale for the floor, cite the eligibility purpose, not the arithmetic. The arithmetic is a coincidence that happens to land near the line.
+
+## What this actually costs a MeshCore mesh
+
+Here is the uncomfortable part, stated plainly. The community-coordinated North American setting — [910.525 MHz, 62.5 kHz, SF7, CR5](/blog/mesh-networking-at-a-hamfest/), the one this blog has cited in its own posts — is below the §15.247(a)(2) floor. So is Meshtastic LongFast at 250 kHz. The compliant alternative circulating in the MeshCore community, "MeshCore 500," is 902.250 MHz at 500 kHz, SF11, CR4:5.
+
+The instinct is that going eight times wider must cost range. Run the numbers and it doesn't.
+
+Thermal noise scales with bandwidth: 10 × log₁₀(500 / 62.5) = **9.0 dB** more noise in the wider channel. But [each spreading factor step buys about 2.5 dB](/blog/what-is-snr-lora/) of demodulation margin, and SF7 → SF11 is four steps — about **10 dB** back. Worked end to end, ignoring receiver noise figure, which is common to both:
+
+| Preset | Noise in channel | Demod floor | Sensitivity |
+|--------|------------------|-------------|-------------|
+| SF7 @ 62.5 kHz | −126 dBm | −7.5 dB SNR | ≈ −133.5 dBm |
+| SF11 @ 500 kHz | −117 dBm | −17.5 dB SNR | ≈ −134.5 dBm |
+
+The compliant preset comes out about **1 dB more sensitive**. Range is not the price.
+
+Airtime is. Symbol time is 2^SF / BW: 2.048 ms at SF7/62.5 kHz, 4.096 ms at SF11/500 kHz. Every packet takes roughly **twice as long on the air**, which means twice the channel occupancy, twice the collision window, and a mesh that saturates at half the traffic. On a [flood-routed network where one advert is heard and repeated by everyone in earshot](/blog/every-node-heard-it-twice/), that is the real constraint — not link budget.
+
+That is the honest tradeoff, and it is an operator's decision, not ours. What a monitoring tool can do is tell you which one you're actually running, and what it costs you in [airtime and collisions](/blog/the-chatty-node/) once you've chosen.
+
+## The rest of the rules that apply
+
+| Requirement | Limit | Citation |
+|-------------|-------|----------|
+| Minimum 6 dB bandwidth | ≥ 500 kHz | §15.247(a)(2) |
+| Peak conducted output power | 1 W | §15.247(b) |
+| Alternative power measurement | Maximum Conducted Output Power, RMS-averaged across the signaling alphabet | §15.247(b)(3) |
+| Antenna directional gain | 6 dBi, then reduce conducted power 1 dB per dB above — no point-to-point relaxation at 900 MHz | §15.247(b)(4) |
+| Out-of-band attenuation | ≥ 20 dB in any 100 kHz outside the band; 30 dB if using RMS-averaged power | §15.247(d) |
+| Power spectral density | ≤ 8 dBm in any 3 kHz band, continuous transmission | §15.247(e) |
+| Restricted bands | Only spurious emissions; must also meet §15.209 — 200 µV/m quasi-peak at 3 m across 216–960 MHz, 500 µV/m average above 960 MHz | §15.205, §15.209 |
+| RF exposure | MPE compliance; mobile/portable devices need a statement in the authorization application | §15.247(i), §1.1307, §1.1310, §2.1091, §2.1093 |
+| User manual | Must warn that unapproved modifications void authority to operate | §15.21 |
+
+The definitions of *spread spectrum*, *direct sequence*, and *frequency hopping* live in [§2.1](https://www.ecfr.gov/current/title-47/section-2.1), not Part 15 — the processing-gain-based definitions that used to sit in §15.3 are gone from the current text.
+
+## Sources
+
+Primary text, current as of September 2026:
+
+- [47 CFR §15.247](https://www.ecfr.gov/current/title-47/section-15.247) — bandwidth, power, and spectral limits for 902–928 MHz
+- [47 CFR §15.249](https://www.ecfr.gov/current/title-47/section-15.249) — the narrowband field-strength path
+- [47 CFR §15.205](https://www.ecfr.gov/current/title-47/section-15.205) · [§15.209](https://www.ecfr.gov/current/title-47/section-15.209) · [§15.35](https://www.ecfr.gov/current/title-47/section-15.35) · [§15.21](https://www.ecfr.gov/current/title-47/section-15.21) · [§15.3](https://www.ecfr.gov/current/title-47/section-15.3) · [§2.1](https://www.ecfr.gov/current/title-47/section-2.1)
+- [DA 12-839](https://docs.fcc.gov/public/attachments/DA-12-839A1.pdf) (2012) — *Starkey Laboratories, Inc.*, petition dismissed and waiver denied; the Commission's statement of what the 500 kHz floor is for
+- [FCC 02-151](https://apps.fcc.gov/edocs_public/attachmatch/FCC-02-151A1.pdf) (2002), ET Docket 99-231 — the order that opened (a)(2) to digital modulation generally and dropped the processing-gain requirement
+
+Compilation and citation list: [cisien, *FCC Rules for 902–928 MHz*](https://stuff.cisien.com/fcc-900mhz-regulations.html).
+
+This is a reference, not regulatory advice. Verify against the current text before relying on it for a design or a certification filing.
+
+Running a mesh and unsure what preset your nodes are actually on? [Tell us what you're seeing](mailto:admin@waev.app).
+
+{/* ILLUSTRATION PROMPT: A hand-painted still life on a worn wooden workbench: a printed government document with visible dense columns of text lying flat, a small LoRa node board with a stub antenna resting on one corner of it, and a machinist's steel rule laid across both as if measuring the page. Warm directional workshop light from the upper left, earthy brown and ochre tones, painterly texture. No screens, no glowing indicators, no legible text. Horizontal composition, intimate workbench scale. House style: painterly, warm, grounded. */}

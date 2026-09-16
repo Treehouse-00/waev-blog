@@ -1,0 +1,66 @@
+---
+/**
+ * fcc-TwoPaths — the two lawful doors into 902–928 MHz, on one EIRP axis.
+ * §15.247(a)(2) buys a 1 W ceiling but demands a 6 dB bandwidth ≥ 500 kHz.
+ * §15.249 imposes no bandwidth floor and gives back ~24 dB of headroom.
+ * The point is the gap: the narrowband door is open, and tiny.
+ * No client JS. Theme-aware via CSS custom properties.
+ *
+ * Scale: −10 → +36 dBm EIRP across x = 70 → 680 (13.26 px per dB).
+ */
+---
+
+<svg viewBox="0 0 720 250" role="img" aria-label="Two regulatory paths into the 902 to 928 megahertz band, plotted on one effective radiated power axis from minus 10 to plus 36 dBm. The 15.247(a)(2) digital-modulation path requires a 6 dB bandwidth of at least 500 kilohertz and permits up to 1 watt conducted, reaching plus 36 dBm EIRP with a 6 dBi antenna. The 15.249 path imposes no bandwidth floor but caps field strength at 50 millivolts per meter at 3 meters, about 0.75 milliwatts EIRP, or minus 1 dBm. A typical MeshCore node running plus 20 dBm into a 3 dBi antenna sits at about plus 23 dBm EIRP, which is roughly 24 dB above the 15.249 ceiling — about 270 times the power." style="width:100%;height:auto;">
+
+  <!-- Kicker -->
+  <text x="20" y="22" class="viz-label" style="fill:var(--text-accent);letter-spacing:0.06em;">TWO PATHS INTO 902–928 MHz — SAME AXIS</text>
+
+  <!-- ───── Lane A — §15.247(a)(2) ───── -->
+  <text x="70" y="48" class="viz-label" style="fill:var(--text-muted);">§15.247(a)(2) · digital modulation — 6 dB bandwidth ≥ 500 kHz, 1 W conducted</text>
+  <rect x="70" y="56" width="610" height="24" rx="4"
+    style="fill:var(--accent-light);opacity:0.18;"/>
+  <rect x="70" y="56" width="610" height="24" rx="4"
+    fill="none" style="stroke:var(--accent-light);" stroke-width="1.75"/>
+  <text x="668" y="72" text-anchor="end" class="viz-label"
+    style="fill:var(--accent-light);">+36 dBm EIRP at 6 dBi</text>
+
+  <!-- ───── Lane B — §15.249 ───── -->
+  <text x="70" y="112" class="viz-label" style="fill:var(--text-muted);">§15.249 · no bandwidth floor — field-strength capped</text>
+  <rect x="70" y="120" width="116" height="24" rx="4"
+    style="fill:var(--sys-red-400);opacity:0.22;"/>
+  <rect x="70" y="120" width="116" height="24" rx="4"
+    fill="none" style="stroke:var(--sys-red-400);" stroke-width="1.5"/>
+  <text x="196" y="136" class="viz-label"
+    style="fill:var(--sys-red-400);">50 mV/m at 3 m ≈ 0.75 mW EIRP</text>
+
+  <!-- ───── Where a real node sits ───── -->
+  <line x1="508" y1="52" x2="508" y2="188"
+    style="stroke:var(--sys-orangeyellow-600);" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <!-- The gap: §15.249 ceiling → a real node -->
+  <line x1="186" y1="172" x2="508" y2="172"
+    style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <line x1="186" y1="167" x2="186" y2="177" style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <line x1="508" y1="167" x2="508" y2="177" style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <text x="347" y="164" text-anchor="middle" class="viz-label"
+    style="fill:var(--text-muted);">≈ 24 dB — roughly 270× the power</text>
+
+  <text x="508" y="198" text-anchor="middle" class="viz-label"
+    style="fill:var(--sys-orangeyellow-600);">typical node · +20 dBm into 3 dBi ≈ +23 dBm EIRP</text>
+
+  <!-- ───── Axis ───── -->
+  <line x1="70" y1="214" x2="680" y2="214" style="stroke:var(--border-subtle);" stroke-width="1"/>
+  <line x1="70" y1="214" x2="70" y2="220" style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <line x1="203" y1="214" x2="203" y2="220" style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <line x1="335" y1="214" x2="335" y2="220" style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <line x1="468" y1="214" x2="468" y2="220" style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <line x1="600" y1="214" x2="600" y2="220" style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <line x1="680" y1="214" x2="680" y2="220" style="stroke:var(--text-tertiary);" stroke-width="1"/>
+  <text x="70" y="232" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">−10</text>
+  <text x="203" y="232" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">0</text>
+  <text x="335" y="232" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">+10</text>
+  <text x="468" y="232" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">+20</text>
+  <text x="600" y="232" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">+30</text>
+  <text x="680" y="232" text-anchor="middle" class="viz-label" style="fill:var(--text-muted);">+36</text>
+  <text x="20" y="246" class="viz-label" style="fill:var(--text-tertiary);">dBm EIRP</text>
+</svg>

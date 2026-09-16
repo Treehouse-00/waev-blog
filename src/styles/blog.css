@@ -469,6 +469,42 @@ a.tag:hover {
   margin-block: var(--sp-10);
 }
 
+/* ── Data tables (markdown tables in posts) ──
+   Quiet rules, no zebra fill: the numbers carry the emphasis. The wrapper
+   scrolls horizontally on narrow screens rather than squeezing columns. */
+.prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: var(--fs-body-md);
+  line-height: var(--lh-body-md);
+}
+
+.prose th,
+.prose td {
+  padding: var(--sp-2) var(--sp-4);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.prose th {
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  border-bottom-color: var(--border-hover);
+}
+
+.prose tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.prose th:first-child,
+.prose td:first-child {
+  padding-left: 0;
+}
+
 /* ── Pull-quote / callout (≡ About's `.about-card--highlight`) ── */
 .prose blockquote,
 .callout {
