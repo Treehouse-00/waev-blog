@@ -1028,7 +1028,7 @@ posts:
     status: proposed
     brief: ./briefs/content-writer.md
 
-  - slot_date: 2026-09-10
+  - slot_date: 2026-09-10            # the-map-you-didnt-draw.mdx
     type: post
     segment: cert-emcomm
     funnel_stage: evaluation
@@ -1036,7 +1036,7 @@ posts:
     theme: knowing-over-guessing
     primary_keyword: "trusting your mesh map in an emergency"
     secondary_keyword: "verifying mesh topology you didn't draw"
-    status: proposed
+    status: drafted
     brief: ./briefs/content-writer.md
 
   - slot_date: 2026-09-13
