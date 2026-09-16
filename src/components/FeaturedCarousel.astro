@@ -23,9 +23,16 @@ import MeshField from "./viz/MeshField.astro";
 interface Props {
   /** Slug of the pinned FEATURE post. Defaults to the current hero. */
   featureSlug?: string;
+  /**
+   * Explicit editorial running order. When set, these posts ARE the carousel,
+   * in exactly this order, and the tag-driven slots below are bypassed. Slugs
+   * that aren't published (draft, or future-dated) are skipped silently, same
+   * as an empty tag slot.
+   */
+  slugs?: string[];
 }
 
-const { featureSlug = "waev-v1-4-0-dev-update" } = Astro.props;
+const { featureSlug = "waev-v1-4-0-dev-update", slugs } = Astro.props;
 
 // ── Slot definitions (in display order) ──────────────────────────────────
 interface Slot {
@@ -68,16 +75,10 @@ const fmt = (d: Date) =>
     timeZone: "UTC",
   });
 
-for (const slot of SLOTS) {
-  let post = slot.pinnedSlug
-    ? allPosts.find((p) => p.id === slot.pinnedSlug)
-    : allPosts.find((p) => slot.tag && p.data.tags.includes(slot.tag) && !seen.has(p.id));
-
-  if (!post || seen.has(post.id)) continue;
-
+const push = (post: (typeof allPosts)[number], label: string) => {
   seen.add(post.id);
   slides.push({
-    label: slot.label,
+    label,
     title: post.data.title,
     description: post.data.description,
     href: `/blog/${post.id}/`,
@@ -86,6 +87,29 @@ for (const slot of SLOTS) {
     heroSrc: post.data.hero?.src,
     heroAlt: post.data.hero?.alt,
   });
+};
+
+/** "how-it-works" → "How It Works" — eyebrow label for an explicitly ordered slide. */
+const labelFromTag = (tag?: string) =>
+  tag ? tag.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Featured";
+
+if (slugs?.length) {
+  // Explicit editorial order: slot 1 is the FEATURE, the rest are labelled
+  // from their own primary tag so the eyebrow matches the post's content.
+  for (const slug of slugs) {
+    const post = allPosts.find((p) => p.id === slug);
+    if (!post || seen.has(post.id)) continue;
+    push(post, seen.size === 0 ? "Feature" : labelFromTag(post.data.tags[0]));
+  }
+} else {
+  for (const slot of SLOTS) {
+    const post = slot.pinnedSlug
+      ? allPosts.find((p) => p.id === slot.pinnedSlug)
+      : allPosts.find((p) => slot.tag && p.data.tags.includes(slot.tag) && !seen.has(p.id));
+
+    if (!post || seen.has(post.id)) continue;
+    push(post, slot.label);
+  }
 }
 ---
 

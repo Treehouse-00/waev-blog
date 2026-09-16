@@ -94,7 +94,14 @@ const blogSchema = {
   {/* Carousel is outside the container so it can bleed to viewport edges.
       Each slide is sized to container content width by JS; peek areas
       extend to and gradient-fade at the viewport edges. */}
-  <FeaturedCarousel featureSlug="waev-v1-4-0-dev-update" />
+  <FeaturedCarousel
+    slugs={[
+      "fcc-rules-902-928-mhz-lora",
+      "the-map-you-didnt-draw",
+      "when-the-grid-goes-down",
+      "what-we-choose-not-to-know",
+    ]}
+  />
 
   {/* All posts grid back inside container */}
   {rest.length > 0 && (
