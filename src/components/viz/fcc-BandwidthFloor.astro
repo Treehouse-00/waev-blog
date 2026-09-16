@@ -1,0 +1,59 @@
+---
+/**
+ * fcc-BandwidthFloor — the §15.247(a)(2) eligibility gate.
+ * Four common LoRa channel widths drawn to scale against the 500 kHz
+ * minimum 6 dB bandwidth. Everything left of the gate is outside the
+ * digital-modulation path, whatever its power spectral density.
+ * No client JS. Theme-aware via CSS custom properties.
+ *
+ * Scale: 0–500 kHz across x = 60 → 500 (0.88 px per kHz).
+ */
+---
+
+<svg viewBox="0 0 720 320" role="img" aria-label="Four LoRa channel widths drawn to scale against the 500 kilohertz minimum 6 dB bandwidth required by FCC rule 15.247(a)(2). 62.5 kilohertz, the MeshCore USA Recommended setting, falls far short of the gate and is outside the digital-modulation path with no hopping path either. 125 kilohertz, the LoRaWAN US915 uplink width, is also short of the gate and instead qualifies under the frequency-hopping provision 15.247(a)(1). 250 kilohertz, the Meshtastic LongFast width, is half the required width and outside. 500 kilohertz reaches the gate, meets the rule, and unlocks the 1 watt ceiling. The gate is an eligibility line, not a power calculation." style="width:100%;height:auto;">
+
+  <!-- Kicker -->
+  <text x="20" y="22" class="viz-label" style="fill:var(--text-accent);letter-spacing:0.06em;">6 dB BANDWIDTH vs THE §15.247(a)(2) FLOOR</text>
+
+  <!-- ───── The gate ───── -->
+  <line x1="500" y1="40" x2="500" y2="288"
+    style="stroke:var(--sys-orangeyellow-600);" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="500" y="308" text-anchor="middle" class="viz-label"
+    style="fill:var(--sys-orangeyellow-600);">500 kHz — minimum 6 dB bandwidth</text>
+
+  <!-- ───── Row 1 — 62.5 kHz (55 px) ───── -->
+  <text x="60" y="62" class="viz-label" style="fill:var(--text-muted);">62.5 kHz · MeshCore &#8220;USA Recommended&#8221;</text>
+  <rect x="60" y="68" width="55" height="20" rx="3"
+    style="fill:var(--sys-red-400);opacity:0.22;"/>
+  <rect x="60" y="68" width="55" height="20" rx="3"
+    fill="none" style="stroke:var(--sys-red-400);" stroke-width="1.5"/>
+  <text x="516" y="76" class="viz-label" style="fill:var(--sys-red-400);">outside (a)(2)</text>
+  <text x="516" y="89" class="viz-label" style="fill:var(--text-muted);">no hopping path either</text>
+
+  <!-- ───── Row 2 — 125 kHz (110 px) ───── -->
+  <text x="60" y="126" class="viz-label" style="fill:var(--text-muted);">125 kHz · LoRaWAN US915 uplink</text>
+  <rect x="60" y="132" width="110" height="20" rx="3"
+    style="fill:var(--sys-orangeyellow-600);opacity:0.20;"/>
+  <rect x="60" y="132" width="110" height="20" rx="3"
+    fill="none" style="stroke:var(--sys-orangeyellow-600);" stroke-width="1.5"/>
+  <text x="516" y="140" class="viz-label" style="fill:var(--sys-orangeyellow-600);">outside (a)(2)</text>
+  <text x="516" y="153" class="viz-label" style="fill:var(--text-muted);">hops under (a)(1)</text>
+
+  <!-- ───── Row 3 — 250 kHz (220 px) ───── -->
+  <text x="60" y="190" class="viz-label" style="fill:var(--text-muted);">250 kHz · Meshtastic LongFast</text>
+  <rect x="60" y="196" width="220" height="20" rx="3"
+    style="fill:var(--sys-red-400);opacity:0.22;"/>
+  <rect x="60" y="196" width="220" height="20" rx="3"
+    fill="none" style="stroke:var(--sys-red-400);" stroke-width="1.5"/>
+  <text x="516" y="204" class="viz-label" style="fill:var(--sys-red-400);">outside (a)(2)</text>
+  <text x="516" y="217" class="viz-label" style="fill:var(--text-muted);">half the required width</text>
+
+  <!-- ───── Row 4 — 500 kHz (440 px) ───── -->
+  <text x="60" y="254" class="viz-label" style="fill:var(--text-muted);">500 kHz · MeshCore 500 · US915 downlink</text>
+  <rect x="60" y="260" width="440" height="20" rx="3"
+    style="fill:var(--accent-light);opacity:0.22;"/>
+  <rect x="60" y="260" width="440" height="20" rx="3"
+    fill="none" style="stroke:var(--accent-light);" stroke-width="1.75"/>
+  <text x="516" y="268" class="viz-label" style="fill:var(--accent-light);">meets (a)(2)</text>
+  <text x="516" y="281" class="viz-label" style="fill:var(--text-muted);">1 W ceiling available</text>
+</svg>
