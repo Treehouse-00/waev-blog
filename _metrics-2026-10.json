@@ -1,0 +1,1336 @@
+{
+  "schema": "growth-metrics/v1",
+  "generated_at": "2026-10-01T15:10:24.757Z",
+  "report_month": "2026-10",
+  "window": {
+    "start": "2026-09-02",
+    "end": "2026-09-29",
+    "days": 28,
+    "cf_since": "2026-09-02T00:00:00Z",
+    "cf_until": "2026-09-29T23:59:59Z"
+  },
+  "data_gaps": [
+    "aeo: PERPLEXITY_API_KEY not provided (optional metric)"
+  ],
+  "north_star": {
+    "referrals": 21,
+    "requests": 21,
+    "source": "cloudflare"
+  },
+  "search": {
+    "impressions": 4732,
+    "clicks": 56,
+    "ctr": 0.011834319526627219,
+    "queries_tracked": 149,
+    "top_queries": [
+      {
+        "query": "waev meshcore",
+        "position": 2.013157894736842,
+        "impressions": 76,
+        "clicks": 1,
+        "ctr": 0.013157894736842105
+      },
+      {
+        "query": "meshcore observer",
+        "position": 9.514705882352942,
+        "impressions": 68,
+        "clicks": 1,
+        "ctr": 0.014705882352941176
+      },
+      {
+        "query": "meshcore",
+        "position": 30.82456140350877,
+        "impressions": 57,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore gateway",
+        "position": 7.3,
+        "impressions": 40,
+        "clicks": 2,
+        "ctr": 0.05
+      },
+      {
+        "query": "lora antenna tuning",
+        "position": 9.8125,
+        "impressions": 32,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what is dbm",
+        "position": 24.833333333333332,
+        "impressions": 30,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lora snr",
+        "position": 7.607142857142857,
+        "impressions": 28,
+        "clicks": 1,
+        "ctr": 0.03571428571428571
+      },
+      {
+        "query": "dbm meaning",
+        "position": 33.083333333333336,
+        "impressions": 24,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what is a meshcore observer",
+        "position": 6.714285714285714,
+        "impressions": 21,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore mqtt broker",
+        "position": 8.1,
+        "impressions": 20,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore packet types",
+        "position": 6.315789473684211,
+        "impressions": 19,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore snr",
+        "position": 7.888888888888889,
+        "impressions": 18,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "snr lora",
+        "position": 8.166666666666668,
+        "impressions": 18,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what is meshcore",
+        "position": 11,
+        "impressions": 18,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm db",
+        "position": 23.25,
+        "impressions": 16,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore internet gateway",
+        "position": 5.375,
+        "impressions": 16,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore packet structure",
+        "position": 8.4375,
+        "impressions": 16,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "rak4631 vs heltec v4",
+        "position": 6.642857142857143,
+        "impressions": 14,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what does dbm mean",
+        "position": 34.642857142857146,
+        "impressions": 14,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore observer node",
+        "position": 8.461538461538462,
+        "impressions": 13,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore mqtt gateway",
+        "position": 11.272727272727273,
+        "impressions": 11,
+        "clicks": 1,
+        "ctr": 0.09090909090909091
+      },
+      {
+        "query": "chatty_(max) sort:score -ai_generated",
+        "position": 7.3,
+        "impressions": 10,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore analyzer",
+        "position": 24.4,
+        "impressions": 10,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "heltec vs rak",
+        "position": 5.25,
+        "impressions": 8,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lora dev board",
+        "position": 21.25,
+        "impressions": 8,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "mescore",
+        "position": 32.14285714285714,
+        "impressions": 7,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore mqtt setup",
+        "position": 7.333333333333333,
+        "impressions": 6,
+        "clicks": 2,
+        "ctr": 0.3333333333333333
+      },
+      {
+        "query": "30dbm",
+        "position": 22.333333333333332,
+        "impressions": 6,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm scale",
+        "position": 21,
+        "impressions": 6,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore relay",
+        "position": 5.166666666666667,
+        "impressions": 6,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "snr meshcore",
+        "position": 7.333333333333333,
+        "impressions": 6,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm values",
+        "position": 12.4,
+        "impressions": 5,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshanalytics.co",
+        "position": 65.8,
+        "impressions": 5,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "mosquitto jwt auth",
+        "position": 9.8,
+        "impressions": 5,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm",
+        "position": 27,
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lora antenna placement",
+        "position": 8.75,
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "mesh analyzer",
+        "position": 21.75,
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "mesh core",
+        "position": 38.25,
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore devices",
+        "position": 50.75,
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore hardware",
+        "position": 32.75,
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "rak meshcore",
+        "position": 10,
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "signal level dbm",
+        "position": 41,
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "30 dbm",
+        "position": 21,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "data mesh radio",
+        "position": 44,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm decibel milliwatt",
+        "position": 29.333333333333332,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm measurement",
+        "position": 14.333333333333334,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm reading",
+        "position": 33.666666666666664,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm unit",
+        "position": 31,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "how does dbm work",
+        "position": 10,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore decoder",
+        "position": 22.333333333333332,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore mqtt bridge",
+        "position": 24.333333333333332,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore node",
+        "position": 36.333333333333336,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore repeater",
+        "position": 32.66666666666667,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore room server",
+        "position": 28.666666666666668,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore-packet-capture",
+        "position": 6.666666666666667,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what does dbm stand for",
+        "position": 23,
+        "impressions": 3,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "17dbm",
+        "position": 81,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "db signal",
+        "position": 41,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm power",
+        "position": 38.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm radio",
+        "position": 13.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm stands for",
+        "position": 17.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "define dbm",
+        "position": 28,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "grid down communications",
+        "position": 8,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "local mesh",
+        "position": 13,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lora link budget",
+        "position": 15.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meaning of dbm",
+        "position": 33,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "mesh block",
+        "position": 24,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore firmware",
+        "position": 23.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore flood",
+        "position": 13.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore mqtt server",
+        "position": 10,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore radio",
+        "position": 29.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore web flasher",
+        "position": 5.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what does dbm",
+        "position": 17.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what is the dbm",
+        "position": 30,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what is the difference between db and dbm",
+        "position": 13,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "why dbm is negative",
+        "position": 36.5,
+        "impressions": 2,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore base station",
+        "position": 110,
+        "impressions": 1,
+        "clicks": 1,
+        "ctr": 1
+      },
+      {
+        "query": "1 dbm",
+        "position": 29,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "10dbm",
+        "position": 36,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "20 dbm",
+        "position": 23,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "868mhz",
+        "position": 9,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "915mhz",
+        "position": 1,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "adding dbm",
+        "position": 16,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "can it do both",
+        "position": 5,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "d.b.m",
+        "position": 19,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "db dbm",
+        "position": 31,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "db signals",
+        "position": 37,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm dbm",
+        "position": 16,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm definition",
+        "position": 30,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm is",
+        "position": 11,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm levels",
+        "position": 11,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm means",
+        "position": 30,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "dbm measure",
+        "position": 10,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "explain what they do",
+        "position": 3,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "for meshcore",
+        "position": 5,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "gateway internet",
+        "position": 16,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "hardware",
+        "position": 3,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "heltec wireless paper version 1.0 vs 1.1 vs 1.2 unterschiede",
+        "position": 40,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "heltec wireless paper version 1.0 vs 1.1 vs 1.2 unterschiede * * * *",
+        "position": 41,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "how does routing work",
+        "position": 2,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "import emergency mesh radio",
+        "position": 58,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "ingest wifi",
+        "position": 35,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "is higher dbm better on signal",
+        "position": 50,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "is higher or lower dbm better",
+        "position": 45,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "ja prüfen",
+        "position": 4,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lets mesh observer",
+        "position": 10,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lire dbm",
+        "position": 23,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lora antenna gain",
+        "position": 11,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lora antenna impedance",
+        "position": 44,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "lora routing",
+        "position": 10,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meaning of observer",
+        "position": 10,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "measure swr with nanovna",
+        "position": 27,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "mesh core device",
+        "position": 63,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "mesh monitor",
+        "position": 8,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshanalyzer",
+        "position": 10,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore analyzer eu",
+        "position": 16,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore bbs",
+        "position": 24,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore boards",
+        "position": 1,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore car repeater",
+        "position": 39,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore companion radio",
+        "position": 9,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore frequencies",
+        "position": 25,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore linux",
+        "position": 29,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore mqtt",
+        "position": 35,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore network",
+        "position": 33,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore noise floor",
+        "position": 29,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore observer map",
+        "position": 11,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore rak",
+        "position": 8,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore range",
+        "position": 6,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore repeater observer",
+        "position": 10,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore repeater vs room server",
+        "position": 7,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore ripple",
+        "position": 18,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore room server hardware",
+        "position": 4,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore team",
+        "position": 17,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore web",
+        "position": 22,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore web app",
+        "position": 4,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore москва",
+        "position": 23,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "meshcore.",
+        "position": 27,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "network observer",
+        "position": 19,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "observer meshcore",
+        "position": 11,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "observer repeater",
+        "position": 9,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "repeat that please",
+        "position": 6,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "rssi lora",
+        "position": 40,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "snr 20db",
+        "position": 42,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "snr vs rssi",
+        "position": 32,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "understanding dbm",
+        "position": 15,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "web flasher meshcore",
+        "position": 3,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what about observer",
+        "position": 9,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what is a meshcore room server",
+        "position": 10,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      },
+      {
+        "query": "what is the meaning of dbm",
+        "position": 37,
+        "impressions": 1,
+        "clicks": 0,
+        "ctr": 0
+      }
+    ]
+  },
+  "aeo": {
+    "total": null,
+    "out_of": 12,
+    "mesh_subset": null,
+    "mesh_out_of": 4,
+    "citing_queries": [],
+    "probe_set_version": "2026-07"
+  },
+  "blog_traffic": {
+    "visits": 6263,
+    "count": 27679,
+    "top_pages": [
+      {
+        "path": "/",
+        "count": 1898,
+        "visits": 414
+      },
+      {
+        "path": "/robots.txt",
+        "count": 984,
+        "visits": 0
+      },
+      {
+        "path": "/blog/choosing-a-lora-dev-board-for-meshcore/",
+        "count": 831,
+        "visits": 689
+      },
+      {
+        "path": "/blog/what-is-meshcore/",
+        "count": 515,
+        "visits": 425
+      },
+      {
+        "path": "/sitemap-index.xml",
+        "count": 464,
+        "visits": 0
+      },
+      {
+        "path": "/blog/what-is-snr-lora/",
+        "count": 450,
+        "visits": 296
+      },
+      {
+        "path": "/blog/heltec-vs-rak-for-meshcore/",
+        "count": 450,
+        "visits": 345
+      },
+      {
+        "path": "/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js",
+        "count": 335,
+        "visits": 0
+      },
+      {
+        "path": "/favicon.svg",
+        "count": 321,
+        "visits": 0
+      },
+      {
+        "path": "/cf-fonts/v/dm-sans/5.2.8/latin/wght/normal.woff2",
+        "count": 305,
+        "visits": 0
+      },
+      {
+        "path": "/cf-fonts/v/google-sans-code/5.2.4/latin/wght/normal.woff2",
+        "count": 303,
+        "visits": 0
+      },
+      {
+        "path": "/blog/how-lora-mesh-routing-works/",
+        "count": 287,
+        "visits": 218
+      },
+      {
+        "path": "/cf-fonts/s/dm-mono/5.2.7/latin/400/normal.woff2",
+        "count": 271,
+        "visits": 0
+      },
+      {
+        "path": "/avatar-treehouse.jpg",
+        "count": 269,
+        "visits": 0
+      },
+      {
+        "path": "/avatar-resident-advisor.jpg",
+        "count": 269,
+        "visits": 0
+      },
+      {
+        "path": "/blog/three-nodes-on-the-air/",
+        "count": 232,
+        "visits": 154
+      },
+      {
+        "path": "/cf-fonts/s/dm-mono/5.2.7/latin/500/normal.woff2",
+        "count": 226,
+        "visits": 0
+      },
+      {
+        "path": "/blog/tuning-lora-antenna-swr/",
+        "count": 213,
+        "visits": 159
+      },
+      {
+        "path": "/_astro/_slug_.CGpPk4eq.css",
+        "count": 208,
+        "visits": 0
+      },
+      {
+        "path": "/blog/what-is-a-mesh-network-observer/",
+        "count": 192,
+        "visits": 136
+      },
+      {
+        "path": "/index.php",
+        "count": 174,
+        "visits": 12
+      },
+      {
+        "path": "/wordpress/",
+        "count": 158,
+        "visits": 75
+      },
+      {
+        "path": "/wp/",
+        "count": 149,
+        "visits": 43
+      },
+      {
+        "path": "/favicon.ico",
+        "count": 139,
+        "visits": 135
+      },
+      {
+        "path": "/blog/",
+        "count": 135,
+        "visits": 74
+      },
+      {
+        "path": "/_astro/_slug_.CQDZrbIx.css",
+        "count": 132,
+        "visits": 0
+      },
+      {
+        "path": "/wp-json/batch/v1",
+        "count": 128,
+        "visits": 19
+      },
+      {
+        "path": "/login",
+        "count": 125,
+        "visits": 27
+      },
+      {
+        "path": "/dashboard",
+        "count": 112,
+        "visits": 3
+      },
+      {
+        "path": "/wordpress/index.php",
+        "count": 108,
+        "visits": 0
+      },
+      {
+        "path": "/api/auth/signin",
+        "count": 107,
+        "visits": 0
+      },
+      {
+        "path": "/blog/reading-the-signal/",
+        "count": 104,
+        "visits": 97
+      },
+      {
+        "path": "/blog/seeing-your-first-meshcore-packet/",
+        "count": 104,
+        "visits": 56
+      },
+      {
+        "path": "/.env.development",
+        "count": 101,
+        "visits": 2
+      },
+      {
+        "path": "/blog/wp-json/batch/v1",
+        "count": 97,
+        "visits": 0
+      },
+      {
+        "path": "/wp/index.php",
+        "count": 94,
+        "visits": 10
+      },
+      {
+        "path": "/blog/measuring-lora-link-margin/",
+        "count": 89,
+        "visits": 37
+      },
+      {
+        "path": "/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js",
+        "count": 89,
+        "visits": 0
+      },
+      {
+        "path": "/blog/every-node-heard-it-twice/",
+        "count": 88,
+        "visits": 37
+      },
+      {
+        "path": "/.well-known/traffic-advice",
+        "count": 86,
+        "visits": 86
+      },
+      {
+        "path": "/register",
+        "count": 86,
+        "visits": 7
+      },
+      {
+        "path": "/signin",
+        "count": 85,
+        "visits": 0
+      },
+      {
+        "path": "/blog/setting-up-mosquitto-for-meshcore/",
+        "count": 82,
+        "visits": 45
+      },
+      {
+        "path": "/en/*",
+        "count": 80,
+        "visits": 0
+      },
+      {
+        "path": "/frontend/.env",
+        "count": 80,
+        "visits": 0
+      },
+      {
+        "path": "/dev/.env",
+        "count": 80,
+        "visits": 0
+      },
+      {
+        "path": "/blog/what-is-dbm/",
+        "count": 79,
+        "visits": 25
+      },
+      {
+        "path": "/.env.local",
+        "count": 77,
+        "visits": 4
+      },
+      {
+        "path": "/appsettings.Production.json",
+        "count": 76,
+        "visits": 68
+      },
+      {
+        "path": "/wordpress/wp-json/Batch/v1",
+        "count": 75,
+        "visits": 0
+      }
+    ]
+  },
+  "referral_ctr": 0.0033530257065304166
+}
