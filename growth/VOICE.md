@@ -55,7 +55,7 @@ one or more of these.
    or "No proof, no line" as a description of today's map.
 3. **Data ownership (the never-captive stream).** Observer credentials are
    publish-only; the same device can feed other tools (presets ship in Waev's own
-   docs); the read API is public. When an affiliated partner is connected, Waev
+   docs); the read API is public. When a partner is connected, Waev
    forwards observers' raw publishes for that partner's regions to a
    subscribe-only feed before its privacy filters — say so wherever a post says
    who can read the stream. Frame: nothing locks a community's stream to

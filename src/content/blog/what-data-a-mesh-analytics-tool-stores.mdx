@@ -36,7 +36,7 @@ It's the right question to ask first. What doesn't enter the database can't be a
 
 Your mesh observer receives every LoRa packet that passes through it and publishes those records directly to Waev's own MQTT ingest, using a credential that can only send its own data — it can't read, alter, or delete anything else on the broker. What arrives at Waev's ingest edge is a stream of raw packet records: the source node's name, the path the packet traveled, signal quality readings at each hop, and a timestamp.
 
-That stream contains more information than Waev needs. The ingest path reduces some of it before anything is written to Waev's database, and keeps the rest. One consumer receives the stream before any reduction: when an affiliated partner is connected, Waev forwards observers' raw publishes for that partner's regions to a subscribe-only feed.
+That stream contains more information than Waev needs. The ingest path reduces some of it before anything is written to Waev's database, and keeps the rest. One consumer receives the stream before any reduction: when a partner is connected, Waev forwards observers' raw publishes for that partner's regions to a subscribe-only feed.
 
 <Figure caption="Two of the ingest path's checks. The opt-out marker drops an ADVERT before storage and logs the drop. The companion scrub blanks a companion ADVERT's name and key and keeps its device type, coordinates, and signal numbers.">
   <PrivacyScrub />

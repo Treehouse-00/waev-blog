@@ -17,7 +17,7 @@ faq:
   - q: "How do I opt out of Waev?"
     a: "Add a privacy marker (⛔, 🛑, or 🚫) to your node name. Waev drops that node's ADVERTs before they are stored, mapped, or counted. The marker does not cover packets without a name, a connected partner feed receives the raw frame before the check, the drop is logged with the node's public key and name, and records written before the marker was added are not all removed."
   - q: "Who owns the data Waev uses?"
-    a: "You do. Your observer's credentials are publish-only, the same device can publish to other tools alongside Waev — presets for several are in Waev's own docs — and the read API is public. Nothing locks your stream to Waev. Waev also forwards observers' raw publishes, before its own privacy filters, to a subscribe-only feed for one affiliated partner when that partner is connected."
+    a: "You do. Your observer's credentials are publish-only, the same device can publish to other tools alongside Waev — presets for several are in Waev's own docs — and the read API is public. Nothing locks your stream to Waev. Waev also forwards observers' raw publishes, before its own privacy filters, to a subscribe-only feed for one partner when that partner is connected."
   - q: "Does Waev accept feature requests?"
     a: "Yes, and we read every one. We build in an order that serves the whole tool, so we may not build a given request — and we will be honest when we won't. Bug reports are always taken seriously."
 ---
@@ -132,7 +132,7 @@ The old model, where everyone requests access to a central set of MQTT servers, 
 
 **Your observers publish on credentials that can never read. The same devices can feed other tools — the presets are in our own docs — and the read API is public. Nothing locks your stream to Waev.**
 
-One more consumer sits on Waev's side of that stream: when an affiliated partner is connected, Waev forwards observers' raw publishes for that partner's regions to a subscribe-only feed, before dedup and before Waev's own privacy filters.
+One more consumer sits on Waev's side of that stream: when a partner is connected, Waev forwards observers' raw publishes for that partner's regions to a subscribe-only feed, before dedup and before Waev's own privacy filters.
 
 <Figure caption="Your stream is never captive. <b>Publish-only in, public read API out.</b>">
   <BrokerCopy />

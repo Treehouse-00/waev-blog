@@ -55,7 +55,7 @@ One observer is enough to start. Multiple observers give you overlapping vantage
 
 The observer publishes to Waev's MQTT ingest (mqtt.waev.app) using a credential that is publish-only: it can send its own data and nothing else. It cannot subscribe to, read, alter, or delete anything on the broker — not its own stream, not anyone else's. There's no broker for you to host, patch, or keep online; that's Waev's infrastructure to run.
 
-One subscriber does read the stream on Waev's side: when an affiliated partner is connected, Waev forwards observers' raw publishes for that partner's regions to a subscribe-only feed, before dedup and before the checks below.
+One subscriber does read the stream on Waev's side: when a partner is connected, Waev forwards observers' raw publishes for that partner's regions to a subscribe-only feed, before dedup and before the checks below.
 
 You read your data back out through a public read API — the same one that feeds the Live Map, Live Packets, and the rest of the surfaces on waev.app.
 
