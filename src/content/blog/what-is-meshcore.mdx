@@ -1,7 +1,8 @@
 ---
 title: "What Is MeshCore?"
-description: "What is MeshCore? Open-source LoRa firmware for off-grid multi-hop mesh networks. No internet, no account, end-to-end encrypted."
+description: "What is MeshCore? Open-source LoRa firmware for off-grid multi-hop mesh networks. No internet, no account; direct messages encrypted between the two contacts."
 date: 2026-06-09
+updated: 2026-11-09
 tags: ["primer", "meshcore"]
 hero:
   src: "/hero-what-is-meshcore.jpg"
@@ -27,8 +28,10 @@ There's a small LoRa board on your bench. Maybe a Heltec V3, maybe a RAK WisBloc
 This is the short version.
 
 <div class="callout">
-<p><strong>TLDR:</strong> What is MeshCore? It's open-source LoRa firmware that turns a low-cost radio board into a node in a decentralized, multi-hop mesh network. Messages are end-to-end encrypted and hop from node to node without any internet or cellular infrastructure. You flash it, pair the companion app, and send.</p>
+<p><strong>TLDR:</strong> What is MeshCore? It's open-source LoRa firmware that turns a low-cost radio board into a node in a decentralized, multi-hop mesh network. Messages hop from node to node without any internet or cellular infrastructure; direct messages are encrypted between the two contacts, and channel messages with a key every channel member shares. You flash it, pair the companion app, and send.</p>
 </div>
+
+*Correction, November 9, 2026: an earlier version of this post said MeshCore messages are end-to-end encrypted. Direct messages are; channel messages use a shared key, and the Public channel's key is published.*
 
 ## The mesh in two sentences
 
@@ -52,9 +55,9 @@ Not every node does the same job. For everyday mesh use, MeshCore defines three 
 
 ## Encryption, out of the box
 
-Messages on MeshCore are end-to-end encrypted using AES-128. Direct messages between two contacts use a shared key derived from their cryptographic handshake. Public channels use a channel key. The radio traffic that travels over the air is ciphertext — repeaters relay it without decrypting.
+MeshCore encrypts message payloads with AES-128, in ECB mode with a 2-byte truncated HMAC. Direct messages between two contacts use a shared key derived with ECDH from the two nodes' key pairs, so only those two can read them. Channel messages use a key every member of the channel shares: the Public channel's key is published, and a #hashtag channel's key is derived from its name, so anyone who knows the name can read it. Packet headers, paths, and adverts travel in clear. Repeaters relay messages without decrypting them.
 
-That encryption is not a feature you configure. It's the default state from the first packet you send.
+That encryption is not a feature you configure; it is on for every message. What it protects depends on the key: a direct message is private to its two ends, and a Public-channel message is readable by anyone with the published key.
 
 ## Getting on the mesh
 

@@ -416,13 +416,19 @@ Existing posts (slugs for cross-linking): `bring-your-own-broker`,
   - Scope: `dist/llms.txt` (the `## Key facts` section).
   - Check: the built file contains ALL of these exact substrings (case-sensitive),
     each encoding one canon fact:
-    1. `⛔ 🛑 🚫` and `never stored, mapped, or counted` and
-       `identity-scrubbed at the ingest edge` (privacy by default);
-    2. `enrolled observers` and `authenticated repeaters` and
-       `Spoofed or inferred prefixes are rejected` (evidence-based topology);
-    3. `publish-only` and `read API is public`
-       (data ownership — the never-captive stream);
-    4. `admin@waev.app` (contact).
+    1. `⛔ 🛑 🚫` and `has its ADVERTs dropped before Waev's database and
+       analytics writes` and `name, public key, and source hash are blanked`
+       (privacy markers and the companion scrub, with their stated limits);
+    2. `raw wire frame` and `/packets/{hash}/raw` (the raw-frame boundary);
+    3. `every map edge carries an evidence class` and `observe mode`
+       (evidence-based topology);
+    4. `publish-only` and `read API is public` and `subscribe-only feed`
+       (data ownership — the never-captive stream, and the partner feed);
+    5. `admin@waev.app` (contact).
+    These substrings were changed on 2026-11-09, when the earlier canon
+    ("never stored, mapped, or counted," "identity-scrubbed," "authenticated
+    repeaters," "Spoofed or inferred prefixes are rejected") was found to
+    contradict the shipped system.
   - PASS: every listed substring is present in `dist/llms.txt`.
   - Fix: `src/pages/llms.txt.ts` — this file IS the canon; a missing/altered
     substring is a regression. Any intended change to a fact is a

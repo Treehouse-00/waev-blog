@@ -2,6 +2,7 @@
 title: "APRS and MeshCore: What Each Is For"
 description: "MeshCore vs APRS for emergency messaging: what each digital mode does well, where each fits in EMCOMM planning, and how to choose between them."
 date: 2026-06-16
+updated: 2026-11-09
 tags: ["comparison", "operations"]
 hero:
   src: "/hero-aprs-and-meshcore-what-each-is-for.jpg"
@@ -16,7 +17,7 @@ faq:
   - q: "What is APRS-IS?"
     a: "APRS-IS is the Internet System backbone that links APRS iGates worldwide. An iGate receives local RF APRS packets and forwards them to the APRS-IS servers, where they appear on sites like aprs.fi and become globally visible. This gives APRS a reach far beyond local RF coverage. MeshCore has no equivalent global internet backbone by design."
   - q: "Where does Waev fit in an APRS and MeshCore deployment?"
-    a: "Waev monitors MeshCore specifically. It connects to your MQTT broker and surfaces your MeshCore network health, verified topology, and per-link signal data over time. APRS has its own monitoring ecosystem including aprs.fi. Waev is not an APRS monitoring tool and does not ingest APRS packets."
+    a: "Waev monitors MeshCore specifically. It receives your enrolled observers' MeshCore packets over MQTT and surfaces your MeshCore network health, evidence-labeled topology, and per-link signal data over time. APRS has its own monitoring ecosystem including aprs.fi. Waev is not an APRS monitoring tool and does not ingest APRS packets."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -46,7 +47,7 @@ MeshCore is a LoRa-based mesh network for local, private, infrastructure-indepen
 
 The routing model matters here. MeshCore uses hybrid source routing: the first message to a destination floods the mesh to discover a path, then subsequent messages route directly along the learned path. Only the designated relay nodes on that path forward each packet, which keeps channel load low as the network scales. For a longer discussion of how this differs from flood routing, see [Same Hardware, Different Net](/blog/same-hardware-different-net/).
 
-Unlike APRS, MeshCore does not have a global internet backbone. There is no equivalent of APRS-IS. By design: MeshCore is built for local, private communications. Your mesh is yours — you deploy the nodes, you set the repeaters, and your data does not automatically leave your RF environment without your deliberate decision to add a gateway. For operators who care about communications that work without internet (and without anyone else's infrastructure), this is the point, not a limitation.
+Unlike APRS, MeshCore does not have a global internet backbone. There is no equivalent of APRS-IS. By design: MeshCore is built for local, private communications. Your mesh is yours — you deploy the nodes, you set the repeaters, and your data leaves your RF environment only when a gateway in range uplinks it. Anyone within range can run one: an enrolled Waev observer that hears your packets publishes them to Waev, which archives each raw frame on a public route. For operators who care about communications that work without internet (and without anyone else's infrastructure), this is the point, not a limitation.
 
 The tradeoffs follow from the architecture. Coverage is exactly where you've deployed nodes. If you need mesh communications in a new area, you bring or build the infrastructure — there is no pre-existing network to fall back on. For emergency communications this means planning: you cannot assume MeshCore coverage the way you might assume APRS coverage in a metro area.
 
@@ -56,7 +57,7 @@ The tradeoffs follow from the architecture. Coverage is exactly where you've dep
   <ComparisonAPRSTable />
 </Figure>
 
-The two rows where the protocols diverge most sharply — Internet and Privacy — are also the rows most relevant to emergency communications planning. APRS's internet dependency is its strength (global reach, live maps on aprs.fi) and its single point of failure in a true grid-down event. MeshCore's independence from the internet means it works when everything else is down, and its private-by-default model means your traffic stays within your network.
+The two rows where the protocols diverge most sharply — Internet and Privacy — are also the rows most relevant to emergency communications planning. APRS's internet dependency is its strength (global reach, live maps on aprs.fi) and its single point of failure in a true grid-down event. MeshCore's independence from the internet means it works when everything else is down, and its local design means your traffic stays within radio range unless a gateway in range uplinks it.
 
 ## What each fits for emergency comms
 
@@ -82,7 +83,7 @@ The two networks don't talk to each other. They operate on different frequencies
 
 ## Where Waev fits
 
-Waev monitors MeshCore. It subscribes to your MQTT broker, surfaces verified topology from enrolled observers and authenticated repeaters, and shows you per-link signal data, hop counts, and network health over time. The Live Map shows what Waev can prove — edges drawn only from verified observations — and nothing it can't.
+Waev monitors MeshCore. Your enrolled observers publish to Waev's MQTT ingest, and Waev surfaces topology labeled by evidence class, per-link signal data, hop counts, and network health over time. The Live Map labels every line with how it is known: measured by an observer, or inferred from relayed path hashes.
 
 APRS has its own monitoring ecosystem: aprs.fi for the live picture, a range of decoding and logging software, and the APRS-IS infrastructure itself. Waev is not an APRS monitoring tool and does not ingest APRS packets. The data it watches is your MeshCore network, and the question it answers is whether that mesh is healthy — not whether APRS coverage is available in your area.
 

@@ -1,20 +1,21 @@
 ---
 title: "What Data a Mesh Analytics Tool Stores"
-description: "What a mesh analytics tool stores from your MeshCore network: SNR, hop count, and timing metadata only. Identity and location never enter the database."
+description: "What a mesh analytics tool stores from your MeshCore network, field by field: signal metadata, evidence-labeled topology, node records, and raw frames — and what Waev blanks or drops at ingest."
 date: 2026-06-09
+updated: 2026-11-09
 tags: ["privacy", "how-it-works"]
 hero:
   src: "/hero-what-data-a-mesh-analytics-tool-stores.jpg"
   alt: "A warm, painterly still-life of an open glass jar containing only three smooth stones, set on a worn wooden surface — most of the jar deliberately empty."
 faq:
   - q: "What data does Waev store from my mesh?"
-    a: "Waev stores only anonymous signal metadata: SNR per link, hop count, and packet timing. Verified topology edges between nodes are stored to build the map. Nothing else is retained."
+    a: "Signal metadata — SNR per link, hop count, and packet timing — plus topology edges labeled by evidence class, node records for infrastructure nodes (name, public key, device type, and advertised position), and the raw frame of each packet in an archive served on a public route. For companion ADVERTs it blanks the name and public key but keeps the device type and any GPS coordinates in analytics rows for about 90 days."
   - q: "Does Waev store my node's GPS location?"
-    a: "Waev does not collect GPS coordinates. The Live Map draws topology edges from signal observations, not from location tracking. Position data that a node broadcasts on the mesh is not stored by Waev."
+    a: "Yes, if the node advertises one. An infrastructure node's advertised position is stored on its node record and drawn on the Live Map after sanity checks: not null island, within 2,000 km of the reporting observer's region, and not hidden by the render gate. A companion's advertised coordinates are kept in analytics rows for about 90 days, without a map dot. Every archived ADVERT frame keeps the position it carried."
   - q: "Can Waev identify who owns a node?"
-    a: "No. Waev sees only what a node broadcasts on the mesh: a name and RF signal metadata. There is no mechanism to link a node to a person. Nodes named with a privacy marker are dropped entirely before any data is written."
+    a: "For observers, yes: observer setup asks for an owner email, and a signed-in owner can claim an observer to see it in Outpost. For other nodes, Waev sees what the node broadcasts on the mesh: a name, which is often a callsign, a public key, an advertised position, and RF signal metadata. A node whose name carries a privacy marker has its ADVERTs dropped before any database write."
   - q: "What happens to data from companion devices like phones?"
-    a: "Companion device identity fields — name and device type — are nullified at the ingest edge before storage. What survives is the signal record only: SNR, hop count, and timing, counted anonymously in Network Stats."
+    a: "A companion ADVERT's name and public key are blanked at ingest before analytics rows are written. The device type, any GPS coordinates, SNR, hop count, and timing are kept in analytics rows for about 90 days, the raw frame is archived whole, and the device gets no map dot. A Public-channel message shows its sender's display name in Live Packets, and a login request carries the sender's permanent public key, which Waev stores."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -23,52 +24,58 @@ import PrivacyDataModel from "../../components/viz/privacy-DataModel.astro";
 
 The question comes up early in any evaluation: before you enroll an observer, before anything flows — what does a tool like this actually keep?
 
-It's the right question to ask first. What doesn't enter the database can't be accessed, breached, or misused. The architecture's privacy posture isn't defined by what it promises to protect, but by what it declines to collect in the first place.
+It's the right question to ask first. What doesn't enter the database can't be accessed, breached, or misused. The architecture's privacy posture isn't defined by what it promises to protect, but by what it declines to collect in the first place — so this post lists what Waev keeps, field by field.
 
 <div class="callout">
-<p><strong>TLDR:</strong> What data a mesh analytics tool stores should have a short answer: signal metadata only. Waev retains SNR per link, hop count, packet timing, and verified topology edges. Node identity, location, and companion device details never reach persistent storage — they're dropped or scrubbed at the ingest edge before anything is written.</p>
+<p><strong>TLDR:</strong> Waev stores signal metadata (SNR per link, hop count, timing), topology edges labeled by evidence class, records for infrastructure nodes including their advertised positions, and the raw frame of every packet in a publicly served archive. At ingest it drops ADVERTs from opted-out nodes and blanks companion names and keys, but keeps companion device types and coordinates in analytics rows for about 90 days.</p>
 </div>
+
+*Correction, November 9, 2026: an earlier version of this post said Waev stores signal metadata only, collects no GPS coordinates, and keeps identity, location, and companion details out of persistent storage. None of that was true; this version lists what Waev stores.*
 
 ## What arrives at the ingest edge
 
 Your mesh observer receives every LoRa packet that passes through it and publishes those records directly to Waev's own MQTT ingest, using a credential that can only send its own data — it can't read, alter, or delete anything else on the broker. What arrives at Waev's ingest edge is a stream of raw packet records: the source node's name, the path the packet traveled, signal quality readings at each hop, and a timestamp.
 
-That stream contains more information than Waev needs. The ingest edge's job is to reduce it to the minimum that makes the product useful, before anything is written.
+That stream contains more information than Waev needs. The ingest path reduces some of it before anything is written to Waev's database, and keeps the rest. One consumer receives the stream before any reduction: when an affiliated partner is connected, Waev forwards observers' raw publishes for that partner's regions to a subscribe-only feed.
 
-<Figure caption="The ingest edge runs three checks in sequence. Each one decides whether data advances, gets scrubbed, or is dropped entirely.">
+<Figure caption="Two of the ingest path's checks. The opt-out marker drops an ADVERT before storage and logs the drop. The companion scrub blanks a companion ADVERT's name and key and keeps its device type, coordinates, and signal numbers.">
   <PrivacyScrub />
 </Figure>
 
 ## The three decisions at the gate
 
-**First: privacy markers.** If the source node's name contains a privacy marker — ⛔, 🛑, or 🚫 — the packet is discarded in full. Nothing is counted, nothing is stored, nothing is inferred from that observation. The marker is checked before any other processing, with no exceptions.
+**First: privacy markers.** If an ADVERT's node name contains ⛔, 🛑, or 🚫, and the node isn't an enrolled observer, the packet is discarded before any database or analytics write. Nothing from that ADVERT is counted or stored. The check runs after the partner feed, when connected, has received the raw frame, and after the packet is decoded; it logs the node's public key and name when it fires; and packets that carry no name are not checked.
 
-This is the hardest guarantee to make: not "we anonymize it" or "we aggregate it," but "it never enters the database." A node that opts out disappears from the system entirely.
+This is the strongest of the three checks: not "we anonymize it" or "we aggregate it," but "this ADVERT doesn't enter the database." A node that opts out does not disappear entirely: its earlier row and position stay until the 182-hour prune, a discovery response can still create a nameless node row, and name history, analytics rows, and archived frames from before the marker stay.
 
-**Second: companion device scrub.** MeshCore personal apps — phones and tablets running as companion devices — broadcast on the same RF mesh as repeaters. Their packets reach observers just like any other node's packets. At the ingest edge, identity fields for companion devices are nullified before storage. The node name and device type are cleared. What survives is the signal record: SNR, hop count, timing. The device appears anonymously in Network Stats as traffic, but never on the Live Map, never with a name attached.
+**Second: companion device scrub.** MeshCore personal apps — phones and tablets running as companion devices — broadcast on the same RF mesh as repeaters. Their packets reach observers just like any other node's packets. At ingest, a companion ADVERT's name and public key are blanked before analytics rows are written and before the packet reaches the live feed. The device type and any GPS coordinates are kept in analytics rows for about 90 days, along with SNR, hop count, and timing, and the raw frame is archived whole. The device counts in Network Stats as traffic, but never appears on the Live Map.
 
-**Third: topology verification.** An observation only produces a map edge if it traces back to a verifiable source — an enrolled observer or an authenticated repeater. An observation that can't be traced to a verified source doesn't draw a line. This prevents inferred or spoofed topology from entering the map.
+**Third: the physics gate.** Every map line carries an evidence class. Proven and Corroborated lines come from receptions that observers measured. Inferred lines are reconstructed from relayed path hashes — 1-byte to 3-byte key prefixes that nobody signs — and the default map draws them at reduced opacity. Links that fail the physics gate are classed Rejected and left off the default map. Repeater ADVERT signatures are checked and recorded, but production runs that check in observe mode, so an invalid signature doesn't stop an advert.
 
 ## What actually gets stored
 
-What passes all three checks is a deliberately narrow set:
+What Waev keeps is wider than this post used to say:
 
-<Figure caption="The retained data model: signal metadata from verified observations only — no identity, no location, no companion device details.">
+<Figure caption="The retained data model by source type: full records for operator nodes; companion ADVERTs with name and key blanked and device type, coordinates, and signal metadata kept; opted-out ADVERTs not stored or archived.">
   <PrivacyDataModel />
 </Figure>
 
 - **SNR per link** — the signal-to-noise ratio as measured at each hop in the path. The number that tells you whether a link is healthy or marginal.
 - **Hop count** — how many nodes the packet traversed to reach the observer.
 - **Packet timing** — when the observation arrived, used for ordering the packet history and aging topology edges.
-- **Verified topology edges** — which node was heard by which enrolled observer, on which path. The evidence that draws a line on the map.
+- **Topology edges, labeled by evidence class** — which node was heard by which observer, on which path. The evidence that draws a line on the map, and how strong it is.
+- **Infrastructure node records** — name, public key, device type, and the position the node advertises.
+- **Companion ADVERT fields** — device type and GPS coordinates, in analytics rows for about 90 days.
+- **Raw frames** — the whole frame of each packet, served on the public `/packets/{hash}/raw` route.
+- **Other identifiers** — the 1-byte source and destination prefixes of direct messages, the display names of Public-channel senders, and the public keys carried by login requests.
 
-No GPS coordinates. No message content. No device owner information. No persistent node identity beyond the name the node broadcasts on air, and only when that name doesn't carry a privacy marker.
+No message text in the analytics rows: Waev decrypts Public-channel messages only to read the sender's display name and discards the text. The archived raw frames still carry each message's ciphertext, and anyone can decrypt Public-channel and guessable #hashtag messages from the archive, because the Public key is published and #hashtag keys derive from the channel name. Observers carry owner details: observer setup asks for an owner email, and a signed-in owner can claim an observer.
 
 ## What that retained data powers
 
-The retained set is small because it only needs to power a small set of surfaces.
+The retained set powers a small set of surfaces.
 
-**Live Map** draws topology from verified edges. An edge appears when an enrolled observer records a packet path; it ages when observations stop arriving. The map reflects what the network can prove about itself at a given moment.
+**Live Map** draws topology edges labeled by evidence class. An edge appears when an enrolled observer records a packet path; it ages when observations stop arriving. The map shows what the network can prove about itself at a given moment, and labels what it infers.
 
 **Network Stats** counts anonymous activity: unique nodes seen in the last hour, day, week. Companion signal records contribute to that count without identifying any device. The number tells you how busy the mesh is, not who's on it.
 
@@ -76,10 +83,10 @@ The retained set is small because it only needs to power a small set of surfaces
 
 **Outpost** surfaces per-node signal history — SNR over time, heard-by records — for the nodes that appear on the map.
 
-None of these surfaces require storing identity, location, or message content. The product is useful with signal metadata alone. That's not a constraint the design works around — it's the design.
+The Live Map and Outpost need infrastructure nodes' names, keys, and advertised positions; Network Stats runs on signal metadata.
 
 ---
 
-The choice about what not to collect is made once, at the architecture level, and it determines what's possible from that point forward. You can't breach data that was never stored. You can't misuse identity that was scrubbed before it was written. The [privacy-by-default framing](/blog/what-we-choose-not-to-know/) is the same one that governs [the never-captive stream](/blog/bring-your-own-broker/): the less the system knows, the more the operator controls.
+The choice about what not to collect is made at the architecture level, and it determines what's possible from that point forward. You can't breach data that was never stored. A field that a check blanks is only as safe as the code that runs the check. The [privacy-by-default framing](/blog/what-we-choose-not-to-know/) is the same one that governs [the never-captive stream](/blog/bring-your-own-broker/): the less the system knows, the more the operator controls.
 
 {/* ILLUSTRATION PROMPT: A warm, hand-painted still-life in a painterly flat style: an open glass jar sitting on a worn wooden surface, containing only three small smooth river stones — the jar is otherwise empty. The surrounding surface is bare and clean. Warm, earthy tones with one restrained accent; soft ambient light from one side. The feeling is deliberate simplicity — a container that holds only what it was asked to hold. No text, no UI, no tech elements. */}

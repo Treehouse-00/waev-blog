@@ -2,6 +2,7 @@
 title: "Four Tools, One Mesh"
 description: "How four MeshCore tools — the official Map, MeshMapper, LetsMesh, and Waev — answer different questions, and how to pick the right one for yours."
 date: 2026-06-25
+updated: 2026-11-09
 tags: ["comparison", "operations", "data-ownership"]
 hero:
   src: "/hero-four-tools-one-mesh.jpg"
@@ -12,7 +13,7 @@ faq:
   - q: "What is LetsMesh used for?"
     a: "LetsMesh is a packet analyzer and observer network for MeshCore. Community-run observer nodes report the packets they hear over MQTT, and the analyzer lets you inspect packet structure, routing paths, and live traffic across hundreds of regions worldwide."
   - q: "When does Waev make sense instead of other MeshCore tools?"
-    a: "Waev fits operators who run a mesh and want verified topology, signal analytics, and network health over time. An enrolled observer publishes its packet stream directly to Waev's own MQTT ingest with a publish-only credential — it can send data, nothing else — and you read it back out through a public API, or point the same stream at other tools of your choosing."
+    a: "Waev fits operators who run a mesh and want evidence-labeled topology, signal analytics, and network health over time. An enrolled observer publishes its packet stream directly to Waev's own MQTT ingest with a publish-only credential — it can send data, nothing else — and you read it back out through a public API, or point the same stream at other tools of your choosing."
   - q: "Can these MeshCore tools be used together?"
     a: "Yes. The tools answer different questions, and most serious communities run several at once: the official Map for node reference, MeshMapper for coverage surveys, LetsMesh for packet inspection, and Waev for ongoing analytics on an observer stream that stays yours to point wherever you choose."
 ---
@@ -60,9 +61,11 @@ Waev is built for the operator who has moved past *getting on* the mesh and now 
 
 Three design decisions follow from that, and they are the honest answer to "why Waev":
 
-**The map is evidence, not a guess.** Waev draws topology only from [enrolled observers](/blog/what-is-a-mesh-network-observer/) and authenticated repeaters. A spoofed or merely inferred node prefix is rejected, never drawn — and when a link isn't shown, [the map can tell you why](/blog/evidence-based-mesh-network-map/). No proof, no line.
+**The map labels its evidence.** Every line on Waev's map carries an evidence class: Proven and Corroborated lines come from receptions [enrolled observers](/blog/what-is-a-mesh-network-observer/) measured; Inferred lines, reconstructed from relayed path prefixes, are drawn at reduced opacity; links that fail the physics checks stay off the default map — and when a link isn't shown, [the map can tell you why](/blog/evidence-based-mesh-network-map/).
 
-**Refusal is a feature.** A node named with a privacy marker (⛔ 🛑 🚫) is never stored, mapped, or counted. Companion and personal devices are identity-scrubbed at the ingest edge; only anonymous signal metadata — SNR, hops, timing — is retained. What doesn't enter the database can't be breached or misused.
+**Refusal is a feature.** A node named with a privacy marker (⛔ 🛑 🚫) has its ADVERTs dropped before they are stored, mapped, or counted. Companion devices get no map presence, and their ADVERTs' names and public keys are blanked at ingest; their device type and GPS coordinates are kept in analytics rows for about 90 days, and raw frames are archived whole. [What we choose not to know](/blog/what-we-choose-not-to-know/) lists what gets through.
+
+*Correction, November 9, 2026: these two paragraphs used to say Waev draws topology only from enrolled observers and authenticated repeaters, and keeps only anonymous signal metadata for companion devices.*
 
 **The stream is never captive.** An enrolled observer publishes its packet stream to Waev's own MQTT ingest with a credential that can only send its own data — it cannot read, alter, or delete anything on the broker. You read your data back out through a public API, and [the same stream can feed other tools of your choosing](/blog/can-waev-write-to-your-broker/), using presets Waev ships in its own docs. Nothing about the stream locks your community to Waev — if you ever move on, the mesh doesn't notice: repeaters and companion nodes keep routing traffic with or without an analytics layer watching. Only the map and the history stop updating.
 
@@ -75,7 +78,7 @@ Match the tool to the question in front of you:
 - **You're new, or scouting an area** → the official MeshCore Map. See what exists, add yourself, connect.
 - **You're siting a repeater or hunting dead zones** → MeshMapper. Survey it; trust the grid, not the guess.
 - **You're debugging routing or watching live traffic** → LetsMesh. Inspect the packets themselves.
-- **You operate a mesh others depend on, and you want its history, health, and topology verified — from a stream that never locks you in** → that's the job Waev was built for.
+- **You operate a mesh others depend on, and you want its history, health, and topology measured, with every line labeled by its evidence — from a stream that never locks you in** → that's the job Waev was built for.
 
 On any given day your question is probably one of the first three, and those tools will serve you well. But if your mesh has become something people count on — a club net, a CERT activation plan, [a neighborhood that keeps its own keys](/blog/keeping-control-of-your-mesh-network/) — the fourth question eventually arrives on its own. When it does, enroll an observer and look around. The map will only show you what it can prove, and the stream it draws from will still be yours to point wherever you choose.
 

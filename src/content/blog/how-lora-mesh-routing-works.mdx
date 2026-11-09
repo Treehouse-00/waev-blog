@@ -2,6 +2,7 @@
 title: "How LoRa Mesh Routing Works"
 description: "How LoRa mesh routing works in MeshCore: first contact floods through repeaters, recording each hop, then all later messages travel the cached direct path."
 date: 2026-06-11
+updated: 2026-11-09
 tags: ["primer", "how-it-works"]
 hero:
   src: "/hero-how-lora-mesh-routing-works.jpg"
@@ -11,8 +12,8 @@ faq:
     a: "MeshCore uses a two-phase approach. When a node sends to a destination it has not reached before, the packet floods outward through every repeater in range, each forwarder appending its identifier to a growing path record. When the destination receives it, it reverses that path and sends it back. All subsequent messages between those two nodes travel the direct cached route — only the repeaters on the recorded path handle them."
   - q: "What is the difference between flood routing and direct routing in MeshCore?"
     a: "Flood routing sends a packet outward through all reachable repeaters simultaneously, building a path record as it travels. Direct routing sends a packet along a specific pre-determined sequence of repeater hops. MeshCore uses flood routing for initial path discovery, then switches to direct routing for all subsequent messages to the same destination, using the path learned during the flood."
-  - q: "Why do MeshCore companion nodes not repeat packets?"
-    a: "In MeshCore, only nodes configured as repeaters forward packets on behalf of other nodes. Companion radios — the personal nodes paired to the mobile app via Bluetooth — receive and transmit their own messages but never relay other traffic. This is by design: it keeps relay behavior under deliberate infrastructure control, reduces airtime consumption on the shared LoRa channel, and allows companion battery life to be measured in weeks rather than hours."
+  - q: "Do MeshCore companion nodes repeat packets?"
+    a: "Repeaters are the MeshCore nodes built to forward packets on behalf of others. Companion radios — the personal nodes paired to the mobile app via Bluetooth — transmit and receive their own messages, and companion firmware from protocol version 9 onward also exposes a client-repeat setting that lets a companion relay. Leaving forwarding to dedicated repeaters keeps relay behavior under deliberate infrastructure control, reduces airtime consumption on the shared LoRa channel, and lets companion battery life be measured in weeks rather than hours."
   - q: "What happens when a learned route breaks in MeshCore?"
     a: "If the sender does not receive an acknowledgment after retries, the firmware marks the stored path as invalid. The next message to that contact triggers a fresh discovery flood, re-learning whatever route is currently available through the mesh. This self-healing is automatic: a relay going offline or a link degrading past its decoding floor causes the next message to rediscover a working path without manual intervention."
   - q: "Do group channel messages use direct routing in MeshCore?"
@@ -33,9 +34,9 @@ Understanding how LoRa mesh routing works is the difference between a network yo
 
 ## The first message: a flood with memory
 
-When your node sends a message to a destination it has no cached path to, the firmware marks the packet as a flood (`ROUTE_TYPE_FLOOD`). Every repeater that hears it checks two conditions: has it already seen this packet? Is the hop count still within the configured limit? If both pass, the repeater appends its own one-byte identifier — the first byte of its Ed25519 public key — to the packet's path field and retransmits.
+When your node sends a message to a destination it has no cached path to, the firmware marks the packet as a flood (`ROUTE_TYPE_FLOOD`). Every repeater that hears it checks two conditions: has it already seen this packet? Is the hop count still within the configured limit? If both pass, the repeater appends its own short identifier — the first one to three bytes of its Ed25519 public key, depending on the network's path-hash size — to the packet's path field and retransmits.
 
-The packet propagates outward. Each forwarder adds its signature. By the time the packet reaches the destination, the path field contains an ordered record of every intermediate repeater that handled it: a complete hop-by-hop log from source to destination.
+The packet propagates outward. Each forwarder adds its identifier; none of them signs it. By the time the packet reaches the destination, the path field contains an ordered record of every intermediate repeater that handled it: a complete hop-by-hop log from source to destination.
 
 Duplicate suppression runs in parallel. Each repeater maintains a hash table of packets already processed. If the same flood packet arrives via two different routes, the second copy is silently dropped before any forwarding logic runs. This prevents the packet from circling back through nodes it already passed. (Source: EastMesh Wiki, MeshCore routing algorithm — `SimpleMeshTables` implementation.)
 
@@ -55,13 +56,13 @@ The consequence: one flood to discover, then minimal airtime for every message a
 
 The routing model above depends on one structural fact: in MeshCore, only infrastructure nodes — repeaters — forward packets. Companion nodes do not.
 
-<Figure caption="The three MeshCore firmware roles. Companion: your personal radio, pairs via Bluetooth, does not relay. Repeater: a fixed node that extends range by relaying packets along the mesh. Room Server: stores group messages for offline members.">
+<Figure caption="The three MeshCore firmware roles. Companion: your personal radio, pairs via Bluetooth, relays only if its client-repeat setting is on. Repeater: a fixed node that extends range by relaying packets along the mesh. Room Server: stores group messages for offline members.">
   <PrimerNodeRoles />
 </Figure>
 
-Companion radios — the nodes you carry or keep at your station, paired to the app — transmit and receive their own messages, but they never relay another node's traffic. Only nodes explicitly configured as repeaters participate in forwarding. (Source: MeshCore FAQ, docs.meshcore.io.)
+Companion radios — the nodes you carry or keep at your station, paired to the app — transmit and receive their own messages. Repeaters are the nodes built for forwarding; companion firmware from protocol version 9 onward also exposes a client-repeat setting, so a companion can be set to relay another node's traffic. (Sources: MeshCore FAQ, docs.meshcore.io; the client-repeat flag in the companion protocol's device-info response, version 9 and later.)
 
-This is not a constraint to work around; it is an architectural choice that keeps the shared LoRa channel from becoming a commons problem. Add a hundred new companion users to a MeshCore network and the relay load stays flat. Relay capacity grows only when you deliberately add infrastructure repeaters.
+This is not a constraint to work around; it is an architectural choice that keeps the shared LoRa channel from becoming a commons problem. Add a hundred new companion users with client repeat off and the relay load stays flat. Relay capacity grows only when you deliberately add infrastructure repeaters.
 
 For the routing model to be useful, this also means repeater placement is a design decision. Where you mount your repeaters determines which paths the mesh can discover. The closer a relay is to a gap in coverage, the more paths it enables. [Repeater placement and coverage gaps](/blog/where-to-put-your-next-repeater/) starts from the same observation: the routing model can only use the infrastructure you give it.
 

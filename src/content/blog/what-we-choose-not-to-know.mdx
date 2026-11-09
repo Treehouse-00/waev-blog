@@ -1,7 +1,8 @@
 ---
 title: "What We Choose Not to Know"
-description: "Waev's privacy model is built on data minimization: three deliberate refusals at the ingest edge that determine what never enters the database, before any other processing happens."
+description: "Waev's privacy model is built on data minimization: three refusals in the ingest path, what each one removes before data is written, and what each one does not cover."
 date: 2026-07-02
+updated: 2026-11-09
 tags: ["privacy", "deep-dive"]
 author: "Waev"
 ogImage: "/hero-not-to-know-og.jpg"
@@ -11,15 +12,15 @@ hero:
 draft: false
 faq:
   - q: "How does the opt-out marker work, exactly?"
-    a: "Add ⛔, 🛑, or 🚫 to your node name in MeshCore. When a packet from that node arrives at Waev's ingest edge, the name is checked first — before any other processing. If a marker is present, the packet is discarded entirely. Nothing is stored, nothing is counted. The check happens before the companion scrub, before topology verification, before anything else."
+    a: "Add ⛔, 🛑, or 🚫 to your node name in MeshCore. When Waev decodes an ADVERT carrying that name from a node that isn't an enrolled observer, it drops the packet before writing it to the database or analytics. The drop is not total: when a partner feed is connected, the raw frame has already been mirrored to it; the drop is logged with the node's public key and name (Workers Logs keeps a 5% sample); packets that carry no name, such as discovery responses, can still create a nameless node row; and a node that adds the marker after Waev has mapped it keeps its earlier row and position until the 182-hour prune."
   - q: "My family member uses a MeshCore companion app on the same network. Will Waev store their name or device?"
-    a: "No. When a companion device (a personal MeshCore app, not an installed repeater or observer) broadcasts on the mesh and reaches Waev's ingest edge, name and device type are nullified before anything is written. Only signal metadata — SNR, hop count, timestamp — is kept, for anonymous aggregate counting. The person does not appear on the map or in Packet Search."
+    a: "In part. When a companion's ADVERT reaches Waev, its name and public key are blanked in analytics rows and in the live feed, and it gets no node-registry row or map dot. Waev still keeps the device type and any GPS coordinates the ADVERT carries in analytics rows (about 90-day retention), and it archives the full raw ADVERT frame — key, name, and position included — which the public /packets/{hash}/raw route serves. If the person posts on the Public channel, Waev reads their display name from the message and shows it in Live Packets."
   - q: "Can Waev infer a companion device's location from hop path data?"
-    a: "Location-derived fields are in the category of data we refuse to collect. We keep SNR and hop count because those are properties of the RF signal quality, not of the person. We do not attempt to triangulate or estimate position from that data."
+    a: "A companion that includes GPS in its ADVERT broadcasts its own position, and Waev keeps those coordinates in analytics rows for about 90 days and in the raw-frame archive. Separately, Waev infers positions for some nodes from path evidence (a weighted centroid) and can place them on the map. Location data exists in Waev's data model."
   - q: "What is the difference between a companion device being 'scrubbed' and an opted-out node being 'dropped'?"
-    a: "Dropped means nothing is written at all — not even signal metadata. An opted-out node's packets are discarded at the first gate, before any other check. Scrubbed means the record is written, but identity fields are absent — only SNR, hops, and timestamp survive. The distinction matters: companion signal data contributes to aggregate Network Stats; opted-out nodes don't contribute anything."
+    a: "Dropped means the ADVERT is discarded before any database or analytics write, with the exceptions listed above. Scrubbed means the analytics row is written with the name, public key, and source hash blanked; the device type, ADVERT coordinates, signal metadata, and the archived raw frame are kept. Companion signal data contributes to aggregate Network Stats; a dropped ADVERT doesn't."
   - q: "Does Waev keep any logs of packets it discards?"
-    a: "No. A dropped packet leaves no trace in the database. Waev processes the stream and discards; there is no discard log, no shadow record, no deferred processing queue for opted-out packets."
+    a: "Yes. Each dropped ADVERT writes a log line with the reporting observer, its region code, the node's public key, and its name; Workers Logs keeps a 5% sample of these events. The dropped packet itself is not written to the database."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -29,11 +30,13 @@ import PrivacyPhantom from "../../components/viz/privacy-Phantom.astro";
 
 The people on your mesh trusted you with something before they ever sent a packet. They assumed — maybe never consciously, but assumed — that the infrastructure wouldn't quietly profile them. No location estimates derived from hop paths. No named records accumulating in a database they didn't agree to. That trust is easy to violate and hard to reconstruct once broken.
 
-This is a piece about data minimization. Not about values, but about mechanism — the specific technical choices that determine what Waev refuses to know, and how that refusal is enforced.
+This is a piece about data minimization. Not about values, but about mechanism — the specific technical choices that determine what Waev refuses to know, how that refusal is enforced, and where it doesn't reach.
 
 <div class="callout">
-<p><strong>TLDR:</strong> Waev's privacy model is three concrete refusals, enforced in order at the ingest edge: opted-out nodes are dropped entirely before any processing; companion device identities are nullified before anything is written; topology edges are rejected unless the source is verifiable. What doesn't enter the database can't be accessed, breached, or misused.</p>
+<p><strong>TLDR:</strong> Waev's privacy model is three refusals in the ingest path: ADVERTs from opted-out nodes are dropped before any database write; companion devices' names and keys are blanked before analytics rows are written; and links that fail the physics gate stay off the default map. None of the three is absolute: raw frames, including companion ADVERTs, are archived and publicly retrievable, and companion device types and coordinates are kept in analytics rows.</p>
 </div>
+
+*Correction, November 9, 2026: earlier versions of this post said opted-out and companion data never reaches storage, that Waev keeps no discard log, that it holds no location data for companions, and that the map draws only verified sources. None of that was true. The sections below now describe what Waev does today.*
 
 ## The default is to collect
 
@@ -43,23 +46,23 @@ That logic is tempting, and it's wrong.
 
 What you store is what you're responsible for. A name field you never needed becomes a liability the moment a breach occurs. A device type you collected "just in case" is data someone can use to correlate activity across sessions. A hop-derived location estimate is a location record, even if you didn't call it that. The cost of data minimization is real — there are features you can't build without data you've refused to collect. We've accepted that cost. It's the right trade.
 
-Data minimization isn't a privacy setting you can toggle on later. It's a decision you make in the data model, at ingest time, before anything is written. The choices we've made are concrete enough to describe field by field. That's what this piece does.
+Data minimization isn't a privacy setting you can toggle on later. It's a decision you make in the data model, at ingest time, before anything is written. The choices we've made are concrete enough to describe field by field — including the fields that still get through. That's what this piece does.
 
-## Gate 1: opt-out is the first check
+## Gate 1: the opt-out check
 
-The opt-out mechanism works by naming convention. Add ⛔, 🛑, or 🚫 to any MeshCore node name, and when a packet from that node arrives at Waev's ingest edge, the name is checked first.
+The opt-out mechanism works by naming convention. Add ⛔, 🛑, or 🚫 to any MeshCore node name, and when an ADVERT carrying that name reaches Waev's ingest path, the name is checked before the packet is written to the database or to analytics.
 
-Not second. Not as part of a broader filter. **First**, before the companion scrub, before topology verification, before any processing that might write a partial record to an intermediate buffer. The check is: does this name contain a privacy marker? If yes, discard immediately. No further processing.
+It is not the first thing that happens to the packet. By the time the check runs, Waev has validated the observer's region code, mirrored the raw frame to the partner feed when a partner is connected, and decoded the packet. The check then drops the ADVERT ahead of the companion scrub, the topology pipeline, and every database write.
 
-<Figure caption="Three gates in order. <b>Gate 1</b> checks for opt-out markers and drops the entire packet if found — before anything else runs. <b>Gate 2</b> identifies companion devices and scrubs their identity fields. <b>Gate 3</b> verifies source for topology edges. The ordering is deliberate: opt-out protection never depends on a later step completing correctly.">
+<Figure caption="The ingest path in order. A <b>partner feed</b>, when connected, receives the raw frame before any gate runs. <b>Gate 1</b> drops an ADVERT whose name carries an opt-out marker before any database write, and logs the drop. <b>Gate 2</b> blanks a companion ADVERT's name and key before analytics rows are written. <b>Gate 3</b> keeps links that fail the physics gate off the default map; every drawn line carries an evidence class.">
   <PrivacyGateFlow />
 </Figure>
 
-The reason ordering matters: if the opt-out check came third, after some earlier processing step, you'd have a window — however brief — where a partial record could exist. If that step cached something, or if a transient failure prevented the opt-out check from running, you'd have a leakage path. By putting the opt-out check first, we make the invariant simple: a node with a marker in its name cannot produce a record, because the packet is discarded before any record-creation path is entered.
+The reason ordering matters: if the opt-out check came after a database write, a partial record could exist for a node that asked not to be stored. Putting the check ahead of every database write closes that window for ADVERTs. It doesn't close it for packets that carry no name. A marked node's discovery response still creates a nameless node row, because the check reads the name and that packet has none. And a node that adds the marker after Waev has already mapped it keeps its earlier row and position until the 182-hour prune removes it.
 
-Opt-out is also unconditional. It's not a preference that can be overridden by network configuration, operator settings, or API access. A privacy marker overrides everything. That's not a policy; it's a guarantee we can make because the check is at the boundary, not inside the application logic.
+Opt-out is not unconditional. An enrolled observer with a marker is not dropped; it becomes a private observer, hidden from the public map, topology, and network stats, although live packet frames still carry its device ID and region code. The drop itself is logged with the node's public key and name, and Workers Logs keeps a 5% sample of those events. The cleanup step that removes marked nodes clears their node, edge, identity, and score rows, but not their name history, their analytics rows, or their frames in the raw archive. The check is a runtime check in Waev's ingest code, so it is only as strong as that code.
 
-One nuance worth naming: the opt-out is self-declared by the node's owner, by putting the marker in their node name. A network operator can't opt out another person's node on their behalf, and Waev can't opt out a node that hasn't been marked. The mechanism is decentralized on purpose. A person who controls their node name controls their privacy.
+One nuance worth naming: the opt-out is self-declared by the node's owner, by putting the marker in their node name. A network operator can't opt out another person's node on their behalf, and Waev can't opt out a node that hasn't been marked. The mechanism is decentralized on purpose. A person who controls their node name controls the marker.
 
 ## Gate 2: the companion problem
 
@@ -67,37 +70,39 @@ Personal MeshCore apps — the kind someone runs on a phone to send messages on 
 
 We can't selectively receive RF. But we can be selective about what we write.
 
-Companion devices are identified at the ingest edge by their device type field. When a packet arrives from a companion device, identity fields — name and device type — are set to null before anything is written to the database. What survives is the signal record: SNR, hop count, and timestamp. Those three fields are properties of the radio signal, not of the person. They tell us that a radio transmission occurred at a certain signal quality and path length. They don't tell us who made it.
+Companion devices are identified at ingest by the device type field in their ADVERT. When a companion ADVERT arrives from a device that isn't an enrolled observer, its name, public key, and source hash are blanked before Waev writes analytics rows or broadcasts the packet to the live feed, and the device gets no node-registry row and no map dot. What survives is more than the signal record: the device type, any GPS coordinates the ADVERT carries (kept in analytics rows for about 90 days), SNR, hop count, and timestamp. The full raw frame, with key, name, and position intact, goes to the packet archive, which the public `/packets/{hash}/raw` route serves.
 
-<Figure caption="<b>Left:</b> the phantom record — what would exist if we kept everything. Name and device type are crossed out because we chose not to keep them. <b>Right:</b> what actually exists in Waev's database after the ingest scrub. The identity fields are absent, not redacted — they were never written.">
+<Figure caption="<b>Left:</b> a companion ADVERT as an observer hears it — the frame the raw archive keeps whole. <b>Right:</b> the analytics row after the ingest scrub. Name and public key are blanked; device type, GPS coordinates, and signal metadata are kept.">
   <PrivacyPhantom />
 </Figure>
 
-The resulting record is genuinely anonymized in the sense that matters: it cannot be used to identify the person, correlate their presence across sessions, or reconstruct a location. Two signal records with the same SNR and hop count from the same general timeframe are indistinguishable. There is no join key to the person who sent them.
+The scrub covers ADVERTs, the one packet type that declares a device type. Other companion packets reach Waev unclassified. A direct message keeps its 1-byte source and destination address prefixes. A channel message carries no key, so its sender is never classified as a companion; on the Public channel, whose key is published, Waev decrypts the message to read the sender's display name, keeps the name, discards the text, and shows the name in Live Packets. A login request carries the sender's permanent public key in clear, and Waev stores that key in analytics and broadcasts it in the live feed.
 
-The signal metadata does contribute to Network Stats — the aggregate counts of active nodes and packet volumes. We're transparent about that. A companion device using the network counts as a node, because the RF traffic is real and understanding it is useful for operators planning capacity. But it counts as one anonymous signal source among others, not as a named, trackable user.
+The scrubbed analytics row has no name or key, but it is not anonymous in the sense that matters: it keeps the device type and any coordinates the ADVERT carried, and coordinates are a location record whether or not a name is attached. The archived raw frame still holds the key, name, and position.
 
-There is one field we explicitly refuse to derive: location from hop path. In principle, you can estimate a device's rough position from which nodes relayed its packets and the observed SNR on those links. We don't do that, and location-derived fields don't exist in our data model for companion records. The omission is deliberate; the field was never designed.
+The signal metadata does contribute to Network Stats — the aggregate counts and packet volumes. We're transparent about that: the RF traffic is real, and understanding it is useful for operators planning capacity.
+
+Location deserves a direct answer. The latitude and longitude a companion puts in its own ADVERT are kept in analytics rows for about 90 days and in the raw archive. Separately, Waev infers positions for some nodes from path evidence, using a weighted centroid, and inference-placed nodes can appear on the map.
 
 ## The field-level view
 
 The most concrete way to describe what we refuse is to look at the data model directly — which fields exist for each source type, and which don't.
 
-<Figure caption="Data model by source type. <b>Operator nodes</b> carry full records, including verified topology edges. <b>Companion devices</b> have name and device type absent; only signal metadata is stored. <b>Opted-out nodes</b> have nothing — no record, no partial entry, no signal count.">
+<Figure caption="Data model by source type. <b>Operator nodes</b> carry full records, including topology edges labeled by evidence class. <b>Companion devices</b> have name and public key blanked; device type, ADVERT coordinates, and signal metadata are stored, and the raw frame is archived. <b>Opted-out ADVERTs</b> are not written to the database or analytics; a nameless node row can still come from the node's other packets.">
   <PrivacyDataModel />
 </Figure>
 
-The differences aren't access permissions — they're structural. A companion device's record doesn't have identity fields that are hidden from certain queries; it has fields that don't exist. An opted-out packet doesn't have a record with a flag marking it private; it doesn't have a record at all. That distinction matters: access control can fail, be misconfigured, or be bypassed. A field that was never written can't be retrieved.
+The differences are enforced by a check in the ingest code that runs on every packet, not by the shape of the database. The blanked fields exist in the data model; the check leaves them empty. That distinction matters: a field that doesn't exist can't be filled, but a check is code, and a code change can switch it off.
 
-What Waev knows about a companion device on your mesh is exactly what that figure shows: signal quality metrics. Nothing that connects the RF signal to a person.
+What Waev knows about a companion device on your mesh is what that figure shows: signal metadata, its device type, and any coordinates its ADVERTs carried, plus the raw frames in the archive.
 
 ## Why restraint is the honest position
 
 There's a version of this piece that leans on trust language: "we respect your privacy," "your data is safe with us," that kind of thing. We've avoided that framing deliberately, not because we don't mean it, but because statements of intent aren't the interesting part.
 
-The interesting part is: what would you find if you had full access to Waev's database? If you extracted every record, ran every query, what could you reconstruct about the people on a network? The answer to that question is set at ingest time, in the data model, not in a privacy policy. Policies can change. Database schemas are harder to change, and the absence of a field is harder to fake.
+The interesting part is: what would you find if you had full access to Waev's data? Today you would find no companion names or keys in the analytics rows. You would find companion device types and coordinates there, full raw ADVERT frames in the packet archive, and public keys from login requests. That answer is set by the ingest code and the data model, not by a privacy policy, which is why this post now describes the code as it runs.
 
-We collect the minimum that makes the product useful. Signal quality for aggregate stats. Topology from verified sources for the map. Full records from operator nodes that are deliberately running infrastructure. Everything else is either dropped or stripped to signal metadata. That's not a posture we adopted for optics; it's a constraint we built into the system because it's the right constraint to have.
+We set out to collect the minimum that makes the product useful: signal quality for aggregate stats, evidence-labeled topology for the map, and full records from operator nodes that are deliberately running infrastructure. The raw-frame archive, the companion coordinates in analytics, and the login keys go beyond that minimum, and this post says so rather than describing them away.
 
 If you've seen something that seems inconsistent with this, [tell us](mailto:admin@waev.app). Concrete reports of data that shouldn't exist are the most useful feedback we can get on this.
 

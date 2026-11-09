@@ -17,7 +17,7 @@ faq:
   - q: "Do I need to configure anything special for Field Day?"
     a: "No. If you have an enrolled observer publishing to Waev's ingest, the Field Day traffic will appear automatically as it arrives. The only thing to check beforehand is that your observer is online and its connection to Waev is healthy."
   - q: "Will temporary Field Day stations appear on the Live Map?"
-    a: "If a temporary station routes through one of your enrolled observers or authenticated repeaters, and they haven't marked their node with an opt-out symbol, yes — they'll appear in Live Packets and potentially draw edges on the Live Map. Nodes that haven't been heard by your observers won't appear, which is accurate: Waev only maps what it can verify."
+    a: "If a temporary station routes through one of your enrolled observers or your repeaters, yes — its packets appear in Live Packets and can draw edges on the Live Map, labeled by evidence class. A station with an opt-out symbol in its name has its adverts dropped. Nodes that haven't been heard by your observers won't appear: Waev only maps what its observers heard."
   - q: "What's the most useful thing to watch for during the operating window?"
     a: "Watch which of your permanent backbone repeaters carry the most new traffic. A repeater that becomes a hub for temporary stations is both a sign that your placement is good and a potential bottleneck to track. SNR on those hub links in Network Stats will tell you whether the traffic load degrades link quality — useful data for next year's planning."
 ---
@@ -49,7 +49,7 @@ The first sign of Field Day is usually in Live Packets, sometime Saturday mornin
 
 Two things are worth watching in that stream. First, [the hop counts](/blog/measuring-hop-count-in-your-mesh/). A temporary station reaching your network at four or five hops is proof that your repeater chain is doing real work — something to feel good about. Second, the [SNR](/blog/what-is-snr-lora/) on those long paths. A +3 dB link is alive, but it's not margin you'd want to depend on. Neither of those observations calls for immediate action; they're the kind of data that becomes useful in the after-action review.
 
-One note on what you're seeing: **Waev shows you only what your enrolled observers heard.** If a Field Day station is operating nearby but isn't routing through your observer coverage area, it won't appear. The map stays honest about what it can verify. Silence on your screen doesn't mean silence on the air — just silence from your vantage point.
+One note on what you're seeing: **Waev shows you only what your enrolled observers heard.** If a Field Day station is operating nearby but isn't routing through your observer coverage area, it won't appear. The map stays honest about what it heard. Silence on your screen doesn't mean silence on the air — just silence from your vantage point.
 
 ## The Live Map filling in
 
@@ -61,7 +61,7 @@ Starting Saturday afternoon and accelerating toward the 18:00 UTC start time, th
 
 What you'll often notice is which of your permanent repeaters suddenly have a lot of new edges. A relay on a good hilltop that normally connects four or five permanent nodes might, during Field Day, become a hub for fifteen or twenty temporary stations. That concentration tells you something real about your placement — and about which node would be the most painful to lose during an actual emergency.
 
-You might also notice the opposite: a cluster of Field Day stations that appear in Live Packets but show no map topology because they're reaching the network through paths your observers can't verify. That's not a bug; it's the Live Map being honest about what it knows. The stations are there, the signal is there, but the path is indirect or unobserved. Useful to know, especially if those stations are in a direction you've been thinking about improving coverage toward.
+You might also notice the opposite: a cluster of Field Day stations that appear in Live Packets but show no map topology because they're reaching the network through paths your observers can't measure. That's not a bug; it's the Live Map being honest about what it knows. The stations are there, the signal is there, but the path is indirect or unobserved. Useful to know, especially if those stations are in a direction you've been thinking about improving coverage toward.
 
 ## Network Stats: the surge in numbers
 

@@ -91,10 +91,13 @@ no args for the full env-override reference.
 5. **Posts have no byline or signoff.** No "— The Waev team", no closing
    signature. The post speaks for itself.
 6. **Factual canon.** Product claims must stay consistent with the "Key facts"
-   in `src/pages/llms.txt.ts` (privacy markers ⛔ 🛑 🚫 → never stored;
-   evidence-based topology from enrolled observers + authenticated repeaters;
-   the never-captive stream — publish-only observer credentials, public read
-   API — for data ownership; contact `admin@waev.app`). BYOB (bring-your-own-
+   in `src/pages/llms.txt.ts` (privacy markers ⛔ 🛑 🚫 → a node's ADVERTs are
+   dropped before storage, with the limits listed there; companion name and key
+   blanked, device type and GPS kept; raw frames archived and served publicly;
+   every map edge carries an evidence class, and Inferred lines are drawn; the
+   never-captive stream — publish-only observer credentials, public read API,
+   and the partner feed that receives raw publishes — for data ownership;
+   contact `admin@waev.app`). BYOB (bring-your-own-
    broker) is retired — never write it as shipped capability or roadmap. If a
    fact genuinely changes, update `llms.txt.ts` as the canonical source.
 7. **Accessibility is non-negotiable.** Decorative images use `alt=""`; hero

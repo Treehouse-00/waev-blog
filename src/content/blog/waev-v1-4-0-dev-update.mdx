@@ -1,7 +1,8 @@
 ---
 title: "v1.4.0: Walk the Path"
-description: "Waev v1.4.0 ships path-walk for MeshCore paths, a packet archive explorer, a live packet globe, and a topology engine that proves what it draws."
+description: "Waev v1.4.0 ships path-walk for MeshCore paths, a packet archive explorer, a live packet globe, and a physics-checked topology engine."
 date: 2026-06-10
+updated: 2026-11-09
 tags: ["how-it-works", "operations", "privacy", "dev-update"]
 hero:
   src: "/hero-waev-v1-4-0-dev-update.jpg"
@@ -12,9 +13,9 @@ faq:
   - q: "What is path-walk on the Live Map?"
     a: "Type or paste a MeshCore path into the Live Map search bar and Waev resolves each hop hash to candidate nodes, draws the best chain as 3D arcs over the map, and lets you cycle through alternative resolutions with the keyboard."
   - q: "How does Waev verify mesh topology?"
-    a: "Every rule lives in a single trust specification that compiles to both TypeScript and Rust, with a drift check that fails when the generated code and the spec disagree. Edges must pass a physics gate before they render, spoofed coordinates are contained by an observer-rooted mesh-hull distance check, and when a link is not drawn the map can explain why: distance, terrain line of sight, or observer reach."
+    a: "Every rule lives in a single trust specification that compiles to both TypeScript and Rust, with a drift check that fails when the generated code and the spec disagree. Edges must pass a physics gate before they render on the default map, a node whose claimed position is out of RF reach of every observer that heard it — or in open water — is hidden from the map, and when a link is not drawn the map can explain why: distance, terrain line of sight, or observer reach. Lines reconstructed from relayed path hashes are drawn as Inferred, at reduced opacity."
   - q: "How do I keep my observer off the public map?"
-    a: "Add a privacy marker such as ⛔, 🛑, or 🚫 to the observer's node name. A tagged observer never appears on public surfaces. The rule is enforced at request time, so there is no leak window, and you keep full statistics on your own Outpost page."
+    a: "Add a privacy marker such as ⛔, 🛑, or 🚫 to the observer's node name. A tagged observer is hidden from the public map, topology, and network stats; the rule is enforced at request time, and you keep full statistics on your own Outpost page. One gap remains: live packet frames from the observer still carry its device ID and region code."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -25,8 +26,8 @@ import Figure from "../../components/Figure.astro";
 <p><strong>TLDR:</strong> Waev v1.4.0 adds path-walk on the Live Map, a packet archive explorer at /archive, a live packet globe, a physics-checked topology engine, privacy markers for enrolled observers, and Mesh Rewind. 122 commits, 67 features, 31 fixes.</p>
 </div>
 
-<Figure caption="The Live Map at this release: 26,985 nodes on the map, 6,090 verified edges globally — shown here over the Los Angeles basin.">
-  <img src="/v140-livemap.jpg" alt="The Waev Live Map over the Los Angeles basin: thousands of nodes and verified topology edges drawn over dark terrain." loading="lazy" decoding="async" />
+<Figure caption="The Live Map at this release: 26,985 nodes on the map, 6,090 edges globally — shown here over the Los Angeles basin.">
+  <img src="/v140-livemap.jpg" alt="The Waev Live Map over the Los Angeles basin: thousands of nodes and topology edges drawn over dark terrain." loading="lazy" decoding="async" />
 </Figure>
 
 ## Walk the path
@@ -80,13 +81,15 @@ On top of the spec sit four mechanisms:
 
 ## Private observers
 
-The privacy markers ⛔, 🛑, and 🚫 have always meant one thing on <span class="waev-brand">Waev</span>: never stored, never mapped, never counted. But infrastructure had a free pass in practice. An observer is a piece of the network's backbone, so it appeared on public surfaces, marker or not.
+The privacy markers ⛔, 🛑, and 🚫 have meant one thing on <span class="waev-brand">Waev</span>: drop the node's ADVERTs before they are stored, mapped, or counted. But infrastructure had a free pass in practice. An observer is a piece of the network's backbone, so it appeared on public surfaces, marker or not.
 
-v1.4.0 ends the free pass. The same no-entry, stop, and prohibited symbols now apply to enrolled observers. Tag an observer's name and it never appears on a public surface. The rule is enforced at request time, not by a cleanup job, so there is no leak window between the rename and the map catching up.
+v1.4.0 ends the free pass. The same no-entry, stop, and prohibited symbols now apply to enrolled observers. Tag an observer's name and it is hidden from the public map, topology, and network stats. The rule is enforced at request time, not by a cleanup job, so there is no window between the rename and the map catching up. Live packet frames from a tagged observer still carry its device ID and region code.
 
 You lose nothing on your own gear. The owner keeps full statistics on their Outpost page. The public just does not get to browse your roof.
 
 The marker mechanics are the same ones described in [privacy markers in node names](/blog/meshcore-node-naming-privacy-markers/), and the full privacy model lives in the [About page privacy section](https://waev.app/#/about).
+
+*Correction, November 9, 2026: this section originally said privacy markers mean never stored, never mapped, never counted, and that a tagged observer never appears on a public surface. Live packet frames from a tagged observer still carry its device ID and region code, and the marker's other limits are listed in the post linked above.*
 
 ## Mesh Rewind
 

@@ -32,16 +32,33 @@ These are the three load-bearing claims, taken verbatim in spirit from
 `src/pages/llms.txt.ts` canon. Do not invent a fourth pillar; map every post to
 one or more of these.
 
-1. **Privacy by default.** A node named with a privacy marker (⛔ 🛑 🚫) is never
-   stored, mapped, or counted. Companion/personal devices are identity-scrubbed
-   at the ingest edge; only anonymous signal metadata (SNR, hops, timing) is
-   retained. Frame: Waev's first move is refusal — what it chooses not to know.
-2. **Evidence-based topology.** Map edges are drawn only from enrolled observers
-   (over MQTT) and authenticated repeaters. Spoofed or inferred prefixes are
-   rejected, never drawn. Frame: the map is evidence, not a guess.
+1. **Privacy by default.** A node named with a privacy marker (⛔ 🛑 🚫) has its
+   ADVERTs dropped before Waev's database and analytics writes; companion
+   ADVERTs have their name and public key blanked, and companions get no map
+   presence. State the limits whenever you state the mechanism: a connected
+   partner feed receives raw frames before the check; the drop is logged with
+   the node's key and name; packets without a name are not checked; companion
+   device type and GPS stay in analytics rows for about 90 days; and every raw
+   frame, companion ADVERTs included, is archived and served publicly. Frame:
+   Waev's first move is refusal, and it names what the refusal doesn't cover.
+   Never write "never stored, mapped, or counted," "identity-scrubbed," "only
+   anonymous signal metadata," "structural," or "opt-out is absolute" as a
+   description of current behavior (corrected 2026-11-09; see
+   `src/pages/llms.txt.ts`).
+2. **Evidence-based topology.** Every map line carries an evidence class:
+   Proven and Corroborated lines come from receptions enrolled observers
+   measured; Inferred lines are reconstructed from relayed path hashes and drawn
+   at reduced opacity; Rejected links fail the physics checks and stay off the
+   default map. Repeater ADVERT signatures are recorded in observe mode, not
+   enforced. Frame: the map labels its evidence. Never write "authenticated
+   repeaters," "only from verified sources," "inferred prefixes are rejected,"
+   or "No proof, no line" as a description of today's map.
 3. **Data ownership (the never-captive stream).** Observer credentials are
    publish-only; the same device can feed other tools (presets ship in Waev's own
-   docs); the read API is public. Frame: nothing locks a community's stream to
+   docs); the read API is public. When an affiliated partner is connected, Waev
+   forwards observers' raw publishes for that partner's regions to a
+   subscribe-only feed before its privacy filters — say so wherever a post says
+   who can read the stream. Frame: nothing locks a community's stream to
    Waev — a deliberate inversion of the usual SaaS data-grab. (BYOB was retired at
    brand gate 1, 2026-07-02 — never write it as capability or roadmap;
    waev/brand/RATIFICATION.md §1.)
@@ -50,9 +67,9 @@ one or more of these.
 **Do**
 - Open with a `TLDR:` callout (see AEO hook below).
 - Name the real surface: "Live Map," "Network Stats," "Live Packets," "ingest
-  edge," "enrolled observer," "authenticated repeater."
+  edge," "enrolled observer," "evidence class."
 - Use exact terms from canon: "the never-captive stream," "evidence-based
-  topology," "identity-scrubbed."
+  topology," "Proven," "Corroborated," "Inferred," "Rejected."
 - Quantify where possible (SNR in dB, hop counts, timing). Teach a transferable
   skill the operator can act on.
 - Position Waev as the layer that observes, verifies, and improves an existing
@@ -72,8 +89,8 @@ one or more of these.
   performing personality is not.
 - No marketing exaggeration, no fabricated metrics, no invented customer quotes,
   no unverifiable claims. If you don't have the number, don't imply one.
-- Never contradict canon (privacy markers, evidence-only edges, the
-  never-captive stream, contact
+- Never contradict canon (privacy markers and their limits, evidence-labeled
+  edges, the never-captive stream, contact
   `admin@waev.app`).
 - Don't frame Waev as competing with or replacing MeshCore, firmware, or radios;
   don't sell on feature breadth over trustworthiness (see `./STRATEGY.md`).
@@ -101,11 +118,14 @@ left.
   DO: "You can't plan around 'mostly works.' Verify the net on a routine Tuesday,
   not during the activation."
 - DON'T: "Waev respects your privacy and keeps your data safe."
-  DO: "What doesn't enter the database can't be accessed, breached, or misused."
+  DO: "A companion's ADVERT loses its name and key before Waev writes the
+  analytics row."
 - DON'T: "Take control of your data with our cutting-edge ownership model."
-  DO: "You host the broker. You hold the keys. Waev keeps a read-only copy."
+  DO: "Your observer's credential can publish and nothing else. You read your
+  data back out through the public API."
 - DON'T: "Trust our advanced topology engine for accurate network maps."
-  DO: "If the map shows it, something verifiable produced it. No proof, no line."
+  DO: "Every line on the map says how it is known: measured by an observer, or
+  inferred from a path hash."
 
 The pattern: the left column *tells* you something is good with an adjective
 ("powerful," "seamless," "accurate"); the right column *shows* the mechanism and

@@ -3,13 +3,15 @@
  * hiw-TopologyDraw — evidence-based topology construction:
  *   Left: a packet's journey on the radio — Node A tx → relayed by Node B
  *         → heard at Observer.
- *   Right: what Waev draws on the Live Map — two verified edges (A-B, B-Observer),
- *          backed by real observations. Nothing is inferred.
+ *   Right: what Waev draws on the Live Map — B-Observer measured at the
+ *          observer; A-B reconstructed from the packet's path hash, labeled
+ *          Inferred and drawn at reduced opacity (waev frontend/public/llms.txt
+ *          "Evidence vocabulary").
  * Theme-aware via CSS custom properties. Used in "From Radio to Map".
  */
 ---
 
-<svg viewBox="0 0 720 280" role="img" aria-label="Left panel: Node A transmits, Node B relays, Observer hears — three hops on radio. Right panel: Waev draws two topology edges (A to B, B to Observer) backed by that verified observation. No guessing." style="width:100%;height:auto;">
+<svg viewBox="0 0 720 280" role="img" aria-label="Left panel: Node A transmits, Node B relays, Observer hears — three hops on radio. Right panel: Waev draws two topology edges. B to Observer is measured at the observer. A to B is reconstructed from the path hash in the relayed packet, labeled Inferred, and drawn at reduced opacity." style="width:100%;height:auto;">
   <defs>
     <marker id="hiw-td-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill: var(--text-muted);" />
@@ -68,21 +70,21 @@
   <text x="430" y="114" text-anchor="middle" style="fill: var(--surface-1); font-family: var(--mono); font-size: 11px; font-weight: 700;">A</text>
   <text x="430" y="138" text-anchor="middle" class="viz-label">Node A</text>
 
-  <!-- Edge A-B (verified → solid accent) -->
-  <line x1="446" y1="110" x2="526" y2="120" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#hiw-td-arrow-acc)" />
+  <!-- Edge A-B (inferred from the path hash → reduced opacity) -->
+  <line x1="446" y1="110" x2="526" y2="120" style="stroke: var(--accent-light); opacity: 0.45;" stroke-width="2" marker-end="url(#hiw-td-arrow-acc)" />
   <!-- evidence badge on edge -->
-  <rect x="466" y="96" width="50" height="16" rx="4" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="0.75" />
-  <text x="491" y="107" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">verified</text>
+  <rect x="464" y="96" width="54" height="16" rx="4" style="fill: transparent; stroke: var(--border-hover);" stroke-width="0.75" />
+  <text x="491" y="107" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">inferred</text>
 
   <!-- Node B (map) -->
   <circle cx="540" cy="124" r="12" style="fill: var(--surface-1); stroke: var(--accent-light);" stroke-width="1.75" />
   <text x="540" y="128" text-anchor="middle" style="fill: var(--text); font-family: var(--mono); font-size: 11px; font-weight: 700;">B</text>
   <text x="540" y="150" text-anchor="middle" class="viz-label">Node B</text>
 
-  <!-- Edge B-Observer (verified → solid accent) -->
+  <!-- Edge B-Observer (measured at the observer → solid accent) -->
   <line x1="552" y1="120" x2="628" y2="112" style="stroke: var(--accent-light);" stroke-width="2" marker-end="url(#hiw-td-arrow-acc)" />
-  <rect x="572" y="96" width="50" height="16" rx="4" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="0.75" />
-  <text x="597" y="107" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">verified</text>
+  <rect x="570" y="96" width="54" height="16" rx="4" style="fill: var(--accent-subtle); stroke: var(--border-accent);" stroke-width="0.75" />
+  <text x="597" y="107" text-anchor="middle" style="fill: var(--accent-light); font-family: var(--mono); font-size: 10px;">measured</text>
 
   <!-- Observer (map) -->
   <rect x="636" y="98" width="38" height="24" rx="5" style="fill: var(--surface-1); stroke: var(--text-accent);" stroke-width="1.5" />
@@ -90,8 +92,8 @@
   <circle cx="655" cy="90" r="2.5" style="fill: var(--text-accent);" />
   <text x="655" y="138" text-anchor="middle" class="viz-label">Observer</text>
 
-  <!-- "no proof no line" note -->
+  <!-- evidence-class note -->
   <line x1="380" y1="186" x2="700" y2="186" style="stroke: var(--border-subtle);" stroke-width="1" />
-  <text x="380" y="206" class="viz-label" style="fill: var(--text-muted); font-size: 10px;">Each edge traces back to a verified observation.</text>
-  <text x="380" y="222" class="viz-label" style="fill: var(--text-muted); font-size: 10px;">If Waev can't prove it, the line isn't drawn.</text>
+  <text x="380" y="206" class="viz-label" style="fill: var(--text-muted); font-size: 10px;">Each line carries its evidence class.</text>
+  <text x="380" y="222" class="viz-label" style="fill: var(--text-muted); font-size: 10px;">Path-only lines are Inferred and drawn faint.</text>
 </svg>

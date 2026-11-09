@@ -4,7 +4,7 @@
  * on the Live Map. Each card shows the cause and the diagnostic signal.
  *   1. No observer in range — node is transmitting but no enrolled observer hears it.
  *   2. Node offline — the node is not transmitting.
- *   3. Opted-out — privacy marker; packets discarded at the ingest edge.
+ *   3. Opted-out — privacy marker; ADVERTs dropped before any database write.
  *   4. Observer not publishing — observer is connected to the mesh but not to the broker.
  * Theme-aware via CSS custom properties. Used in "Why the Map Comes Up Short."
  */
@@ -80,7 +80,7 @@
   <rect x="416" y="185" width="46" height="22" rx="5" style="fill: var(--surface-sunken); stroke: var(--border-hover);" stroke-width="1" stroke-dasharray="3 3" />
   <text x="439" y="200" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--mono); font-size: 10px;">dropped</text>
   <text x="439" y="228" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">ingest drops it</text>
-  <text x="439" y="240" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">before any write</text>
+  <text x="439" y="240" text-anchor="middle" class="viz-label" style="fill: var(--text-muted);">before DB writes</text>
 
   <text x="365" y="254" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">Privacy marker in node name.</text>
   <text x="365" y="265" class="viz-label" style="fill: var(--text-muted); font-size: 9px;">Working as intended.</text>

@@ -1,25 +1,28 @@
 ---
 /**
  * privacy-DataModel — side-by-side data model comparison for three source types.
- * Shows exactly which fields are stored (✓) or refused (∅) for:
+ * Shows which fields are stored (✓) or blanked/refused (∅) for:
  *   1. An enrolled operator node
- *   2. A companion device (identity scrubbed)
- *   3. An opted-out node (nothing stored)
- * Theme-aware via CSS custom properties.
+ *   2. A companion ADVERT (name and public key blanked; device type, GPS,
+ *      and signal metadata kept; raw frame archived)
+ *   3. An opted-out ADVERT (dropped before any database or analytics write;
+ *      the drop is logged with the node's public key and name)
+ * Facts: waev src/handlers/ingest.ts (opt-out pre-filter, AE_DECODED write,
+ * archivePacketRaw). Theme-aware via CSS custom properties.
  */
 const COLS = [
   { x: 20,  label: "OPERATOR NODE", color: "var(--accent-light)",  border: "var(--border-accent)"  },
   { x: 262, label: "COMPANION APP",  color: "var(--text-muted)",    border: "var(--border-subtle)"  },
-  { x: 504, label: "OPT-OUT NODE",   color: "var(--sys-red-400)",   border: "var(--sys-red-400)"    },
+  { x: 504, label: "OPT-OUT ADVERT", color: "var(--sys-red-400)",   border: "var(--sys-red-400)"    },
 ];
 
 const FIELDS = [
-  { name: "node name",   op: "✓ stored",     comp: "∅ nullified", out: "∅ never written" },
-  { name: "device type", op: "✓ stored",     comp: "∅ nullified", out: "∅ never written" },
-  { name: "snr",         op: "✓ stored",     comp: "✓ stored",    out: "∅ never written" },
-  { name: "hops",        op: "✓ stored",     comp: "✓ stored",    out: "∅ never written" },
-  { name: "timestamp",   op: "✓ stored",     comp: "✓ stored",    out: "∅ never written" },
-  { name: "topology edge", op: "✓ if verified", comp: "∅ never", out: "∅ never written" },
+  { name: "node name",    op: "✓ stored",   comp: "∅ blanked",   out: "log line only" },
+  { name: "public key",   op: "✓ stored",   comp: "∅ blanked",   out: "log line only" },
+  { name: "device type",  op: "✓ stored",   comp: "✓ stored",    out: "∅ not stored" },
+  { name: "gps",          op: "✓ stored",   comp: "✓ ~90 days",  out: "∅ not stored" },
+  { name: "snr · hops",   op: "✓ stored",   comp: "✓ stored",    out: "∅ not stored" },
+  { name: "raw frame",    op: "✓ archived", comp: "✓ archived",  out: "∅ not archived" },
 ];
 
 type ColKey = "op" | "comp" | "out";
@@ -32,7 +35,7 @@ function colorForVal(val: string, colIdx: number): string {
 }
 ---
 
-<svg viewBox="0 0 720 300" role="img" aria-label="Data model comparison for three node types: operator nodes store all fields; companion apps have name and device type nullified; opted-out nodes have nothing written at all." style="width:100%;height:auto;">
+<svg viewBox="0 0 720 300" role="img" aria-label="Data model comparison for three source types: operator nodes store all fields; companion ADVERTs have name and public key blanked while device type, GPS coordinates, signal metadata, and the raw frame are kept; opted-out ADVERTs are not stored or archived, and the drop is logged with the node’s public key and name." style="width:100%;height:auto;">
 
   <!-- Column headers -->
   {COLS.map((col, i) => (

@@ -25,12 +25,16 @@ We do not claim to have invented a category. Maps and dashboards for LoRa meshes
 already exist, and pretending otherwise insults a reader who has used them. The
 position Waev takes — and the wedge that makes it defensible — is **trust**, on
 three fronts that competitors usually get wrong:
-- **It draws only what it can prove.** Topology comes from enrolled observers and
-  authenticated repeaters; inferred or spoofed edges are rejected, not guessed.
-  Most mesh maps show what a node *claims*. Waev shows what it can *verify*.
-- **It refuses to know what it doesn't need.** Opted-out nodes are dropped;
-  companion devices are identity-scrubbed at the ingest edge. Privacy is the
-  floor, not a setting (see `./VOICE.md` pillars).
+- **It labels what it draws.** Every map line carries an evidence class:
+  measured by an enrolled observer, or inferred from relayed path hashes and
+  drawn at reduced opacity; links that fail the physics checks stay off the
+  default map. Most mesh maps show what a node *claims* in one ink. Waev shows
+  how it knows.
+- **It refuses some of what it doesn't need.** Opted-out nodes' ADVERTs are
+  dropped; companion ADVERTs lose their name and key at ingest. The limits —
+  the public raw-frame archive, companion device type and GPS in analytics, the
+  partner feed — are stated in `src/pages/llms.txt.ts` and travel with the
+  claim (see `./VOICE.md` pillars).
 - **It leaves the data with the operator.** The never-captive stream: the
   observer's credential is publish-only, you read your data back out through a
   public read API, and the same stream can feed other tools of your choosing.
