@@ -49,7 +49,7 @@ The five fields:
 
 ADVERT packets tend to dominate a newly connected observer's stream, because repeaters broadcast them periodically and companion radios send them when they first join. An ADVERT from a node you have never seen before means a new contact is within radio range.
 
-**Node name.** The human-readable name the node's operator assigned it. This is whatever was set in the firmware configuration — often something like `w6abc-hilltop` or `relay-north`. If the node carries a privacy marker (⛔ 🛑 🚫), it is identity-scrubbed at the ingest edge and does not appear in Live Packets.
+**Node name.** The human-readable name the node's operator assigned it. This is whatever was set in the firmware configuration — often something like `w6abc-hilltop` or `relay-north`. If the node carries a privacy marker (⛔ 🛑 🚫), Waev drops its ADVERTs before they are stored, so those adverts don't appear in Live Packets; its other packets carry no name and can.
 
 **SNR.** Signal-to-Noise Ratio, in decibels, as received by your observer's radio. This is the quality of the radio signal at the moment your observer heard this particular packet. +9 dB is a comfortable working link. +2 dB is marginal. Below 0 dB, the radio is working harder to decode the signal — LoRa's spread-spectrum modulation can handle it, but do not plan around it for infrastructure you depend on. A deeper explanation of what the numbers mean is in [Reading the Signal](/blog/reading-the-signal/).
 

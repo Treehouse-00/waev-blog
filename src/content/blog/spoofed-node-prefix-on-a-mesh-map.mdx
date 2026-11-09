@@ -1,39 +1,42 @@
 ---
 title: "Spoofed Node Prefix on a Mesh Map"
-description: "What happens when a spoofed node prefix appears on a MeshCore mesh map, and why Waev's evidence-based topology rejects inferred edges rather than drawing them."
+description: "What happens when a spoofed node prefix appears on a MeshCore mesh map, and how Waev's evidence-based topology labels and gates inferred edges instead of trusting them."
 date: 2026-06-09
+updated: 2026-11-09
 tags: ["deep-dive", "how-it-works"]
 hero:
   src: "/hero-spoofed-node-prefix-on-a-mesh-map.jpg"
   alt: "A warm, painterly close-up of a rubber stamp mid-press on paper, the stamp head bearing a clean check mark — representing a verification mark that must be earned."
 faq:
   - q: "What is a node prefix on a MeshCore mesh?"
-    a: "Each MeshCore node has a short identifier — typically the first several characters of its hardware address — that appears alongside its configured name. This prefix helps distinguish nodes with similar names and is used in routing and observation records."
+    a: "Each MeshCore node is identified by an Ed25519 public key. A packet that crosses repeaters records each repeater as a short prefix of its key — 1 to 3 bytes, depending on the network's path-hash size — and topology tools reconstruct the path from those prefixes."
   - q: "Can a node prefix be spoofed on a MeshCore mesh?"
-    a: "A node's name and prefix are configurable by the operator. A bad actor or misconfigured node could be set up with a name that mimics another node's prefix. The RF mesh itself does not cryptographically authenticate node identities in the way a PKI system would."
+    a: "Yes. Path prefixes are not signed, and a 1-byte prefix has only 256 possible values, so two honest nodes can share one and a node can be given a key whose prefix matches another node's. Only ADVERTs carry a signature over the sender's full key. The RF mesh itself does not authenticate node identities in the way a PKI system would."
   - q: "How does Waev prevent spoofed prefixes from appearing on the map?"
-    a: "Waev draws topology edges only from observations made by enrolled observers and authenticated repeaters. A claimed observation from an unverified source does not produce an edge, regardless of what the hop record says. If the observation path cannot be traced to a trusted source, the edge is not drawn."
-  - q: "Why doesn't Waev draw inferred connections?"
-    a: "An inferred connection is a guess. Drawing it would imply certainty where none exists. A wrong line on a map you trust is more dangerous than a gap on a map you can interrogate. Waev omits edges it cannot verify so the map's silences are as informative as its lines."
+    a: "It doesn't prevent them outright; it grades them. A line built from relayed path prefixes is labeled Inferred and drawn at reduced opacity on the default map, and every claimed link must pass physics checks on distance and terrain or it is classed Rejected and kept off the default map. Proven and Corroborated lines need receptions that enrolled observers measured. ADVERT signatures are checked and recorded, but production runs that check in observe mode, so an invalid signature doesn't stop an advert."
+  - q: "Does Waev draw inferred connections?"
+    a: "Yes. The default map draws Inferred lines at reduced opacity and under their own label, so you can tell them from lines an observer measured. A link that fails the physics checks is classed Rejected and left off the default map; it appears only in explicit audit views."
   - q: "What should I do if I see a suspicious node prefix on my mesh?"
-    a: "Check your enrolled observer's packet history in Live Packets. If the prefix appears in observations from your enrolled observer, the node is real and broadcasting on your mesh. If it appears only in claimed hop records from unenrolled sources, Waev will not draw it on the map."
+    a: "Check your enrolled observer's packet history in Live Packets. If the prefix appears in observations from your enrolled observer, the node is real and broadcasting on your mesh. If it appears only in the paths of relayed packets, any line built from it is labeled Inferred: open the edge and check its evidence class, witnesses, and signal before trusting it."
 ---
 
 import Figure from "../../components/Figure.astro";
 import TrustedSources from "../../components/viz/TrustedSources.astro";
 import HiwTopologyDraw from "../../components/viz/hiw-TopologyDraw.astro";
 
-A MeshCore node's name and prefix are operator-configurable. There is nothing in the RF mesh protocol that prevents someone from setting up a node with a prefix that resembles or copies another node's identifier. This is not a unique vulnerability — it's a property of any open, cooperative radio system. But it has direct implications for what a mesh map shows, and how much you can trust the topology it draws.
+A MeshCore node's name is operator-configurable, and its prefix is a few bytes of its public key, which anyone can match by generating keys until one fits. There is nothing in the RF mesh protocol that prevents someone from setting up a node with a prefix that copies another node's. This is not a unique vulnerability — it's a property of any open, cooperative radio system. But it has direct implications for what a mesh map shows, and how much you can trust the topology it draws.
 
 <div class="callout">
-<p><strong>TLDR:</strong> A spoofed node prefix on a mesh map is only a problem if the map draws edges it cannot verify. Waev's evidence-based topology draws lines only from observations made by enrolled observers and authenticated repeaters. A claimed hop record from an unverified source — whether spoofed, misconfigured, or simply unrecognized — does not produce a map edge. If the map shows it, something verifiable produced it.</p>
+<p><strong>TLDR:</strong> A spoofed node prefix on a mesh map is a problem when the map draws edges it cannot verify as if it had. Waev labels every line with its evidence class: lines built from relayed path prefixes are Inferred and drawn at reduced opacity, and claimed links that fail the physics checks are kept off the default map. A spoofed prefix can still produce an Inferred line; the label tells you not to plan around it.</p>
 </div>
+
+*Correction, November 9, 2026: an earlier version of this post said Waev draws edges only from enrolled observers and authenticated repeaters, and never draws inferred connections. The default map draws Inferred lines from relayed path prefixes, and signature checks don't block adverts; the sections below describe what Waev does.*
 
 ## What a node prefix is
 
-MeshCore nodes carry a short identifier derived from their hardware address. This prefix appears in advertisement packets and routing records alongside the node's configured name. When a packet travels across the mesh, each hop in the path is recorded with its prefix — so the topology is reconstructed from a chain of these identifiers.
+MeshCore nodes are identified by an Ed25519 public key. An ADVERT carries the full key alongside the node's configured name; a packet that crosses repeaters records each hop as a short prefix of that repeater's key — 1 to 3 bytes — so the topology is reconstructed from a chain of these prefixes.
 
-The prefix is not cryptographically signed in transit. It travels as part of the packet payload, and any node can broadcast any prefix it's been configured with.
+The path prefix is not signed. It travels in clear in the packet's path, and any node can claim any prefix its key produces.
 
 ## Why this matters for topology maps
 
@@ -41,34 +44,34 @@ Consider what a naive topology map does: it receives hop records from nodes on t
 
 This approach has a failure mode: if a rogue or misconfigured node broadcasts a prefix that matches a legitimate node, the map draws edges to and from that prefix — edges that represent the rogue node's actual RF position, not the legitimate node's. The result is topology that looks plausible but is wrong. And a wrong map that looks confident is more dangerous than a gap that prompts you to investigate.
 
-<Figure caption="Trusted sources only. Waev draws edges only from observations traced to enrolled observers or authenticated repeaters. Claimed hop records from unverified sources do not produce edges.">
+<Figure caption="Two kinds of evidence. A reception an enrolled observer measured draws a Proven or Corroborated line. A relayed path prefix goes through the physics gate: plausible links are drawn as Inferred at reduced opacity; implausible links stay off the default map.">
   <TrustedSources />
 </Figure>
 
 ## How Waev handles it
 
-Waev's topology engine applies the same verification rule it applies to everything: an edge is only drawn if the observation traces back to a trusted source.
+Waev's topology engine grades every claimed link instead of trusting it.
 
-A trusted source is an enrolled observer — a node you've connected to your MQTT broker and explicitly linked to Waev — or an authenticated repeater whose identity Waev can confirm through that enrolled observer's report.
+The strongest source is an enrolled observer — a node you've connected to Waev's MQTT ingest. A reception it measures directly, with the sender's full key in the packet, is Proven; a link heard by two or more observers, or whose identity resolves with high confidence, is Corroborated. Repeaters are not authenticated: their ADVERT signatures are checked and recorded, but production runs that check in observe mode.
 
-A packet that claims Node A heard Node B at three hops out — but that claim arrived from an unenrolled, unverified source — does not draw an edge. Waev does not guess about what it couldn't witness. If it can't trace the observation to a trusted source, the line stays absent from the map.
+A link reconstructed from the path prefixes of a relayed packet is Inferred: plausible, but single-witness or identity-ambiguous. The default map draws it at reduced opacity, so it reads as a hypothesis, not a measurement. Any claimed link that fails the physics checks on distance and terrain is classed Rejected and left off the default map.
 
-<Figure caption="Left: a packet path as Waev's enrolled observer reported it — two edges, both verifiable. Right: a claimed path from an unverified source — same structure, no edges drawn. The difference is the chain of custody, not the content of the claim.">
+<Figure caption="Left: a packet's path as the air carried it. Right: what Waev draws from it — the last hop measured at the observer, and the earlier hop reconstructed from the path hash, labeled Inferred and drawn faint.">
   <HiwTopologyDraw />
 </Figure>
 
-This is why the verification step matters for spoofed prefixes specifically. Even if a rogue node is perfectly mimicking a legitimate node's prefix, the observations it produces will only reach the map if an enrolled observer actually witnesses those observations. If an enrolled observer does see a node with a suspicious prefix, that's real information: a node with that prefix is broadcasting on your mesh, at that RF position, with that signal quality. That's worth knowing — and the Live Packets view will show it.
+This is why the grading matters for spoofed prefixes specifically. A rogue node mimicking a legitimate node's prefix can still produce Inferred lines, because a prefix in a path is all an Inferred line needs; the label and the physics checks are what keep it from passing as measured. If an enrolled observer hears a node with a suspicious prefix directly, that's real information: a node with that prefix is broadcasting on your mesh, at that RF position, with that signal quality. That's worth knowing — and the Live Packets view will show it.
 
 ## What the map's silences mean
 
 A node that's active on your mesh but absent from the Live Map is not hidden — it just hasn't been seen by an enrolled observer, or its observations haven't passed verification. That's a meaningful signal.
 
-It tells you where your observer coverage ends. It tells you which parts of your mesh are producing traffic that Waev can't yet attribute to a trusted source. And it tells you that the edges that do appear on the map are real: they're backed by observations from nodes you enrolled and trusted.
+It tells you where your observer coverage ends. It tells you which parts of your mesh are producing traffic that Waev can't attribute to a measured reception. And it tells you to read the edges that do appear by their class: Proven and Corroborated lines are backed by observations from observers you enrolled; Inferred lines are not.
 
-Topology maps that fill in the gaps — drawing edges from claimed or inferred connections because they seem plausible — hide the distinction between what the mesh can prove and what it guesses. A gap on an evidence-based map is information. Filling it with a guess removes that information.
+Topology maps that fill in the gaps — drawing edges from claimed or inferred connections in the same ink as measured ones — hide the distinction between what the mesh can prove and what it guesses. Waev draws Inferred lines too, at reduced opacity and under their own label; the label is what keeps that distinction visible.
 
 ---
 
-The underlying principle here is the same one described in [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/): every line on the Live Map has a chain of custody. If the chain breaks — whether because of a misconfigured node, a spoofed prefix, or simply an unverified source — the line stays off the map. That's not a limitation. It's [what Waev chooses not to know](/blog/what-we-choose-not-to-know/) made concrete: if the evidence isn't there, the line isn't either.
+The underlying principle here is the same one described in [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/): every line on the Live Map carries its evidence class. A line whose only evidence is a path prefix says so, and a claim the physics checks refuse stays off the default map. That's [what Waev chooses not to know](/blog/what-we-choose-not-to-know/) applied to topology: show the evidence, and label what it doesn't prove.
 
 {/* ILLUSTRATION PROMPT: A warm, hand-painted close-up of a rubber stamp mid-press on a sheet of paper, the stamp head bearing a single clean check mark impression — the check is the subject, not the stamp or hand. Warm earthy tones; soft light from one side. The paper has a slightly textured quality. No text labels, no UI elements. The feeling is: verification must be earned, not assumed. Reads clearly at thumbnail size. */}

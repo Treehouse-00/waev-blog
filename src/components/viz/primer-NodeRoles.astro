@@ -6,7 +6,7 @@
  */
 ---
 
-<svg viewBox="0 0 720 200" role="img" aria-label="Three MeshCore firmware roles arranged side by side. Left: Companion — the personal radio paired with the app via BLE, does not relay. Center: Repeater — a fixed node that relays packets to extend range. Right: Room Server — stores group messages for offline members." style="width:100%;height:auto;">
+<svg viewBox="0 0 720 200" role="img" aria-label="Three MeshCore firmware roles arranged side by side. Left: Companion — the personal radio paired with the app via BLE, relays only if its client-repeat setting is on. Center: Repeater — a fixed node that relays packets to extend range. Right: Room Server — stores group messages for offline members." style="width:100%;height:auto;">
   <defs>
     <marker id="pr-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill: var(--border-hover);" />
@@ -22,7 +22,7 @@
   <text x="110" y="112" text-anchor="middle" style="fill: var(--text); font-family: var(--font); font-size: 13px; font-weight: 700;">Companion</text>
   <text x="110" y="130" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--font); font-size: 11px;">Your personal radio.</text>
   <text x="110" y="146" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--font); font-size: 11px;">Pairs via BLE to the app.</text>
-  <text x="110" y="162" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--font); font-size: 11px;">Does not relay.</text>
+  <text x="110" y="162" text-anchor="middle" style="fill: var(--text-muted); font-family: var(--font); font-size: 11px;">Relays only if set to.</text>
 
   <!-- Arrows between boxes -->
   <line x1="202" y1="100" x2="268" y2="100" style="stroke: var(--border-hover); stroke-width: 1.5;" marker-end="url(#pr-arrow)" />

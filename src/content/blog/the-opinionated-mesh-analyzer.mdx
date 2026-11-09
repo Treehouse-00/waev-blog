@@ -2,6 +2,7 @@
 title: "The Opinionated Mesh Analyzer"
 description: "Real-time MeshCore mesh analytics — privacy by default, evidence-based topology, and a data ownership model that keeps your community's data with you."
 date: 2026-06-08
+updated: 2026-11-09
 tags: ["philosophy", "privacy"]
 author: "Waev"
 ogImage: "/og-opinionated-mesh-analyzer.jpg"
@@ -12,17 +13,17 @@ faq:
   - q: "What is Waev?"
     a: "Waev is a real-time analytics platform for MeshCore mesh radio networks. It shows operators live packets, per-hop signal, coverage, and overall network health."
   - q: "Does Waev track personal devices or companion apps?"
-    a: "No. Companion and personal devices are identity-scrubbed at the ingest edge — name and device type are dropped before anything is stored, and only anonymous signal metadata (SNR, hops, timing) is kept for aggregate counts."
+    a: "Waev gives companion devices no node-registry row and no map dot, and blanks their name and public key in analytics rows and the live feed. It does keep a companion ADVERT's device type and any GPS coordinates in analytics rows (about 90-day retention), and it archives the full raw ADVERT frame, which the public /packets/{hash}/raw route serves. A Public-channel message shows its sender's display name in Live Packets, and a login request carries the sender's permanent public key, which Waev stores."
   - q: "How do I opt out of Waev?"
-    a: "Add a privacy marker (⛔, 🛑, or 🚫) to your node name. A node marked that way is never stored, mapped, or counted."
+    a: "Add a privacy marker (⛔, 🛑, or 🚫) to your node name. Waev drops that node's ADVERTs before they are stored, mapped, or counted. The marker does not cover packets without a name, a connected partner feed receives the raw frame before the check, the drop is logged with the node's public key and name, and records written before the marker was added are not all removed."
   - q: "Who owns the data Waev uses?"
-    a: "You do. Your observer's credentials are publish-only, the same device can publish to other tools alongside Waev — presets for several are in Waev's own docs — and the read API is public. Nothing locks your stream to Waev."
+    a: "You do. Your observer's credentials are publish-only, the same device can publish to other tools alongside Waev — presets for several are in Waev's own docs — and the read API is public. Nothing locks your stream to Waev. Waev also forwards observers' raw publishes, before its own privacy filters, to a subscribe-only feed for one partner when that partner is connected."
   - q: "Does Waev accept feature requests?"
     a: "Yes, and we read every one. We build in an order that serves the whole tool, so we may not build a given request — and we will be honest when we won't. Bug reports are always taken seriously."
 ---
 
 <div class="callout">
-<p><strong>TL;DR.</strong> Waev does not guess, it does not track phones, and it does not steal your data. We draw edges only when packets prove they exist. We drop packets entirely if a node asks for privacy. And your observer publishes on credentials that can never read, so nothing locks your stream to Waev. This is telemetry you can trust.</p>
+<p><strong>TLDR:</strong> Waev labels every line on its map with the evidence behind it, gives phones no place on the map, and drops a node's ADVERTs before storage when its name asks for privacy. Your observer publishes on credentials that can never read, so nothing locks your stream to Waev. Where the system falls short of these values today, the corrections below say so.</p>
 </div>
 
 import Figure from "../../components/Figure.astro";
@@ -36,7 +37,7 @@ If you're running a mesh network for a community that depends on it, you already
 
 <aside class="callout">
 
-**TLDR:** Waev is a real-time analytics platform for MeshCore mesh radio networks. It keeps privacy on by default, draws its maps only from verified evidence, and leaves your community's data in your hands. What follows is the six values behind those choices — and what each one means in practice.
+**TLDR:** Waev is a real-time analytics platform for MeshCore mesh radio networks. It keeps privacy on by default, labels every map line with the evidence behind it, and leaves your community's data in your hands. What follows is the six values behind those choices — and what each one means in practice.
 
 </aside>
 
@@ -83,13 +84,15 @@ Here are the six things underneath everything else.
 
 The conversations on your mesh are real. The people having them trust the infrastructure you built. We don't take that lightly.
 
-Two rules do most of the work. First, **opt-out is absolute**: add a privacy marker — ⛔ 🛑 🚫 — to any node name and it is never stored, never mapped, never counted. No caching, no exceptions. Second, **companion devices are scrubbed before anything is written**. MeshCore personal apps broadcast on the same radio mesh as your repeaters, so those packets reach our observers. At the ingest edge, we strip the identity — name and device type are nullified — and retain only anonymous signal metadata for aggregate counting.
+Two rules do most of the work. First, **opt-out**: add a privacy marker — ⛔ 🛑 🚫 — to any node name and Waev drops that node's ADVERTs before they are stored, mapped, or counted. Second, **companion devices are scrubbed before analytics rows are written**. MeshCore personal apps broadcast on the same radio mesh as your repeaters, so those packets reach our observers. At ingest, we blank the name and public key of a companion ADVERT and give the device no place in the node registry or on the map.
 
-<Figure caption="<b>Left:</b> a node that opts out is dropped entirely. <b>Right:</b> a companion ADVERT keeps its signal numbers, loses its identity.">
+*Correction, November 9, 2026: this section used to say opt-out is absolute and that only anonymous signal metadata survives the companion scrub. Neither is true today. A connected partner feed receives every raw frame before the opt-out check; the check covers ADVERTs, not packets without a name, and logs the node's public key and name when it fires; records written before a marker was added are not all removed. The companion scrub keeps the device type and any GPS coordinates in analytics rows for about 90 days; the raw-frame archive keeps the full ADVERT and serves it publicly; Public-channel messages show the sender's display name; and login requests carry the sender's permanent public key, which Waev stores. The value card above is the standard; this note is where the system stands against it.*
+
+<Figure caption="<b>Top:</b> an opted-out node's ADVERT is dropped before storage, and the drop is logged. <b>Bottom:</b> a companion ADVERT loses its name and key in the analytics row and keeps its device type, coordinates, and signal numbers.">
   <PrivacyScrub />
 </Figure>
 
-If you're running a companion app, you won't appear on <span class="waev-brand">Waev</span>. The only personal devices we ever surface are ones an operator explicitly chose to connect — and even then, a privacy marker in the name overrides everything.
+If you're running a companion app, you won't appear on the <span class="waev-brand">Waev</span> map or in its node registry. Your ADVERTs still reach the raw-frame archive and analytics rows as the correction above describes, and a message you post on the Public channel shows your display name in Live Packets. An operator who enrolls a companion as an observer chooses to connect it; a privacy marker in that observer's name makes it a private observer, hidden from the public map, topology, and network stats, while live packet frames still carry its device ID and region code.
 
 Privacy here isn't a setting. It's the floor. [What we choose not to know](/blog/what-we-choose-not-to-know/) goes deeper into why that's the right default.
 
@@ -97,13 +100,15 @@ Privacy here isn't a setting. It's the floor. [What we choose not to know](/blog
 
 When you look at your network map, everything on it should be there because something verifiable put it there. Not because we guessed.
 
-Every edge in the topology traces back to something we can confirm: an **enrolled observer** connected over MQTT, or an **authenticated repeater**. A spoofed or inferred prefix doesn't get a line on the map — it gets rejected.
+Every edge in the topology carries an evidence class. **Proven** and **Corroborated** lines trace back to receptions an enrolled observer measured. **Inferred** lines are reconstructed from relayed path hashes — 1-byte to 3-byte key prefixes that nobody signs — and the default map draws them at reduced opacity. **Rejected** links fail the physics gate and stay off the default map. Repeater ADVERT signatures are checked and recorded, but production runs the check in observe mode, so an invalid signature does not stop an advert.
 
-<Figure caption="Verified sources draw an edge. Inference doesn't — <b>no proof, no line.</b>">
+*Correction, November 9, 2026: this section used to say every edge traces back to an enrolled observer or an authenticated repeater, and that spoofed or inferred prefixes are rejected. The default map draws Inferred lines, and signature checks do not block adverts.*
+
+<Figure caption="Every drawn line carries its evidence class. <b>Inferred</b> lines are drawn at reduced opacity; links that fail the physics gate stay off the default map.">
   <TrustedSources />
 </Figure>
 
-The map is less crowded for it. But what's there, you can trust. [Evidence-based topology](/blog/evidence-based-mesh-network-map/) covers exactly how an edge earns its place.
+The label tells you how far to trust each line. [Evidence-based topology](/blog/evidence-based-mesh-network-map/) covers exactly how an edge earns its class.
 
 ## 03 · Hard to read is a bug
 
@@ -127,11 +132,13 @@ The old model, where everyone requests access to a central set of MQTT servers, 
 
 **Your observers publish on credentials that can never read. The same devices can feed other tools — the presets are in our own docs — and the read API is public. Nothing locks your stream to Waev.**
 
+One more consumer sits on Waev's side of that stream: when a partner is connected, Waev forwards observers' raw publishes for that partner's regions to a subscribe-only feed, before dedup and before Waev's own privacy filters.
+
 <Figure caption="Your stream is never captive. <b>Publish-only in, public read API out.</b>">
   <BrokerCopy />
 </Figure>
 
-You keep full control. We get what we need to build useful tools. Nobody manages an access list. It's a better arrangement for everyone — and it happens to be the honest one.
+You keep control of where your observers publish. We get what we need to build useful tools. Nobody manages an access list. It's a better arrangement for everyone — and it happens to be the honest one.
 
 ## 06 · Built deliberately, not on demand
 

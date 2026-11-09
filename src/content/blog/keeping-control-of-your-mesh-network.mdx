@@ -2,6 +2,7 @@
 title: "Keeping Control of Your Mesh Network"
 description: "When an off-grid community builds a mesh, keeping control of the data matters as much as keeping the radios powered. Here is how the never-captive stream makes that possible."
 date: 2026-06-09
+updated: 2026-11-09
 tags: ["data-ownership", "philosophy"]
 hero:
   src: "/hero-keeping-control-of-your-mesh-network.jpg"
@@ -10,7 +11,7 @@ faq:
   - q: "What does keeping control of a mesh network's data actually mean?"
     a: "It means the community's packet stream is never locked to a single vendor. An enrolled observer publishes directly to Waev's own MQTT ingest with a credential that can only send data, never read, alter, or delete anything on the broker — and the operator can read that same data back out or point it at other tools whenever they choose."
   - q: "Why does it matter that observer credentials are publish-only?"
-    a: "A publish-only credential cannot be used to subscribe to, modify, or delete anything on the broker. The observer can send its own packet stream and nothing else, which means the worst a compromised or misused credential can do is stop sending data — it can't be turned against the rest of the network."
+    a: "A publish-only credential cannot be used to subscribe to, modify, or delete anything on the broker. The observer can send its own packet stream and nothing else, which means a compromised or misused credential can publish on that observer's topic, forged packets included, or stop sending data — but it can't read the broker or anyone else's stream."
   - q: "Can I use an analytics tool like Waev without handing over my data?"
     a: "Yes. An enrolled observer publishes its packet stream to Waev's own MQTT ingest (mqtt.waev.app) using a publish-only credential. Waev draws the Live Map and calculates Network Stats from that stream, but the credential itself can't read, alter, or delete anything — and the operator reads their own data back out through a public read API."
   - q: "What happens to my mesh data if the analytics vendor shuts down?"

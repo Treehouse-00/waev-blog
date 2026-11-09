@@ -14,9 +14,9 @@ faq:
   - q: "Where should I place my observer?"
     a: "Place the observer where it can hear the most nodes. High ground with line-of-sight to your backbone repeaters is ideal. The observer needs internet connectivity — Wi-Fi, Ethernet, or a cellular modem — to publish its packet stream to Waev's ingest, so the chosen location also needs a reliable connection."
   - q: "What happens to nodes the observer can't hear?"
-    a: "Nodes that the observer can't hear won't appear in Waev's Live Packets or Live Map. Waev's evidence-based topology only draws what it can verify from enrolled observers — silence doesn't mean the node isn't on the air, just that it isn't reaching your observer. This is useful: it tells you exactly where your monitoring coverage ends."
+    a: "Nodes that the observer can't hear won't appear in Waev's Live Packets or Live Map. Waev's evidence-based topology only draws what enrolled observers heard — silence doesn't mean the node isn't on the air, just that it isn't reaching your observer. This is useful: it tells you exactly where your monitoring coverage ends."
   - q: "Can I add a second observer later if I expand the network?"
-    a: "Yes. Adding a second observer at a new location is straightforward: enroll it in the same MQTT broker, and Waev will incorporate what it hears. The two observers give you a larger verified picture of the mesh, and the Live Map will reflect the union of what both can confirm."
+    a: "Yes. Adding a second observer at a new location is straightforward: enroll it in the same MQTT broker, and Waev will incorporate what it hears. The two observers give you a larger picture of the mesh, and the Live Map will reflect the union of what both hear."
 ---
 
 import Figure from "../../components/Figure.astro";

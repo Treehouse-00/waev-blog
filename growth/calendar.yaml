@@ -849,8 +849,8 @@ posts:
     bucket: under-the-hood
     theme: power-of-refusal
     series: under-the-hood
-    primary_keyword: "how mesh companion devices are identity-scrubbed"
-    secondary_keyword: "privacy scrub at the ingest edge"
+    primary_keyword: "how Waev handles mesh companion devices"
+    secondary_keyword: "companion scrub at ingest and its limits"
     status: proposed
     brief: ./briefs/content-writer.md
 

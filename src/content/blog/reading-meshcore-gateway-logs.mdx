@@ -2,6 +2,7 @@
 title: "Reading MeshCore Gateway Logs"
 description: "Reading MeshCore gateway logs gives you a per-packet view of every observation your observer reports: SNR, hop count, and route type as the mesh sees them."
 date: 2026-06-21
+updated: 2026-11-09
 tags: ["signal", "mesh-measurement"]
 hero:
   src: "/hero-reading-meshcore-gateway-logs.jpg"
@@ -16,7 +17,7 @@ faq:
   - q: "My observer shows packets from some nodes but not others. Why?"
     a: "An observer hears packets from nodes that are within its RF range, directly or via relays. Nodes that are outside your observer's hearing range, or that route through paths that do not pass near your observer, will not appear in the log. Adding a second observer at a different location expands the coverage of your enrolled observer set."
   - q: "Can I verify gateway log contents against what Waev shows in Live Packets?"
-    a: "Yes. Waev's Live Packets view presents the same packet stream your observer publishes to Waev's ingest, passed through the ingest-edge privacy and verification checks. If a packet appears in your raw feed but not in Waev's Live Packets, it was either filtered by the privacy gate because the source node carried an opt-out privacy marker, or it came from a source Waev could not verify against an enrolled observer."
+    a: "Yes. Waev's Live Packets view presents the same packet stream your observer publishes to Waev's ingest, passed through the ingest-edge privacy and verification checks. If a packet appears in your raw feed but not in Waev's Live Packets, either it was an ADVERT dropped because its node name carries an opt-out privacy marker, or you are viewing the sampled preview, which anonymous visitors get; the full live stream requires sign-in."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -100,7 +101,7 @@ Waev's ingest receives the same per-packet JSON records directly from the observ
   <MeasureLivePackets />
 </Figure>
 
-Live Packets is the most direct translation — essentially a windowed view of the stream with privacy filters applied. Each row you see in Live Packets corresponds to a packet record that arrived at the ingest edge from your observer. If a packet is in your raw feed but absent in Live Packets, one of three things happened: the source node carried a privacy opt-out marker (⛔ 🛑 🚫), the observation came through a path Waev could not verify, or the packet was from a companion device whose identity was scrubbed at ingest.
+Live Packets is the most direct translation — essentially a windowed view of the stream with privacy filters applied. Each row you see in Live Packets corresponds to a packet record that arrived at the ingest edge from your observer. If a packet is in your raw feed but absent in Live Packets, either it was an ADVERT whose node name carries a privacy opt-out marker (⛔ 🛑 🚫), or you are looking at the sampled preview that anonymous visitors get; the full live stream requires sign-in. A companion's ADVERT still appears, with its name and public key blanked.
 
 Network Stats is the aggregated layer — it works from the same stream but summarizes across time. The raw feed shows you the sequence of individual events; Network Stats shows you the derived pattern over hours or days. Both are downstream of the same observer packet.
 

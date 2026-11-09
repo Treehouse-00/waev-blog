@@ -2,6 +2,7 @@
 title: "Same Hardware, Different Net"
 description: "MeshCore and Meshtastic run on the same LoRa hardware but choose different routing models. Here is what that means for range, scale, and where each fits."
 date: 2026-06-09
+updated: 2026-11-09
 tags: ["operations", "comparison"]
 hero:
   src: "/hero-same-hardware-different-net.jpg"
@@ -77,9 +78,9 @@ This matters for planning: a deployment decision in either direction commits the
 
 ## Where Waev fits
 
-Waev works with MeshCore specifically. Waev's observer model — enrolling MeshCore nodes over MQTT as the data source for topology, Network Stats, and Live Packets — depends on MeshCore's authenticated repeater and MQTT gateway architecture. An enrolled observer publishes the RF packets it hears, and Waev builds a verified topology from those reports. For more on how that pipeline works, see [From Radio to Map](/blog/how-waev-reads-your-mesh/).
+Waev works with MeshCore specifically. Waev's observer model — enrolling MeshCore nodes over MQTT as the data source for topology, Network Stats, and Live Packets — depends on MeshCore's public-key identities and MQTT gateway architecture. An enrolled observer publishes the RF packets it hears, and Waev builds an evidence-labeled topology from those reports. For more on how that pipeline works, see [From Radio to Map](/blog/how-waev-reads-your-mesh/).
 
-The evidence-based topology that Waev builds — edges drawn only from enrolled observers and authenticated repeaters — is a property of MeshCore's architecture: repeaters have cryptographic identities, and the packets they forward carry verifiable signatures. That verification chain does not exist in the same form on Meshtastic, which is why Waev is MeshCore-native. This is not a statement about which protocol is better for any given use case; it is a statement about where Waev plugs in.
+The evidence-based topology that Waev builds — every edge labeled by how it is known — leans on MeshCore's architecture: every node has an Ed25519 identity, a signed ADVERT carries the full public key, and a relayed packet records each repeater's key prefix in its path. The ADVERT signature is the verifiable part; the path prefixes are not signed. That chain does not exist in the same form on Meshtastic, which is why Waev is MeshCore-native. This is not a statement about which protocol is better for any given use case; it is a statement about where Waev plugs in.
 
 For more on signal metrics — SNR, hop count, and what they tell you about link quality — see [Reading the Signal](/blog/reading-the-signal/).
 

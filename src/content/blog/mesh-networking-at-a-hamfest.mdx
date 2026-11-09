@@ -8,7 +8,7 @@ hero:
   alt: "A warm hand-painted close-up of a small LoRa node resting on a badge-strewn vendor table in a ham radio hall, its short antenna upright in soft overhead light."
 faq:
   - q: "What happens to my mesh when operators bring nodes to a hamfest?"
-    a: "Nodes on matching radio settings that come within range of your enrolled observer will appear in Live Packets as they transmit adverts or messages. If they route traffic through your observer or authenticated repeaters, they draw new edges on the Live Map. Nodes outside your observer's coverage won't appear — the map stays honest about what it can verify."
+    a: "Nodes on matching radio settings that come within range of your enrolled observer will appear in Live Packets as they transmit adverts or messages. If they route traffic through your observer or your repeaters, they can draw new edges on the Live Map, labeled by evidence class. Nodes outside your observer's coverage won't appear — the map stays honest about what it heard."
   - q: "Should I bring a dedicated repeater or room server to the demo table?"
     a: "A room server at the table gives visitors an immediate, concrete experience: they power on a companion node, send a flood advert, and see themselves appear in your network within seconds. An observer pointed toward the demo area lets you show that activity on the Waev Live Map on a laptop screen at the same time."
   - q: "Do visiting nodes need to match my radio settings to appear in Waev?"
@@ -44,7 +44,7 @@ Beyond the demo table, your observer is picking up transmissions from anyone els
 
 The stream is worth watching carefully. Not every node at the event will match your settings — some visitors operate different platforms, and others may be on regional frequency plans that diverge from the North American coordination standard. The nodes that appear in your Live Packets are the ones already interoperable with your network. Those are the contacts worth making deliberately.
 
-One thing the map won't show you: nodes that are in the building but not reaching your observer. Waev only draws [what your enrolled observers can verify](/blog/how-waev-reads-your-mesh/) — an empty screen doesn't mean empty airwaves, it means those transmissions didn't make it to your infrastructure. That distinction matters when you're trying to assess regional MeshCore density: the nodes you see are a floor, not a ceiling.
+One thing the map won't show you: nodes that are in the building but not reaching your observer. Waev only draws [what enrolled observers heard](/blog/how-waev-reads-your-mesh/) — an empty screen doesn't mean empty airwaves, it means those transmissions didn't make it to your infrastructure. That distinction matters when you're trying to assess regional MeshCore density: the nodes you see are a floor, not a ceiling.
 
 ## The edges that appear and disappear
 

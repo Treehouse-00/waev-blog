@@ -1,22 +1,23 @@
 ---
 title: "If the Map Shows It"
-description: "An evidence-based mesh network map draws only edges it can verify: enrolled observers and authenticated repeaters. No proof, no line."
+description: "An evidence-based mesh network map labels every edge with how it is known — measured by an enrolled observer, or inferred from relayed path hashes — and keeps physically implausible links off the default map."
 date: 2026-06-09
+updated: 2026-11-09
 tags: ["mesh-topology", "deep-dive"]
 hero:
   src: "/hero-evidence-based-mesh-network-map.jpg"
   alt: "A hand-painted close-up of a drafting compass and a folded map on a wooden table, warm natural light, quiet and methodical."
 faq:
   - q: "What makes a mesh network map evidence-based?"
-    a: "An evidence-based mesh network map draws topology edges only from verified observations — packets relayed through enrolled observers over MQTT and authenticated repeater reports. If the system cannot produce a verifiable source for an edge, it does not draw the edge. The map reflects what the network did, not what the system infers or guesses it might have done."
+    a: "Every edge carries the evidence behind it. On Waev, Proven and Corroborated edges come from receptions that enrolled observers measured over RF; Inferred edges are reconstructed from relayed path hashes and drawn at reduced opacity; Rejected links fail physics checks and stay off the default map. The label separates what the network did from what the system infers it did."
   - q: "Why would a mesh map show connections that don't actually exist?"
-    a: "Most LoRa mesh nodes broadcast ADVERT packets to announce their presence to nearby nodes. A naive mapping tool infers a neighbor graph from these — if Node A has recently heard Node B, it draws an edge between them. But that inference ignores whether the link is current, functional, or real. Nodes can carry stale data or be misconfigured. An evidence-based approach draws only from direct RF observations made by enrolled observers, not from inferred neighbor relationships."
+    a: "Most LoRa mesh nodes broadcast ADVERT packets to announce their presence to nearby nodes. A naive mapping tool infers a neighbor graph from these — if Node A has recently heard Node B, it draws an edge between them. But that inference ignores whether the link is current, functional, or real. Nodes can carry stale data or be misconfigured. An evidence-based approach labels what an observer measured apart from what was inferred, and checks every claimed link against physics."
   - q: "What happens to inferred or spoofed edges in Waev?"
-    a: "They are rejected and not drawn. When a topology source cannot be verified against an enrolled observer or authenticated repeater, Waev does not add the edge to the Live Map. The edge simply does not appear. This is not a failure to collect data — it is a deliberate decision to report nothing rather than report something unverified."
+    a: "Inferred edges — reconstructed from relayed path hashes, which nobody signs — are drawn at reduced opacity under the Inferred label, so a spoofed prefix can produce one. Any claimed link that fails the physics checks on distance and terrain is classed Rejected and left off the default map; it appears only in explicit audit views."
   - q: "Does an evidence-based map show fewer nodes than my network has?"
-    a: "It may. Nodes that are not within hearing range of any enrolled observer will not appear, even if they are transmitting normally. Nodes that have opted out with a privacy marker will not appear by design. The map shows what the observer infrastructure can verify — its gaps are informative. A silent zone on an evidence-based map is a real finding: either an observer is needed, or that zone is genuinely unreachable."
+    a: "It may. Nodes that are not within hearing range of any enrolled observer will not appear, even if they are transmitting normally. A node that opts out with a privacy marker stops being updated, and its earlier record stays until the 182-hour prune. The map shows what the observer infrastructure hears — its gaps are informative. A silent zone on an evidence-based map is a real finding: either an observer is needed, or that zone is genuinely unreachable."
   - q: "How does Waev verify a topology edge?"
-    a: "A topology edge is drawn when an enrolled observer (connected to your MQTT broker over TCP/IP) reports receiving a packet relayed through a specific path. The observer is the ground truth: it physically heard the RF transmission at a measured SNR and reported the observation. Edges that trace back to an enrolled observer observation are drawn. Edges that trace back only to a node's self-reported neighbor list are not."
+    a: "A topology edge starts when an enrolled observer (connected to Waev's MQTT ingest over TCP/IP) reports receiving a packet. The observer is the ground truth for the hop it heard: it physically received the RF transmission at a measured SNR. Earlier hops in the packet's path are reconstructed from path hashes and labeled Inferred. Every claimed link is checked against distance and terrain, and links that fail are classed Rejected and kept off the default map."
 ---
 
 import Figure from "../../components/Figure.astro";
@@ -28,8 +29,10 @@ There is a common pattern in mesh mapping tools: draw everything you hear. A nod
 Confidence without verification isn't trust. It's noise with a clean interface.
 
 <div class="callout">
-<p><strong>TLDR:</strong> An evidence based mesh network map draws only the edges it can prove: connections backed by enrolled observers receiving real RF transmissions, or authenticated repeaters reporting real relays. If Waev cannot produce a verifiable source for an edge, it does not draw the line. That restraint is not a limitation — it is the point.</p>
+<p><strong>TLDR:</strong> An evidence based mesh network map shows how it knows each edge. Waev labels every line: Proven or Corroborated when enrolled observers measured the reception, Inferred — drawn at reduced opacity — when it is reconstructed from relayed path hashes. Links that fail the physics checks stay off the default map. The labels are the point.</p>
 </div>
+
+*Correction, November 9, 2026: an earlier version of this post said Waev draws edges only from enrolled observers and authenticated repeaters, rejects inferred edges, and never guesses. The default map draws Inferred lines at reduced opacity, and repeater signatures are recorded, not enforced; the sections below describe what Waev does.*
 
 ## The hearing problem
 
@@ -39,31 +42,31 @@ Neighbor advertisement tables go stale. A node that moved six months ago still a
 
 A map that draws from ADVERT metadata is drawing from a node's self-report. Self-reports are useful signals. They are not evidence.
 
-<Figure caption="<b>Two lanes.</b> Top: an enrolled observer receives a packet relayed through an authenticated repeater — both sources are verifiable. The edge is drawn. Bottom: a spoofed prefix arrives with no verifiable source — the edge is rejected. The map shows only what something verifiable produced.">
+<Figure caption="<b>Two lanes.</b> Top: an enrolled observer measures a reception — the edge is drawn as Proven or Corroborated. Bottom: a relayed path prefix, which nobody signs, goes through the physics gate — a plausible link is drawn as Inferred at reduced opacity; an implausible one stays off the default map.">
   <TrustedSources />
 </Figure>
 
 ## What makes an edge verifiable
 
-Waev draws topology edges from two sources: enrolled observers and authenticated repeaters.
+Waev draws topology edges from two kinds of evidence: receptions that enrolled observers measure, and the path hashes carried by relayed packets.
 
 An **enrolled observer** is a MeshCore node (or compatible device) that connects directly to Waev's own MQTT ingest over TCP/IP, using a credential that is publish-only. When a packet passes through the observer's radio range, the observer hears it, records the SNR and hop data, and publishes the observation to that ingest. The observer is the physical evidence: it was there, it received the RF signal, it measured the SNR at that moment.
 
-An **authenticated repeater** is a node that Waev can verify as a legitimate relay in your network. Its packet contributions carry provenance that can be traced. Inferred or spoofed prefixes — nodes whose identity cannot be verified against your enrolled network — are not authenticated and their edges are not drawn.
+A **path hash** is the short prefix — 1 to 3 bytes of a repeater's public key — that a relayed packet records for each hop. Nobody signs it, so it identifies a repeater only probabilistically. Edges reconstructed from path hashes are labeled Inferred and drawn at reduced opacity. Repeaters are not authenticated: their ADVERT signatures are checked and recorded, but production runs that check in observe mode, so an invalid signature doesn't stop an advert.
 
-The pipeline is important to understand: Waev has no antenna. It does not receive RF directly. Everything it knows about your mesh came through an enrolled observer, over MQTT, from a real physical measurement. There is no step in that chain where Waev guesses.
+The pipeline is important to understand: Waev has no antenna. It does not receive RF directly. Everything it knows about your mesh came through an enrolled observer, over MQTT. Where Waev infers, the line says so: an Inferred line means the evidence is a path hash, not a measurement.
 
-<Figure caption="What the air said, and what the map draws. Left: Node A transmits; Node B relays; Observer hears it at +7.4 dB on hop 1, +5.2 dB on hop 2. Right: Waev draws exactly two edges — A-B and B-Observer — each backed by the Observer's verified measurement. Nothing is inferred.">
+<Figure caption="What the air said, and what the map draws. Left: Node A transmits; Node B relays; Observer hears it. Right: Waev draws two edges — B-Observer, measured at the observer, and A-B, reconstructed from the packet's path hash, labeled Inferred, and drawn faint.">
   <HiwTopologyDraw />
 </Figure>
 
 ## What rejection means
 
-When Waev encounters a topology source it cannot verify, it rejects it. The edge is not drawn. This happens silently — there's no error, no placeholder, no dashed line marking the gap. The topology simply reflects only what has been verified.
+When a claimed link fails the physics checks — a distance or terrain the signal couldn't have crossed — Waev classes it Rejected and leaves it off the default map. This happens silently — there's no error, no placeholder, no dashed line marking the gap. A link Waev can't measure but can't rule out is drawn as Inferred, at reduced opacity.
 
 This is a deliberate design choice, and it has an important implication: absence has meaning.
 
-If a node does not appear on the Live Map, one of a small set of things is true: it is not within range of any enrolled observer; it is opted out via a privacy marker; it is offline; or its observer is not connected. Each of those is a real finding. The map is not broken; it is reporting honestly that it has no verified evidence of that node's activity.
+If a node does not appear on the Live Map, one of a small set of things is true: it is not within range of any enrolled observer; it is opted out via a privacy marker; it is offline; its observer is not connected; or its advertised position failed a sanity check. Each of those is a real finding. The map is not broken; it is reporting honestly that it has no evidence it trusts for that node's activity.
 
 Compare this to a map that draws from self-reported neighbor lists. In that model, a node that went offline three weeks ago might still appear — its last-reported neighbors are still in other nodes' tables. The map shows a ghost. The operator sees coverage that doesn't exist, plans around it, and discovers the gap during an event rather than during a Tuesday routine check.
 
@@ -75,7 +78,7 @@ An evidence-based map's silences are informative. A silent zone tells you: no en
 
 A zone that shows weak, intermittent edges tells you: something in that path is marginal. SNR data from the observer backs that up — a +2 dB link that was +9 dB four months ago has physically changed. The degradation is in the data, not in an assumption.
 
-This is what we mean by [evidence-based topology](https://waev.app): the map is built from the signal record, not from a topology inference engine. For a deeper look at how the observation pipeline works — from RF packet to Live Map edge — see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/).
+This is what we mean by [evidence-based topology](https://waev.app): the map is built from the signal record, and anything inferred from it is labeled as inferred. For a deeper look at how the observation pipeline works — from RF packet to Live Map edge — see [how Waev reads your mesh](/blog/how-waev-reads-your-mesh/).
 
 ## The position
 
@@ -83,7 +86,7 @@ The case for evidence-based topology is not primarily about edge cases — misco
 
 The main argument is simpler: a map you can trust behaves differently from a map you can't. When the map shows a link, you act on it. You plan coverage based on it. You tell a served agency it's there. If the map is drawing from unverified self-reports, those actions rest on claims, not evidence. In a non-critical context, that's probably fine. In an emergency, it isn't.
 
-Waev's position is that the honest map — the one that says "I don't know" rather than guessing, the one that shows gaps rather than filling them with inference — is more useful precisely because of what it refuses to draw. The gap you see is a problem you can fix. The ghost you don't know about is a risk you're carrying.
+Waev's position is that the honest map is the one that labels its guesses — that says "inferred" where it infers, shows gaps where it has nothing, and refuses to draw what physics rules out. The gap you see is a problem you can fix. The ghost you don't know about is a risk you're carrying.
 
 For more on how signal quality data informs what gets drawn and what gets flagged, see [how to read SNR and hop count](/blog/reading-the-signal/).
 
